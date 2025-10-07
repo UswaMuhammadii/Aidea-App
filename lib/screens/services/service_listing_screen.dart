@@ -305,20 +305,20 @@ class _ServiceListingScreenState extends State<ServiceListingScreen> with Ticker
                     child: Row(
                       children: [
                         Container(
-                          width: 60,
-                          height: 60,
-                          decoration: BoxDecoration(
-                            gradient: LinearGradient(
-                              begin: Alignment.topLeft,
-                              end: Alignment.bottomRight,
-                              colors: [
-                                Theme.of(context).colorScheme.primary.withOpacity(0.2),
-                                Theme.of(context).colorScheme.secondary.withOpacity(0.2),
-                              ],
+                            width: 60,
+                            height: 60,
+                            decoration: BoxDecoration(
+                              gradient: LinearGradient(
+                                begin: Alignment.topLeft,
+                                end: Alignment.bottomRight,
+                                colors: [
+                                  Theme.of(context).colorScheme.primary.withOpacity(0.2),
+                                  Theme.of(context).colorScheme.secondary.withOpacity(0.2),
+                                ],
+                              ),
+                              borderRadius: BorderRadius.circular(12),
                             ),
-                            borderRadius: BorderRadius.circular(12),
-                          ),
-                          child: _getIconForSubcategory(subcategory)
+                            child: _getIconForSubcategory(subcategory)
 
                         ),
                         const SizedBox(width: 16),

@@ -258,7 +258,7 @@ class _ServiceCheckoutScreenState extends State<ServiceCheckoutScreen> {
                           ),
                         ),
                         Text(
-                          'Rs. ${item.totalPrice.toStringAsFixed(0)}',
+                          'SAR ${item.totalPrice.toStringAsFixed(0)}',
                           style: TextStyle(
                             fontWeight: FontWeight.bold,
                             color: Theme.of(context).colorScheme.primary,
@@ -312,7 +312,7 @@ class _ServiceCheckoutScreenState extends State<ServiceCheckoutScreen> {
                             ),
                           ),
                           Text(
-                            'Rs. ${totalPrice.toStringAsFixed(0)}',
+                            'SAR. ${totalPrice.toStringAsFixed(0)}',
                             style: TextStyle(
                               fontWeight: FontWeight.bold,
                               color: Theme.of(context).colorScheme.primary,
@@ -498,7 +498,7 @@ class _ServiceCheckoutScreenState extends State<ServiceCheckoutScreen> {
                       },
                     ),
                     const Divider(height: 1),
-                    RadioListTile<String>(
+                    /*RadioListTile<String>(
                       title: Row(
                         children: [
                           Icon(Icons.account_balance_wallet, color: Colors.purple.shade700),
@@ -511,7 +511,7 @@ class _ServiceCheckoutScreenState extends State<ServiceCheckoutScreen> {
                       onChanged: (value) {
                         setState(() => _selectedPaymentMethod = value!);
                       },
-                    ),
+                    ),*/
                   ],
                 ),
               ),
@@ -662,7 +662,7 @@ class _ServiceCheckoutScreenState extends State<ServiceCheckoutScreen> {
                             ),
                           ),
                           Text(
-                            'Rs. ${totalPrice.toStringAsFixed(0)}',
+                            'SAR ${totalPrice.toStringAsFixed(0)}',
                             style: Theme.of(context).textTheme.titleMedium?.copyWith(
                               fontWeight: FontWeight.bold,
                               color: Theme.of(context).colorScheme.primary,

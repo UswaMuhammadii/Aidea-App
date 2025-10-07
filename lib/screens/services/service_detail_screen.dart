@@ -291,7 +291,7 @@ class _ServiceDetailScreenState extends State<ServiceDetailScreen> with TickerPr
                                 borderRadius: BorderRadius.circular(12),
                               ),
                               child: Text(
-                                'Rs. ${widget.service.price.toStringAsFixed(0)}',
+                                'SAR ${widget.service.price.toStringAsFixed(0)}',
                                 style: const TextStyle(
                                   fontSize: 20,
                                   fontWeight: FontWeight.bold,
