@@ -1000,7 +1000,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                                               ),
                                             ),
                                             Text(
-                                              'Rs. ${booking.totalPrice.toStringAsFixed(0)}',
+                                              'SAR ${booking.totalPrice.toStringAsFixed(0)}',
                                               style: const TextStyle(
                                                 fontSize: 12,
                                                 fontWeight: FontWeight.w600,
@@ -1055,7 +1055,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                                           ),
                                         ),
                                         Text(
-                                          'Rs. ${totalPrice.toStringAsFixed(0)}',
+                                          'SAR ${totalPrice.toStringAsFixed(0)}',
                                           style: const TextStyle(
                                             fontSize: 20,
                                             fontWeight: FontWeight.bold,
