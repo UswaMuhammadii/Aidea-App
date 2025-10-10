@@ -33,6 +33,43 @@ class _ServiceCheckoutScreenState extends State<ServiceCheckoutScreen> {
   bool _isLoading = false;
   String _selectedPaymentMethod = 'cash';
 
+  Icon _getIconForServiceItem(String serviceName) {
+    switch (serviceName.toLowerCase()) {
+      case "automatic washing machines":
+      case "regular washing machines":
+        return const Icon(Icons.local_laundry_service, color: Colors.blue, size: 28);
+
+      case "split ac":
+      case "window ac":
+      case "central ac":
+        return const Icon(Icons.ac_unit, color: Colors.lightBlue, size: 28);
+
+      case "refrigerator":
+        return const Icon(Icons.kitchen, color: Colors.teal, size: 28);
+
+      case "oven":
+        return const Icon(Icons.microwave, color: Colors.deepOrange, size: 28);
+
+      case "cleaning":
+        return const Icon(Icons.cleaning_services, color: Colors.green, size: 28);
+
+      case "plumbing":
+        return const Icon(Icons.plumbing, color: Colors.indigo, size: 28);
+
+      case "electrical":
+        return const Icon(Icons.electrical_services, color: Colors.orange, size: 28);
+
+      case "painting":
+        return const Icon(Icons.format_paint, color: Colors.purple, size: 28);
+
+      case "moving":
+        return const Icon(Icons.local_shipping, color: Colors.brown, size: 28);
+
+      default:
+        return const Icon(Icons.build, color: Colors.grey, size: 28);
+    }
+  }
+
   @override
   void initState() {
     super.initState();
@@ -230,10 +267,15 @@ class _ServiceCheckoutScreenState extends State<ServiceCheckoutScreen> {
                             ),
                             borderRadius: BorderRadius.circular(10),
                           ),
-                          child: Icon(
+                          /*child: Icon(
                             Icons.star,
                             color: Theme.of(context).colorScheme.primary,
-                          ),
+                          ),*/
+                          child: widget.isFromCart
+                              ? _getIconForServiceItem(item.service.name)
+                              : _getIconForServiceItem(widget.service.name),
+
+
                         ),
                         const SizedBox(width: 12),
                         Expanded(
