@@ -33,38 +33,20 @@ class _ServiceCheckoutScreenState extends State<ServiceCheckoutScreen> {
   bool _isLoading = false;
   String _selectedPaymentMethod = 'cash';
 
-  Icon _getIconForServiceItem(String serviceName) {
-    switch (serviceName.toLowerCase()) {
+  // Updated function - subcategory ke basis par icon
+  Icon _getIconForServiceItem(String? subcategory) {
+    switch (subcategory?.toLowerCase() ?? "") {
       case "automatic washing machines":
       case "regular washing machines":
         return const Icon(Icons.local_laundry_service, color: Colors.blue, size: 28);
-
       case "split ac":
       case "window ac":
       case "central ac":
         return const Icon(Icons.ac_unit, color: Colors.lightBlue, size: 28);
-
       case "refrigerator":
         return const Icon(Icons.kitchen, color: Colors.teal, size: 28);
-
       case "oven":
         return const Icon(Icons.microwave, color: Colors.deepOrange, size: 28);
-
-      case "cleaning":
-        return const Icon(Icons.cleaning_services, color: Colors.green, size: 28);
-
-      case "plumbing":
-        return const Icon(Icons.plumbing, color: Colors.indigo, size: 28);
-
-      case "electrical":
-        return const Icon(Icons.electrical_services, color: Colors.orange, size: 28);
-
-      case "painting":
-        return const Icon(Icons.format_paint, color: Colors.purple, size: 28);
-
-      case "moving":
-        return const Icon(Icons.local_shipping, color: Colors.brown, size: 28);
-
       default:
         return const Icon(Icons.build, color: Colors.grey, size: 28);
     }
@@ -155,7 +137,6 @@ class _ServiceCheckoutScreenState extends State<ServiceCheckoutScreen> {
     List<Booking> bookings = [];
 
     if (widget.isFromCart) {
-      // Create booking for each cart item
       for (var cartItem in globalCart) {
         final booking = DummyDataService.createBooking(
           userId: widget.user.id,
@@ -259,23 +240,10 @@ class _ServiceCheckoutScreenState extends State<ServiceCheckoutScreen> {
                           width: 50,
                           height: 50,
                           decoration: BoxDecoration(
-                            gradient: LinearGradient(
-                              colors: [
-                                Theme.of(context).colorScheme.primary.withOpacity(0.2),
-                                Theme.of(context).colorScheme.secondary.withOpacity(0.2),
-                              ],
-                            ),
+                            color: Colors.grey.shade100,
                             borderRadius: BorderRadius.circular(10),
                           ),
-                          /*child: Icon(
-                            Icons.star,
-                            color: Theme.of(context).colorScheme.primary,
-                          ),*/
-                          child: widget.isFromCart
-                              ? _getIconForServiceItem(item.service.name)
-                              : _getIconForServiceItem(widget.service.name),
-
-
+                          child: _getIconForServiceItem(item.service.subcategory),
                         ),
                         const SizedBox(width: 12),
                         Expanded(
@@ -318,18 +286,10 @@ class _ServiceCheckoutScreenState extends State<ServiceCheckoutScreen> {
                             width: 50,
                             height: 50,
                             decoration: BoxDecoration(
-                              gradient: LinearGradient(
-                                colors: [
-                                  Theme.of(context).colorScheme.primary.withOpacity(0.2),
-                                  Theme.of(context).colorScheme.secondary.withOpacity(0.2),
-                                ],
-                              ),
+                              color: Colors.grey.shade100,
                               borderRadius: BorderRadius.circular(10),
                             ),
-                            child: Icon(
-                              Icons.star,
-                              color: Theme.of(context).colorScheme.primary,
-                            ),
+                            child: _getIconForServiceItem(widget.service.subcategory),
                           ),
                           const SizedBox(width: 12),
                           Expanded(
@@ -354,7 +314,7 @@ class _ServiceCheckoutScreenState extends State<ServiceCheckoutScreen> {
                             ),
                           ),
                           Text(
-                            'SAR. ${totalPrice.toStringAsFixed(0)}',
+                            'SAR ${totalPrice.toStringAsFixed(0)}',
                             style: TextStyle(
                               fontWeight: FontWeight.bold,
                               color: Theme.of(context).colorScheme.primary,
@@ -539,21 +499,6 @@ class _ServiceCheckoutScreenState extends State<ServiceCheckoutScreen> {
                         setState(() => _selectedPaymentMethod = value!);
                       },
                     ),
-                    const Divider(height: 1),
-                    /*RadioListTile<String>(
-                      title: Row(
-                        children: [
-                          Icon(Icons.account_balance_wallet, color: Colors.purple.shade700),
-                          const SizedBox(width: 12),
-                          const Text('Digital Wallet'),
-                        ],
-                      ),
-                      value: 'wallet',
-                      groupValue: _selectedPaymentMethod,
-                      onChanged: (value) {
-                        setState(() => _selectedPaymentMethod = value!);
-                      },
-                    ),*/
                   ],
                 ),
               ),
@@ -642,16 +587,37 @@ class _ServiceCheckoutScreenState extends State<ServiceCheckoutScreen> {
                         ],
                       ),
                       const SizedBox(height: 16),
+
+                      // Services List - Show all service names
                       Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           const Text('Services:'),
-                          Text(
-                            widget.isFromCart ? '${globalCart.length} items' : widget.service.name,
-                            style: const TextStyle(fontWeight: FontWeight.w500),
+                          const SizedBox(width: 8),
+                          Expanded(
+                            child: widget.isFromCart
+                                ? Column(
+                              crossAxisAlignment: CrossAxisAlignment.end,
+                              children: globalCart.map((item) {
+                                return Padding(
+                                  padding: const EdgeInsets.only(bottom: 4),
+                                  child: Text(
+                                    '${item.service.name} (x${item.quantity})',
+                                    style: const TextStyle(fontWeight: FontWeight.w500),
+                                    textAlign: TextAlign.end,
+                                  ),
+                                );
+                              }).toList(),
+                            )
+                                : Text(
+                              '${widget.service.name} (x${widget.quantity})',
+                              style: const TextStyle(fontWeight: FontWeight.w500),
+                              textAlign: TextAlign.end,
+                            ),
                           ),
                         ],
                       ),
+
                       const SizedBox(height: 8),
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -686,9 +652,7 @@ class _ServiceCheckoutScreenState extends State<ServiceCheckoutScreen> {
                           Text(
                             _selectedPaymentMethod == 'cash'
                                 ? 'Cash on Service'
-                                : _selectedPaymentMethod == 'card'
-                                ? 'Credit/Debit Card'
-                                : 'Digital Wallet',
+                                : 'Credit/Debit Card',
                             style: const TextStyle(fontWeight: FontWeight.w500),
                           ),
                         ],

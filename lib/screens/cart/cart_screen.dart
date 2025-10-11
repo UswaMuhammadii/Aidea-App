@@ -17,6 +17,24 @@ class _CartScreenState extends State<CartScreen> {
     return globalCart.fold(0.0, (sum, item) => sum + item.totalPrice);
   }
 
+  Icon _getServiceIcon(String? subcategory) {
+    switch (subcategory?.toLowerCase() ?? "") {
+      case "automatic washing machines":
+      case "regular washing machines":
+        return const Icon(Icons.local_laundry_service, color: Colors.blue, size: 28);
+      case "split ac":
+      case "window ac":
+      case "central ac":
+        return const Icon(Icons.ac_unit, color: Colors.lightBlue, size: 28);
+      case "refrigerator":
+        return const Icon(Icons.kitchen, color: Colors.teal, size: 28);
+      case "oven":
+        return const Icon(Icons.microwave, color: Colors.deepOrange, size: 28);
+      default:
+        return const Icon(Icons.build, color: Color(0xFF6B5B9A), size: 28);
+    }
+  }
+
   void updateQuantity(String itemId, int newQuantity) {
     if (newQuantity <= 0) {
       globalCart.removeWhere((item) => item.id == itemId);
@@ -188,19 +206,10 @@ class _CartScreenState extends State<CartScreen> {
                           width: 60,
                           height: 60,
                           decoration: BoxDecoration(
-                            gradient: LinearGradient(
-                              colors: [
-                                const Color(0xFF6B5B9A).withOpacity(0.15),
-                                const Color(0xFF6B5B9A).withOpacity(0.15),
-                              ],
-                            ),
+                            color: Colors.grey.shade100,  // 👈 Simple light grey background
                             borderRadius: BorderRadius.circular(12),
                           ),
-                          child: const Icon(
-                            Icons.star,
-                            color: Color(0xFF6B5B9A),
-                            size: 28,
-                          ),
+                          child: _getServiceIcon(item.service.subcategory),
                         ),
                         const SizedBox(width: 12),
                         Expanded(

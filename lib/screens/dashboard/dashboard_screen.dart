@@ -8,6 +8,7 @@ import '../../services/dummy_data_service.dart';
 import '../services/service_listing_screen.dart';
 import '../profile/profile_screen.dart';
 import '../cart/cart_screen.dart';
+import '../../widget/service_image_widget.dart';
 
 class DashboardScreen extends StatefulWidget {
   final User user;
@@ -487,16 +488,6 @@ class _DashboardScreenState extends State<DashboardScreen> {
                           setState(() => _selectedIndex = 2);
                         },
                       ),
-                      _buildDrawerItem(
-                        icon: Icons.settings,
-                        title: 'Settings',
-                        onTap: () {
-                          Navigator.pop(context);
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            const SnackBar(content: Text('Settings coming soon!')),
-                          );
-                        },
-                      ),
                       const Spacer(),
                       _buildDrawerItem(
                         icon: Icons.logout,
@@ -621,7 +612,27 @@ class _DashboardScreenState extends State<DashboardScreen> {
     );
   }
 
+  // dashboard_screen.dart mein _buildCategoryCard method ko replace karen
+
+  // dashboard_screen.dart mein _buildCategoryCard method
+
   Widget _buildCategoryCard(ServiceCategory category) {
+    // Service listing screen jaisa hi icon function use karen
+    Icon getCategoryIcon(String categoryName) {
+      switch (categoryName) {
+        case 'AC Services':
+          return const Icon(Icons.ac_unit, color: Colors.lightBlue, size: 28);
+        case 'Washing Machine Service':
+          return const Icon(Icons.local_laundry_service, color: Colors.blue, size: 28);
+        case 'Refrigerator Service':
+          return const Icon(Icons.kitchen, color: Colors.teal, size: 28);
+        case 'Other Services':
+          return const Icon(Icons.microwave, color: Colors.deepOrange, size: 28);
+        default:
+          return const Icon(Icons.build, color: Colors.grey, size: 28);
+      }
+    }
+
     return Container(
       margin: const EdgeInsets.only(bottom: 16),
       child: InkWell(
@@ -659,15 +670,10 @@ class _DashboardScreenState extends State<DashboardScreen> {
                     Container(
                       padding: const EdgeInsets.all(12),
                       decoration: BoxDecoration(
-                        gradient: LinearGradient(
-                          colors: [
-                            const Color(0xFF6B5B9A).withOpacity(0.2),
-                            const Color(0xFF7C3AED).withOpacity(0.2),
-                          ],
-                        ),
+                        color: Colors.grey.shade100,  // ⬅️ Light background
                         borderRadius: BorderRadius.circular(12),
                       ),
-                      child: const Icon(Icons.build, color: Color(0xFF6B5B9A), size: 24),
+                      child: getCategoryIcon(category.name),
                     ),
                     const SizedBox(width: 16),
                     Expanded(
@@ -708,35 +714,18 @@ class _DashboardScreenState extends State<DashboardScreen> {
                   ],
                 ),
               ),
+
+              // Category Image (sirf yahan)
               ClipRRect(
                 borderRadius: const BorderRadius.only(
                   bottomLeft: Radius.circular(20),
                   bottomRight: Radius.circular(20),
                 ),
-                child: Container(
+                child: ServiceImageWidget(
+                  imageUrl: DummyDataService.getCategoryImage(category.name),
                   height: 160,
-                  decoration: BoxDecoration(
-                    gradient: LinearGradient(
-                      begin: Alignment.topCenter,
-                      end: Alignment.bottomCenter,
-                      colors: [
-                        Colors.grey.shade100,
-                        Colors.grey.shade200,
-                      ],
-                    ),
-                  ),
-                  child: Center(
-                    child: Image.network(
-                      category.services.isNotEmpty
-                          ? category.services.first.imageUrl
-                          : 'https://via.placeholder.com/300',
-                      fit: BoxFit.cover,
-                      width: double.infinity,
-                      errorBuilder: (context, error, stackTrace) {
-                        return Icon(Icons.image, size: 60, color: Colors.grey.shade400);
-                      },
-                    ),
-                  ),
+                  width: double.infinity,
+                  fit: BoxFit.cover,
                 ),
               ),
             ],
@@ -745,7 +734,6 @@ class _DashboardScreenState extends State<DashboardScreen> {
       ),
     );
   }
-
   // dashboard_screen.dart ke _buildBookingsTab() method ko replace karen
 
   Widget _buildBookingsTab() {

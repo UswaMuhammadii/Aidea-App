@@ -292,34 +292,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
                             );
                           },
                         ),
-                        const Divider(height: 1, indent: 72),
-                        _buildSettingsTile(
-                          icon: Icons.info_outline,
-                          title: 'About',
-                          subtitle: 'App version and information',
-                          iconColor: Colors.purple,
-                          onTap: () {
-                            showAboutDialog(
-                              context: context,
-                              applicationName: 'Aidea Technology',
-                              applicationVersion: '1.0.0',
-                              applicationIcon: Container(
-                                padding: const EdgeInsets.all(12),
-                                decoration: BoxDecoration(
-                                  gradient: const LinearGradient(
-                                    colors: [Color(0xFF6B5B9A), Color(0xFF7C3AED)],
-                                  ),
-                                  borderRadius: BorderRadius.circular(12),
-                                ),
-                                child: const Icon(
-                                  Icons.business,
-                                  color: Colors.white,
-                                  size: 32,
-                                ),
-                              ),
-                            );
-                          },
-                        ),
                       ],
                     ),
                   ),

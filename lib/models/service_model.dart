@@ -5,10 +5,6 @@ class Service {
   final double price;
   final String category;
   final String? subcategory; // Added subcategory field
-  final String imageUrl;
-  final double rating;
-  final int reviewCount;
-  final Duration duration;
   final List<String> features;
 
   Service({
@@ -18,26 +14,8 @@ class Service {
     required this.price,
     required this.category,
     this.subcategory, // Optional subcategory
-    required this.imageUrl,
-    required this.rating,
-    required this.reviewCount,
-    required this.duration,
     required this.features,
   });
-
-  String get formattedDuration {
-    if (duration.inDays > 0) {
-      return '${duration.inDays} ${duration.inDays == 1 ? 'day' : 'days'}';
-    } else if (duration.inHours > 0) {
-      final minutes = duration.inMinutes % 60;
-      if (minutes > 0) {
-        return '${duration.inHours}h ${minutes}m';
-      }
-      return '${duration.inHours} ${duration.inHours == 1 ? 'hour' : 'hours'}';
-    } else {
-      return '${duration.inMinutes} minutes';
-    }
-  }
 
   Map<String, dynamic> toJson() {
     return {
@@ -47,10 +25,6 @@ class Service {
       'price': price,
       'category': category,
       'subcategory': subcategory,
-      'imageUrl': imageUrl,
-      'rating': rating,
-      'reviewCount': reviewCount,
-      'duration': duration.inMinutes,
       'features': features,
     };
   }
@@ -63,10 +37,6 @@ class Service {
       price: (json['price'] as num).toDouble(),
       category: json['category'] as String,
       subcategory: json['subcategory'] as String?,
-      imageUrl: json['imageUrl'] as String,
-      rating: (json['rating'] as num).toDouble(),
-      reviewCount: json['reviewCount'] as int,
-      duration: Duration(minutes: json['duration'] as int),
       features: (json['features'] as List<dynamic>).cast<String>(),
     );
   }

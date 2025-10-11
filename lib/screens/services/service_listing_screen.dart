@@ -265,6 +265,9 @@ class _ServiceListingScreenState extends State<ServiceListingScreen> with Ticker
     );
   }
 
+  // service_listing_screen.dart mein _buildSubcategoryView method ke andar
+// ListView.builder ke item ko yeh se replace karen:
+
   Widget _buildSubcategoryView() {
     return FadeTransition(
       opacity: _fadeAnimation,
@@ -305,21 +308,13 @@ class _ServiceListingScreenState extends State<ServiceListingScreen> with Ticker
                     child: Row(
                       children: [
                         Container(
-                            width: 60,
-                            height: 60,
-                            decoration: BoxDecoration(
-                              gradient: LinearGradient(
-                                begin: Alignment.topLeft,
-                                end: Alignment.bottomRight,
-                                colors: [
-                                  Theme.of(context).colorScheme.primary.withOpacity(0.2),
-                                  Theme.of(context).colorScheme.secondary.withOpacity(0.2),
-                                ],
-                              ),
-                              borderRadius: BorderRadius.circular(12),
-                            ),
-                            child: _getIconForSubcategory(subcategory)
-
+                          width: 60,
+                          height: 60,
+                          decoration: BoxDecoration(
+                            color: Colors.grey.shade100,  // ⬅️ Light background
+                            borderRadius: BorderRadius.circular(12),
+                          ),
+                          child: _getIconForSubcategory(subcategory),
                         ),
                         const SizedBox(width: 16),
                         Expanded(

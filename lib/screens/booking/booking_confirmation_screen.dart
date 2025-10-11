@@ -16,6 +16,24 @@ class BookingConfirmationScreen extends StatelessWidget {
     required this.totalAmount,
   });
 
+  Icon _getServiceIcon(String? subcategory) {
+    switch (subcategory?.toLowerCase() ?? "") {
+      case "automatic washing machines":
+      case "regular washing machines":
+        return const Icon(Icons.local_laundry_service, color: Colors.blue, size: 20);
+      case "split ac":
+      case "window ac":
+      case "central ac":
+        return const Icon(Icons.ac_unit, color: Colors.lightBlue, size: 20);
+      case "refrigerator":
+        return const Icon(Icons.kitchen, color: Colors.teal, size: 20);
+      case "oven":
+        return const Icon(Icons.microwave, color: Colors.deepOrange, size: 20);
+      default:
+        return const Icon(Icons.build, color: Colors.grey, size: 20);
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     final firstBooking = bookings.first;
@@ -137,14 +155,14 @@ class BookingConfirmationScreen extends StatelessWidget {
                                 child: Row(
                                   children: [
                                     Container(
-                                      width: 6,
-                                      height: 6,
-                                      decoration: const BoxDecoration(
-                                        color: Color(0xFF2563EB),
-                                        shape: BoxShape.circle,
+                                      padding: const EdgeInsets.all(6),
+                                      decoration: BoxDecoration(
+                                        color: Colors.grey.shade100,
+                                        borderRadius: BorderRadius.circular(8),
                                       ),
+                                      child: _getServiceIcon(booking.service?.subcategory),
                                     ),
-                                    const SizedBox(width: 8),
+                                    const SizedBox(width: 12),
                                     Expanded(
                                       child: Text(
                                         '${booking.service?.name ?? 'Service'} (Qty: ${booking.quantity})',
@@ -166,8 +184,43 @@ class BookingConfirmationScreen extends StatelessWidget {
                           ),
                         ),
                         const SizedBox(height: 12),
-                      ] else
-                        _buildDetailRow('Service', firstBooking.service?.name ?? 'Service'),
+                      ] else ...[
+                        // Single service with icon
+                        Padding(
+                          padding: const EdgeInsets.only(bottom: 12),
+                          child: Row(
+                            children: [
+                              Text(
+                                'Service',
+                                style: TextStyle(
+                                  fontSize: 14,
+                                  color: Colors.grey.shade600,
+                                ),
+                              ),
+                              const Spacer(),
+                              Container(
+                                padding: const EdgeInsets.all(6),
+                                decoration: BoxDecoration(
+                                  color: Colors.grey.shade100,
+                                  borderRadius: BorderRadius.circular(8),
+                                ),
+                                child: _getServiceIcon(firstBooking.service?.subcategory),
+                              ),
+                              const SizedBox(width: 8),
+                              Flexible(
+                                child: Text(
+                                  firstBooking.service?.name ?? 'Service',
+                                  style: const TextStyle(
+                                    fontSize: 14,
+                                    fontWeight: FontWeight.w600,
+                                  ),
+                                  textAlign: TextAlign.right,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ],
 
                       _buildDetailRow('Date', DateFormat('EEEE, MMMM d, y').format(firstBooking.bookingDate)),
                       _buildDetailRow('Time', DateFormat('h:mm a').format(firstBooking.bookingTime)),
@@ -320,7 +373,6 @@ class BookingConfirmationScreen extends StatelessWidget {
                         color: Colors.transparent,
                         child: InkWell(
                           onTap: () {
-                            // Navigate to dashboard with Orders tab
                             Navigator.of(context).pushAndRemoveUntil(
                               MaterialPageRoute(
                                 builder: (context) => DashboardScreen(

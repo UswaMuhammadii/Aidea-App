@@ -73,6 +73,26 @@ class _ServiceDetailScreenState extends State<ServiceDetailScreen> with TickerPr
     super.dispose();
   }
 
+  Icon _getServiceIcon() {
+    final subcategory = widget.service.subcategory?.toLowerCase() ?? "";
+
+    switch (subcategory) {
+      case "automatic washing machines":
+      case "regular washing machines":
+        return const Icon(Icons.local_laundry_service, color: Colors.blue, size: 80);
+      case "split ac":
+      case "window ac":
+      case "central ac":
+        return const Icon(Icons.ac_unit, color: Colors.lightBlue, size: 80);
+      case "refrigerator":
+        return const Icon(Icons.kitchen, color: Colors.teal, size: 80);
+      case "oven":
+        return const Icon(Icons.microwave, color: Colors.deepOrange, size: 80);
+      default:
+        return Icon(Icons.build, color: Theme.of(context).colorScheme.primary, size: 80);
+    }
+  }
+
   void addToCart() async {
     _buttonAnimationController.forward().then((_) {
       _buttonAnimationController.reverse();
@@ -107,7 +127,9 @@ class _ServiceDetailScreenState extends State<ServiceDetailScreen> with TickerPr
             children: [
               const Icon(Icons.check_circle, color: Colors.white),
               const SizedBox(width: 8),
-              Text('Added ${widget.service.name} to cart successfully!'),
+              Expanded(
+                child: Text('Added ${widget.service.name} to cart successfully!'),
+              ),
             ],
           ),
           backgroundColor: Colors.green,
@@ -204,19 +226,20 @@ class _ServiceDetailScreenState extends State<ServiceDetailScreen> with TickerPr
                         child: Column(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
-                            Icon(
-                              Icons.star,
-                              size: 80,
-                              color: Theme.of(context).colorScheme.primary,
-                            ),
+                            _getServiceIcon(),
                             const SizedBox(height: 8),
-                            Text(
-                              widget.service.name,
-                              style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                                fontWeight: FontWeight.bold,
-                                color: Theme.of(context).colorScheme.primary,
+                            Padding(
+                              padding: const EdgeInsets.symmetric(horizontal: 16),
+                              child: Text(
+                                widget.service.name,
+                                style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                                  fontWeight: FontWeight.bold,
+                                  color: Theme.of(context).colorScheme.primary,
+                                ),
+                                textAlign: TextAlign.center,
+                                maxLines: 2,
+                                overflow: TextOverflow.ellipsis,
                               ),
-                              textAlign: TextAlign.center,
                             ),
                           ],
                         ),
