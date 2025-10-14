@@ -1,5 +1,18 @@
+// ===== ADDRESSES SCREEN FIXES =====
+
 import 'package:flutter/material.dart';
 import '../../models/user_model.dart';
+
+const Color backgroundColor = Color(0xFFF8F9FA);
+const Color surfaceColor = Colors.white;
+const Color textColor = Colors.black87;
+const Color subtitleColor = Colors.grey; // shade 600
+
+// Dark Mode
+const Color darkBackgroundColor = Color(0xFF0F172A);
+const Color darkSurfaceColor = Color(0xFF1E293B);
+const Color darkTextColor = Colors.white;
+const Color darkSubtitleColor = Colors.grey;
 
 class AddressesScreen extends StatefulWidget {
   final User user;
@@ -32,10 +45,7 @@ class _AddressesScreenState extends State<AddressesScreen> {
 
   Future<void> _saveAddress() async {
     setState(() => _isSaving = true);
-
-    // Simulate API call
     await Future.delayed(const Duration(seconds: 1));
-
     setState(() {
       _isSaving = false;
       _isEditing = false;
@@ -53,13 +63,19 @@ class _AddressesScreenState extends State<AddressesScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    final backgroundColor = isDark ? const Color(0xFF0F172A) : const Color(0xFFF8F9FA);
+    final cardColor = isDark ? const Color(0xFF1E293B) : Colors.white;
+    final textColor = isDark ? Colors.white : Colors.black87;
+    final subtitleColor = isDark ? Colors.grey.shade400 : Colors.grey.shade600;
+
     return Scaffold(
-      backgroundColor: const Color(0xFFF8F9FA),
+      backgroundColor: backgroundColor,
       appBar: AppBar(
         title: const Text('Saved Addresses'),
         centerTitle: true,
-        backgroundColor: Colors.white,
-        foregroundColor: Colors.black,
+        backgroundColor: cardColor,
+        foregroundColor: textColor,
         elevation: 0,
         actions: [
           if (!_isEditing)
@@ -74,7 +90,6 @@ class _AddressesScreenState extends State<AddressesScreen> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // Current Address Card
             Container(
               padding: const EdgeInsets.all(20),
               decoration: BoxDecoration(
@@ -82,14 +97,14 @@ class _AddressesScreenState extends State<AddressesScreen> {
                   begin: Alignment.topLeft,
                   end: Alignment.bottomRight,
                   colors: [
-                    Colors.white,
-                    Colors.grey.shade50,
+                    cardColor,
+                    isDark ? Colors.grey.shade800 : Colors.grey.shade50,
                   ],
                 ),
                 borderRadius: BorderRadius.circular(20),
                 boxShadow: [
                   BoxShadow(
-                    color: Colors.black.withOpacity(0.05),
+                    color: Colors.black.withOpacity(isDark ? 0.3 : 0.05),
                     blurRadius: 15,
                     offset: const Offset(0, 5),
                   ),
@@ -118,12 +133,13 @@ class _AddressesScreenState extends State<AddressesScreen> {
                         ),
                       ),
                       const SizedBox(width: 12),
-                      const Expanded(
+                      Expanded(
                         child: Text(
                           'Home Address',
                           style: TextStyle(
                             fontSize: 18,
                             fontWeight: FontWeight.bold,
+                            color: textColor,
                           ),
                         ),
                       ),
@@ -154,13 +170,16 @@ class _AddressesScreenState extends State<AddressesScreen> {
                     TextField(
                       controller: _addressController,
                       maxLines: 3,
+                      style: TextStyle(color: textColor),
                       decoration: InputDecoration(
                         hintText: 'Enter your address',
                         filled: true,
-                        fillColor: Colors.white,
+                        fillColor: isDark ? const Color(0xFF0F172A) : Colors.white,
                         border: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(12),
-                          borderSide: BorderSide(color: Colors.grey.shade300),
+                          borderSide: BorderSide(
+                            color: isDark ? Colors.grey.shade700 : Colors.grey.shade300,
+                          ),
                         ),
                         focusedBorder: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(12),
@@ -176,7 +195,7 @@ class _AddressesScreenState extends State<AddressesScreen> {
                       widget.user.address,
                       style: TextStyle(
                         fontSize: 14,
-                        color: Colors.grey.shade700,
+                        color: subtitleColor,
                         height: 1.5,
                       ),
                     ),
@@ -192,7 +211,9 @@ class _AddressesScreenState extends State<AddressesScreen> {
                               setState(() => _isEditing = false);
                             },
                             style: OutlinedButton.styleFrom(
-                              side: BorderSide(color: Colors.grey.shade400),
+                              side: BorderSide(
+                                color: isDark ? Colors.grey.shade600 : Colors.grey.shade400,
+                              ),
                             ),
                             child: const Text('Cancel'),
                           ),
@@ -236,7 +257,6 @@ class _AddressesScreenState extends State<AddressesScreen> {
 
             const SizedBox(height: 24),
 
-            // Add New Address Button
             Container(
               width: double.infinity,
               decoration: BoxDecoration(
@@ -263,15 +283,15 @@ class _AddressesScreenState extends State<AddressesScreen> {
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        Icon(
+                        const Icon(
                           Icons.add_circle_outline,
-                          color: const Color(0xFF6B5B9A),
+                          color: Color(0xFF6B5B9A),
                         ),
                         const SizedBox(width: 12),
-                        const Text(
+                        Text(
                           'Add New Address',
                           style: TextStyle(
-                            color: Color(0xFF6B5B9A),
+                            color: const Color(0xFF6B5B9A),
                             fontSize: 16,
                             fontWeight: FontWeight.bold,
                           ),

@@ -32,31 +32,55 @@ class _CartScreenState extends State<CartScreen> {
     setState(() {});
   }
 
-  void proceedToCheckout() {
+  /*void proceedToCheckout() {
     if (globalCart.isEmpty) return;
 
     Navigator.push(
       context,
       MaterialPageRoute(
         builder: (_) => ServiceCheckoutScreen(
-          service: globalCart.first.service,
           user: widget.user,
-          quantity: 1,
+          categoryName: globalCart.first.service.category,
+        ),
+      ),
+    );
+  }*/
+
+  void proceedToCheckout() {
+    if (globalCart.isEmpty) return;
+
+    // For now, take the first service from the cart (you can handle multiple later)
+    final firstItem = globalCart.first;
+
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (_) => ServiceCheckoutScreen(
+          service: firstItem.service, // ✅ REQUIRED parameter
+          user: widget.user,
+          quantity: firstItem.quantity,
           isFromCart: true,
         ),
       ),
     );
   }
 
+
   @override
   Widget build(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    final backgroundColor = isDark ? const Color(0xFF0F172A) : const Color(0xFFF8F9FA);
+    final cardColor = isDark ? const Color(0xFF1E293B) : Colors.white;
+    final textColor = isDark ? Colors.white : Colors.black87;
+    final subtitleColor = isDark ? Colors.grey.shade400 : Colors.grey.shade600;
+
     if (globalCart.isEmpty) {
       return Scaffold(
-        backgroundColor: const Color(0xFFF8F9FA),
+        backgroundColor: backgroundColor,
         appBar: AppBar(
           title: const Text('Cart'),
-          backgroundColor: Colors.white,
-          foregroundColor: Colors.black,
+          backgroundColor: cardColor,
+          foregroundColor: textColor,
           elevation: 0,
         ),
         body: Center(
@@ -81,12 +105,12 @@ class _CartScreenState extends State<CartScreen> {
                 ),
               ),
               const SizedBox(height: 24),
-              const Text(
+              Text(
                 'Your cart is empty',
                 style: TextStyle(
                   fontSize: 24,
                   fontWeight: FontWeight.bold,
-                  color: Colors.black87,
+                  color: textColor,
                 ),
               ),
               const SizedBox(height: 8),
@@ -94,7 +118,7 @@ class _CartScreenState extends State<CartScreen> {
                 'Add some services to get started',
                 style: TextStyle(
                   fontSize: 16,
-                  color: Colors.grey.shade600,
+                  color: subtitleColor,
                 ),
               ),
             ],
@@ -104,11 +128,11 @@ class _CartScreenState extends State<CartScreen> {
     }
 
     return Scaffold(
-      backgroundColor: const Color(0xFFF8F9FA),
+      backgroundColor: backgroundColor,
       appBar: AppBar(
         title: Text('Cart (${globalCart.length})'),
-        backgroundColor: Colors.white,
-        foregroundColor: Colors.black,
+        backgroundColor: cardColor,
+        foregroundColor: textColor,
         elevation: 0,
         actions: [
           if (globalCart.isNotEmpty)
@@ -120,12 +144,16 @@ class _CartScreenState extends State<CartScreen> {
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(20),
                     ),
-                    title: const Text('Clear Cart'),
-                    content: const Text('Are you sure you want to remove all items?'),
+                    backgroundColor: isDark ? const Color(0xFF1E293B) : Colors.white,
+                    title: Text('Clear Cart', style: TextStyle(color: textColor)),
+                    content: Text(
+                      'Are you sure you want to remove all items?',
+                      style: TextStyle(color: subtitleColor),
+                    ),
                     actions: [
                       TextButton(
                         onPressed: () => Navigator.pop(context),
-                        child: const Text('Cancel'),
+                        child: Text('Cancel', style: TextStyle(color: subtitleColor)),
                       ),
                       Container(
                         decoration: BoxDecoration(
@@ -169,11 +197,11 @@ class _CartScreenState extends State<CartScreen> {
                 return Container(
                   margin: const EdgeInsets.only(bottom: 16),
                   decoration: BoxDecoration(
-                    color: Colors.white,
+                    color: cardColor,
                     borderRadius: BorderRadius.circular(20),
                     boxShadow: [
                       BoxShadow(
-                        color: Colors.black.withOpacity(0.08),
+                        color: Colors.black.withOpacity(isDark ? 0.3 : 0.08),
                         blurRadius: 15,
                         offset: const Offset(0, 5),
                       ),
@@ -209,10 +237,10 @@ class _CartScreenState extends State<CartScreen> {
                             children: [
                               Text(
                                 item.service.name,
-                                style: const TextStyle(
+                                style: TextStyle(
                                   fontSize: 15,
                                   fontWeight: FontWeight.bold,
-                                  color: Colors.black87,
+                                  color: textColor,
                                 ),
                                 maxLines: 2,
                                 overflow: TextOverflow.ellipsis,
@@ -223,7 +251,7 @@ class _CartScreenState extends State<CartScreen> {
                                 item.service.description,
                                 style: TextStyle(
                                   fontSize: 12,
-                                  color: Colors.grey.shade600,
+                                  color: subtitleColor,
                                 ),
                                 maxLines: 2,
                                 overflow: TextOverflow.ellipsis,
@@ -315,10 +343,10 @@ class _CartScreenState extends State<CartScreen> {
           Container(
             padding: const EdgeInsets.all(20),
             decoration: BoxDecoration(
-              color: Colors.white,
+              color: cardColor,
               boxShadow: [
                 BoxShadow(
-                  color: Colors.black.withOpacity(0.1),
+                  color: Colors.black.withOpacity(isDark ? 0.3 : 0.1),
                   blurRadius: 10,
                   offset: const Offset(0, -5),
                 ),
@@ -330,11 +358,12 @@ class _CartScreenState extends State<CartScreen> {
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      const Text(
+                      Text(
                         'Total:',
                         style: TextStyle(
                           fontSize: 18,
                           fontWeight: FontWeight.bold,
+                          color: textColor,
                         ),
                       ),
                       Text(

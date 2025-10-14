@@ -33,38 +33,19 @@ class _ServiceCheckoutScreenState extends State<ServiceCheckoutScreen> {
   bool _isLoading = false;
   String _selectedPaymentMethod = 'cash';
 
-  Icon _getIconForServiceItem(String serviceName) {
-    switch (serviceName.toLowerCase()) {
+  Icon _getIconForServiceItem(String? subcategory) {
+    switch (subcategory?.toLowerCase() ?? "") {
       case "automatic washing machines":
       case "regular washing machines":
         return const Icon(Icons.local_laundry_service, color: Colors.blue, size: 28);
-
       case "split ac":
       case "window ac":
       case "central ac":
         return const Icon(Icons.ac_unit, color: Colors.lightBlue, size: 28);
-
       case "refrigerator":
         return const Icon(Icons.kitchen, color: Colors.teal, size: 28);
-
       case "oven":
         return const Icon(Icons.microwave, color: Colors.deepOrange, size: 28);
-
-      case "cleaning":
-        return const Icon(Icons.cleaning_services, color: Colors.green, size: 28);
-
-      case "plumbing":
-        return const Icon(Icons.plumbing, color: Colors.indigo, size: 28);
-
-      case "electrical":
-        return const Icon(Icons.electrical_services, color: Colors.orange, size: 28);
-
-      case "painting":
-        return const Icon(Icons.format_paint, color: Colors.purple, size: 28);
-
-      case "moving":
-        return const Icon(Icons.local_shipping, color: Colors.brown, size: 28);
-
       default:
         return const Icon(Icons.build, color: Colors.grey, size: 28);
     }
@@ -155,7 +136,6 @@ class _ServiceCheckoutScreenState extends State<ServiceCheckoutScreen> {
     List<Booking> bookings = [];
 
     if (widget.isFromCart) {
-      // Create booking for each cart item
       for (var cartItem in globalCart) {
         final booking = DummyDataService.createBooking(
           userId: widget.user.id,
@@ -204,14 +184,25 @@ class _ServiceCheckoutScreenState extends State<ServiceCheckoutScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    final backgroundColor = isDark ? const Color(0xFF0F172A) : const Color(0xFFF8F9FA);
+    final cardColor = isDark ? const Color(0xFF1E293B) : Colors.white;
+    final textColor = isDark ? Colors.white : Colors.black87;
+    final subtitleColor = isDark ? Colors.grey.shade400 : Colors.grey.shade600;
+    final borderColor = isDark ? Colors.grey.shade700 : Colors.grey.shade300;
+    final shadowOpacity = isDark ? 0.3 : 0.05;
+
     double totalPrice = widget.isFromCart
         ? globalCart.fold(0.0, (sum, item) => sum + item.totalPrice)
         : widget.service.price * widget.quantity;
 
     return Scaffold(
+      backgroundColor: backgroundColor,
       appBar: AppBar(
         title: const Text('Book Service'),
         centerTitle: true,
+        backgroundColor: cardColor,
+        foregroundColor: textColor,
       ),
       body: Container(
         decoration: BoxDecoration(
@@ -219,8 +210,10 @@ class _ServiceCheckoutScreenState extends State<ServiceCheckoutScreen> {
             begin: Alignment.topCenter,
             end: Alignment.bottomCenter,
             colors: [
-              Theme.of(context).colorScheme.primary.withOpacity(0.05),
-              Colors.white,
+              isDark
+                  ? const Color(0xFF1E293B).withOpacity(0.8)
+                  : Theme.of(context).colorScheme.primary.withOpacity(0.05),
+              isDark ? const Color(0xFF0F172A) : const Color(0xFFF8F9FA),
             ],
           ),
         ),
@@ -229,21 +222,22 @@ class _ServiceCheckoutScreenState extends State<ServiceCheckoutScreen> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              // Selected Services
+              // SELECTED SERVICES SECTION
               Text(
                 'Selected Services',
                 style: Theme.of(context).textTheme.titleMedium?.copyWith(
                   fontWeight: FontWeight.bold,
+                  color: textColor,
                 ),
               ),
               const SizedBox(height: 12),
               Container(
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(16),
-                  color: Colors.white,
+                  color: cardColor,
                   boxShadow: [
                     BoxShadow(
-                      color: Colors.black.withOpacity(0.05),
+                      color: Colors.black.withOpacity(shadowOpacity),
                       blurRadius: 10,
                       offset: const Offset(0, 5),
                     ),
@@ -251,64 +245,56 @@ class _ServiceCheckoutScreenState extends State<ServiceCheckoutScreen> {
                 ),
                 child: Column(
                   children: widget.isFromCart
-                      ? globalCart.map((item) => Padding(
-                    padding: const EdgeInsets.all(12),
-                    child: Row(
-                      children: [
-                        Container(
-                          width: 50,
-                          height: 50,
-                          decoration: BoxDecoration(
-                            gradient: LinearGradient(
-                              colors: [
-                                Theme.of(context).colorScheme.primary.withOpacity(0.2),
-                                Theme.of(context).colorScheme.secondary.withOpacity(0.2),
+                      ? globalCart.map((item) {
+                    return Padding(
+                      padding: const EdgeInsets.all(12),
+                      child: Row(
+                        children: [
+                          Container(
+                            width: 50,
+                            height: 50,
+                            decoration: BoxDecoration(
+                              color: isDark
+                                  ? const Color(0xFF334155)
+                                  : Colors.grey.shade100,
+                              borderRadius: BorderRadius.circular(10),
+                            ),
+                            child: _getIconForServiceItem(item.service.subcategory),
+                          ),
+                          const SizedBox(width: 12),
+                          Expanded(
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  item.service.name,
+                                  style: TextStyle(
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: 14,
+                                    color: textColor,
+                                  ),
+                                ),
+                                Text(
+                                  'Qty: ${item.quantity}',
+                                  style: TextStyle(
+                                    fontSize: 12,
+                                    color: subtitleColor,
+                                  ),
+                                ),
                               ],
                             ),
-                            borderRadius: BorderRadius.circular(10),
                           ),
-                          /*child: Icon(
-                            Icons.star,
-                            color: Theme.of(context).colorScheme.primary,
-                          ),*/
-                          child: widget.isFromCart
-                              ? _getIconForServiceItem(item.service.name)
-                              : _getIconForServiceItem(widget.service.name),
-
-
-                        ),
-                        const SizedBox(width: 12),
-                        Expanded(
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(
-                                item.service.name,
-                                style: const TextStyle(
-                                  fontWeight: FontWeight.bold,
-                                  fontSize: 14,
-                                ),
-                              ),
-                              Text(
-                                'Qty: ${item.quantity}',
-                                style: TextStyle(
-                                  fontSize: 12,
-                                  color: Colors.grey.shade600,
-                                ),
-                              ),
-                            ],
+                          Text(
+                            'SAR ${item.totalPrice.toStringAsFixed(0)}',
+                            style: TextStyle(
+                              fontWeight: FontWeight.bold,
+                              color: Theme.of(context).colorScheme.primary,
+                            ),
                           ),
-                        ),
-                        Text(
-                          'SAR ${item.totalPrice.toStringAsFixed(0)}',
-                          style: TextStyle(
-                            fontWeight: FontWeight.bold,
-                            color: Theme.of(context).colorScheme.primary,
-                          ),
-                        ),
-                      ],
-                    ),
-                  )).toList()
+                        ],
+                      ),
+                    );
+                  }).toList()
                       : [
                     Padding(
                       padding: const EdgeInsets.all(12),
@@ -318,18 +304,12 @@ class _ServiceCheckoutScreenState extends State<ServiceCheckoutScreen> {
                             width: 50,
                             height: 50,
                             decoration: BoxDecoration(
-                              gradient: LinearGradient(
-                                colors: [
-                                  Theme.of(context).colorScheme.primary.withOpacity(0.2),
-                                  Theme.of(context).colorScheme.secondary.withOpacity(0.2),
-                                ],
-                              ),
+                              color: isDark
+                                  ? const Color(0xFF334155)
+                                  : Colors.grey.shade100,
                               borderRadius: BorderRadius.circular(10),
                             ),
-                            child: Icon(
-                              Icons.star,
-                              color: Theme.of(context).colorScheme.primary,
-                            ),
+                            child: _getIconForServiceItem(widget.service.subcategory),
                           ),
                           const SizedBox(width: 12),
                           Expanded(
@@ -338,23 +318,24 @@ class _ServiceCheckoutScreenState extends State<ServiceCheckoutScreen> {
                               children: [
                                 Text(
                                   widget.service.name,
-                                  style: const TextStyle(
+                                  style: TextStyle(
                                     fontWeight: FontWeight.bold,
                                     fontSize: 14,
+                                    color: textColor,
                                   ),
                                 ),
                                 Text(
                                   'Qty: ${widget.quantity}',
                                   style: TextStyle(
                                     fontSize: 12,
-                                    color: Colors.grey.shade600,
+                                    color: subtitleColor,
                                   ),
                                 ),
                               ],
                             ),
                           ),
                           Text(
-                            'SAR. ${totalPrice.toStringAsFixed(0)}',
+                            'SAR ${totalPrice.toStringAsFixed(0)}',
                             style: TextStyle(
                               fontWeight: FontWeight.bold,
                               color: Theme.of(context).colorScheme.primary,
@@ -366,13 +347,14 @@ class _ServiceCheckoutScreenState extends State<ServiceCheckoutScreen> {
                   ],
                 ),
               ),
-              const SizedBox(height: 16),
+              const SizedBox(height: 24),
 
-              // Date Selection
+              // DATE SELECTION SECTION
               Text(
                 'Select Date',
                 style: Theme.of(context).textTheme.titleMedium?.copyWith(
                   fontWeight: FontWeight.bold,
+                  color: textColor,
                 ),
               ),
               const SizedBox(height: 12),
@@ -381,13 +363,14 @@ class _ServiceCheckoutScreenState extends State<ServiceCheckoutScreen> {
                   borderRadius: BorderRadius.circular(16),
                   boxShadow: [
                     BoxShadow(
-                      color: Colors.black.withOpacity(0.05),
+                      color: Colors.black.withOpacity(shadowOpacity),
                       blurRadius: 10,
                       offset: const Offset(0, 5),
                     ),
                   ],
                 ),
                 child: Card(
+                  color: cardColor,
                   child: ListTile(
                     leading: Icon(
                       Icons.calendar_today,
@@ -397,19 +380,21 @@ class _ServiceCheckoutScreenState extends State<ServiceCheckoutScreen> {
                       _selectedDate != null
                           ? DateFormat('EEEE, MMMM d, y').format(_selectedDate!)
                           : 'Choose a date',
+                      style: TextStyle(color: textColor),
                     ),
-                    trailing: const Icon(Icons.arrow_forward_ios),
+                    trailing: const Icon(Icons.arrow_forward_ios, size: 16),
                     onTap: _selectDate,
                   ),
                 ),
               ),
               const SizedBox(height: 16),
 
-              // Time Selection
+              // TIME SELECTION SECTION
               Text(
                 'Select Time',
                 style: Theme.of(context).textTheme.titleMedium?.copyWith(
                   fontWeight: FontWeight.bold,
+                  color: textColor,
                 ),
               ),
               const SizedBox(height: 12),
@@ -418,13 +403,14 @@ class _ServiceCheckoutScreenState extends State<ServiceCheckoutScreen> {
                   borderRadius: BorderRadius.circular(16),
                   boxShadow: [
                     BoxShadow(
-                      color: Colors.black.withOpacity(0.05),
+                      color: Colors.black.withOpacity(shadowOpacity),
                       blurRadius: 10,
                       offset: const Offset(0, 5),
                     ),
                   ],
                 ),
                 child: Card(
+                  color: cardColor,
                   child: ListTile(
                     leading: Icon(
                       Icons.access_time,
@@ -434,19 +420,21 @@ class _ServiceCheckoutScreenState extends State<ServiceCheckoutScreen> {
                       _selectedTime != null
                           ? _selectedTime!.format(context)
                           : 'Choose a time',
+                      style: TextStyle(color: textColor),
                     ),
-                    trailing: const Icon(Icons.arrow_forward_ios),
+                    trailing: const Icon(Icons.arrow_forward_ios, size: 16),
                     onTap: _selectTime,
                   ),
                 ),
               ),
-              const SizedBox(height: 16),
+              const SizedBox(height: 24),
 
-              // Address
+              // ADDRESS SECTION
               Text(
                 'Service Address',
                 style: Theme.of(context).textTheme.titleMedium?.copyWith(
                   fontWeight: FontWeight.bold,
+                  color: textColor,
                 ),
               ),
               const SizedBox(height: 12),
@@ -455,7 +443,7 @@ class _ServiceCheckoutScreenState extends State<ServiceCheckoutScreen> {
                   borderRadius: BorderRadius.circular(16),
                   boxShadow: [
                     BoxShadow(
-                      color: Colors.black.withOpacity(0.05),
+                      color: Colors.black.withOpacity(shadowOpacity),
                       blurRadius: 10,
                       offset: const Offset(0, 5),
                     ),
@@ -463,11 +451,15 @@ class _ServiceCheckoutScreenState extends State<ServiceCheckoutScreen> {
                 ),
                 child: TextField(
                   controller: _addressController,
+                  style: TextStyle(color: textColor),
                   maxLines: 2,
                   decoration: InputDecoration(
                     hintText: 'Enter service address',
+                    hintStyle: TextStyle(
+                      color: isDark ? Colors.grey.shade500 : Colors.grey.shade600,
+                    ),
                     filled: true,
-                    fillColor: Colors.white,
+                    fillColor: cardColor,
                     prefixIcon: Icon(
                       Icons.location_on,
                       color: Theme.of(context).colorScheme.primary,
@@ -488,21 +480,22 @@ class _ServiceCheckoutScreenState extends State<ServiceCheckoutScreen> {
               ),
               const SizedBox(height: 16),
 
-              // Payment Method
+              // PAYMENT METHOD SECTION
               Text(
                 'Payment Method',
                 style: Theme.of(context).textTheme.titleMedium?.copyWith(
                   fontWeight: FontWeight.bold,
+                  color: textColor,
                 ),
               ),
               const SizedBox(height: 12),
               Container(
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(16),
-                  color: Colors.white,
+                  color: cardColor,
                   boxShadow: [
                     BoxShadow(
-                      color: Colors.black.withOpacity(0.05),
+                      color: Colors.black.withOpacity(shadowOpacity),
                       blurRadius: 10,
                       offset: const Offset(0, 5),
                     ),
@@ -515,7 +508,10 @@ class _ServiceCheckoutScreenState extends State<ServiceCheckoutScreen> {
                         children: [
                           Icon(Icons.money, color: Colors.green.shade700),
                           const SizedBox(width: 12),
-                          const Text('Cash on Service'),
+                          Text(
+                            'Cash on Service',
+                            style: TextStyle(color: textColor),
+                          ),
                         ],
                       ),
                       value: 'cash',
@@ -524,13 +520,19 @@ class _ServiceCheckoutScreenState extends State<ServiceCheckoutScreen> {
                         setState(() => _selectedPaymentMethod = value!);
                       },
                     ),
-                    const Divider(height: 1),
+                    Divider(
+                      height: 1,
+                      color: borderColor,
+                    ),
                     RadioListTile<String>(
                       title: Row(
                         children: [
                           Icon(Icons.credit_card, color: Colors.blue.shade700),
                           const SizedBox(width: 12),
-                          const Text('Credit/Debit Card'),
+                          Text(
+                            'Credit/Debit Card',
+                            style: TextStyle(color: textColor),
+                          ),
                         ],
                       ),
                       value: 'card',
@@ -539,31 +541,17 @@ class _ServiceCheckoutScreenState extends State<ServiceCheckoutScreen> {
                         setState(() => _selectedPaymentMethod = value!);
                       },
                     ),
-                    const Divider(height: 1),
-                    /*RadioListTile<String>(
-                      title: Row(
-                        children: [
-                          Icon(Icons.account_balance_wallet, color: Colors.purple.shade700),
-                          const SizedBox(width: 12),
-                          const Text('Digital Wallet'),
-                        ],
-                      ),
-                      value: 'wallet',
-                      groupValue: _selectedPaymentMethod,
-                      onChanged: (value) {
-                        setState(() => _selectedPaymentMethod = value!);
-                      },
-                    ),*/
                   ],
                 ),
               ),
               const SizedBox(height: 16),
 
-              // Notes
+              // NOTES SECTION
               Text(
                 'Additional Notes (Optional)',
                 style: Theme.of(context).textTheme.titleMedium?.copyWith(
                   fontWeight: FontWeight.bold,
+                  color: textColor,
                 ),
               ),
               const SizedBox(height: 12),
@@ -572,7 +560,7 @@ class _ServiceCheckoutScreenState extends State<ServiceCheckoutScreen> {
                   borderRadius: BorderRadius.circular(16),
                   boxShadow: [
                     BoxShadow(
-                      color: Colors.black.withOpacity(0.05),
+                      color: Colors.black.withOpacity(shadowOpacity),
                       blurRadius: 10,
                       offset: const Offset(0, 5),
                     ),
@@ -580,11 +568,15 @@ class _ServiceCheckoutScreenState extends State<ServiceCheckoutScreen> {
                 ),
                 child: TextField(
                   controller: _notesController,
+                  style: TextStyle(color: textColor),
                   maxLines: 3,
                   decoration: InputDecoration(
                     hintText: 'Any special requests or notes...',
+                    hintStyle: TextStyle(
+                      color: isDark ? Colors.grey.shade500 : Colors.grey.shade600,
+                    ),
                     filled: true,
-                    fillColor: Colors.white,
+                    fillColor: cardColor,
                     border: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(16),
                       borderSide: BorderSide.none,
@@ -601,7 +593,7 @@ class _ServiceCheckoutScreenState extends State<ServiceCheckoutScreen> {
               ),
               const SizedBox(height: 32),
 
-              // Booking Summary
+              // BOOKING SUMMARY SECTION
               Container(
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(20),
@@ -609,13 +601,13 @@ class _ServiceCheckoutScreenState extends State<ServiceCheckoutScreen> {
                     begin: Alignment.topLeft,
                     end: Alignment.bottomRight,
                     colors: [
-                      Theme.of(context).colorScheme.primary.withOpacity(0.1),
-                      Theme.of(context).colorScheme.secondary.withOpacity(0.05),
+                      Theme.of(context).colorScheme.primary.withOpacity(isDark ? 0.15 : 0.1),
+                      Theme.of(context).colorScheme.secondary.withOpacity(isDark ? 0.08 : 0.05),
                     ],
                   ),
                   boxShadow: [
                     BoxShadow(
-                      color: Colors.black.withOpacity(0.08),
+                      color: Colors.black.withOpacity(shadowOpacity),
                       blurRadius: 15,
                       offset: const Offset(0, 5),
                     ),
@@ -637,18 +629,46 @@ class _ServiceCheckoutScreenState extends State<ServiceCheckoutScreen> {
                             'Booking Summary',
                             style: Theme.of(context).textTheme.titleMedium?.copyWith(
                               fontWeight: FontWeight.bold,
+                              color: textColor,
                             ),
                           ),
                         ],
                       ),
                       const SizedBox(height: 16),
                       Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          const Text('Services:'),
                           Text(
-                            widget.isFromCart ? '${globalCart.length} items' : widget.service.name,
-                            style: const TextStyle(fontWeight: FontWeight.w500),
+                            'Services:',
+                            style: TextStyle(color: subtitleColor),
+                          ),
+                          const SizedBox(width: 8),
+                          Expanded(
+                            child: widget.isFromCart
+                                ? Column(
+                              crossAxisAlignment: CrossAxisAlignment.end,
+                              children: globalCart.map((item) {
+                                return Padding(
+                                  padding: const EdgeInsets.only(bottom: 4),
+                                  child: Text(
+                                    '${item.service.name} (x${item.quantity})',
+                                    style: TextStyle(
+                                      fontWeight: FontWeight.w500,
+                                      color: textColor,
+                                    ),
+                                    textAlign: TextAlign.end,
+                                  ),
+                                );
+                              }).toList(),
+                            )
+                                : Text(
+                              '${widget.service.name} (x${widget.quantity})',
+                              style: TextStyle(
+                                fontWeight: FontWeight.w500,
+                                color: textColor,
+                              ),
+                              textAlign: TextAlign.end,
+                            ),
                           ),
                         ],
                       ),
@@ -656,12 +676,15 @@ class _ServiceCheckoutScreenState extends State<ServiceCheckoutScreen> {
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          const Text('Date:'),
+                          Text('Date:', style: TextStyle(color: subtitleColor)),
                           Text(
                             _selectedDate != null
                                 ? DateFormat('MMM d, y').format(_selectedDate!)
                                 : 'Not selected',
-                            style: const TextStyle(fontWeight: FontWeight.w500),
+                            style: TextStyle(
+                              fontWeight: FontWeight.w500,
+                              color: textColor,
+                            ),
                           ),
                         ],
                       ),
@@ -669,12 +692,15 @@ class _ServiceCheckoutScreenState extends State<ServiceCheckoutScreen> {
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          const Text('Time:'),
+                          Text('Time:', style: TextStyle(color: subtitleColor)),
                           Text(
                             _selectedTime != null
                                 ? _selectedTime!.format(context)
                                 : 'Not selected',
-                            style: const TextStyle(fontWeight: FontWeight.w500),
+                            style: TextStyle(
+                              fontWeight: FontWeight.w500,
+                              color: textColor,
+                            ),
                           ),
                         ],
                       ),
@@ -682,18 +708,19 @@ class _ServiceCheckoutScreenState extends State<ServiceCheckoutScreen> {
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          const Text('Payment:'),
+                          Text('Payment:', style: TextStyle(color: subtitleColor)),
                           Text(
                             _selectedPaymentMethod == 'cash'
                                 ? 'Cash on Service'
-                                : _selectedPaymentMethod == 'card'
-                                ? 'Credit/Debit Card'
-                                : 'Digital Wallet',
-                            style: const TextStyle(fontWeight: FontWeight.w500),
+                                : 'Credit/Debit Card',
+                            style: TextStyle(
+                              fontWeight: FontWeight.w500,
+                              color: textColor,
+                            ),
                           ),
                         ],
                       ),
-                      const Divider(),
+                      Divider(height: 20, color: borderColor),
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
@@ -701,6 +728,7 @@ class _ServiceCheckoutScreenState extends State<ServiceCheckoutScreen> {
                             'Total:',
                             style: Theme.of(context).textTheme.titleMedium?.copyWith(
                               fontWeight: FontWeight.bold,
+                              color: textColor,
                             ),
                           ),
                           Text(
@@ -718,7 +746,7 @@ class _ServiceCheckoutScreenState extends State<ServiceCheckoutScreen> {
               ),
               const SizedBox(height: 24),
 
-              // Book Now Button
+              // CONFIRM BOOKING BUTTON
               Container(
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(16),
@@ -767,6 +795,7 @@ class _ServiceCheckoutScreenState extends State<ServiceCheckoutScreen> {
                   ),
                 ),
               ),
+              const SizedBox(height: 24),
             ],
           ),
         ),

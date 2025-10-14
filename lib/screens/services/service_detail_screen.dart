@@ -8,11 +8,7 @@ class ServiceDetailScreen extends StatefulWidget {
   final Service service;
   final User user;
 
-  const ServiceDetailScreen({
-    Key? key,
-    required this.service,
-    required this.user,
-  }) : super(key: key);
+  const ServiceDetailScreen({Key? key, required this.service, required this.user}) : super(key: key);
 
   @override
   State<ServiceDetailScreen> createState() => _ServiceDetailScreenState();
@@ -29,39 +25,12 @@ class _ServiceDetailScreenState extends State<ServiceDetailScreen> with TickerPr
   @override
   void initState() {
     super.initState();
-    _animationController = AnimationController(
-      duration: const Duration(milliseconds: 1000),
-      vsync: this,
-    );
+    _animationController = AnimationController(duration: const Duration(milliseconds: 1000), vsync: this);
+    _buttonAnimationController = AnimationController(duration: const Duration(milliseconds: 200), vsync: this);
 
-    _buttonAnimationController = AnimationController(
-      duration: const Duration(milliseconds: 200),
-      vsync: this,
-    );
-
-    _fadeAnimation = Tween<double>(
-      begin: 0.0,
-      end: 1.0,
-    ).animate(CurvedAnimation(
-      parent: _animationController,
-      curve: Curves.easeInOut,
-    ));
-
-    _slideAnimation = Tween<Offset>(
-      begin: const Offset(0, 0.3),
-      end: Offset.zero,
-    ).animate(CurvedAnimation(
-      parent: _animationController,
-      curve: Curves.easeOutCubic,
-    ));
-
-    _scaleAnimation = Tween<double>(
-      begin: 0.8,
-      end: 1.0,
-    ).animate(CurvedAnimation(
-      parent: _animationController,
-      curve: Curves.elasticOut,
-    ));
+    _fadeAnimation = Tween<double>(begin: 0.0, end: 1.0).animate(CurvedAnimation(parent: _animationController, curve: Curves.easeInOut));
+    _slideAnimation = Tween<Offset>(begin: const Offset(0, 0.3), end: Offset.zero).animate(CurvedAnimation(parent: _animationController, curve: Curves.easeOutCubic));
+    _scaleAnimation = Tween<double>(begin: 0.8, end: 1.0).animate(CurvedAnimation(parent: _animationController, curve: Curves.elasticOut));
 
     _animationController.forward();
   }
@@ -74,20 +43,15 @@ class _ServiceDetailScreenState extends State<ServiceDetailScreen> with TickerPr
   }
 
   void addToCart() async {
-    _buttonAnimationController.forward().then((_) {
-      _buttonAnimationController.reverse();
-    });
+    _buttonAnimationController.forward().then((_) => _buttonAnimationController.reverse());
 
     setState(() => isAddingToCart = true);
 
-    // Check if item already exists in cart
     final existingIndex = globalCart.indexWhere((item) => item.service.id == widget.service.id);
 
     if (existingIndex != -1) {
-      // Update quantity if item exists
       globalCart[existingIndex].quantity += 1;
     } else {
-      // Add new item to cart
       globalCart.add(CartItem(
         id: DateTime.now().millisecondsSinceEpoch.toString(),
         service: widget.service,
@@ -97,7 +61,6 @@ class _ServiceDetailScreenState extends State<ServiceDetailScreen> with TickerPr
     }
 
     await Future.delayed(const Duration(milliseconds: 800));
-
     setState(() => isAddingToCart = false);
 
     if (mounted) {
@@ -112,18 +75,11 @@ class _ServiceDetailScreenState extends State<ServiceDetailScreen> with TickerPr
           ),
           backgroundColor: Colors.green,
           behavior: SnackBarBehavior.floating,
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(12),
-          ),
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
           action: SnackBarAction(
             label: 'View Cart',
             textColor: Colors.white,
-            onPressed: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(builder: (_) => CartScreen(user: widget.user)),
-              );
-            },
+            onPressed: () => Navigator.push(context, MaterialPageRoute(builder: (_) => CartScreen(user: widget.user))),
           ),
         ),
       );
@@ -132,25 +88,32 @@ class _ServiceDetailScreenState extends State<ServiceDetailScreen> with TickerPr
 
   @override
   Widget build(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    final backgroundColor = isDark ? const Color(0xFF0F172A) : const Color(0xFFF8F9FA);
+    final cardColor = isDark ? const Color(0xFF1E293B) : Colors.white;
+    final textColor = isDark ? Colors.white : Colors.black87;
+    final subtitleColor = isDark ? Colors.grey.shade400 : Colors.grey.shade600;
+    final shadowOpacity = isDark ? 0.3 : 0.08;
+
     return Scaffold(
+      backgroundColor: backgroundColor,
       body: Column(
         children: [
-          // Enhanced Header with image
+          // Header with image
           Container(
             height: 350,
             decoration: BoxDecoration(
               gradient: LinearGradient(
                 begin: Alignment.topLeft,
                 end: Alignment.bottomRight,
-                colors: [
-                  Theme.of(context).colorScheme.primary.withOpacity(0.1),
-                  Theme.of(context).colorScheme.secondary.withOpacity(0.05),
-                ],
+                colors: isDark
+                    ? [const Color(0xFF1E293B).withOpacity(0.5), const Color(0xFF0F172A)]
+                    : [Theme.of(context).colorScheme.primary.withOpacity(0.1), Theme.of(context).colorScheme.secondary.withOpacity(0.05)],
               ),
             ),
             child: Stack(
               children: [
-                // Enhanced Back button
+                // Back button
                 Positioned(
                   top: 50,
                   left: 16,
@@ -158,23 +121,17 @@ class _ServiceDetailScreenState extends State<ServiceDetailScreen> with TickerPr
                     width: 44,
                     height: 44,
                     decoration: BoxDecoration(
-                      color: Colors.white,
+                      color: cardColor,
                       borderRadius: BorderRadius.circular(22),
-                      boxShadow: [
-                        BoxShadow(
-                          color: Colors.black.withOpacity(0.1),
-                          blurRadius: 15,
-                          offset: const Offset(0, 5),
-                        ),
-                      ],
+                      boxShadow: [BoxShadow(color: Colors.black.withOpacity(0.1), blurRadius: 15, offset: const Offset(0, 5))],
                     ),
                     child: IconButton(
-                      icon: const Icon(Icons.arrow_back, color: Colors.black, size: 20),
+                      icon: Icon(Icons.arrow_back, color: textColor, size: 20),
                       onPressed: () => Navigator.pop(context),
                     ),
                   ),
                 ),
-                // Enhanced Service image with animation
+                // Service image with animation
                 Center(
                   child: ScaleTransition(
                     scale: _scaleAnimation,
@@ -187,35 +144,19 @@ class _ServiceDetailScreenState extends State<ServiceDetailScreen> with TickerPr
                           gradient: LinearGradient(
                             begin: Alignment.topLeft,
                             end: Alignment.bottomRight,
-                            colors: [
-                              Colors.white,
-                              Colors.grey.shade50,
-                            ],
+                            colors: isDark ? [const Color(0xFF334155), const Color(0xFF1E293B)] : [Colors.white, Colors.grey.shade50],
                           ),
                           borderRadius: BorderRadius.circular(24),
-                          boxShadow: [
-                            BoxShadow(
-                              color: Colors.black.withOpacity(0.15),
-                              blurRadius: 30,
-                              offset: const Offset(0, 10),
-                            ),
-                          ],
+                          boxShadow: [BoxShadow(color: Colors.black.withOpacity(isDark ? 0.4 : 0.15), blurRadius: 30, offset: const Offset(0, 10))],
                         ),
                         child: Column(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
-                            Icon(
-                              Icons.star,
-                              size: 80,
-                              color: Theme.of(context).colorScheme.primary,
-                            ),
+                            Icon(Icons.star, size: 80, color: Theme.of(context).colorScheme.primary),
                             const SizedBox(height: 8),
                             Text(
                               widget.service.name,
-                              style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                                fontWeight: FontWeight.bold,
-                                color: Theme.of(context).colorScheme.primary,
-                              ),
+                              style: Theme.of(context).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold, color: textColor),
                               textAlign: TextAlign.center,
                             ),
                           ],
@@ -228,7 +169,7 @@ class _ServiceDetailScreenState extends State<ServiceDetailScreen> with TickerPr
             ),
           ),
 
-          // Enhanced Content with animations
+          // Content with animations
           Expanded(
             child: FadeTransition(
               opacity: _fadeAnimation,
@@ -239,64 +180,48 @@ class _ServiceDetailScreenState extends State<ServiceDetailScreen> with TickerPr
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      // Enhanced Service title and price
+                      // Service title and price
                       Container(
                         padding: const EdgeInsets.all(20),
                         decoration: BoxDecoration(
-                          gradient: LinearGradient(
-                            begin: Alignment.topLeft,
-                            end: Alignment.bottomRight,
-                            colors: [
-                              Colors.white,
-                              Colors.grey.shade50,
-                            ],
-                          ),
+                          color: cardColor,
                           borderRadius: BorderRadius.circular(20),
-                          boxShadow: [
-                            BoxShadow(
-                              color: Colors.black.withOpacity(0.05),
-                              blurRadius: 15,
-                              offset: const Offset(0, 5),
-                            ),
-                          ],
+                          boxShadow: [BoxShadow(color: Colors.black.withOpacity(shadowOpacity), blurRadius: 15, offset: const Offset(0, 5))],
                         ),
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Text(
-                              widget.service.name,
-                              style: Theme.of(context).textTheme.headlineSmall?.copyWith(
-                                fontWeight: FontWeight.bold,
-                              ),
+                                widget.service.name,
+                                style: Theme.of(context).textTheme.headlineSmall?.copyWith(
+                                    fontWeight: FontWeight.bold,
+                                    color: textColor
+                                )
                             ),
                             const SizedBox(height: 8),
                             Text(
-                              widget.service.description,
-                              style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-                                color: Theme.of(context).colorScheme.onSurfaceVariant,
-                              ),
+                                widget.service.description,
+                                style: Theme.of(context).textTheme.bodyLarge?.copyWith(
+                                    color: subtitleColor
+                                )
                             ),
                             const SizedBox(height: 16),
-
                             // Price section
                             Container(
                               padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
                               decoration: BoxDecoration(
-                                gradient: LinearGradient(
-                                  colors: [
-                                    Theme.of(context).colorScheme.primary,
-                                    Theme.of(context).colorScheme.primary.withOpacity(0.8),
-                                  ],
+                                gradient: const LinearGradient(
+                                  colors: [Color(0xFF6B5B9A), Color(0xFF7C3AED)],
                                 ),
                                 borderRadius: BorderRadius.circular(12),
                               ),
                               child: Text(
-                                'SAR ${widget.service.price.toStringAsFixed(0)}',
-                                style: const TextStyle(
-                                  fontSize: 20,
-                                  fontWeight: FontWeight.bold,
-                                  color: Colors.white,
-                                ),
+                                  'SAR ${widget.service.price.toStringAsFixed(0)}',
+                                  style: const TextStyle(
+                                      fontSize: 20,
+                                      fontWeight: FontWeight.bold,
+                                      color: Colors.white
+                                  )
                               ),
                             ),
                           ],
@@ -305,103 +230,71 @@ class _ServiceDetailScreenState extends State<ServiceDetailScreen> with TickerPr
 
                       const SizedBox(height: 32),
 
-                      // Enhanced Includes section
+                      // Includes section
                       Container(
                         padding: const EdgeInsets.all(20),
                         decoration: BoxDecoration(
-                          gradient: LinearGradient(
-                            begin: Alignment.topLeft,
-                            end: Alignment.bottomRight,
-                            colors: [
-                              Colors.white,
-                              Colors.grey.shade50,
-                            ],
-                          ),
+                          color: cardColor,
                           borderRadius: BorderRadius.circular(20),
-                          boxShadow: [
-                            BoxShadow(
-                              color: Colors.black.withOpacity(0.05),
-                              blurRadius: 15,
-                              offset: const Offset(0, 5),
-                            ),
-                          ],
+                          boxShadow: [BoxShadow(color: Colors.black.withOpacity(shadowOpacity), blurRadius: 15, offset: const Offset(0, 5))],
                         ),
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Row(
                               children: [
-                                Icon(
-                                  Icons.check_circle,
-                                  color: Colors.green,
-                                  size: 24,
-                                ),
+                                const Icon(Icons.check_circle, color: Colors.green, size: 24),
                                 const SizedBox(width: 8),
                                 Text(
-                                  'What\'s Included',
-                                  style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                                    fontWeight: FontWeight.bold,
-                                  ),
+                                    "What's Included",
+                                    style: Theme.of(context).textTheme.titleLarge?.copyWith(
+                                        fontWeight: FontWeight.bold,
+                                        color: textColor
+                                    )
                                 ),
                               ],
                             ),
                             const SizedBox(height: 16),
-                            ...widget.service.features.map((feature) => _buildIncludeItem('✓', feature, Colors.green)),
+                            ...widget.service.features.map((feature) => _buildIncludeItem('✓', feature, Colors.green, textColor, subtitleColor)),
                           ],
                         ),
                       ),
 
                       const SizedBox(height: 24),
 
-                      // Enhanced Does not include section
+                      // Does not include section
                       Container(
                         padding: const EdgeInsets.all(20),
                         decoration: BoxDecoration(
-                          gradient: LinearGradient(
-                            begin: Alignment.topLeft,
-                            end: Alignment.bottomRight,
-                            colors: [
-                              Colors.white,
-                              Colors.grey.shade50,
-                            ],
-                          ),
+                          color: cardColor,
                           borderRadius: BorderRadius.circular(20),
-                          boxShadow: [
-                            BoxShadow(
-                              color: Colors.black.withOpacity(0.05),
-                              blurRadius: 15,
-                              offset: const Offset(0, 5),
-                            ),
-                          ],
+                          boxShadow: [BoxShadow(color: Colors.black.withOpacity(shadowOpacity), blurRadius: 15, offset: const Offset(0, 5))],
                         ),
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Row(
                               children: [
-                                Icon(
-                                  Icons.cancel,
-                                  color: Colors.red,
-                                  size: 24,
-                                ),
+                                const Icon(Icons.cancel, color: Colors.red, size: 24),
                                 const SizedBox(width: 8),
                                 Text(
-                                  'Not Included',
-                                  style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                                    fontWeight: FontWeight.bold,
-                                  ),
+                                    'Not Included',
+                                    style: Theme.of(context).textTheme.titleLarge?.copyWith(
+                                        fontWeight: FontWeight.bold,
+                                        color: textColor
+                                    )
                                 ),
                               ],
                             ),
                             const SizedBox(height: 16),
-                            _buildIncludeItem('✗', 'Any type of repair', Colors.red),
-                            _buildIncludeItem('✗', 'Any type of material', Colors.red),
-                            _buildIncludeItem('✗', 'Ladder', Colors.red),
+                            _buildIncludeItem('✗', 'Any type of repair', Colors.red, textColor, subtitleColor),
+                            _buildIncludeItem('✗', 'Any type of material', Colors.red, textColor, subtitleColor),
+                            _buildIncludeItem('✗', 'Ladder', Colors.red, textColor, subtitleColor),
                           ],
                         ),
                       ),
 
-                      const SizedBox(height: 100), // Space for bottom button
+                      const SizedBox(height: 100),
                     ],
                   ),
                 ),
@@ -411,25 +304,12 @@ class _ServiceDetailScreenState extends State<ServiceDetailScreen> with TickerPr
         ],
       ),
 
-      // Enhanced Bottom action bar
+      // Bottom action bar
       bottomNavigationBar: Container(
         padding: const EdgeInsets.all(16),
         decoration: BoxDecoration(
-          gradient: LinearGradient(
-            begin: Alignment.topCenter,
-            end: Alignment.bottomCenter,
-            colors: [
-              Colors.white,
-              Colors.grey.shade50,
-            ],
-          ),
-          boxShadow: [
-            BoxShadow(
-              color: Colors.black.withOpacity(0.1),
-              blurRadius: 20,
-              offset: const Offset(0, -10),
-            ),
-          ],
+          color: cardColor,
+          boxShadow: [BoxShadow(color: Colors.black.withOpacity(isDark ? 0.4 : 0.1), blurRadius: 20, offset: const Offset(0, -10))],
         ),
         child: SafeArea(
           child: ScaleTransition(
@@ -438,51 +318,44 @@ class _ServiceDetailScreenState extends State<ServiceDetailScreen> with TickerPr
               width: double.infinity,
               height: 60,
               decoration: BoxDecoration(
-                gradient: LinearGradient(
-                  colors: [
-                    Theme.of(context).colorScheme.primary,
-                    Theme.of(context).colorScheme.primary.withOpacity(0.8),
-                  ],
+                gradient: const LinearGradient(
+                  colors: [Color(0xFF6B5B9A), Color(0xFF7C3AED)],
                 ),
                 borderRadius: BorderRadius.circular(16),
-                boxShadow: [
-                  BoxShadow(
-                    color: Theme.of(context).colorScheme.primary.withOpacity(0.3),
+                boxShadow: [BoxShadow(
+                    color: const Color(0xFF6B5B9A).withOpacity(0.3),
                     blurRadius: 15,
-                    offset: const Offset(0, 8),
-                  ),
-                ],
+                    offset: const Offset(0, 8)
+                )],
               ),
               child: ElevatedButton(
                 onPressed: isAddingToCart ? null : addToCart,
                 style: ElevatedButton.styleFrom(
                   backgroundColor: Colors.transparent,
                   shadowColor: Colors.transparent,
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(16),
-                  ),
+                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
                 ),
                 child: isAddingToCart
                     ? const SizedBox(
-                  width: 24,
-                  height: 24,
-                  child: CircularProgressIndicator(
-                    color: Colors.white,
-                    strokeWidth: 3,
-                  ),
+                    width: 24,
+                    height: 24,
+                    child: CircularProgressIndicator(
+                        color: Colors.white,
+                        strokeWidth: 3
+                    )
                 )
-                    : Row(
+                    : const Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    const Icon(Icons.shopping_cart, size: 22, color: Colors.white),
-                    const SizedBox(width: 16),
-                    const Text(
-                      'Add to Cart',
-                      style: TextStyle(
-                        fontSize: 18,
-                        fontWeight: FontWeight.w600,
-                        color: Colors.white,
-                      ),
+                    Icon(Icons.shopping_cart, size: 22, color: Colors.white),
+                    SizedBox(width: 16),
+                    Text(
+                        'Add to Cart',
+                        style: TextStyle(
+                            fontSize: 18,
+                            fontWeight: FontWeight.w600,
+                            color: Colors.white
+                        )
                     ),
                   ],
                 ),
@@ -494,7 +367,7 @@ class _ServiceDetailScreenState extends State<ServiceDetailScreen> with TickerPr
     );
   }
 
-  Widget _buildIncludeItem(String icon, String text, Color color) {
+  Widget _buildIncludeItem(String icon, String text, Color color, Color textColor, Color subtitleColor) {
     return Padding(
       padding: const EdgeInsets.only(bottom: 12),
       child: Row(
@@ -505,30 +378,27 @@ class _ServiceDetailScreenState extends State<ServiceDetailScreen> with TickerPr
             decoration: BoxDecoration(
               color: color.withOpacity(0.1),
               shape: BoxShape.circle,
-              border: Border.all(
-                color: color.withOpacity(0.3),
-                width: 1,
-              ),
+              border: Border.all(color: color.withOpacity(0.3), width: 1),
             ),
             child: Center(
               child: Text(
-                icon,
-                style: TextStyle(
-                  color: color,
-                  fontWeight: FontWeight.bold,
-                  fontSize: 14,
-                ),
+                  icon,
+                  style: TextStyle(
+                      color: color,
+                      fontWeight: FontWeight.bold,
+                      fontSize: 14
+                  )
               ),
             ),
           ),
           const SizedBox(width: 16),
           Expanded(
             child: Text(
-              text,
-              style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                color: Theme.of(context).colorScheme.onSurfaceVariant,
-                fontWeight: FontWeight.w500,
-              ),
+                text,
+                style: TextStyle(
+                    color: subtitleColor,
+                    fontWeight: FontWeight.w500
+                )
             ),
           ),
         ],

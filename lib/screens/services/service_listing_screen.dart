@@ -7,6 +7,25 @@ import 'service_checkout_screen.dart';
 import 'service_detail_screen.dart';
 import '../cart/cart_screen.dart';
 
+// AppColors
+class AppColors {
+  static const deepPurple = Color(0xFF7C3AED);
+  static const electricBlue = Color(0xFF3B82F6);
+  static const brightTeal = Color(0xFF14B8A6);
+
+  static const primaryGradient = LinearGradient(
+    colors: [deepPurple, electricBlue, brightTeal],
+    begin: Alignment.topLeft,
+    end: Alignment.bottomRight,
+  );
+
+  static const accentGradient = LinearGradient(
+    colors: [electricBlue, brightTeal],
+    begin: Alignment.topLeft,
+    end: Alignment.bottomRight,
+  );
+}
+
 class ServiceListingScreen extends StatefulWidget {
   final String categoryName;
   final User user;
@@ -73,28 +92,19 @@ class _ServiceListingScreenState extends State<ServiceListingScreen> with Ticker
 
   Icon _getIconForSubcategory(String subcategory) {
     switch (subcategory.toLowerCase()) {
-    // Washing Machine
       case "automatic washing machines":
       case "regular washing machines":
-        return const Icon(Icons.local_laundry_service, color: Colors.blue, size: 32);
-
-    // AC Services
+        return const Icon(Icons.local_laundry_service, color: Colors.white, size: 32);
       case "split ac":
       case "window ac":
       case "central ac":
-        return const Icon(Icons.ac_unit, color: Colors.lightBlue, size: 32);
-
-    // Refrigerator
+        return const Icon(Icons.ac_unit, color: Colors.white, size: 32);
       case "refrigerator":
-        return const Icon(Icons.kitchen, color: Colors.teal, size: 32);
-
-    // Oven
+        return const Icon(Icons.kitchen, color: Colors.white, size: 32);
       case "oven":
-        return const Icon(Icons.microwave, color: Colors.deepOrange, size: 32);
-
-    // Default / Fallback
+        return const Icon(Icons.microwave, color: Colors.white, size: 32);
       default:
-        return const Icon(Icons.build, color: Colors.grey, size: 32); // wrench icon
+        return const Icon(Icons.build, color: Colors.white, size: 32);
     }
   }
 
@@ -102,24 +112,19 @@ class _ServiceListingScreenState extends State<ServiceListingScreen> with Ticker
     switch (subcategory?.toLowerCase() ?? "") {
       case "automatic washing machines":
       case "regular washing machines":
-        return const Icon(Icons.local_laundry_service, color: Colors.blue, size: 28);
-
+        return const Icon(Icons.local_laundry_service, color: Colors.white, size: 28);
       case "split ac":
       case "window ac":
       case "central ac":
-        return const Icon(Icons.ac_unit, color: Colors.lightBlue, size: 28);
-
+        return const Icon(Icons.ac_unit, color: Colors.white, size: 28);
       case "refrigerator":
-        return const Icon(Icons.kitchen, color: Colors.teal, size: 28);
-
+        return const Icon(Icons.kitchen, color: Colors.white, size: 28);
       case "oven":
-        return const Icon(Icons.microwave, color: Colors.deepOrange, size: 28);
-
+        return const Icon(Icons.microwave, color: Colors.white, size: 28);
       default:
-        return const Icon(Icons.build, color: Colors.grey, size: 28);
+        return const Icon(Icons.build, color: Colors.white, size: 28);
     }
   }
-
 
   void _selectSubcategory(String subcategory) {
     setState(() {
@@ -169,7 +174,9 @@ class _ServiceListingScreenState extends State<ServiceListingScreen> with Ticker
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
         content: Text('Added ${service.name} to cart!'),
-        backgroundColor: Colors.green,
+        backgroundColor: AppColors.electricBlue,
+        behavior: SnackBarBehavior.floating,
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
         action: SnackBarAction(
           label: 'View Cart',
           textColor: Colors.white,
@@ -186,13 +193,19 @@ class _ServiceListingScreenState extends State<ServiceListingScreen> with Ticker
 
   @override
   Widget build(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+
     return Scaffold(
+      backgroundColor: Theme.of(context).colorScheme.background,
       appBar: AppBar(
-        title: Text(_selectedSubcategory ?? widget.categoryName),
+        title: Text(
+          _selectedSubcategory ?? widget.categoryName,
+          style: TextStyle(color: Theme.of(context).colorScheme.onSurface),
+        ),
         centerTitle: true,
         elevation: 0,
-        backgroundColor: Colors.white,
-        foregroundColor: Colors.black,
+        backgroundColor: Theme.of(context).colorScheme.surface,
+        iconTheme: IconThemeData(color: Theme.of(context).colorScheme.onSurface),
         leading: _selectedSubcategory != null
             ? IconButton(
           icon: const Icon(Icons.arrow_back),
@@ -224,8 +237,8 @@ class _ServiceListingScreenState extends State<ServiceListingScreen> with Ticker
                   top: 8,
                   child: Container(
                     padding: const EdgeInsets.all(2),
-                    decoration: const BoxDecoration(
-                      color: Colors.red,
+                    decoration: BoxDecoration(
+                      gradient: AppColors.accentGradient,
                       shape: BoxShape.circle,
                     ),
                     constraints: const BoxConstraints(
@@ -252,8 +265,13 @@ class _ServiceListingScreenState extends State<ServiceListingScreen> with Ticker
           gradient: LinearGradient(
             begin: Alignment.topCenter,
             end: Alignment.bottomCenter,
-            colors: [
-              Theme.of(context).colorScheme.primary.withOpacity(0.05),
+            colors: isDark
+                ? [
+              const Color(0xFF0F172A),
+              const Color(0xFF1E293B),
+            ]
+                : [
+              AppColors.deepPurple.withOpacity(0.03),
               Colors.white,
             ],
           ),
@@ -266,6 +284,8 @@ class _ServiceListingScreenState extends State<ServiceListingScreen> with Ticker
   }
 
   Widget _buildSubcategoryView() {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+
     return FadeTransition(
       opacity: _fadeAnimation,
       child: SlideTransition(
@@ -278,19 +298,12 @@ class _ServiceListingScreenState extends State<ServiceListingScreen> with Ticker
             return Container(
               margin: const EdgeInsets.only(bottom: 16),
               decoration: BoxDecoration(
-                gradient: LinearGradient(
-                  begin: Alignment.topLeft,
-                  end: Alignment.bottomRight,
-                  colors: [
-                    Colors.white,
-                    Colors.grey.shade50,
-                  ],
-                ),
-                borderRadius: BorderRadius.circular(16),
+                color: Theme.of(context).colorScheme.surface,
+                borderRadius: BorderRadius.circular(20),
                 boxShadow: [
                   BoxShadow(
-                    color: Colors.black.withOpacity(0.05),
-                    blurRadius: 10,
+                    color: Colors.black.withOpacity(isDark ? 0.3 : 0.05),
+                    blurRadius: 15,
                     offset: const Offset(0, 5),
                   ),
                 ],
@@ -298,28 +311,20 @@ class _ServiceListingScreenState extends State<ServiceListingScreen> with Ticker
               child: Material(
                 color: Colors.transparent,
                 child: InkWell(
-                  borderRadius: BorderRadius.circular(16),
+                  borderRadius: BorderRadius.circular(20),
                   onTap: () => _selectSubcategory(subcategory),
                   child: Padding(
                     padding: const EdgeInsets.all(20),
                     child: Row(
                       children: [
                         Container(
-                            width: 60,
-                            height: 60,
-                            decoration: BoxDecoration(
-                              gradient: LinearGradient(
-                                begin: Alignment.topLeft,
-                                end: Alignment.bottomRight,
-                                colors: [
-                                  Theme.of(context).colorScheme.primary.withOpacity(0.2),
-                                  Theme.of(context).colorScheme.secondary.withOpacity(0.2),
-                                ],
-                              ),
-                              borderRadius: BorderRadius.circular(12),
-                            ),
-                            child: _getIconForSubcategory(subcategory)
-
+                          width: 60,
+                          height: 60,
+                          decoration: BoxDecoration(
+                            gradient: AppColors.primaryGradient,
+                            borderRadius: BorderRadius.circular(16),
+                          ),
+                          child: _getIconForSubcategory(subcategory),
                         ),
                         const SizedBox(width: 16),
                         Expanded(
@@ -329,23 +334,31 @@ class _ServiceListingScreenState extends State<ServiceListingScreen> with Ticker
                               Text(
                                 subcategory,
                                 style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                                  fontWeight: FontWeight.bold,
+                                  fontWeight: FontWeight.w700,
+                                  color: Theme.of(context).colorScheme.onSurface,
                                 ),
                               ),
                               const SizedBox(height: 4),
                               Text(
                                 'View all services',
                                 style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                                  color: Colors.grey.shade600,
+                                  color: Theme.of(context).colorScheme.onSurfaceVariant,
                                 ),
                               ),
                             ],
                           ),
                         ),
-                        Icon(
-                          Icons.arrow_forward_ios,
-                          color: Theme.of(context).colorScheme.primary,
-                          size: 20,
+                        Container(
+                          padding: const EdgeInsets.all(8),
+                          decoration: BoxDecoration(
+                            gradient: AppColors.primaryGradient,
+                            borderRadius: BorderRadius.circular(10),
+                          ),
+                          child: const Icon(
+                            Icons.arrow_forward_ios,
+                            color: Colors.white,
+                            size: 16,
+                          ),
                         ),
                       ],
                     ),
@@ -360,6 +373,8 @@ class _ServiceListingScreenState extends State<ServiceListingScreen> with Ticker
   }
 
   Widget _buildServicesView() {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+
     return Column(
       children: [
         // Search Bar
@@ -367,19 +382,12 @@ class _ServiceListingScreenState extends State<ServiceListingScreen> with Ticker
           padding: const EdgeInsets.all(16),
           child: Container(
             decoration: BoxDecoration(
+              color: Theme.of(context).colorScheme.surface,
               borderRadius: BorderRadius.circular(16),
-              gradient: LinearGradient(
-                begin: Alignment.topLeft,
-                end: Alignment.bottomRight,
-                colors: [
-                  Colors.white,
-                  Colors.grey.shade50,
-                ],
-              ),
               boxShadow: [
                 BoxShadow(
-                  color: Colors.black.withOpacity(0.05),
-                  blurRadius: 10,
+                  color: Colors.black.withOpacity(isDark ? 0.3 : 0.05),
+                  blurRadius: 15,
                   offset: const Offset(0, 5),
                 ),
               ],
@@ -387,16 +395,22 @@ class _ServiceListingScreenState extends State<ServiceListingScreen> with Ticker
             child: TextField(
               controller: _searchController,
               onChanged: _filterServices,
+              style: TextStyle(color: Theme.of(context).colorScheme.onSurface),
               decoration: InputDecoration(
                 hintText: 'Search services...',
-                hintStyle: TextStyle(color: Colors.grey.shade400),
-                prefixIcon: Icon(
-                  Icons.search,
-                  color: Theme.of(context).colorScheme.primary,
+                hintStyle: TextStyle(color: Theme.of(context).colorScheme.onSurfaceVariant),
+                prefixIcon: Container(
+                  margin: const EdgeInsets.all(8),
+                  padding: const EdgeInsets.all(8),
+                  decoration: BoxDecoration(
+                    gradient: AppColors.primaryGradient,
+                    borderRadius: BorderRadius.circular(10),
+                  ),
+                  child: const Icon(Icons.search, color: Colors.white, size: 20),
                 ),
                 suffixIcon: _searchController.text.isNotEmpty
                     ? IconButton(
-                  icon: const Icon(Icons.clear),
+                  icon: Icon(Icons.clear, color: Theme.of(context).colorScheme.onSurfaceVariant),
                   onPressed: () {
                     _searchController.clear();
                     _filterServices('');
@@ -423,20 +437,20 @@ class _ServiceListingScreenState extends State<ServiceListingScreen> with Ticker
                 Icon(
                   Icons.search_off,
                   size: 64,
-                  color: Colors.grey.shade400,
+                  color: Theme.of(context).colorScheme.onSurfaceVariant.withOpacity(0.5),
                 ),
                 const SizedBox(height: 16),
                 Text(
                   'No services found',
                   style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                    color: Colors.grey.shade600,
+                    color: Theme.of(context).colorScheme.onSurface,
                   ),
                 ),
                 const SizedBox(height: 8),
                 Text(
                   'Try adjusting your search terms',
                   style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                    color: Colors.grey.shade500,
+                    color: Theme.of(context).colorScheme.onSurfaceVariant,
                   ),
                 ),
               ],
@@ -457,27 +471,20 @@ class _ServiceListingScreenState extends State<ServiceListingScreen> with Ticker
                     duration: const Duration(milliseconds: 300),
                     margin: const EdgeInsets.only(bottom: 16),
                     decoration: BoxDecoration(
-                      gradient: LinearGradient(
-                        begin: Alignment.topLeft,
-                        end: Alignment.bottomRight,
-                        colors: [
-                          Colors.white,
-                          Colors.grey.shade50,
-                        ],
-                      ),
-                      borderRadius: BorderRadius.circular(16),
+                      color: Theme.of(context).colorScheme.surface,
+                      borderRadius: BorderRadius.circular(20),
                       boxShadow: [
                         BoxShadow(
                           color: isSelected
-                              ? Theme.of(context).colorScheme.primary.withOpacity(0.2)
-                              : Colors.black.withOpacity(0.05),
-                          blurRadius: isSelected ? 15 : 10,
+                              ? AppColors.deepPurple.withOpacity(0.3)
+                              : Colors.black.withOpacity(isDark ? 0.3 : 0.05),
+                          blurRadius: isSelected ? 20 : 15,
                           offset: const Offset(0, 5),
                         ),
                       ],
                       border: isSelected
                           ? Border.all(
-                        color: Theme.of(context).colorScheme.primary,
+                        color: AppColors.deepPurple,
                         width: 2,
                       )
                           : null,
@@ -485,7 +492,7 @@ class _ServiceListingScreenState extends State<ServiceListingScreen> with Ticker
                     child: Material(
                       color: Colors.transparent,
                       child: InkWell(
-                        borderRadius: BorderRadius.circular(16),
+                        borderRadius: BorderRadius.circular(20),
                         onTap: () {
                           setState(() {
                             _selectedServiceId = isSelected ? null : service.id;
@@ -493,66 +500,57 @@ class _ServiceListingScreenState extends State<ServiceListingScreen> with Ticker
                           });
                         },
                         child: Padding(
-                          padding: const EdgeInsets.all(12),
+                          padding: const EdgeInsets.all(16),
                           child: Row(
                             children: [
-                              // Service Image
+                              // Service Icon
                               Container(
                                 width: 70,
                                 height: 70,
                                 decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.circular(12),
-                                  gradient: LinearGradient(
-                                    begin: Alignment.topLeft,
-                                    end: Alignment.bottomRight,
-                                    colors: [
-                                      Theme.of(context).colorScheme.primary.withOpacity(0.1),
-                                      Theme.of(context).colorScheme.secondary.withOpacity(0.1),
-                                    ],
-                                  ),
+                                  gradient: AppColors.primaryGradient,
+                                  borderRadius: BorderRadius.circular(16),
                                 ),
                                 child: _getIconForServiceItem(service.subcategory),
-
                               ),
-                              const SizedBox(width: 12),
+                              const SizedBox(width: 16),
 
                               // Service Details
                               Expanded(
                                 child: Column(
                                   crossAxisAlignment: CrossAxisAlignment.start,
-                                  mainAxisAlignment: MainAxisAlignment.center,
                                   children: [
                                     Text(
                                       service.name,
                                       style: Theme.of(context).textTheme.titleSmall?.copyWith(
-                                        fontWeight: FontWeight.bold,
+                                        fontWeight: FontWeight.w700,
+                                        color: Theme.of(context).colorScheme.onSurface,
                                       ),
                                       maxLines: 2,
                                       overflow: TextOverflow.ellipsis,
                                     ),
-                                    const SizedBox(height: 2),
+                                    const SizedBox(height: 4),
                                     Text(
                                       service.description,
                                       style: Theme.of(context).textTheme.bodySmall?.copyWith(
                                         color: Theme.of(context).colorScheme.onSurfaceVariant,
-                                        fontSize: 11,
                                       ),
                                       maxLines: 2,
                                       overflow: TextOverflow.ellipsis,
                                     ),
-                                    const SizedBox(height: 6),
+                                    const SizedBox(height: 8),
                                     Container(
-                                      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                                      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
                                       decoration: BoxDecoration(
-                                        color: Theme.of(context).colorScheme.primary,
-                                        borderRadius: BorderRadius.circular(6),
+                                        gradient: AppColors.accentGradient,
+                                        borderRadius: BorderRadius.circular(8),
                                       ),
                                       child: Text(
                                         'SAR ${service.price.toStringAsFixed(0)}',
                                         style: const TextStyle(
                                           color: Colors.white,
-                                          fontWeight: FontWeight.bold,
-                                          fontSize: 12,
+                                          fontWeight: FontWeight.w700,
+                                          fontSize: 13,
                                         ),
                                       ),
                                     ),
@@ -560,26 +558,21 @@ class _ServiceListingScreenState extends State<ServiceListingScreen> with Ticker
                                 ),
                               ),
 
-                              const SizedBox(width: 8),
+                              const SizedBox(width: 12),
 
                               // Action Buttons
                               if (isSelected)
                                 Container(
                                   decoration: BoxDecoration(
-                                    gradient: LinearGradient(
-                                      colors: [
-                                        Theme.of(context).colorScheme.primary,
-                                        Theme.of(context).colorScheme.primary.withOpacity(0.8),
-                                      ],
-                                    ),
-                                    borderRadius: BorderRadius.circular(10),
+                                    gradient: AppColors.primaryGradient,
+                                    borderRadius: BorderRadius.circular(12),
                                   ),
                                   child: Row(
                                     mainAxisSize: MainAxisSize.min,
                                     children: [
                                       IconButton(
-                                        icon: const Icon(Icons.remove, color: Colors.white, size: 16),
-                                        padding: const EdgeInsets.all(6),
+                                        icon: const Icon(Icons.remove, color: Colors.white, size: 18),
+                                        padding: const EdgeInsets.all(8),
                                         constraints: const BoxConstraints(),
                                         onPressed: () {
                                           if (_selectedQuantity > 1) {
@@ -590,19 +583,19 @@ class _ServiceListingScreenState extends State<ServiceListingScreen> with Ticker
                                         },
                                       ),
                                       Container(
-                                        padding: const EdgeInsets.symmetric(horizontal: 8),
+                                        padding: const EdgeInsets.symmetric(horizontal: 12),
                                         child: Text(
                                           _selectedQuantity.toString(),
                                           style: const TextStyle(
                                             color: Colors.white,
-                                            fontWeight: FontWeight.bold,
-                                            fontSize: 14,
+                                            fontWeight: FontWeight.w700,
+                                            fontSize: 16,
                                           ),
                                         ),
                                       ),
                                       IconButton(
-                                        icon: const Icon(Icons.add, color: Colors.white, size: 16),
-                                        padding: const EdgeInsets.all(6),
+                                        icon: const Icon(Icons.add, color: Colors.white, size: 18),
+                                        padding: const EdgeInsets.all(8),
                                         constraints: const BoxConstraints(),
                                         onPressed: () {
                                           setState(() {
@@ -619,25 +612,25 @@ class _ServiceListingScreenState extends State<ServiceListingScreen> with Ticker
                                   children: [
                                     Container(
                                       decoration: BoxDecoration(
-                                        color: Theme.of(context).colorScheme.primary,
-                                        borderRadius: BorderRadius.circular(8),
+                                        gradient: AppColors.primaryGradient,
+                                        borderRadius: BorderRadius.circular(10),
                                       ),
                                       child: IconButton(
                                         onPressed: () => _addToCart(service),
                                         icon: const Icon(
                                           Icons.add_shopping_cart,
                                           color: Colors.white,
-                                          size: 18,
+                                          size: 20,
                                         ),
-                                        padding: const EdgeInsets.all(6),
+                                        padding: const EdgeInsets.all(8),
                                         constraints: const BoxConstraints(),
                                       ),
                                     ),
-                                    const SizedBox(height: 6),
+                                    const SizedBox(height: 8),
                                     Container(
                                       decoration: BoxDecoration(
-                                        color: Colors.grey.shade600,
-                                        borderRadius: BorderRadius.circular(8),
+                                        color: Theme.of(context).colorScheme.surfaceContainerHighest,
+                                        borderRadius: BorderRadius.circular(10),
                                       ),
                                       child: IconButton(
                                         onPressed: () {
@@ -651,12 +644,12 @@ class _ServiceListingScreenState extends State<ServiceListingScreen> with Ticker
                                             ),
                                           );
                                         },
-                                        icon: const Icon(
+                                        icon: Icon(
                                           Icons.visibility,
-                                          color: Colors.white,
-                                          size: 18,
+                                          color: Theme.of(context).colorScheme.onSurface,
+                                          size: 20,
                                         ),
-                                        padding: const EdgeInsets.all(6),
+                                        padding: const EdgeInsets.all(8),
                                         constraints: const BoxConstraints(),
                                       ),
                                     ),
@@ -681,80 +674,72 @@ class _ServiceListingScreenState extends State<ServiceListingScreen> with Ticker
             padding: const EdgeInsets.all(16),
             child: Container(
               width: double.infinity,
+              height: 56,
               decoration: BoxDecoration(
-                gradient: LinearGradient(
-                  colors: [
-                    Theme.of(context).colorScheme.primary,
-                    Theme.of(context).colorScheme.primary.withOpacity(0.8),
-                  ],
-                ),
+                gradient: AppColors.primaryGradient,
                 borderRadius: BorderRadius.circular(16),
                 boxShadow: [
                   BoxShadow(
-                    color: Theme.of(context).colorScheme.primary.withOpacity(0.3),
-                    blurRadius: 15,
-                    offset: const Offset(0, 8),
+                    color: AppColors.deepPurple.withOpacity(0.4),
+                    blurRadius: 20,
+                    offset: const Offset(0, 10),
                   ),
                 ],
               ),
-              child: ElevatedButton(
-                onPressed: () {
-                  final selectedService = _services.firstWhere(
-                        (s) => s.id == _selectedServiceId,
-                  );
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => ServiceCheckoutScreen(
-                        service: selectedService,
-                        user: widget.user,
-                        quantity: _selectedQuantity,
-                      ),
-                    ),
-                  );
-                },
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.transparent,
-                  shadowColor: Colors.transparent,
-                  padding: const EdgeInsets.symmetric(vertical: 18),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(16),
-                  ),
-                ),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Container(
-                      padding: const EdgeInsets.all(6),
-                      decoration: const BoxDecoration(
-                        color: Colors.white,
-                        shape: BoxShape.circle,
-                      ),
-                      child: Text(
-                        _selectedQuantity.toString(),
-                        style: TextStyle(
-                          color: Theme.of(context).colorScheme.primary,
-                          fontWeight: FontWeight.bold,
-                          fontSize: 14,
+              child: Material(
+                color: Colors.transparent,
+                child: InkWell(
+                  onTap: () {
+                    final selectedService = _services.firstWhere(
+                          (s) => s.id == _selectedServiceId,
+                    );
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => ServiceCheckoutScreen(
+                          service: selectedService,
+                          user: widget.user,
+                          quantity: _selectedQuantity,
                         ),
                       ),
-                    ),
-                    const SizedBox(width: 12),
-                    const Text(
-                      'Continue to Checkout',
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontSize: 16,
-                        fontWeight: FontWeight.w600,
+                    );
+                  },
+                  borderRadius: BorderRadius.circular(16),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Container(
+                        padding: const EdgeInsets.all(6),
+                        decoration: const BoxDecoration(
+                          color: Colors.white,
+                          shape: BoxShape.circle,
+                        ),
+                        child: Text(
+                          _selectedQuantity.toString(),
+                          style: const TextStyle(
+                            color: AppColors.deepPurple,
+                            fontWeight: FontWeight.w700,
+                            fontSize: 14,
+                          ),
+                        ),
                       ),
-                    ),
-                    const SizedBox(width: 8),
-                    const Icon(
-                      Icons.arrow_forward,
-                      color: Colors.white,
-                      size: 20,
-                    ),
-                  ],
+                      const SizedBox(width: 12),
+                      const Text(
+                        'Continue to Checkout',
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontSize: 16,
+                          fontWeight: FontWeight.w700,
+                        ),
+                      ),
+                      const SizedBox(width: 8),
+                      const Icon(
+                        Icons.arrow_forward,
+                        color: Colors.white,
+                        size: 20,
+                      ),
+                    ],
+                  ),
                 ),
               ),
             ),

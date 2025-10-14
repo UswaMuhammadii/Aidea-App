@@ -2,6 +2,18 @@ import 'package:flutter/material.dart';
 import '../../models/user_model.dart';
 import '../../services/dummy_data_service.dart';
 
+class AppColors {
+  static const deepPurple = Color(0xFF7C3AED);
+  static const electricBlue = Color(0xFF3B82F6);
+  static const brightTeal = Color(0xFF14B8A6);
+
+  static const primaryGradient = LinearGradient(
+    colors: [deepPurple, electricBlue, brightTeal],
+    begin: Alignment.topLeft,
+    end: Alignment.bottomRight,
+  );
+}
+
 class RegisterScreen extends StatefulWidget {
   const RegisterScreen({super.key});
 
@@ -68,15 +80,25 @@ class _RegisterScreenState extends State<RegisterScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    final backgroundColor = isDark ? const Color(0xFF0F172A) : Colors.white;
+    final textColor = isDark ? Colors.white : const Color(0xFF1F2937);
+    final subtitleColor = isDark ? Colors.white70 : Colors.grey.shade600;
+
     return Scaffold(
       body: Container(
         decoration: BoxDecoration(
           gradient: LinearGradient(
             begin: Alignment.topLeft,
             end: Alignment.bottomRight,
-            colors: [
-              const Color(0xFF2563EB).withOpacity(0.1),
-              const Color(0xFF7C3AED).withOpacity(0.05),
+            colors: isDark
+                ? [
+              const Color(0xFF0F172A),
+              const Color(0xFF1E293B),
+            ]
+                : [
+              AppColors.deepPurple.withOpacity(0.05),
+              AppColors.electricBlue.withOpacity(0.05),
             ],
           ),
         ),
@@ -90,7 +112,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                   children: [
                     Container(
                       decoration: BoxDecoration(
-                        color: Colors.white,
+                        color: backgroundColor,
                         borderRadius: BorderRadius.circular(12),
                         boxShadow: [
                           BoxShadow(
@@ -101,7 +123,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                         ],
                       ),
                       child: IconButton(
-                        icon: const Icon(Icons.arrow_back, color: Color(0xFF1F2937)),
+                        icon: Icon(Icons.arrow_back, color: textColor),
                         onPressed: () => Navigator.pop(context),
                       ),
                     ),
@@ -117,12 +139,12 @@ class _RegisterScreenState extends State<RegisterScreen> {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        const Text(
+                        Text(
                           'Create Account',
                           style: TextStyle(
                             fontSize: 36,
                             fontWeight: FontWeight.bold,
-                            color: Color(0xFF1F2937),
+                            color: textColor,
                           ),
                         ),
                         const SizedBox(height: 8),
@@ -130,7 +152,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                           'Join us and start booking services today',
                           style: TextStyle(
                             fontSize: 16,
-                            color: Colors.grey.shade600,
+                            color: subtitleColor,
                             fontWeight: FontWeight.w500,
                           ),
                         ),
@@ -138,6 +160,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
 
                         // Name Field
                         _buildTextField(
+                          context: context,
                           controller: _nameController,
                           label: 'Full Name',
                           icon: Icons.person_outlined,
@@ -152,6 +175,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
 
                         // Email Field
                         _buildTextField(
+                          context: context,
                           controller: _emailController,
                           label: 'Email Address',
                           icon: Icons.email_outlined,
@@ -170,6 +194,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
 
                         // Phone Field
                         _buildTextField(
+                          context: context,
                           controller: _phoneController,
                           label: 'Phone Number',
                           icon: Icons.phone_outlined,
@@ -185,6 +210,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
 
                         // Password Field
                         _buildTextField(
+                          context: context,
                           controller: _passwordController,
                           label: 'Password',
                           icon: Icons.lock_outlined,
@@ -192,7 +218,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                           suffixIcon: IconButton(
                             icon: Icon(
                               _obscurePassword ? Icons.visibility_outlined : Icons.visibility_off_outlined,
-                              color: Colors.grey.shade600,
+                              color: subtitleColor,
                             ),
                             onPressed: () => setState(() => _obscurePassword = !_obscurePassword),
                           ),
@@ -210,6 +236,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
 
                         // Confirm Password Field
                         _buildTextField(
+                          context: context,
                           controller: _confirmPasswordController,
                           label: 'Confirm Password',
                           icon: Icons.lock_outlined,
@@ -217,7 +244,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                           suffixIcon: IconButton(
                             icon: Icon(
                               _obscureConfirmPassword ? Icons.visibility_outlined : Icons.visibility_off_outlined,
-                              color: Colors.grey.shade600,
+                              color: subtitleColor,
                             ),
                             onPressed: () => setState(() => _obscureConfirmPassword = !_obscureConfirmPassword),
                           ),
@@ -239,7 +266,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                             Checkbox(
                               value: _agreedToTerms,
                               onChanged: (value) => setState(() => _agreedToTerms = value ?? false),
-                              activeColor: const Color(0xFF2563EB),
+                              activeColor: AppColors.electricBlue,
                               shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(4)),
                             ),
                             Expanded(
@@ -247,7 +274,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                 children: [
                                   Text(
                                     'I agree to the ',
-                                    style: TextStyle(color: Colors.grey.shade700, fontSize: 14),
+                                    style: TextStyle(color: subtitleColor, fontSize: 14),
                                   ),
                                   GestureDetector(
                                     onTap: () {
@@ -258,7 +285,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                     child: const Text(
                                       'Terms & Conditions',
                                       style: TextStyle(
-                                        color: Color(0xFF2563EB),
+                                        color: AppColors.electricBlue,
                                         fontWeight: FontWeight.w600,
                                         fontSize: 14,
                                       ),
@@ -276,13 +303,11 @@ class _RegisterScreenState extends State<RegisterScreen> {
                           width: double.infinity,
                           height: 56,
                           decoration: BoxDecoration(
-                            gradient: const LinearGradient(
-                              colors: [Color(0xFF2563EB), Color(0xFF7C3AED)],
-                            ),
+                            gradient: AppColors.primaryGradient,
                             borderRadius: BorderRadius.circular(16),
                             boxShadow: [
                               BoxShadow(
-                                color: const Color(0xFF2563EB).withOpacity(0.4),
+                                color: AppColors.deepPurple.withOpacity(0.4),
                                 blurRadius: 20,
                                 offset: const Offset(0, 10),
                               ),
@@ -325,7 +350,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                             Text(
                               'Already have an account? ',
                               style: TextStyle(
-                                color: Colors.grey.shade700,
+                                color: subtitleColor,
                                 fontSize: 15,
                               ),
                             ),
@@ -341,7 +366,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                 style: TextStyle(
                                   fontWeight: FontWeight.bold,
                                   fontSize: 15,
-                                  color: Color(0xFF2563EB),
+                                  color: AppColors.electricBlue,
                                 ),
                               ),
                             ),
@@ -361,6 +386,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
   }
 
   Widget _buildTextField({
+    required BuildContext context,
     required TextEditingController controller,
     required String label,
     required IconData icon,
@@ -369,6 +395,10 @@ class _RegisterScreenState extends State<RegisterScreen> {
     Widget? suffixIcon,
     String? Function(String?)? validator,
   }) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    final fillColor = isDark ? const Color(0xFF1E293B) : Colors.white;
+    final borderColor = isDark ? Colors.grey.shade700 : Colors.grey.shade200;
+
     return Container(
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(16),
@@ -384,38 +414,33 @@ class _RegisterScreenState extends State<RegisterScreen> {
         controller: controller,
         keyboardType: keyboardType,
         obscureText: obscureText,
-        style: const TextStyle(fontSize: 16),
+        style: TextStyle(fontSize: 16, color: isDark ? Colors.white : Colors.black),
         decoration: InputDecoration(
           labelText: label,
-          labelStyle: TextStyle(color: Colors.grey.shade600),
+          labelStyle: TextStyle(color: isDark ? Colors.grey.shade400 : Colors.grey.shade600),
           prefixIcon: Container(
             margin: const EdgeInsets.all(12),
             padding: const EdgeInsets.all(8),
             decoration: BoxDecoration(
-              gradient: LinearGradient(
-                colors: [
-                  const Color(0xFF2563EB).withOpacity(0.1),
-                  const Color(0xFF7C3AED).withOpacity(0.1),
-                ],
-              ),
+              gradient: AppColors.primaryGradient,
               borderRadius: BorderRadius.circular(10),
             ),
-            child: Icon(icon, color: const Color(0xFF2563EB), size: 20),
+            child: Icon(icon, color: Colors.white, size: 20),
           ),
           suffixIcon: suffixIcon,
           filled: true,
-          fillColor: Colors.white,
+          fillColor: fillColor,
           border: OutlineInputBorder(
             borderRadius: BorderRadius.circular(16),
             borderSide: BorderSide.none,
           ),
           enabledBorder: OutlineInputBorder(
             borderRadius: BorderRadius.circular(16),
-            borderSide: BorderSide(color: Colors.grey.shade200, width: 1),
+            borderSide: BorderSide(color: borderColor, width: 1),
           ),
           focusedBorder: OutlineInputBorder(
             borderRadius: BorderRadius.circular(16),
-            borderSide: const BorderSide(color: Color(0xFF2563EB), width: 2),
+            borderSide: const BorderSide(color: AppColors.electricBlue, width: 2),
           ),
           errorBorder: OutlineInputBorder(
             borderRadius: BorderRadius.circular(16),
