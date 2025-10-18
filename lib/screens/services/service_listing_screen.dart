@@ -6,6 +6,7 @@ import '../../services/dummy_data_service.dart';
 import 'service_checkout_screen.dart';
 import 'service_detail_screen.dart';
 import '../cart/cart_screen.dart';
+import '../../utils/icons_helper.dart';
 
 // AppColors
 class AppColors {
@@ -43,6 +44,8 @@ class ServiceListingScreen extends StatefulWidget {
 class _ServiceListingScreenState extends State<ServiceListingScreen> with TickerProviderStateMixin {
   late List<String> _subcategories;
   String? _selectedSubcategory;
+  List<String>? _subSubcategories;
+  String? _selectedSubSubcategory;
   late List<Service> _services;
   late List<Service> _filteredServices;
   int _selectedQuantity = 1;
@@ -91,48 +94,51 @@ class _ServiceListingScreenState extends State<ServiceListingScreen> with Ticker
   }
 
   Icon _getIconForSubcategory(String subcategory) {
-    switch (subcategory.toLowerCase()) {
-      case "automatic washing machines":
-      case "regular washing machines":
-        return const Icon(Icons.local_laundry_service, color: Colors.white, size: 32);
-      case "split ac":
-      case "window ac":
-      case "central ac":
-        return const Icon(Icons.ac_unit, color: Colors.white, size: 32);
-      case "refrigerator":
-        return const Icon(Icons.kitchen, color: Colors.white, size: 32);
-      case "oven":
-        return const Icon(Icons.microwave, color: Colors.white, size: 32);
-      default:
-        return const Icon(Icons.build, color: Colors.white, size: 32);
-    }
+    return IconHelper.getServiceIcon(
+      subcategory: subcategory,
+      color: Colors.white,
+      size: 32,
+    );
   }
 
-  Icon _getIconForServiceItem(String? subcategory) {
-    switch (subcategory?.toLowerCase() ?? "") {
-      case "automatic washing machines":
-      case "regular washing machines":
-        return const Icon(Icons.local_laundry_service, color: Colors.white, size: 28);
-      case "split ac":
-      case "window ac":
-      case "central ac":
-        return const Icon(Icons.ac_unit, color: Colors.white, size: 28);
-      case "refrigerator":
-        return const Icon(Icons.kitchen, color: Colors.white, size: 28);
-      case "oven":
-        return const Icon(Icons.microwave, color: Colors.white, size: 28);
-      default:
-        return const Icon(Icons.build, color: Colors.white, size: 28);
-    }
+  Icon _getIconForServiceItem(Service service) {
+    return IconHelper.getServiceIcon(
+      category: service.category,
+      subcategory: service.subcategory,
+      subSubcategory: service.subSubcategory,
+      serviceName: service.name,
+      color: Colors.white,
+      size: 28,
+    );
   }
 
   void _selectSubcategory(String subcategory) {
     setState(() {
       _selectedSubcategory = subcategory;
-      _services = DummyDataService.getServicesBySubcategory(
-        widget.categoryName,
-        subcategory,
-      );
+
+      if (subcategory == 'Washing Machine') {
+        _subSubcategories = DummyDataService.getWashingMachineTypes();
+        _services = [];
+        _filteredServices = [];
+      } else {
+        _subSubcategories = null;
+        _selectedSubSubcategory = null;
+        _services = DummyDataService.getServicesBySubcategory(
+          widget.categoryName,
+          subcategory,
+        );
+        _filteredServices = List.from(_services);
+      }
+
+      _selectedServiceId = null;
+      _selectedQuantity = 1;
+    });
+  }
+
+  void _selectSubSubcategory(String type) {
+    setState(() {
+      _selectedSubSubcategory = type;
+      _services = DummyDataService.getWashingMachineServices(type);
       _filteredServices = List.from(_services);
       _selectedServiceId = null;
       _selectedQuantity = 1;
@@ -191,94 +197,116 @@ class _ServiceListingScreenState extends State<ServiceListingScreen> with Ticker
     );
   }
 
+  void _goBack() {
+    setState(() {
+      if (_selectedSubSubcategory != null) {
+        _selectedSubSubcategory = null;
+        _services = [];
+        _filteredServices = [];
+        _searchController.clear();
+      } else if (_selectedSubcategory != null) {
+        _selectedSubcategory = null;
+        _subSubcategories = null;
+        _services = [];
+        _filteredServices = [];
+        _searchController.clear();
+      } else {
+        Navigator.pop(context);
+      }
+    });
+  }
+
+  int get _cartItemCount => globalCart.fold(0, (sum, item) => sum + item.quantity);
+
   @override
   Widget build(BuildContext context) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
 
-    return Scaffold(
-      backgroundColor: Theme.of(context).colorScheme.background,
-      appBar: AppBar(
-        title: Text(
-          _selectedSubcategory ?? widget.categoryName,
-          style: TextStyle(color: Theme.of(context).colorScheme.onSurface),
-        ),
-        centerTitle: true,
-        elevation: 0,
-        backgroundColor: Theme.of(context).colorScheme.surface,
-        iconTheme: IconThemeData(color: Theme.of(context).colorScheme.onSurface),
-        leading: _selectedSubcategory != null
-            ? IconButton(
-          icon: const Icon(Icons.arrow_back),
-          onPressed: () {
-            setState(() {
-              _selectedSubcategory = null;
-              _services = [];
-              _filteredServices = [];
-              _searchController.clear();
-            });
-          },
-        )
-            : null,
-        actions: [
-          Stack(
-            children: [
-              IconButton(
-                icon: const Icon(Icons.shopping_cart),
-                onPressed: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (_) => CartScreen(user: widget.user)),
-                  );
-                },
-              ),
-              if (globalCart.isNotEmpty)
-                Positioned(
-                  right: 8,
-                  top: 8,
-                  child: Container(
-                    padding: const EdgeInsets.all(2),
-                    decoration: BoxDecoration(
-                      gradient: AppColors.accentGradient,
-                      shape: BoxShape.circle,
-                    ),
-                    constraints: const BoxConstraints(
-                      minWidth: 16,
-                      minHeight: 16,
-                    ),
-                    child: Text(
-                      '${globalCart.length}',
-                      style: const TextStyle(
-                        color: Colors.white,
-                        fontSize: 10,
-                        fontWeight: FontWeight.bold,
+    return PopScope(
+      canPop: _selectedSubSubcategory == null && _selectedSubcategory == null,
+      onPopInvoked: (didPop) {
+        if (!didPop) {
+          _goBack();
+        }
+      },
+      child: Scaffold(
+        backgroundColor: Theme.of(context).colorScheme.background,
+        appBar: AppBar(
+          title: Text(
+            _selectedSubSubcategory ?? _selectedSubcategory ?? widget.categoryName,
+            style: TextStyle(color: Theme.of(context).colorScheme.onSurface),
+          ),
+          centerTitle: true,
+          elevation: 0,
+          backgroundColor: Theme.of(context).colorScheme.surface,
+          iconTheme: IconThemeData(color: Theme.of(context).colorScheme.onSurface),
+          leading: IconButton(
+            icon: const Icon(Icons.arrow_back),
+            onPressed: _goBack,
+          ),
+          actions: [
+            Stack(
+              children: [
+                IconButton(
+                  icon: const Icon(Icons.shopping_cart),
+                  onPressed: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (_) => CartScreen(user: widget.user)),
+                    ).then((_) => setState(() {}));
+                  },
+                ),
+                if (_cartItemCount > 0)
+                  Positioned(
+                    right: 8,
+                    top: 8,
+                    child: Container(
+                      padding: const EdgeInsets.all(4),
+                      decoration: const BoxDecoration(
+                        gradient: AppColors.accentGradient,
+                        shape: BoxShape.circle,
                       ),
-                      textAlign: TextAlign.center,
+                      constraints: const BoxConstraints(
+                        minWidth: 18,
+                        minHeight: 18,
+                      ),
+                      child: Text(
+                        '$_cartItemCount',
+                        style: const TextStyle(
+                          color: Colors.white,
+                          fontSize: 10,
+                          fontWeight: FontWeight.bold,
+                        ),
+                        textAlign: TextAlign.center,
+                      ),
                     ),
                   ),
-                ),
-            ],
-          ),
-        ],
-      ),
-      body: Container(
-        decoration: BoxDecoration(
-          gradient: LinearGradient(
-            begin: Alignment.topCenter,
-            end: Alignment.bottomCenter,
-            colors: isDark
-                ? [
-              const Color(0xFF0F172A),
-              const Color(0xFF1E293B),
-            ]
-                : [
-              AppColors.deepPurple.withOpacity(0.03),
-              Colors.white,
-            ],
-          ),
+              ],
+            ),
+          ],
         ),
-        child: _selectedSubcategory == null
-            ? _buildSubcategoryView()
-            : _buildServicesView(),
+        body: Container(
+          decoration: BoxDecoration(
+            gradient: LinearGradient(
+              begin: Alignment.topCenter,
+              end: Alignment.bottomCenter,
+              colors: isDark
+                  ? [
+                const Color(0xFF0F172A),
+                const Color(0xFF1E293B),
+              ]
+                  : [
+                AppColors.deepPurple.withOpacity(0.03),
+                Colors.white,
+              ],
+            ),
+          ),
+          child: _selectedSubcategory == null
+              ? _buildSubcategoryView()
+              : (_subSubcategories != null && _selectedSubSubcategory == null)
+              ? _buildSubSubcategoryView()
+              : _buildServicesView(),
+        ),
       ),
     );
   }
@@ -340,7 +368,98 @@ class _ServiceListingScreenState extends State<ServiceListingScreen> with Ticker
                               ),
                               const SizedBox(height: 4),
                               Text(
-                                'View all services',
+                                subcategory == 'Washing Machine'
+                                    ? 'Choose machine type'
+                                    : 'View all services',
+                                style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                                  color: Theme.of(context).colorScheme.onSurfaceVariant,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                        Container(
+                          padding: const EdgeInsets.all(8),
+                          decoration: BoxDecoration(
+                            gradient: AppColors.primaryGradient,
+                            borderRadius: BorderRadius.circular(10),
+                          ),
+                          child: const Icon(
+                            Icons.arrow_forward_ios,
+                            color: Colors.white,
+                            size: 16,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+              ),
+            );
+          },
+        ),
+      ),
+    );
+  }
+
+  Widget _buildSubSubcategoryView() {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+
+    return FadeTransition(
+      opacity: _fadeAnimation,
+      child: SlideTransition(
+        position: _slideAnimation,
+        child: ListView.builder(
+          padding: const EdgeInsets.all(16),
+          itemCount: _subSubcategories!.length,
+          itemBuilder: (context, index) {
+            final type = _subSubcategories![index];
+            return Container(
+              margin: const EdgeInsets.only(bottom: 16),
+              decoration: BoxDecoration(
+                color: Theme.of(context).colorScheme.surface,
+                borderRadius: BorderRadius.circular(20),
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.black.withOpacity(isDark ? 0.3 : 0.05),
+                    blurRadius: 15,
+                    offset: const Offset(0, 5),
+                  ),
+                ],
+              ),
+              child: Material(
+                color: Colors.transparent,
+                child: InkWell(
+                  borderRadius: BorderRadius.circular(20),
+                  onTap: () => _selectSubSubcategory(type),
+                  child: Padding(
+                    padding: const EdgeInsets.all(20),
+                    child: Row(
+                      children: [
+                        Container(
+                          width: 60,
+                          height: 60,
+                          decoration: BoxDecoration(
+                            gradient: AppColors.primaryGradient,
+                            borderRadius: BorderRadius.circular(16),
+                          ),
+                          child: const Icon(Icons.local_laundry_service, color: Colors.white, size: 32),
+                        ),
+                        const SizedBox(width: 16),
+                        Expanded(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                '$type Washing Machine',
+                                style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                                  fontWeight: FontWeight.w700,
+                                  color: Theme.of(context).colorScheme.onSurface,
+                                ),
+                              ),
+                              const SizedBox(height: 4),
+                              Text(
+                                'View services for $type machines',
                                 style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                                   color: Theme.of(context).colorScheme.onSurfaceVariant,
                                 ),
@@ -377,7 +496,6 @@ class _ServiceListingScreenState extends State<ServiceListingScreen> with Ticker
 
     return Column(
       children: [
-        // Search Bar
         Container(
           padding: const EdgeInsets.all(16),
           child: Container(
@@ -426,8 +544,6 @@ class _ServiceListingScreenState extends State<ServiceListingScreen> with Ticker
             ),
           ),
         ),
-
-        // Services List
         Expanded(
           child: _filteredServices.isEmpty
               ? Center(
@@ -503,7 +619,6 @@ class _ServiceListingScreenState extends State<ServiceListingScreen> with Ticker
                           padding: const EdgeInsets.all(16),
                           child: Row(
                             children: [
-                              // Service Icon
                               Container(
                                 width: 70,
                                 height: 70,
@@ -511,11 +626,9 @@ class _ServiceListingScreenState extends State<ServiceListingScreen> with Ticker
                                   gradient: AppColors.primaryGradient,
                                   borderRadius: BorderRadius.circular(16),
                                 ),
-                                child: _getIconForServiceItem(service.subcategory),
+                                child: _getIconForServiceItem(service),
                               ),
                               const SizedBox(width: 16),
-
-                              // Service Details
                               Expanded(
                                 child: Column(
                                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -557,10 +670,7 @@ class _ServiceListingScreenState extends State<ServiceListingScreen> with Ticker
                                   ],
                                 ),
                               ),
-
                               const SizedBox(width: 12),
-
-                              // Action Buttons
                               if (isSelected)
                                 Container(
                                   decoration: BoxDecoration(
@@ -666,8 +776,6 @@ class _ServiceListingScreenState extends State<ServiceListingScreen> with Ticker
             ),
           ),
         ),
-
-        // Continue Button
         if (_selectedServiceId != null)
           AnimatedContainer(
             duration: const Duration(milliseconds: 300),

@@ -3,6 +3,7 @@ import '../../models/service_model.dart';
 import '../../models/user_model.dart';
 import '../../models/cart_model.dart';
 import '../cart/cart_screen.dart';
+import '../../utils/icons_helper.dart';
 
 class ServiceDetailScreen extends StatefulWidget {
   final Service service;
@@ -152,11 +153,21 @@ class _ServiceDetailScreenState extends State<ServiceDetailScreen> with TickerPr
                         child: Column(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
-                            Icon(Icons.star, size: 80, color: Theme.of(context).colorScheme.primary),
+                            IconHelper.getServiceIcon(
+                              category: widget.service.category,
+                              subcategory: widget.service.subcategory,
+                              subSubcategory: widget.service.subSubcategory,
+                              serviceName: widget.service.name,
+                              color: Theme.of(context).colorScheme.primary,
+                              size: 80,
+                            ),
                             const SizedBox(height: 8),
                             Text(
                               widget.service.name,
-                              style: Theme.of(context).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold, color: textColor),
+                              style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                                  fontWeight: FontWeight.bold,
+                                  color: textColor
+                              ),
                               textAlign: TextAlign.center,
                             ),
                           ],

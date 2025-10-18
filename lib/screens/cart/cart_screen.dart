@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import '../../models/user_model.dart';
 import '../../models/cart_model.dart';
 import '../services/service_checkout_screen.dart';
+import '../../utils/icons_helper.dart';
+
 
 class CartScreen extends StatefulWidget {
   final User user;
@@ -31,20 +33,6 @@ class _CartScreenState extends State<CartScreen> {
     globalCart.removeWhere((item) => item.id == itemId);
     setState(() {});
   }
-
-  /*void proceedToCheckout() {
-    if (globalCart.isEmpty) return;
-
-    Navigator.push(
-      context,
-      MaterialPageRoute(
-        builder: (_) => ServiceCheckoutScreen(
-          user: widget.user,
-          categoryName: globalCart.first.service.category,
-        ),
-      ),
-    );
-  }*/
 
   void proceedToCheckout() {
     if (globalCart.isEmpty) return;
@@ -224,9 +212,12 @@ class _CartScreenState extends State<CartScreen> {
                             ),
                             borderRadius: BorderRadius.circular(12),
                           ),
-                          child: const Icon(
-                            Icons.star,
-                            color: Color(0xFF6B5B9A),
+                          child: IconHelper.getServiceIcon(
+                            category: item.service.category,
+                            subcategory: item.service.subcategory,
+                            subSubcategory: item.service.subSubcategory,
+                            serviceName: item.service.name,
+                            color: const Color(0xFF6B5B9A),
                             size: 28,
                           ),
                         ),

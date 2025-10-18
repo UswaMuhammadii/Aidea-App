@@ -11,6 +11,10 @@
 	<key>CFBundleIdentifier</key>
 	<string>$(PRODUCT_BUNDLE_IDENTIFIER)</string>
 	<key>CFBundleInfoDictionaryVersion</key>
+	<key>NSPhotoLibraryAddUsageDescription</key>
+    <string>We need access to save invoices</string>
+    <key>NSPhotoLibraryUsageDescription</key>
+    <string>We need access to share invoices</string>
 	<string>6.0</string>
 	<key>CFBundleName</key>
 	<string>customer_app</string>

@@ -4,7 +4,8 @@ class Service {
   final String description;
   final double price;
   final String category;
-  final String? subcategory; // Added subcategory field
+  final String? subcategory;
+  final String? subSubcategory; // Added for washing machine types
   final List<String> features;
 
   Service({
@@ -13,7 +14,8 @@ class Service {
     required this.description,
     required this.price,
     required this.category,
-    this.subcategory, // Optional subcategory
+    this.subcategory,
+    this.subSubcategory, // New field
     required this.features,
   });
 
@@ -25,6 +27,7 @@ class Service {
       'price': price,
       'category': category,
       'subcategory': subcategory,
+      'subSubcategory': subSubcategory, // Include in JSON
       'features': features,
     };
   }
@@ -37,6 +40,7 @@ class Service {
       price: (json['price'] as num).toDouble(),
       category: json['category'] as String,
       subcategory: json['subcategory'] as String?,
+      subSubcategory: json['subSubcategory'] as String?, // Parse from JSON
       features: (json['features'] as List<dynamic>).cast<String>(),
     );
   }
@@ -48,7 +52,7 @@ class ServiceCategory {
   final String description;
   final String icon;
   final List<Service> services;
-  final List<String>? subcategories; // Added subcategories list
+  final List<String>? subcategories;
 
   ServiceCategory({
     required this.id,
@@ -56,7 +60,7 @@ class ServiceCategory {
     required this.description,
     required this.icon,
     required this.services,
-    this.subcategories, // Optional subcategories
+    this.subcategories,
   });
 
   Map<String, dynamic> toJson() {

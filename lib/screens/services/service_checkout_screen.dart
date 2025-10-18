@@ -1,11 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:image_picker/image_picker.dart';
+import 'dart:io';
 import '../../models/user_model.dart';
 import '../../models/service_model.dart';
 import '../../models/booking_model.dart';
 import '../../models/cart_model.dart';
 import '../../services/dummy_data_service.dart';
 import '../booking/booking_confirmation_screen.dart';
+import '../../utils/icons_helper.dart';
 
 class ServiceCheckoutScreen extends StatefulWidget {
   final Service service;
@@ -31,24 +34,18 @@ class _ServiceCheckoutScreenState extends State<ServiceCheckoutScreen> {
   final TextEditingController _notesController = TextEditingController();
   final TextEditingController _addressController = TextEditingController();
   bool _isLoading = false;
-  String _selectedPaymentMethod = 'cash';
+  List<File> _selectedImages = [];
+  final ImagePicker _picker = ImagePicker();
 
-  Icon _getIconForServiceItem(String? subcategory) {
-    switch (subcategory?.toLowerCase() ?? "") {
-      case "automatic washing machines":
-      case "regular washing machines":
-        return const Icon(Icons.local_laundry_service, color: Colors.blue, size: 28);
-      case "split ac":
-      case "window ac":
-      case "central ac":
-        return const Icon(Icons.ac_unit, color: Colors.lightBlue, size: 28);
-      case "refrigerator":
-        return const Icon(Icons.kitchen, color: Colors.teal, size: 28);
-      case "oven":
-        return const Icon(Icons.microwave, color: Colors.deepOrange, size: 28);
-      default:
-        return const Icon(Icons.build, color: Colors.grey, size: 28);
-    }
+  Icon _getIconForServiceItem(Service service) {
+    return IconHelper.getServiceIcon(
+      category: service.category,
+      subcategory: service.subcategory,
+      subSubcategory: service.subSubcategory,
+      serviceName: service.name,
+      color: Colors.blue,
+      size: 28,
+    );
   }
 
   @override
@@ -101,7 +98,85 @@ class _ServiceCheckoutScreenState extends State<ServiceCheckoutScreen> {
     }
   }
 
-  Future<void> _proceedToBooking() async {
+  Future<void> _pickImages() async {
+    try {
+      final List<XFile> images = await _picker.pickMultiImage();
+      if (images.isNotEmpty) {
+        setState(() {
+          _selectedImages.addAll(images.map((xFile) => File(xFile.path)));
+        });
+      }
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('Error picking images: $e'),
+          backgroundColor: Colors.red,
+        ),
+      );
+    }
+  }
+
+  Future<void> _pickImageFromCamera() async {
+    try {
+      final XFile? image = await _picker.pickImage(source: ImageSource.camera);
+      if (image != null) {
+        setState(() {
+          _selectedImages.add(File(image.path));
+        });
+      }
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('Error taking photo: $e'),
+          backgroundColor: Colors.red,
+        ),
+      );
+    }
+  }
+
+  void _removeImage(int index) {
+    setState(() {
+      _selectedImages.removeAt(index);
+    });
+  }
+
+  void _showImageSourceDialog() {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    final cardColor = isDark ? const Color(0xFF1E293B) : Colors.white;
+    final textColor = isDark ? Colors.white : Colors.black87;
+
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        backgroundColor: cardColor,
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+        title: Text('Choose Image Source', style: TextStyle(color: textColor)),
+        content: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            ListTile(
+              leading: const Icon(Icons.photo_library, color: Colors.blue),
+              title: Text('Gallery', style: TextStyle(color: textColor)),
+              onTap: () {
+                Navigator.pop(context);
+                _pickImages();
+              },
+            ),
+            ListTile(
+              leading: const Icon(Icons.camera_alt, color: Colors.green),
+              title: Text('Camera', style: TextStyle(color: textColor)),
+              onTap: () {
+                Navigator.pop(context);
+                _pickImageFromCamera();
+              },
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Future<void> _submitRequest() async {
     if (_selectedDate == null || _selectedTime == null) {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
@@ -144,7 +219,7 @@ class _ServiceCheckoutScreenState extends State<ServiceCheckoutScreen> {
           bookingTime: bookingDateTime,
           totalPrice: cartItem.totalPrice,
           quantity: cartItem.quantity,
-          paymentMethod: _selectedPaymentMethod,
+          paymentMethod: 'pending', // Changed from cash/card to pending
           notes: _notesController.text.isNotEmpty ? _notesController.text : null,
         );
         bookings.add(booking);
@@ -160,7 +235,7 @@ class _ServiceCheckoutScreenState extends State<ServiceCheckoutScreen> {
         bookingTime: bookingDateTime,
         totalPrice: totalPrice,
         quantity: widget.quantity,
-        paymentMethod: _selectedPaymentMethod,
+        paymentMethod: 'pending', // Changed from cash/card to pending
         notes: _notesController.text.isNotEmpty ? _notesController.text : null,
       );
       bookings.add(booking);
@@ -259,7 +334,7 @@ class _ServiceCheckoutScreenState extends State<ServiceCheckoutScreen> {
                                   : Colors.grey.shade100,
                               borderRadius: BorderRadius.circular(10),
                             ),
-                            child: _getIconForServiceItem(item.service.subcategory),
+                            child: _getIconForServiceItem(item.service),
                           ),
                           const SizedBox(width: 12),
                           Expanded(
@@ -309,7 +384,7 @@ class _ServiceCheckoutScreenState extends State<ServiceCheckoutScreen> {
                                   : Colors.grey.shade100,
                               borderRadius: BorderRadius.circular(10),
                             ),
-                            child: _getIconForServiceItem(widget.service.subcategory),
+                            child: _getIconForServiceItem(widget.service),
                           ),
                           const SizedBox(width: 12),
                           Expanded(
@@ -344,6 +419,151 @@ class _ServiceCheckoutScreenState extends State<ServiceCheckoutScreen> {
                         ],
                       ),
                     ),
+                  ],
+                ),
+              ),
+              const SizedBox(height: 24),
+
+              // UPLOAD APPLIANCE IMAGES SECTION
+              Text(
+                'Upload Appliance Images',
+                style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                  fontWeight: FontWeight.bold,
+                  color: textColor,
+                ),
+              ),
+              const SizedBox(height: 12),
+              Container(
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(16),
+                  color: cardColor,
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.black.withOpacity(shadowOpacity),
+                      blurRadius: 10,
+                      offset: const Offset(0, 5),
+                    ),
+                  ],
+                ),
+                child: Column(
+                  children: [
+                    // Upload Button
+                    InkWell(
+                      onTap: _showImageSourceDialog,
+                      borderRadius: BorderRadius.circular(16),
+                      child: Container(
+                        padding: const EdgeInsets.all(20),
+                        child: Row(
+                          children: [
+                            Container(
+                              padding: const EdgeInsets.all(12),
+                              decoration: BoxDecoration(
+                                gradient: LinearGradient(
+                                  colors: [
+                                    Theme.of(context).colorScheme.primary,
+                                    Theme.of(context).colorScheme.primary.withOpacity(0.7),
+                                  ],
+                                ),
+                                borderRadius: BorderRadius.circular(12),
+                              ),
+                              child: const Icon(
+                                Icons.add_photo_alternate,
+                                color: Colors.white,
+                                size: 24,
+                              ),
+                            ),
+                            const SizedBox(width: 16),
+                            Expanded(
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    'Add Photos',
+                                    style: TextStyle(
+                                      fontWeight: FontWeight.bold,
+                                      fontSize: 16,
+                                      color: textColor,
+                                    ),
+                                  ),
+                                  const SizedBox(height: 4),
+                                  Text(
+                                    'Upload photos of your appliance',
+                                    style: TextStyle(
+                                      fontSize: 12,
+                                      color: subtitleColor,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                            Icon(
+                              Icons.arrow_forward_ios,
+                              size: 16,
+                              color: subtitleColor,
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                    // Display Selected Images
+                    if (_selectedImages.isNotEmpty) ...[
+                      Divider(height: 1, color: borderColor),
+                      Padding(
+                        padding: const EdgeInsets.all(16),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              '${_selectedImages.length} ${_selectedImages.length == 1 ? 'image' : 'images'} selected',
+                              style: TextStyle(
+                                fontSize: 13,
+                                fontWeight: FontWeight.w600,
+                                color: Theme.of(context).colorScheme.primary,
+                              ),
+                            ),
+                            const SizedBox(height: 12),
+                            Wrap(
+                              spacing: 8,
+                              runSpacing: 8,
+                              children: List.generate(_selectedImages.length, (index) {
+                                return Stack(
+                                  children: [
+                                    ClipRRect(
+                                      borderRadius: BorderRadius.circular(12),
+                                      child: Image.file(
+                                        _selectedImages[index],
+                                        width: 80,
+                                        height: 80,
+                                        fit: BoxFit.cover,
+                                      ),
+                                    ),
+                                    Positioned(
+                                      top: 4,
+                                      right: 4,
+                                      child: GestureDetector(
+                                        onTap: () => _removeImage(index),
+                                        child: Container(
+                                          padding: const EdgeInsets.all(4),
+                                          decoration: const BoxDecoration(
+                                            color: Colors.red,
+                                            shape: BoxShape.circle,
+                                          ),
+                                          child: const Icon(
+                                            Icons.close,
+                                            color: Colors.white,
+                                            size: 16,
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                  ],
+                                );
+                              }),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ],
                   ],
                 ),
               ),
@@ -480,72 +700,6 @@ class _ServiceCheckoutScreenState extends State<ServiceCheckoutScreen> {
               ),
               const SizedBox(height: 16),
 
-              // PAYMENT METHOD SECTION
-              Text(
-                'Payment Method',
-                style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                  fontWeight: FontWeight.bold,
-                  color: textColor,
-                ),
-              ),
-              const SizedBox(height: 12),
-              Container(
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(16),
-                  color: cardColor,
-                  boxShadow: [
-                    BoxShadow(
-                      color: Colors.black.withOpacity(shadowOpacity),
-                      blurRadius: 10,
-                      offset: const Offset(0, 5),
-                    ),
-                  ],
-                ),
-                child: Column(
-                  children: [
-                    RadioListTile<String>(
-                      title: Row(
-                        children: [
-                          Icon(Icons.money, color: Colors.green.shade700),
-                          const SizedBox(width: 12),
-                          Text(
-                            'Cash on Service',
-                            style: TextStyle(color: textColor),
-                          ),
-                        ],
-                      ),
-                      value: 'cash',
-                      groupValue: _selectedPaymentMethod,
-                      onChanged: (value) {
-                        setState(() => _selectedPaymentMethod = value!);
-                      },
-                    ),
-                    Divider(
-                      height: 1,
-                      color: borderColor,
-                    ),
-                    RadioListTile<String>(
-                      title: Row(
-                        children: [
-                          Icon(Icons.credit_card, color: Colors.blue.shade700),
-                          const SizedBox(width: 12),
-                          Text(
-                            'Credit/Debit Card',
-                            style: TextStyle(color: textColor),
-                          ),
-                        ],
-                      ),
-                      value: 'card',
-                      groupValue: _selectedPaymentMethod,
-                      onChanged: (value) {
-                        setState(() => _selectedPaymentMethod = value!);
-                      },
-                    ),
-                  ],
-                ),
-              ),
-              const SizedBox(height: 16),
-
               // NOTES SECTION
               Text(
                 'Additional Notes (Optional)',
@@ -626,7 +780,7 @@ class _ServiceCheckoutScreenState extends State<ServiceCheckoutScreen> {
                           ),
                           const SizedBox(width: 12),
                           Text(
-                            'Booking Summary',
+                            'Request Summary',
                             style: Theme.of(context).textTheme.titleMedium?.copyWith(
                               fontWeight: FontWeight.bold,
                               color: textColor,
@@ -708,11 +862,11 @@ class _ServiceCheckoutScreenState extends State<ServiceCheckoutScreen> {
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          Text('Payment:', style: TextStyle(color: subtitleColor)),
+                          Text('Images:', style: TextStyle(color: subtitleColor)),
                           Text(
-                            _selectedPaymentMethod == 'cash'
-                                ? 'Cash on Service'
-                                : 'Credit/Debit Card',
+                            _selectedImages.isEmpty
+                                ? 'No images'
+                                : '${_selectedImages.length} ${_selectedImages.length == 1 ? 'image' : 'images'}',
                             style: TextStyle(
                               fontWeight: FontWeight.w500,
                               color: textColor,
@@ -725,7 +879,7 @@ class _ServiceCheckoutScreenState extends State<ServiceCheckoutScreen> {
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
                           Text(
-                            'Total:',
+                            'Estimated Price:',
                             style: Theme.of(context).textTheme.titleMedium?.copyWith(
                               fontWeight: FontWeight.bold,
                               color: textColor,
@@ -746,7 +900,7 @@ class _ServiceCheckoutScreenState extends State<ServiceCheckoutScreen> {
               ),
               const SizedBox(height: 24),
 
-              // CONFIRM BOOKING BUTTON
+              // SUBMIT REQUEST BUTTON
               Container(
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(16),
@@ -767,7 +921,7 @@ class _ServiceCheckoutScreenState extends State<ServiceCheckoutScreen> {
                 child: SizedBox(
                   width: double.infinity,
                   child: FilledButton(
-                    onPressed: _isLoading ? null : _proceedToBooking,
+                    onPressed: _isLoading ? null : _submitRequest,
                     style: FilledButton.styleFrom(
                       backgroundColor: Colors.transparent,
                       shadowColor: Colors.transparent,
@@ -785,12 +939,19 @@ class _ServiceCheckoutScreenState extends State<ServiceCheckoutScreen> {
                         valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
                       ),
                     )
-                        : const Text(
-                      'Confirm Booking',
-                      style: TextStyle(
-                        fontSize: 16,
-                        fontWeight: FontWeight.w600,
-                      ),
+                        : const Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Icon(Icons.send, size: 20),
+                        SizedBox(width: 12),
+                        Text(
+                          'Submit Request',
+                          style: TextStyle(
+                            fontSize: 16,
+                            fontWeight: FontWeight.w600,
+                          ),
+                        ),
+                      ],
                     ),
                   ),
                 ),

@@ -3,7 +3,6 @@ import '../../models/user_model.dart';
 import 'edit_profile_screen.dart';
 import 'addresses_screen.dart';
 
-// Color theme configuration
 class AppColors {
   static const deepPurple = Color(0xFF7C3AED);
   static const electricBlue = Color(0xFF3B82F6);
@@ -103,6 +102,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
     final isDark = Theme.of(context).brightness == Brightness.dark;
     final textColor = isDark ? Colors.white : Colors.black87;
     final subtitleColor = isDark ? Colors.white70 : Colors.grey.shade600;
+    final cardColor = isDark ? const Color(0xFF1E293B) : Colors.white;
 
     return Scaffold(
       backgroundColor: Theme.of(context).colorScheme.background,
@@ -263,7 +263,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   const SizedBox(height: 16),
                   Container(
                     decoration: BoxDecoration(
-                      color: isDark ? const Color(0xFF1E1E2E) : Colors.white,
+                      color: cardColor,
                       borderRadius: BorderRadius.circular(20),
                       boxShadow: [
                         if (!isDark)
@@ -369,6 +369,44 @@ class _ProfileScreenState extends State<ProfileScreen> {
             ),
           ],
         ),
+      ),
+    );
+  }
+
+  Widget _buildInfoTile({
+    required IconData icon,
+    required String title,
+    required String value,
+    required Color textColor,
+    required Color subtitleColor,
+    bool isAddress = false,
+  }) {
+    return ListTile(
+      contentPadding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
+      leading: Container(
+        padding: const EdgeInsets.all(10),
+        decoration: BoxDecoration(
+          color: AppColors.deepPurple.withOpacity(0.1),
+          borderRadius: BorderRadius.circular(12),
+        ),
+        child: Icon(icon, color: AppColors.deepPurple, size: 24),
+      ),
+      title: Text(
+        title,
+        style: TextStyle(
+          fontWeight: FontWeight.w600,
+          fontSize: 16,
+          color: textColor,
+        ),
+      ),
+      subtitle: Text(
+        value,
+        style: TextStyle(
+          color: subtitleColor,
+          fontSize: 13,
+        ),
+        maxLines: isAddress ? 2 : 1,
+        overflow: TextOverflow.ellipsis,
       ),
     );
   }

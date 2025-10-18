@@ -235,14 +235,15 @@ class DummyDataService {
       features: ['Contactor replacement', 'Expert service', 'Quality parts'],
     ),
 
-    // Washing Machine Services - Automatic
+    // Home Appliances - Washing Machine - Automatic
     Service(
       id: '26',
       name: 'Disassembling and assembling the electronic board',
       description: 'Automatic - Control board service',
       price: 150.00,
-      category: 'Washing Machine Service',
-      subcategory: 'Automatic Washing Machines',
+      category: 'Home Appliances',
+      subcategory: 'Washing Machine',
+      subSubcategory: 'Automatic',
       features: ['Board repair', 'Expert service', 'Quality parts'],
     ),
     Service(
@@ -250,8 +251,9 @@ class DummyDataService {
       name: 'Disassembling and assembling the drying machine',
       description: 'Automatic - Dryer repair',
       price: 219.00,
-      category: 'Washing Machine Service',
-      subcategory: 'Automatic Washing Machines',
+      category: 'Home Appliances',
+      subcategory: 'Washing Machine',
+      subSubcategory: 'Automatic',
       features: ['Dryer repair', 'Professional service', 'Testing included'],
     ),
     Service(
@@ -259,8 +261,9 @@ class DummyDataService {
       name: 'Disassembling and assembling the washing machine',
       description: 'Automatic - Complete service',
       price: 184.00,
-      category: 'Washing Machine Service',
-      subcategory: 'Automatic Washing Machines',
+      category: 'Home Appliances',
+      subcategory: 'Washing Machine',
+      subSubcategory: 'Automatic',
       features: ['Complete disassembly', 'Professional service', 'Reassembly'],
     ),
     Service(
@@ -268,8 +271,9 @@ class DummyDataService {
       name: 'Door disassembly and installation',
       description: 'Automatic - Door repair',
       price: 138.00,
-      category: 'Washing Machine Service',
-      subcategory: 'Automatic Washing Machines',
+      category: 'Home Appliances',
+      subcategory: 'Washing Machine',
+      subSubcategory: 'Automatic',
       features: ['Door repair', 'Seal replacement', 'Alignment check'],
     ),
     Service(
@@ -277,8 +281,9 @@ class DummyDataService {
       name: 'Dismantling and installing the balance bar',
       description: 'Automatic - Balance bar service',
       price: 161.00,
-      category: 'Washing Machine Service',
-      subcategory: 'Automatic Washing Machines',
+      category: 'Home Appliances',
+      subcategory: 'Washing Machine',
+      subSubcategory: 'Automatic',
       features: ['Balance bar replacement', 'Vibration reduction', 'Testing'],
     ),
     Service(
@@ -286,8 +291,9 @@ class DummyDataService {
       name: 'Water drainage maintenance',
       description: 'Automatic - Drain system service',
       price: 150.00,
-      category: 'Washing Machine Service',
-      subcategory: 'Automatic Washing Machines',
+      category: 'Home Appliances',
+      subcategory: 'Washing Machine',
+      subSubcategory: 'Automatic',
       features: ['Drain cleaning', 'Pump check', 'Quick service'],
     ),
     Service(
@@ -295,8 +301,9 @@ class DummyDataService {
       name: 'Water flow maintenance',
       description: 'Automatic - Water inlet service',
       price: 127.00,
-      category: 'Washing Machine Service',
-      subcategory: 'Automatic Washing Machines',
+      category: 'Home Appliances',
+      subcategory: 'Washing Machine',
+      subSubcategory: 'Automatic',
       features: ['Inlet valve service', 'Water flow optimization', 'Testing'],
     ),
     Service(
@@ -304,8 +311,9 @@ class DummyDataService {
       name: 'Electrical short circuit maintenance',
       description: 'Automatic - Electrical repair',
       price: 127.00,
-      category: 'Washing Machine Service',
-      subcategory: 'Automatic Washing Machines',
+      category: 'Home Appliances',
+      subcategory: 'Washing Machine',
+      subSubcategory: 'Automatic',
       features: ['Electrical diagnosis', 'Wiring repair', 'Safety check'],
     ),
     Service(
@@ -313,19 +321,21 @@ class DummyDataService {
       name: 'Repairing the power supply',
       description: 'Automatic - Power system repair',
       price: 92.00,
-      category: 'Washing Machine Service',
-      subcategory: 'Automatic Washing Machines',
+      category: 'Home Appliances',
+      subcategory: 'Washing Machine',
+      subSubcategory: 'Automatic',
       features: ['Power supply repair', 'Component check', 'Testing'],
     ),
 
-    // Washing Machine Services - Regular
+    // Home Appliances - Washing Machine - Regular
     Service(
       id: '35',
       name: 'Disassembling and assembling the timer',
       description: 'Regular - Timer repair',
       price: 115.00,
-      category: 'Washing Machine Service',
-      subcategory: 'Regular Washing Machines',
+      category: 'Home Appliances',
+      subcategory: 'Washing Machine',
+      subSubcategory: 'Regular',
       features: ['Timer replacement', 'Expert service', 'Testing'],
     ),
     Service(
@@ -333,8 +343,9 @@ class DummyDataService {
       name: 'Disassembling and assembling the drying machine',
       description: 'Regular - Dryer service',
       price: 156.00,
-      category: 'Washing Machine Service',
-      subcategory: 'Regular Washing Machines',
+      category: 'Home Appliances',
+      subcategory: 'Washing Machine',
+      subSubcategory: 'Regular',
       features: ['Dryer repair', 'Component check', 'Testing'],
     ),
     Service(
@@ -342,18 +353,19 @@ class DummyDataService {
       name: 'Disassembling and assembling the washing machine',
       description: 'Regular - Complete service',
       price: 144.00,
-      category: 'Washing Machine Service',
-      subcategory: 'Regular Washing Machines',
+      category: 'Home Appliances',
+      subcategory: 'Washing Machine',
+      subSubcategory: 'Regular',
       features: ['Full service', 'Professional repair', 'Testing'],
     ),
 
-    // Refrigerator Services
+    // Home Appliances - Refrigerator
     Service(
       id: '38',
       name: 'Compressor change',
       description: 'Refrigerator - Compressor replacement',
       price: 196.00,
-      category: 'Refrigerator Service',
+      category: 'Home Appliances',
       subcategory: 'Refrigerator',
       features: ['Compressor replacement', 'Professional service', 'Gas refill'],
     ),
@@ -362,7 +374,7 @@ class DummyDataService {
       name: 'Change the external fan',
       description: 'Refrigerator - External fan replacement',
       price: 150.00,
-      category: 'Refrigerator Service',
+      category: 'Home Appliances',
       subcategory: 'Refrigerator',
       features: ['Fan replacement', 'Expert service', 'Testing'],
     ),
@@ -371,7 +383,7 @@ class DummyDataService {
       name: 'Change the internal fan',
       description: 'Refrigerator - Internal fan replacement',
       price: 150.00,
-      category: 'Refrigerator Service',
+      category: 'Home Appliances',
       subcategory: 'Refrigerator',
       features: ['Fan replacement', 'Professional service', 'Testing'],
     ),
@@ -380,7 +392,7 @@ class DummyDataService {
       name: 'Change the heater',
       description: 'Refrigerator - Heater replacement',
       price: 173.00,
-      category: 'Refrigerator Service',
+      category: 'Home Appliances',
       subcategory: 'Refrigerator',
       features: ['Heater replacement', 'Quality parts', 'Testing'],
     ),
@@ -389,7 +401,7 @@ class DummyDataService {
       name: 'Change the "Depressor" sensor',
       description: 'Refrigerator - Sensor replacement',
       price: 104.00,
-      category: 'Refrigerator Service',
+      category: 'Home Appliances',
       subcategory: 'Refrigerator',
       features: ['Sensor replacement', 'Expert service', 'Testing'],
     ),
@@ -398,7 +410,7 @@ class DummyDataService {
       name: 'American Freon filling',
       description: 'Refrigerator - R134a gas refill',
       price: 230.00,
-      category: 'Refrigerator Service',
+      category: 'Home Appliances',
       subcategory: 'Refrigerator',
       features: ['American gas refill', 'Pressure check', 'Leak test'],
     ),
@@ -407,7 +419,7 @@ class DummyDataService {
       name: 'Indian Freon filling',
       description: 'Refrigerator - Indian gas refill',
       price: 196.00,
-      category: 'Refrigerator Service',
+      category: 'Home Appliances',
       subcategory: 'Refrigerator',
       features: ['Indian gas refill', 'Pressure check', 'Testing'],
     ),
@@ -416,7 +428,7 @@ class DummyDataService {
       name: 'External leakage maintenance',
       description: 'Refrigerator - External leak repair',
       price: 173.00,
-      category: 'Refrigerator Service',
+      category: 'Home Appliances',
       subcategory: 'Refrigerator',
       features: ['Leak detection', 'Professional repair', 'Gas refill'],
     ),
@@ -425,7 +437,7 @@ class DummyDataService {
       name: 'Change and adjust the timer',
       description: 'Refrigerator - Timer service',
       price: 104.00,
-      category: 'Refrigerator Service',
+      category: 'Home Appliances',
       subcategory: 'Refrigerator',
       features: ['Timer replacement', 'Adjustment', 'Testing'],
     ),
@@ -434,7 +446,7 @@ class DummyDataService {
       name: 'Refrigerator compressor replacement 1/6 - 1/5 - 1/4 - 1/3',
       description: 'Refrigerator - Small compressor replacement',
       price: 196.00,
-      category: 'Refrigerator Service',
+      category: 'Home Appliances',
       subcategory: 'Refrigerator',
       features: ['Compressor replacement', 'Gas refill', 'Testing'],
     ),
@@ -443,7 +455,7 @@ class DummyDataService {
       name: 'Refrigerator compressor replacement 1/2 - 3/4 - 1',
       description: 'Refrigerator - Large compressor replacement',
       price: 196.00,
-      category: 'Refrigerator Service',
+      category: 'Home Appliances',
       subcategory: 'Refrigerator',
       features: ['Compressor replacement', 'Gas refill', 'Testing'],
     ),
@@ -452,7 +464,7 @@ class DummyDataService {
       name: 'External leakage maintenance + American R134 Freon filling',
       description: 'Refrigerator - Leak repair with American gas',
       price: 288.00,
-      category: 'Refrigerator Service',
+      category: 'Home Appliances',
       subcategory: 'Refrigerator',
       features: ['Leak repair', 'American gas refill', 'Testing'],
     ),
@@ -461,7 +473,7 @@ class DummyDataService {
       name: 'External leakage maintenance + American R12 Freon filling',
       description: 'Refrigerator - Leak repair with American R12 gas',
       price: 380.00,
-      category: 'Refrigerator Service',
+      category: 'Home Appliances',
       subcategory: 'Refrigerator',
       features: ['Leak repair', 'R12 gas refill', 'Professional service'],
     ),
@@ -470,7 +482,7 @@ class DummyDataService {
       name: 'External leakage maintenance + Chinese R134 Freon filling',
       description: 'Refrigerator - Leak repair with Chinese R134 gas',
       price: 380.00,
-      category: 'Refrigerator Service',
+      category: 'Home Appliances',
       subcategory: 'Refrigerator',
       features: ['Leak repair', 'Chinese gas refill', 'Testing'],
     ),
@@ -479,7 +491,7 @@ class DummyDataService {
       name: 'External leakage maintenance + Chinese R12 Freon filling',
       description: 'Refrigerator - Leak repair with Chinese R12 gas',
       price: 219.00,
-      category: 'Refrigerator Service',
+      category: 'Home Appliances',
       subcategory: 'Refrigerator',
       features: ['Leak repair', 'Chinese R12 gas', 'Testing'],
     ),
@@ -488,18 +500,18 @@ class DummyDataService {
       name: 'External leakage maintenance + Indian R134 Freon filling',
       description: 'Refrigerator - Leak repair with Indian gas',
       price: 334.00,
-      category: 'Refrigerator Service',
+      category: 'Home Appliances',
       subcategory: 'Refrigerator',
       features: ['Leak repair', 'Indian gas refill', 'Professional service'],
     ),
 
-    // Oven Services
+    // Home Appliances - Oven
     Service(
       id: '54',
       name: 'Change keys',
       description: 'Oven - Control keys replacement',
       price: 138.00,
-      category: 'Other Services',
+      category: 'Home Appliances',
       subcategory: 'Oven',
       features: ['Key replacement', 'Expert service', 'Testing'],
     ),
@@ -508,7 +520,7 @@ class DummyDataService {
       name: 'Change door hinges',
       description: 'Oven - Door hinge replacement',
       price: 138.00,
-      category: 'Other Services',
+      category: 'Home Appliances',
       subcategory: 'Oven',
       features: ['Hinge replacement', 'Door alignment', 'Testing'],
     ),
@@ -517,7 +529,7 @@ class DummyDataService {
       name: 'Cleaning',
       description: 'Oven - Deep cleaning service',
       price: 184.00,
-      category: 'Other Services',
+      category: 'Home Appliances',
       subcategory: 'Oven',
       features: ['Deep cleaning', 'Interior & exterior', 'Professional service'],
     ),
@@ -526,7 +538,7 @@ class DummyDataService {
       name: 'Smuggling maintenance',
       description: 'Oven - Seal maintenance',
       price: 184.00,
-      category: 'Other Services',
+      category: 'Home Appliances',
       subcategory: 'Oven',
       features: ['Seal replacement', 'Temperature check', 'Testing'],
     ),
@@ -535,7 +547,7 @@ class DummyDataService {
       name: 'Microwave maintenance',
       description: 'Oven - Microwave repair',
       price: 230.00,
-      category: 'Other Services',
+      category: 'Home Appliances',
       subcategory: 'Oven',
       features: ['Microwave repair', 'Component check', 'Testing'],
     ),
@@ -545,12 +557,12 @@ class DummyDataService {
     switch (categoryName) {
       case 'AC Services':
         return 'assets/images/ac_service.png';
-      case 'Washing Machine Service':
-        return 'assets/images/washing_machine.png';
-      case 'Refrigerator Service':
-        return 'assets/images/refrigerator.png';
-      case 'Other Services':
-        return 'assets/images/oven.png';
+      case 'Home Appliances':
+        return 'assets/images/home_appliances.png';
+      case 'Plumbing':
+        return 'assets/images/plumbing.png';
+      case 'Electric':
+        return 'assets/images/electric.png';
       default:
         return 'assets/images/ac_service.png';
     }
@@ -567,27 +579,27 @@ class DummyDataService {
     ),
     ServiceCategory(
       id: '2',
-      name: 'Washing Machine Service',
-      description: 'Complete washing machine services',
-      icon: '🧺',
-      services: _services.where((s) => s.category == 'Washing Machine Service').toList(),
-      subcategories: ['Automatic Washing Machines', 'Regular Washing Machines'],
+      name: 'Home Appliances',
+      description: 'Complete home appliance repair services',
+      icon: '🏠',
+      services: _services.where((s) => s.category == 'Home Appliances').toList(),
+      subcategories: ['Washing Machine', 'Refrigerator', 'Oven', 'Stove', 'Dishwasher'],
     ),
     ServiceCategory(
       id: '3',
-      name: 'Refrigerator Service',
-      description: 'Professional refrigerator repair and maintenance',
-      icon: '🧊',
-      services: _services.where((s) => s.category == 'Refrigerator Service').toList(),
-      subcategories: ['Refrigerator'],
+      name: 'Plumbing',
+      description: 'Expert plumbing services',
+      icon: '🔧',
+      services: [],
+      subcategories: ['Pipe Repair', 'Drain Cleaning', 'Water Heater', 'Faucet Installation'],
     ),
     ServiceCategory(
       id: '4',
-      name: 'Other Services',
-      description: 'Oven and microwave repair services',
-      icon: '🔥',
-      services: _services.where((s) => s.category == 'Other Services').toList(),
-      subcategories: ['Oven'],
+      name: 'Electric',
+      description: 'Professional electrical services',
+      icon: '⚡',
+      services: [],
+      subcategories: ['Wiring', 'Switch & Socket', 'Circuit Breaker', 'Lighting Installation'],
     ),
   ];
 
@@ -604,6 +616,18 @@ class DummyDataService {
     } catch (e) {
       return [];
     }
+  }
+
+  static List<String> getWashingMachineTypes() {
+    return ['Automatic', 'Regular'];
+  }
+
+  static List<Service> getWashingMachineServices(String type) {
+    return _services.where((s) =>
+    s.category == 'Home Appliances' &&
+        s.subcategory == 'Washing Machine' &&
+        s.subSubcategory == type
+    ).toList();
   }
 
   static List<Service> getServicesByCategory(String categoryId) {

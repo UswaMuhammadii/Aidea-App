@@ -3,12 +3,47 @@ import 'package:intl/intl.dart';
 import '../../models/user_model.dart';
 import '../../models/service_model.dart';
 import '../../models/booking_model.dart';
+import '../invoices/invoice_screen.dart';
+import '../notifications/notification_screen.dart';
 import '../../models/cart_model.dart';
+import '../reviews/review_screen.dart';
 import '../../services/dummy_data_service.dart';
 import '../services/service_listing_screen.dart';
 import '../profile/profile_screen.dart';
 import '../cart/cart_screen.dart';
 import '../../widget/service_image_widget.dart';
+import '../../utils/icons_helper.dart';
+
+class DashboardColors {
+  static const deepPurple = Color(0xFF7C3AED);      // Purple
+  static const electricBlue = Color(0xFF3B82F6);    // Blue
+  static const accentTeal = Color(0xFF14B8A6);      // Teal
+
+  // ✅ Enhanced gradient with purple dominance
+  static const headerGradient = LinearGradient(
+    begin: Alignment.topLeft,
+    end: Alignment.bottomRight,
+    colors: [
+      Color(0xFF7C3AED),  // Purple (primary)
+      Color(0xFF6366F1),  // Indigo
+      Color(0xFF3B82F6),  // Blue
+      Color(0xFF14B8A6),  // Teal
+    ],
+  );
+
+  // ✅ LIGHTER DRAWER GRADIENT
+  static const drawerGradient = LinearGradient(
+    begin: Alignment.topCenter,
+    end: Alignment.bottomCenter,
+    colors: [
+      Color(0xFF9F7AEA),  // Light Purple
+      Color(0xFF8B5CF6),  // Medium Purple
+      Color(0xFF7C3AED),  // Deep Purple
+      Color(0xFF6366F1),  // Indigo
+      Color(0xFF60A5FA),  // Light Blue
+    ],
+  );
+}
 
 class DashboardScreen extends StatefulWidget {
   final User user;
@@ -38,6 +73,177 @@ class _DashboardScreenState extends State<DashboardScreen> {
     super.initState();
     _selectedIndex = widget.initialTab;
     _categories = DummyDataService.getCategories();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      Future.delayed(const Duration(milliseconds: 500), () {
+        if (mounted) {
+          _showNotificationPopup();
+        }
+      });
+    });
+  }
+
+  void _handleNotificationPermission() {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: const Row(
+          children: [
+            Icon(Icons.check_circle, color: Colors.white),
+            SizedBox(width: 12),
+            Text('Notifications enabled successfully!'),
+          ],
+        ),
+        backgroundColor: const Color(0xFF10B981),
+        duration: const Duration(seconds: 2),
+        behavior: SnackBarBehavior.floating,
+        margin: const EdgeInsets.all(16),
+      ),
+    );
+  }
+
+  void _showNotificationPopup() {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    final cardColor = isDark ? const Color(0xFF1E293B) : Colors.white;
+    final textColor = isDark ? Colors.white : Colors.black87;
+    final subtitleColor = isDark ? Colors.grey.shade400 : Colors.grey.shade600;
+
+    showDialog(
+      context: context,
+      barrierDismissible: true,
+      builder: (context) => Center(
+        child: Container(
+          margin: const EdgeInsets.symmetric(horizontal: 20),
+          padding: const EdgeInsets.all(20),
+          decoration: BoxDecoration(
+            color: cardColor,
+            borderRadius: BorderRadius.circular(20),
+            boxShadow: [
+              BoxShadow(
+                color: Colors.black.withOpacity(isDark ? 0.4 : 0.15),
+                blurRadius: 25,
+                offset: const Offset(0, 10),
+              ),
+            ],
+          ),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              // Notification Icon with Gradient Background
+              Container(
+                padding: const EdgeInsets.all(16),
+                decoration: BoxDecoration(
+                  gradient: const LinearGradient(
+                    colors: [Color(0xFF3B82F6), Color(0xFF14B8A6)],
+                    begin: Alignment.topLeft,
+                    end: Alignment.bottomRight,
+                  ),
+                  shape: BoxShape.circle,
+                ),
+                child: const Icon(
+                  Icons.notifications_active,
+                  color: Colors.white,
+                  size: 32,
+                ),
+              ),
+              const SizedBox(height: 16),
+
+              // Title
+              Text(
+                'Notifications',
+                style: TextStyle(
+                  fontSize: 18,
+                  fontWeight: FontWeight.bold,
+                  color: textColor,
+                ),
+              ),
+              const SizedBox(height: 12),
+
+              // Message
+              Text(
+                'Get updates on your bookings',
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                  fontSize: 14,
+                  color: subtitleColor,
+                ),
+              ),
+              const SizedBox(height: 16),
+
+              // Action Buttons
+              Row(
+                children: [
+                  Expanded(
+                    child: OutlinedButton(
+                      onPressed: () => Navigator.pop(context),
+                      style: OutlinedButton.styleFrom(
+                        side: BorderSide(
+                          color: isDark ? Colors.grey.shade600 : Colors.grey.shade300,
+                        ),
+                        padding: const EdgeInsets.symmetric(vertical: 12),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(12),
+                        ),
+                      ),
+                      child: Text(
+                        'Not Now',
+                        style: TextStyle(
+                          color: subtitleColor,
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ),
+                    ),
+                  ),
+                  const SizedBox(width: 12),
+                  Expanded(
+                    child: Container(
+                      decoration: BoxDecoration(
+                        gradient: const LinearGradient(
+                          colors: [Color(0xFF7C3AED), Color(0xFF3B82F6)],
+                        ),
+                        borderRadius: BorderRadius.circular(12),
+                        boxShadow: [
+                          BoxShadow(
+                            color: const Color(0xFF7C3AED).withOpacity(0.3),
+                            blurRadius: 10,
+                            offset: const Offset(0, 5),
+                          ),
+                        ],
+                      ),
+                      child: Material(
+                        color: Colors.transparent,
+                        child: InkWell(
+                          onTap: () {
+                            _handleNotificationPermission();
+                            Navigator.pop(context);
+                          },
+                          borderRadius: BorderRadius.circular(12),
+                          child: const Padding(
+                            padding: EdgeInsets.symmetric(vertical: 12),
+                            child: Center(
+                              child: Text(
+                                'Allow',
+                                style: TextStyle(
+                                  color: Colors.white,
+                                  fontWeight: FontWeight.w600,
+                                ),
+                              ),
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+  int _getUnreadNotificationCount() {
+    return globalNotifications
+        .where((n) => !n.isRead)
+        .length;
   }
 
   void _changeAddress() {
@@ -66,10 +272,10 @@ class _DashboardScreenState extends State<DashboardScreen> {
                   Container(
                     padding: const EdgeInsets.all(8),
                     decoration: BoxDecoration(
-                      color: const Color(0xFF6B5B9A).withOpacity(0.1),
+                      color: DashboardColors.deepPurple.withOpacity(0.1),
                       borderRadius: BorderRadius.circular(8),
                     ),
-                    child: const Icon(Icons.location_on, color: Color(0xFF6B5B9A)),
+                    child: const Icon(Icons.location_on, color: DashboardColors.deepPurple),
                   ),
                   const SizedBox(width: 12),
                   Text('Home', style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: textColor)),
@@ -84,13 +290,16 @@ class _DashboardScreenState extends State<DashboardScreen> {
               Text(_selectedAddress, style: TextStyle(fontSize: 14, color: subtitleColor)),
               const SizedBox(height: 20),
               ListTile(
-                leading: const Icon(Icons.my_location, color: Color(0xFF6B5B9A)),
+                leading: const Icon(Icons.my_location, color: DashboardColors.deepPurple),
                 title: Text('Use my current location', style: TextStyle(color: textColor)),
                 contentPadding: EdgeInsets.zero,
                 onTap: () {
                   Navigator.pop(context);
                   ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(content: Text('Getting current location...'), backgroundColor: Color(0xFF6B5B9A)),
+                    const SnackBar(
+                      content: Text('Getting current location...'),
+                      backgroundColor: DashboardColors.deepPurple,
+                    ),
                   );
                 },
               ),
@@ -123,7 +332,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                 child: ElevatedButton(
                   onPressed: () => Navigator.pop(context),
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: const Color(0xFF6B5B9A),
+                    backgroundColor: DashboardColors.deepPurple,
                     padding: const EdgeInsets.symmetric(vertical: 16),
                     shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
                   ),
@@ -151,23 +360,17 @@ class _DashboardScreenState extends State<DashboardScreen> {
       body: SafeArea(
         child: Column(
           children: [
-            // In the _DashboardScreenState build method, update the header section:
-
             if (_selectedIndex == 0)
               Container(
                 decoration: BoxDecoration(
-                  gradient: const LinearGradient(
-                    begin: Alignment.topLeft,
-                    end: Alignment.bottomRight,
-                    colors: [Color(0xFF6B5B9A), Color(0xFF7C3AED)],
-                  ),
+                  gradient: DashboardColors.headerGradient,
                   borderRadius: const BorderRadius.only(
                     bottomLeft: Radius.circular(32),
                     bottomRight: Radius.circular(32),
                   ),
                   boxShadow: [
                     BoxShadow(
-                      color: const Color(0xFF6B5B9A).withOpacity(0.3),
+                      color: DashboardColors.deepPurple.withOpacity(0.3),
                       blurRadius: 20,
                       offset: const Offset(0, 10),
                     ),
@@ -187,6 +390,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                           ),
                           Row(
                             children: [
+                              // CART ICON
                               GestureDetector(
                                 onTap: () {
                                   Navigator.push(context, MaterialPageRoute(builder: (context) => CartScreen(user: widget.user)))
@@ -208,7 +412,10 @@ class _DashboardScreenState extends State<DashboardScreen> {
                                         top: 0,
                                         child: Container(
                                           padding: const EdgeInsets.all(4),
-                                          decoration: const BoxDecoration(color: Colors.red, shape: BoxShape.circle),
+                                          decoration: const BoxDecoration(
+                                            color: Colors.red,
+                                            shape: BoxShape.circle,
+                                          ),
                                           constraints: const BoxConstraints(minWidth: 18, minHeight: 18),
                                           child: Text(
                                             cartItemsCount.toString(),
@@ -221,23 +428,53 @@ class _DashboardScreenState extends State<DashboardScreen> {
                                 ),
                               ),
                               const SizedBox(width: 12),
-                              Container(
-                                padding: const EdgeInsets.all(8),
-                                decoration: BoxDecoration(
-                                  color: Colors.white.withOpacity(0.2),
-                                  borderRadius: BorderRadius.circular(12),
+                              // NOTIFICATION BELL ICON
+                              GestureDetector(
+                                onTap: () {
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(builder: (context) => NotificationScreen(user: widget.user)),
+                                  ).then((_) => setState(() {}));
+                                },
+                                child: Stack(
+                                  children: [
+                                    Container(
+                                      padding: const EdgeInsets.all(8),
+                                      decoration: BoxDecoration(
+                                        color: Colors.white.withOpacity(0.2),
+                                        borderRadius: BorderRadius.circular(12),
+                                      ),
+                                      child: const Icon(Icons.notifications_outlined, color: Colors.white, size: 24),
+                                    ),
+                                    if (_getUnreadNotificationCount() > 0)
+                                      Positioned(
+                                        right: 0,
+                                        top: 0,
+                                        child: Container(
+                                          padding: const EdgeInsets.all(4),
+                                          decoration: const BoxDecoration(
+                                            gradient: LinearGradient(colors: [Color(0xFFEF4444), Color(0xFFDC2626)]),
+                                            shape: BoxShape.circle,
+                                          ),
+                                          constraints: const BoxConstraints(minWidth: 18, minHeight: 18),
+                                          child: Text(
+                                            '${_getUnreadNotificationCount()}',
+                                            style: const TextStyle(color: Colors.white, fontSize: 10, fontWeight: FontWeight.bold),
+                                            textAlign: TextAlign.center,
+                                          ),
+                                        ),
+                                      ),
+                                  ],
                                 ),
-                                child: const Icon(Icons.notifications_outlined, color: Colors.white, size: 24),
                               ),
                             ],
                           ),
                         ],
                       ),
                       const SizedBox(height: 16),
-                      // Updated company name with logo
+                      // Company logo and name
                       Row(
                         children: [
-                          // Logo
                           Container(
                             width: 40,
                             height: 40,
@@ -265,7 +502,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                                     ),
                                     child: const Icon(
                                       Icons.business,
-                                      color: Color(0xFF6B5B9A),
+                                      color: DashboardColors.deepPurple,
                                       size: 24,
                                     ),
                                   );
@@ -274,7 +511,6 @@ class _DashboardScreenState extends State<DashboardScreen> {
                             ),
                           ),
                           const SizedBox(width: 12),
-                          // Company name
                           const Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
@@ -339,12 +575,15 @@ class _DashboardScreenState extends State<DashboardScreen> {
                   ),
                 ),
               ),
+            // MAIN CONTENT
             Expanded(
               child: IndexedStack(
                 index: _selectedIndex,
                 children: [
                   _buildHomeTab(),
                   _buildBookingsTab(),
+                  InvoiceScreen(user: widget.user),
+                  ReviewScreen(user: widget.user),
                   ProfileScreen(user: widget.user, onLogout: widget.onLogout),
                 ],
               ),
@@ -366,13 +605,15 @@ class _DashboardScreenState extends State<DashboardScreen> {
         ),
         child: SafeArea(
           child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+            padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 12),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceAround,
               children: [
                 _buildBottomNavItem(Icons.home_rounded, 'Home', 0),
-                _buildBottomNavItem(Icons.receipt_long_rounded, 'Orders', 1),
-                _buildBottomNavItem(Icons.person_rounded, 'Profile', 2),
+                _buildBottomNavItem(Icons.shopping_bag_rounded, 'Orders', 1),
+                _buildBottomNavItem(Icons.receipt_long_rounded, 'Invoices', 2),
+                _buildBottomNavItem(Icons.star_rounded, 'Reviews', 3),
+                _buildBottomNavItem(Icons.person_rounded, 'Profile', 4),
               ],
             ),
           ),
@@ -385,79 +626,132 @@ class _DashboardScreenState extends State<DashboardScreen> {
     return Drawer(
       child: Container(
         decoration: const BoxDecoration(
-          gradient: LinearGradient(
-            begin: Alignment.topCenter,
-            end: Alignment.bottomCenter,
-            colors: [Color(0xFF6B5B9A), Color(0xFFD7CCC8)],
-          ),
+          gradient: DashboardColors.drawerGradient,
         ),
         child: SafeArea(
           child: Column(
             children: [
-              const SizedBox(height: 32),
+              const SizedBox(height: 16),
               Container(
-                margin: const EdgeInsets.all(20),
-                padding: const EdgeInsets.all(20),
+                margin: const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
+                padding: const EdgeInsets.all(16),
                 decoration: BoxDecoration(
-                  color: Colors.white.withOpacity(0.2),
+                  color: Colors.white.withOpacity(0.15),
                   borderRadius: BorderRadius.circular(16),
                 ),
                 child: Column(
                   children: [
                     Container(
-                      width: 80,
-                      height: 80,
+                      width: 60,
+                      height: 60,
                       decoration: BoxDecoration(
                         color: Colors.white,
                         shape: BoxShape.circle,
-                        border: Border.all(color: Colors.white, width: 3),
+                        border: Border.all(color: Colors.white, width: 2),
                       ),
-                      child: const Icon(Icons.person, size: 40, color: Color(0xFF6B5B9A)),
+                      child: const Icon(
+                        Icons.person,
+                        size: 32,
+                        color: DashboardColors.deepPurple,
+                      ),
                     ),
-                    const SizedBox(height: 12),
-                    Text(widget.user.name, style: const TextStyle(color: Colors.white, fontSize: 20, fontWeight: FontWeight.bold)),
-                    const SizedBox(height: 4),
-                    Text(widget.user.email, style: const TextStyle(color: Colors.white70, fontSize: 14)),
+                    const SizedBox(height: 8),
+                    Text(
+                      widget.user.name,
+                      style: const TextStyle(
+                        color: Colors.white,
+                        fontSize: 16,
+                        fontWeight: FontWeight.bold,
+                      ),
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                    const SizedBox(height: 2),
+                    Text(
+                      widget.user.email,
+                      style: const TextStyle(
+                        color: Colors.white70,
+                        fontSize: 12,
+                      ),
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                    ),
                   ],
                 ),
               ),
               Expanded(
-                child: Container(
-                  margin: const EdgeInsets.only(top: 8),
+                child: SingleChildScrollView(
+                  padding: const EdgeInsets.symmetric(vertical: 8),
                   child: Column(
                     children: [
-                      _buildDrawerItem(icon: Icons.home, title: 'Home', onTap: () {
-                        Navigator.pop(context);
-                        setState(() => _selectedIndex = 0);
-                      }),
-                      _buildDrawerItem(icon: Icons.receipt_long, title: 'My Orders', onTap: () {
-                        Navigator.pop(context);
-                        setState(() => _selectedIndex = 1);
-                      }),
+                      _buildDrawerItem(
+                        icon: Icons.home,
+                        title: 'Home',
+                        onTap: () {
+                          Navigator.pop(context);
+                          setState(() => _selectedIndex = 0);
+                        },
+                      ),
+                      _buildDrawerItem(
+                        icon: Icons.shopping_bag_rounded,
+                        title: 'My Orders',
+                        onTap: () {
+                          Navigator.pop(context);
+                          setState(() => _selectedIndex = 1);
+                        },
+                      ),
+                      _buildDrawerItem(
+                        icon: Icons.receipt_long_rounded,
+                        title: 'Invoices',
+                        onTap: () {
+                          Navigator.pop(context);
+                          setState(() => _selectedIndex = 2);
+                        },
+                      ),
+                      _buildDrawerItem(
+                        icon: Icons.star_rounded,
+                        title: 'Reviews',
+                        onTap: () {
+                          Navigator.pop(context);
+                          setState(() => _selectedIndex = 3);
+                        },
+                      ),
                       _buildDrawerItem(
                         icon: Icons.shopping_cart,
                         title: 'Cart',
                         badge: cartItemsCount > 0 ? cartItemsCount.toString() : null,
                         onTap: () {
                           Navigator.pop(context);
-                          Navigator.push(context, MaterialPageRoute(builder: (context) => CartScreen(user: widget.user)))
-                              .then((_) => setState(() {}));
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => CartScreen(user: widget.user),
+                            ),
+                          ).then((_) => setState(() {}));
                         },
                       ),
-                      _buildDrawerItem(icon: Icons.person, title: 'Profile', onTap: () {
-                        Navigator.pop(context);
-                        setState(() => _selectedIndex = 2);
-                      }),
-                      const Spacer(),
-                      _buildDrawerItem(icon: Icons.logout, title: 'Logout', onTap: () {
-                        Navigator.pop(context);
-                        widget.onLogout();
-                      }),
-                      const SizedBox(height: 20),
+                      _buildDrawerItem(
+                        icon: Icons.person,
+                        title: 'Profile',
+                        onTap: () {
+                          Navigator.pop(context);
+                          setState(() => _selectedIndex = 4);
+                        },
+                      ),
                     ],
                   ),
                 ),
               ),
+              const Divider(color: Colors.white24, height: 1),
+              _buildDrawerItem(
+                icon: Icons.logout,
+                title: 'Logout',
+                onTap: () {
+                  Navigator.pop(context);
+                  widget.onLogout();
+                },
+              ),
+              const SizedBox(height: 12),
             ],
           ),
         ),
@@ -465,22 +759,45 @@ class _DashboardScreenState extends State<DashboardScreen> {
     );
   }
 
-  Widget _buildDrawerItem({required IconData icon, required String title, required VoidCallback onTap, String? badge}) {
+  Widget _buildDrawerItem({
+    required IconData icon,
+    required String title,
+    required VoidCallback onTap,
+    String? badge,
+  }) {
     return ListTile(
-      leading: Icon(icon, color: Colors.white),
+      leading: Icon(icon, color: Colors.white, size: 22),
       title: Row(
         children: [
-          Text(title, style: const TextStyle(color: Colors.white, fontSize: 16, fontWeight: FontWeight.w500)),
+          Text(
+            title,
+            style: const TextStyle(
+              color: Colors.white,
+              fontSize: 15,
+              fontWeight: FontWeight.w500,
+            ),
+          ),
           if (badge != null) ...[
             const SizedBox(width: 8),
             Container(
-              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
-              decoration: BoxDecoration(color: Colors.red, borderRadius: BorderRadius.circular(12)),
-              child: Text(badge, style: const TextStyle(color: Colors.white, fontSize: 12, fontWeight: FontWeight.bold)),
+              padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+              decoration: BoxDecoration(
+                color: Colors.red,
+                borderRadius: BorderRadius.circular(10),
+              ),
+              child: Text(
+                badge,
+                style: const TextStyle(
+                  color: Colors.white,
+                  fontSize: 11,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
             ),
           ],
         ],
       ),
+      contentPadding: const EdgeInsets.symmetric(horizontal: 24, vertical: 4),
       onTap: onTap,
     );
   }
@@ -494,21 +811,21 @@ class _DashboardScreenState extends State<DashboardScreen> {
       onTap: () => setState(() => _selectedIndex = index),
       borderRadius: BorderRadius.circular(16),
       child: Container(
-        padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
+        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
         decoration: BoxDecoration(
-          color: isActive ? const Color(0xFF6B5B9A).withOpacity(0.1) : Colors.transparent,
+          color: isActive ? DashboardColors.deepPurple.withOpacity(0.1) : Colors.transparent,
           borderRadius: BorderRadius.circular(16),
         ),
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            Icon(icon, color: isActive ? const Color(0xFF6B5B9A) : inactiveColor, size: 28),
+            Icon(icon, color: isActive ? DashboardColors.deepPurple : inactiveColor, size: 26),
             const SizedBox(height: 4),
             Text(
               label,
               style: TextStyle(
-                color: isActive ? const Color(0xFF6B5B9A) : inactiveColor,
-                fontSize: 12,
+                color: isActive ? DashboardColors.deepPurple : inactiveColor,
+                fontSize: 11,
                 fontWeight: isActive ? FontWeight.w600 : FontWeight.normal,
               ),
             ),
@@ -545,18 +862,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
     final shadowOpacity = isDark ? 0.3 : 0.08;
 
     Icon getCategoryIcon(String categoryName) {
-      switch (categoryName) {
-        case 'AC Services':
-          return const Icon(Icons.ac_unit, color: Colors.lightBlue, size: 28);
-        case 'Washing Machine Service':
-          return const Icon(Icons.local_laundry_service, color: Colors.blue, size: 28);
-        case 'Refrigerator Service':
-          return const Icon(Icons.kitchen, color: Colors.teal, size: 28);
-        case 'Other Services':
-          return const Icon(Icons.microwave, color: Colors.deepOrange, size: 28);
-        default:
-          return const Icon(Icons.build, color: Colors.grey, size: 28);
-      }
+      return IconHelper.getCategoryIcon(categoryName);
     }
 
     return Container(
@@ -608,10 +914,10 @@ class _DashboardScreenState extends State<DashboardScreen> {
                     Container(
                       padding: const EdgeInsets.all(8),
                       decoration: BoxDecoration(
-                        color: const Color(0xFF6B5B9A).withOpacity(0.1),
+                        color: DashboardColors.deepPurple.withOpacity(0.1),
                         borderRadius: BorderRadius.circular(8),
                       ),
-                      child: const Icon(Icons.arrow_forward_ios, color: Color(0xFF6B5B9A), size: 16),
+                      child: const Icon(Icons.arrow_forward_ios, color: DashboardColors.deepPurple, size: 16),
                     ),
                   ],
                 ),
@@ -690,10 +996,10 @@ class _DashboardScreenState extends State<DashboardScreen> {
                             Container(
                               padding: const EdgeInsets.all(20),
                               decoration: BoxDecoration(
-                                color: const Color(0xFF6B5B9A).withOpacity(0.1),
+                                color: DashboardColors.deepPurple.withOpacity(0.1),
                                 shape: BoxShape.circle,
                               ),
-                              child: Icon(Icons.receipt_long_outlined, size: 64, color: const Color(0xFF6B5B9A).withOpacity(0.5)),
+                              child: Icon(Icons.receipt_long_outlined, size: 64, color: DashboardColors.deepPurple.withOpacity(0.5)),
                             ),
                             const SizedBox(height: 20),
                             Text(_orderTabIndex == 0 ? 'No Active Orders' : 'No Previous Orders', style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: textColor)),
@@ -704,11 +1010,11 @@ class _DashboardScreenState extends State<DashboardScreen> {
                               ElevatedButton(
                                 onPressed: () => setState(() => _selectedIndex = 0),
                                 style: ElevatedButton.styleFrom(
-                                  backgroundColor: const Color(0xFFD7CCC8),
+                                  backgroundColor: DashboardColors.deepPurple,
                                   padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 16),
                                   shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
                                 ),
-                                child: const Text('Book Now', style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600)),
+                                child: const Text('Book Now', style: TextStyle(color: Colors.white, fontSize: 16, fontWeight: FontWeight.w600)),
                               ),
                             ],
                           ],
@@ -739,7 +1045,10 @@ class _DashboardScreenState extends State<DashboardScreen> {
                                     padding: const EdgeInsets.all(12),
                                     decoration: BoxDecoration(
                                       gradient: LinearGradient(
-                                        colors: [firstBooking.statusColor.withOpacity(0.2), firstBooking.statusColor.withOpacity(0.1)],
+                                        colors: [
+                                          firstBooking.statusColor.withOpacity(0.2),
+                                          firstBooking.statusColor.withOpacity(0.1)
+                                        ],
                                       ),
                                       borderRadius: BorderRadius.circular(12),
                                     ),
@@ -792,13 +1101,13 @@ class _DashboardScreenState extends State<DashboardScreen> {
                                             Container(
                                               width: 4,
                                               height: 4,
-                                              decoration: const BoxDecoration(color: Color(0xFF6B5B9A), shape: BoxShape.circle),
+                                              decoration: const BoxDecoration(color: DashboardColors.deepPurple, shape: BoxShape.circle),
                                             ),
                                             const SizedBox(width: 8),
                                             Expanded(
                                               child: Text('${booking.service?.name ?? 'Service'} (${booking.quantity}x)', style: TextStyle(fontSize: 12, color: textColor)),
                                             ),
-                                            Text('SAR ${booking.totalPrice.toStringAsFixed(0)}', style: const TextStyle(fontSize: 12, fontWeight: FontWeight.w600, color: Color(0xFF6B5B9A))),
+                                            Text('SAR ${booking.totalPrice.toStringAsFixed(0)}', style: const TextStyle(fontSize: 12, fontWeight: FontWeight.w600, color: DashboardColors.deepPurple)),
                                           ],
                                         ),
                                       )),
@@ -830,7 +1139,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                       children: [
                                         Text('Total Amount', style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold, color: textColor)),
-                                        Text('SAR ${totalPrice.toStringAsFixed(0)}', style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: Color(0xFF6B5B9A))),
+                                        Text('SAR ${totalPrice.toStringAsFixed(0)}', style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: DashboardColors.deepPurple)),
                                       ],
                                     ),
                                   ],
@@ -860,7 +1169,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
       child: Container(
         padding: const EdgeInsets.symmetric(vertical: 16),
         decoration: BoxDecoration(
-          border: Border(bottom: BorderSide(color: isActive ? const Color(0xFF6B5B9A) : Colors.transparent, width: 3)),
+          border: Border(bottom: BorderSide(color: isActive ? DashboardColors.deepPurple : Colors.transparent, width: 3)),
         ),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.center,
@@ -871,7 +1180,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
               style: TextStyle(
                 fontSize: 16,
                 fontWeight: isActive ? FontWeight.bold : FontWeight.normal,
-                color: isActive ? const Color(0xFF6B5B9A) : inactiveColor,
+                color: isActive ? DashboardColors.deepPurple : inactiveColor,
               ),
             ),
             if (count > 0) ...[
@@ -879,7 +1188,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
               Container(
                 padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
                 decoration: BoxDecoration(
-                  color: isActive ? const Color(0xFF6B5B9A) : (isDark ? Colors.grey.shade700 : Colors.grey.shade400),
+                  color: isActive ? DashboardColors.deepPurple : (isDark ? Colors.grey.shade700 : Colors.grey.shade400),
                   borderRadius: BorderRadius.circular(10),
                 ),
                 child: Text(count.toString(), style: const TextStyle(color: Colors.white, fontSize: 12, fontWeight: FontWeight.bold)),
