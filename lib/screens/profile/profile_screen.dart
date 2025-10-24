@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import '../../models/user_model.dart';
 import 'edit_profile_screen.dart';
 import 'addresses_screen.dart';
+import '../notifications/notification_screen.dart';
 
 class AppColors {
   static const deepPurple = Color(0xFF7C3AED);
@@ -284,9 +285,10 @@ class _ProfileScreenState extends State<ProfileScreen> {
                           textColor: textColor,
                           subtitleColor: subtitleColor,
                           onTap: () {
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              const SnackBar(
-                                content: Text('Notification settings coming soon!'),
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => NotificationScreen(user: widget.user),
                               ),
                             );
                           },

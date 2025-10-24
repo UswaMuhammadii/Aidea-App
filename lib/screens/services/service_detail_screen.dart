@@ -4,6 +4,7 @@ import '../../models/user_model.dart';
 import '../../models/cart_model.dart';
 import '../cart/cart_screen.dart';
 import '../../utils/icons_helper.dart';
+import '../../utils/app_colors.dart';
 
 class ServiceDetailScreen extends StatefulWidget {
   final Service service;
@@ -222,7 +223,7 @@ class _ServiceDetailScreenState extends State<ServiceDetailScreen> with TickerPr
                               padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
                               decoration: BoxDecoration(
                                 gradient: const LinearGradient(
-                                  colors: [Color(0xFF6B5B9A), Color(0xFF7C3AED)],
+                                  colors: [AppColors.electricBlue, Color(0xFF7C3AED)],
                                 ),
                                 borderRadius: BorderRadius.circular(12),
                               ),
@@ -330,11 +331,11 @@ class _ServiceDetailScreenState extends State<ServiceDetailScreen> with TickerPr
               height: 60,
               decoration: BoxDecoration(
                 gradient: const LinearGradient(
-                  colors: [Color(0xFF6B5B9A), Color(0xFF7C3AED)],
+                  colors: [AppColors.electricBlue, Color(0xFF7C3AED)],
                 ),
                 borderRadius: BorderRadius.circular(16),
                 boxShadow: [BoxShadow(
-                    color: const Color(0xFF6B5B9A).withOpacity(0.3),
+                    color: AppColors.electricBlue.withOpacity(0.3),
                     blurRadius: 15,
                     offset: const Offset(0, 8)
                 )],

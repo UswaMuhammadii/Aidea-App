@@ -7,6 +7,10 @@ enum NotificationType {
   promotion,
   reminder,
   payment,
+  technicianAssigned,
+  workStarted,
+  workCompleted,
+  invoiceGenerated,
   general,
 }
 
@@ -61,6 +65,38 @@ final List<NotificationModel> globalNotifications = [
     type: NotificationType.general,
     createdAt: DateTime.now().subtract(const Duration(days: 2)),
     isRead: true,
+  ),
+  NotificationModel(
+    id: '5',
+    title: 'Technician Assigned',
+    message: 'Your technician Ahmed has been assigned to your AC Cleaning service',
+    type: NotificationType.technicianAssigned,
+    createdAt: DateTime.now().subtract(const Duration(hours: 1)),
+    isRead: false,
+  ),
+  NotificationModel(
+    id: '6',
+    title: 'Work Started',
+    message: 'Your technician has started working on your service',
+    type: NotificationType.workStarted,
+    createdAt: DateTime.now().subtract(const Duration(minutes: 30)),
+    isRead: false,
+  ),
+  NotificationModel(
+    id: '7',
+    title: 'Work Completed',
+    message: 'Your service has been completed successfully. Please review and rate!',
+    type: NotificationType.workCompleted,
+    createdAt: DateTime.now().subtract(const Duration(minutes: 10)),
+    isRead: false,
+  ),
+  NotificationModel(
+    id: '8',
+    title: 'Invoice Generated',
+    message: 'Your invoice is ready. Total amount: SAR 150',
+    type: NotificationType.invoiceGenerated,
+    createdAt: DateTime.now().subtract(const Duration(minutes: 5)),
+    isRead: false,
   ),
 ];
 
@@ -168,6 +204,14 @@ class _NotificationScreenState extends State<NotificationScreen> {
         return Icons.payment;
       case NotificationType.general:
         return Icons.notifications;
+      case NotificationType.technicianAssigned:
+        return Icons.person_add;
+      case NotificationType.workStarted:
+        return Icons.play_circle_outline;
+      case NotificationType.workCompleted:
+        return Icons.check_circle_outline;
+      case NotificationType.invoiceGenerated:
+        return Icons.receipt_long;
     }
   }
 
@@ -183,6 +227,14 @@ class _NotificationScreenState extends State<NotificationScreen> {
         return Colors.green;
       case NotificationType.general:
         return Colors.grey;
+      case NotificationType.technicianAssigned:
+        return Colors.teal;
+      case NotificationType.workStarted:
+        return Colors.indigo;
+      case NotificationType.workCompleted:
+        return Colors.green;
+      case NotificationType.invoiceGenerated:
+        return Colors.deepPurple;
     }
   }
 

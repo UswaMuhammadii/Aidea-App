@@ -51,6 +51,7 @@ class _ServiceListingScreenState extends State<ServiceListingScreen> with Ticker
   int _selectedQuantity = 1;
   String? _selectedServiceId;
   final TextEditingController _searchController = TextEditingController();
+  final ScrollController _scrollController = ScrollController();
   late AnimationController _animationController;
   late Animation<double> _fadeAnimation;
   late Animation<Offset> _slideAnimation;
@@ -89,6 +90,7 @@ class _ServiceListingScreenState extends State<ServiceListingScreen> with Ticker
   @override
   void dispose() {
     _searchController.dispose();
+    _scrollController.dispose();
     _animationController.dispose();
     super.dispose();
   }
@@ -577,6 +579,7 @@ class _ServiceListingScreenState extends State<ServiceListingScreen> with Ticker
             child: SlideTransition(
               position: _slideAnimation,
               child: ListView.builder(
+                controller: _scrollController,
                 padding: const EdgeInsets.symmetric(horizontal: 16),
                 itemCount: _filteredServices.length,
                 itemBuilder: (context, index) {
@@ -614,6 +617,17 @@ class _ServiceListingScreenState extends State<ServiceListingScreen> with Ticker
                             _selectedServiceId = isSelected ? null : service.id;
                             _selectedQuantity = 1;
                           });
+
+                          // Scroll up when a service is selected
+                          if (!isSelected && _scrollController.hasClients) {
+                            Future.delayed(const Duration(milliseconds: 100), () {
+                              _scrollController.animateTo(
+                                _scrollController.position.pixels + 100,
+                                duration: const Duration(milliseconds: 300),
+                                curve: Curves.easeOut,
+                              );
+                            });
+                          }
                         },
                         child: Padding(
                           padding: const EdgeInsets.all(16),

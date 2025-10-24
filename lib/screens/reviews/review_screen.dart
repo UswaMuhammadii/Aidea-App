@@ -6,6 +6,7 @@ import 'package:intl/intl.dart';
 import '../../models/user_model.dart';
 import '../../models/booking_model.dart';
 import '../../services/dummy_data_service.dart';
+import '../../utils/app_colors.dart';
 
 // Review Model
 class Review {
@@ -104,7 +105,7 @@ class _ReviewScreenState extends State<ReviewScreen> with SingleTickerProviderSt
                       padding: const EdgeInsets.all(16),
                       decoration: BoxDecoration(
                         gradient: const LinearGradient(
-                          colors: [Color(0xFF6B5B9A), Color(0xFF7C3AED)],
+                          colors: [AppColors.electricBlue, Color(0xFF7C3AED)],
                         ),
                         borderRadius: BorderRadius.circular(16),
                       ),
@@ -241,7 +242,7 @@ class _ReviewScreenState extends State<ReviewScreen> with SingleTickerProviderSt
                           child: Container(
                             decoration: BoxDecoration(
                               gradient: const LinearGradient(
-                                colors: [Color(0xFF6B5B9A), Color(0xFF7C3AED)],
+                                colors: [AppColors.electricBlue, Color(0xFF7C3AED)],
                               ),
                               borderRadius: BorderRadius.circular(12),
                             ),
@@ -327,8 +328,8 @@ class _ReviewScreenState extends State<ReviewScreen> with SingleTickerProviderSt
         elevation: 0,
         bottom: TabBar(
           controller: _tabController,
-          indicatorColor: const Color(0xFF6B5B9A),
-          labelColor: const Color(0xFF6B5B9A),
+          indicatorColor: AppColors.electricBlue,
+          labelColor: AppColors.electricBlue,
           unselectedLabelColor: subtitleColor,
           tabs: [
             Tab(
@@ -391,8 +392,8 @@ class _ReviewScreenState extends State<ReviewScreen> with SingleTickerProviderSt
               decoration: BoxDecoration(
                 gradient: LinearGradient(
                   colors: [
-                    const Color(0xFF6B5B9A).withOpacity(0.1),
-                    const Color(0xFF6B5B9A).withOpacity(0.1),
+                    AppColors.electricBlue.withOpacity(0.1),
+                    AppColors.electricBlue.withOpacity(0.1),
                   ],
                 ),
                 shape: BoxShape.circle,
@@ -400,7 +401,7 @@ class _ReviewScreenState extends State<ReviewScreen> with SingleTickerProviderSt
               child: const Icon(
                 Icons.rate_review_outlined,
                 size: 80,
-                color: Color(0xFF6B5B9A),
+                color: AppColors.electricBlue,
               ),
             ),
             const SizedBox(height: 24),
@@ -454,7 +455,7 @@ class _ReviewScreenState extends State<ReviewScreen> with SingleTickerProviderSt
                       padding: const EdgeInsets.all(12),
                       decoration: BoxDecoration(
                         gradient: const LinearGradient(
-                          colors: [Color(0xFF6B5B9A), Color(0xFF7C3AED)],
+                          colors: [AppColors.electricBlue, Color(0xFF7C3AED)],
                         ),
                         borderRadius: BorderRadius.circular(12),
                       ),
@@ -496,7 +497,7 @@ class _ReviewScreenState extends State<ReviewScreen> with SingleTickerProviderSt
                   child: Container(
                     decoration: BoxDecoration(
                       gradient: const LinearGradient(
-                        colors: [Color(0xFF6B5B9A), Color(0xFF7C3AED)],
+                        colors: [AppColors.electricBlue, Color(0xFF7C3AED)],
                       ),
                       borderRadius: BorderRadius.circular(12),
                     ),
@@ -552,8 +553,8 @@ class _ReviewScreenState extends State<ReviewScreen> with SingleTickerProviderSt
               decoration: BoxDecoration(
                 gradient: LinearGradient(
                   colors: [
-                    const Color(0xFF6B5B9A).withOpacity(0.1),
-                    const Color(0xFF6B5B9A).withOpacity(0.1),
+                    AppColors.electricBlue.withOpacity(0.1),
+                    AppColors.electricBlue.withOpacity(0.1),
                   ],
                 ),
                 shape: BoxShape.circle,
@@ -561,7 +562,7 @@ class _ReviewScreenState extends State<ReviewScreen> with SingleTickerProviderSt
               child: const Icon(
                 Icons.rate_review_outlined,
                 size: 80,
-                color: Color(0xFF6B5B9A),
+                color: AppColors.electricBlue,
               ),
             ),
             const SizedBox(height: 24),
@@ -615,7 +616,7 @@ class _ReviewScreenState extends State<ReviewScreen> with SingleTickerProviderSt
                       padding: const EdgeInsets.all(12),
                       decoration: BoxDecoration(
                         gradient: const LinearGradient(
-                          colors: [Color(0xFF6B5B9A), Color(0xFF7C3AED)],
+                          colors: [AppColors.electricBlue, Color(0xFF7C3AED)],
                         ),
                         borderRadius: BorderRadius.circular(12),
                       ),

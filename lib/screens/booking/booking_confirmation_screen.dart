@@ -5,6 +5,7 @@ import 'package:intl/intl.dart';
 import '../../models/user_model.dart';
 import '../../models/booking_model.dart';
 import '../dashboard/dashboard_screen.dart';
+import '../../utils/app_colors.dart';
 
 class BookingConfirmationScreen extends StatelessWidget {
   final List<Booking> bookings;
@@ -42,12 +43,12 @@ class BookingConfirmationScreen extends StatelessWidget {
                 height: 100,
                 decoration: BoxDecoration(
                   gradient: const LinearGradient(
-                    colors: [Color(0xFF10B981), Color(0xFF059669)],
+                    colors: [AppColors.success, AppColors.success],
                   ),
                   shape: BoxShape.circle,
                   boxShadow: [
                     BoxShadow(
-                      color: const Color(0xFF10B981).withOpacity(0.3),
+                      color: AppColors.success.withOpacity(0.3),
                       blurRadius: 20,
                       offset: const Offset(0, 10),
                     ),
@@ -67,7 +68,7 @@ class BookingConfirmationScreen extends StatelessWidget {
                 style: TextStyle(
                   fontSize: 28,
                   fontWeight: FontWeight.bold,
-                  color: const Color(0xFF10B981),
+                  color: AppColors.success,
                 ),
               ),
               const SizedBox(height: 8),
@@ -106,12 +107,12 @@ class BookingConfirmationScreen extends StatelessWidget {
                           Container(
                             padding: const EdgeInsets.all(8),
                             decoration: BoxDecoration(
-                              color: const Color(0xFF2563EB).withOpacity(0.1),
+                              color: AppColors.electricBlue.withOpacity(0.1),
                               borderRadius: BorderRadius.circular(8),
                             ),
                             child: const Icon(
                               Icons.receipt_long,
-                              color: Color(0xFF2563EB),
+                              color: AppColors.electricBlue,
                               size: 20,
                             ),
                           ),
@@ -149,7 +150,7 @@ class BookingConfirmationScreen extends StatelessWidget {
                                       width: 6,
                                       height: 6,
                                       decoration: const BoxDecoration(
-                                        color: Color(0xFF2563EB),
+                                        color: AppColors.electricBlue,
                                         shape: BoxShape.circle,
                                       ),
                                     ),
@@ -168,7 +169,7 @@ class BookingConfirmationScreen extends StatelessWidget {
                                       style: const TextStyle(
                                         fontSize: 14,
                                         fontWeight: FontWeight.w600,
-                                        color: Color(0xFF6B5B9A),
+                                        color: AppColors.electricBlue,
                                       ),
                                     ),
                                   ],
@@ -185,16 +186,6 @@ class BookingConfirmationScreen extends StatelessWidget {
                       _buildDetailRow('Time', DateFormat('h:mm a').format(firstBooking.bookingTime), textColor, subtitleColor),
                       if (bookings.length == 1)
                         _buildDetailRow('Quantity', '${firstBooking.quantity}', textColor, subtitleColor),
-                      _buildDetailRow(
-                        'Payment',
-                        firstBooking.paymentMethod == 'cash'
-                            ? 'Cash on Service'
-                            : firstBooking.paymentMethod == 'card'
-                            ? 'Credit/Debit Card'
-                            : 'Digital Wallet',
-                        textColor,
-                        subtitleColor,
-                      ),
                       Divider(height: 32, color: isDark ? Colors.grey.shade700 : Colors.grey.shade300),
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -212,7 +203,7 @@ class BookingConfirmationScreen extends StatelessWidget {
                             style: const TextStyle(
                               fontSize: 24,
                               fontWeight: FontWeight.bold,
-                              color: Color(0xFF6B5B9A),
+                              color: AppColors.electricBlue,
                             ),
                           ),
                         ],
@@ -223,7 +214,7 @@ class BookingConfirmationScreen extends StatelessWidget {
                         Container(
                           padding: const EdgeInsets.all(12),
                           decoration: BoxDecoration(
-                            color: Color(0xFF6B5B9A).withOpacity(isDark ? 0.2 : 0.1),
+                            color: AppColors.electricBlue.withOpacity(isDark ? 0.2 : 0.1),
                             borderRadius: BorderRadius.circular(12),
                           ),
                           child: Row(
@@ -232,7 +223,7 @@ class BookingConfirmationScreen extends StatelessWidget {
                               const Icon(
                                 Icons.note,
                                 size: 16,
-                                color: Color(0xFF2563EB),
+                                color: AppColors.electricBlue,
                               ),
                               const SizedBox(width: 8),
                               Expanded(
@@ -258,7 +249,7 @@ class BookingConfirmationScreen extends StatelessWidget {
               Container(
                 padding: const EdgeInsets.all(20),
                 decoration: BoxDecoration(
-                  color: const Color(0xFF2563EB).withOpacity(isDark ? 0.15 : 0.1),
+                  color: AppColors.electricBlue.withOpacity(isDark ? 0.15 : 0.1),
                   borderRadius: BorderRadius.circular(16),
                 ),
                 child: Column(
@@ -268,7 +259,7 @@ class BookingConfirmationScreen extends StatelessWidget {
                       children: [
                         const Icon(
                           Icons.info_outline,
-                          color: Color(0xFF2563EB),
+                          color: AppColors.electricBlue,
                           size: 20,
                         ),
                         const SizedBox(width: 8),
@@ -313,7 +304,7 @@ class BookingConfirmationScreen extends StatelessWidget {
                       style: OutlinedButton.styleFrom(
                         padding: const EdgeInsets.symmetric(vertical: 16),
                         side: BorderSide(
-                          color: isDark ? Colors.grey.shade600 : const Color(0xFF6B5B9A),
+                          color: isDark ? Colors.grey.shade600 : AppColors.electricBlue,
                         ),
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(12),
@@ -324,7 +315,7 @@ class BookingConfirmationScreen extends StatelessWidget {
                         style: TextStyle(
                           fontSize: 16,
                           fontWeight: FontWeight.w600,
-                          color: isDark ? Colors.grey.shade300 : const Color(0xFF6B5B9A),
+                          color: isDark ? Colors.grey.shade300 : AppColors.electricBlue,
                         ),
                       ),
                     ),
@@ -334,12 +325,12 @@ class BookingConfirmationScreen extends StatelessWidget {
                     child: Container(
                       decoration: BoxDecoration(
                         gradient: const LinearGradient(
-                          colors: [Color(0xFF6B5B9A), Color(0xFF6B5B9A)],
+                          colors: [AppColors.electricBlue, AppColors.electricBlue],
                         ),
                         borderRadius: BorderRadius.circular(12),
                         boxShadow: [
                           BoxShadow(
-                            color: const Color(0xFF6B5B9A).withOpacity(0.4),
+                            color: AppColors.electricBlue.withOpacity(0.4),
                             blurRadius: 12,
                             offset: const Offset(0, 6),
                           ),
@@ -426,7 +417,7 @@ class BookingConfirmationScreen extends StatelessWidget {
           const Icon(
             Icons.check_circle,
             size: 16,
-            color: Color(0xFF2563EB),
+            color: AppColors.electricBlue,
           ),
           const SizedBox(width: 8),
           Expanded(

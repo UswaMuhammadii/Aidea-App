@@ -8,6 +8,7 @@ import 'package:share_plus/share_plus.dart';
 import '../../models/user_model.dart';
 import '../../models/booking_model.dart';
 import '../../services/dummy_data_service.dart';
+import '../../utils/app_colors.dart';
 
 class InvoiceScreen extends StatefulWidget {
   final User user;
@@ -92,54 +93,77 @@ class _InvoiceScreenState extends State<InvoiceScreen> {
                   crossAxisAlignment: pw.CrossAxisAlignment.start,
                   children: [
                     // Company Info
-                    pw.Column(
-                      crossAxisAlignment: pw.CrossAxisAlignment.start,
-                      children: [
-                        pw.Text(
-                          'Service Provider',
-                          style: pw.TextStyle(
-                            fontSize: 12,
-                            fontWeight: pw.FontWeight.bold,
-                            color: PdfColors.grey700,
+                    pw.Expanded(
+                      child: pw.Column(
+                        crossAxisAlignment: pw.CrossAxisAlignment.start,
+                        children: [
+                          pw.Text(
+                            'Service Provider',
+                            style: pw.TextStyle(
+                              fontSize: 10,
+                              color: PdfColors.grey700,
+                            ),
                           ),
-                        ),
-                        pw.SizedBox(height: 8),
-                        pw.Text(
-                          'Your Company Name',
-                          style: pw.TextStyle(
-                            fontSize: 16,
-                            fontWeight: pw.FontWeight.bold,
+                          pw.SizedBox(height: 5),
+                          pw.Text(
+                            'Aidea Technology',
+                            style: pw.TextStyle(
+                              fontSize: 16,
+                              fontWeight: pw.FontWeight.bold,
+                            ),
                           ),
-                        ),
-                        pw.Text('Lahore, Punjab, Pakistan'),
-                        pw.Text('Phone: +92 XXX XXXXXXX'),
-                        pw.Text('Email: info@yourcompany.com'),
-                      ],
+                          pw.SizedBox(height: 8),
+                          pw.Text(
+                            'Home Services',
+                            style: const pw.TextStyle(fontSize: 12),
+                          ),
+                          pw.Text(
+                            'Building Sultan Town',
+                            style: const pw.TextStyle(fontSize: 11),
+                          ),
+                          pw.Text(
+                            'Lahore, Punjab, Pakistan',
+                            style: const pw.TextStyle(fontSize: 11),
+                          ),
+                        ],
+                      ),
                     ),
+                    pw.SizedBox(width: 20),
                     // Customer Info
-                    pw.Column(
-                      crossAxisAlignment: pw.CrossAxisAlignment.end,
-                      children: [
-                        pw.Text(
-                          'Bill To',
-                          style: pw.TextStyle(
-                            fontSize: 12,
-                            fontWeight: pw.FontWeight.bold,
-                            color: PdfColors.grey700,
+                    pw.Expanded(
+                      child: pw.Column(
+                        crossAxisAlignment: pw.CrossAxisAlignment.start,
+                        children: [
+                          pw.Text(
+                            'Bill To',
+                            style: pw.TextStyle(
+                              fontSize: 10,
+                              color: PdfColors.grey700,
+                            ),
                           ),
-                        ),
-                        pw.SizedBox(height: 8),
-                        pw.Text(
-                          widget.user.name,
-                          style: pw.TextStyle(
-                            fontSize: 16,
-                            fontWeight: pw.FontWeight.bold,
+                          pw.SizedBox(height: 5),
+                          pw.Text(
+                            widget.user.name,
+                            style: pw.TextStyle(
+                              fontSize: 16,
+                              fontWeight: pw.FontWeight.bold,
+                            ),
                           ),
-                        ),
-                        pw.Text(widget.user.address),
-                        pw.Text('Phone: ${widget.user.phone}'),
-                        pw.Text('Email: ${widget.user.email}'),
-                      ],
+                          pw.SizedBox(height: 8),
+                          pw.Text(
+                            widget.user.email,
+                            style: const pw.TextStyle(fontSize: 11),
+                          ),
+                          pw.Text(
+                            widget.user.phone,
+                            style: const pw.TextStyle(fontSize: 11),
+                          ),
+                          pw.Text(
+                            widget.user.address,
+                            style: const pw.TextStyle(fontSize: 11),
+                          ),
+                        ],
+                      ),
                     ),
                   ],
                 ),
@@ -159,6 +183,7 @@ class _InvoiceScreenState extends State<InvoiceScreen> {
                             color: PdfColors.grey700,
                           ),
                         ),
+                        pw.SizedBox(height: 3),
                         pw.Text(
                           DateFormat('MMM dd, yyyy').format(booking.createdAt),
                           style: pw.TextStyle(
@@ -178,6 +203,7 @@ class _InvoiceScreenState extends State<InvoiceScreen> {
                             color: PdfColors.grey700,
                           ),
                         ),
+                        pw.SizedBox(height: 3),
                         pw.Text(
                           DateFormat('MMM dd, yyyy').format(booking.bookingDate),
                           style: pw.TextStyle(
@@ -197,6 +223,7 @@ class _InvoiceScreenState extends State<InvoiceScreen> {
                             color: PdfColors.grey700,
                           ),
                         ),
+                        pw.SizedBox(height: 3),
                         pw.Text(
                           booking.paymentMethod == 'cash'
                               ? 'Cash on Service'
@@ -215,6 +242,12 @@ class _InvoiceScreenState extends State<InvoiceScreen> {
                 // Services Table
                 pw.Table(
                   border: pw.TableBorder.all(color: PdfColors.grey300),
+                  columnWidths: {
+                    0: const pw.FlexColumnWidth(3),
+                    1: const pw.FlexColumnWidth(1),
+                    2: const pw.FlexColumnWidth(1.5),
+                    3: const pw.FlexColumnWidth(1.5),
+                  },
                   children: [
                     // Header
                     pw.TableRow(
@@ -232,7 +265,7 @@ class _InvoiceScreenState extends State<InvoiceScreen> {
                         pw.Padding(
                           padding: const pw.EdgeInsets.all(10),
                           child: pw.Text(
-                            'Quantity',
+                            'Qty',
                             style: pw.TextStyle(fontWeight: pw.FontWeight.bold),
                             textAlign: pw.TextAlign.center,
                           ),
@@ -281,6 +314,7 @@ class _InvoiceScreenState extends State<InvoiceScreen> {
                           child: pw.Text(
                             'SAR ${booking.totalPrice.toStringAsFixed(2)}',
                             textAlign: pw.TextAlign.right,
+                            style: pw.TextStyle(fontWeight: pw.FontWeight.bold),
                           ),
                         ),
                       ],
@@ -294,7 +328,7 @@ class _InvoiceScreenState extends State<InvoiceScreen> {
                   mainAxisAlignment: pw.MainAxisAlignment.end,
                   children: [
                     pw.Container(
-                      width: 200,
+                      width: 250,
                       padding: const pw.EdgeInsets.all(15),
                       decoration: pw.BoxDecoration(
                         color: PdfColors.blue900,
@@ -315,7 +349,7 @@ class _InvoiceScreenState extends State<InvoiceScreen> {
                             'SAR ${booking.totalPrice.toStringAsFixed(2)}',
                             style: pw.TextStyle(
                               color: PdfColors.white,
-                              fontSize: 18,
+                              fontSize: 20,
                               fontWeight: pw.FontWeight.bold,
                             ),
                           ),
@@ -340,35 +374,41 @@ class _InvoiceScreenState extends State<InvoiceScreen> {
                         ),
                       ),
                       pw.SizedBox(height: 5),
-                      pw.Text(
-                        booking.notes!,
-                        style: const pw.TextStyle(fontSize: 11),
+                      pw.Container(
+                        padding: const pw.EdgeInsets.all(10),
+                        decoration: pw.BoxDecoration(
+                          color: PdfColors.grey100,
+                          borderRadius: pw.BorderRadius.circular(5),
+                        ),
+                        child: pw.Text(
+                          booking.notes!,
+                          style: const pw.TextStyle(fontSize: 11),
+                        ),
                       ),
                       pw.SizedBox(height: 20),
                     ],
                   ),
 
-                pw.Spacer(),
-
                 // Footer
+                pw.Spacer(),
                 pw.Divider(color: PdfColors.grey300),
                 pw.SizedBox(height: 10),
-                pw.Text(
-                  'Thank you for your business!',
-                  style: pw.TextStyle(
-                    fontSize: 12,
-                    fontWeight: pw.FontWeight.bold,
-                    color: PdfColors.blue900,
+                pw.Center(
+                  child: pw.Text(
+                    'Thank you for your business!',
+                    style: pw.TextStyle(
+                      fontSize: 12,
+                      color: PdfColors.grey700,
+                      fontStyle: pw.FontStyle.italic,
+                    ),
                   ),
-                  textAlign: pw.TextAlign.center,
                 ),
-                pw.Text(
-                  'For any queries, please contact us at info@yourcompany.com',
-                  style: const pw.TextStyle(
-                    fontSize: 10,
-                    color: PdfColors.grey700,
+                pw.SizedBox(height: 5),
+                pw.Center(
+                  child: pw.Text(
+                    'For any queries, contact us at support@aideatech.com',
+                    style: const pw.TextStyle(fontSize: 10, color: PdfColors.grey600),
                   ),
-                  textAlign: pw.TextAlign.center,
                 ),
               ],
             );
@@ -376,40 +416,23 @@ class _InvoiceScreenState extends State<InvoiceScreen> {
         ),
       );
 
-      // Save PDF
       final output = await getTemporaryDirectory();
-      final file = File('${output.path}/invoice_${booking.id.substring(0, 8)}.pdf');
+      final file = File('${output.path}/invoice_${booking.id}.pdf');
       await file.writeAsBytes(await pdf.save());
 
-      // Share PDF
-      await Share.shareXFiles(
-        [XFile(file.path)],
-        subject: 'Invoice #${booking.id.substring(0, 8)}',
-        text: 'Please find your invoice attached.',
-      );
-
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Row(
-              children: [
-                Icon(Icons.check_circle, color: Colors.white),
-                SizedBox(width: 8),
-                Text('Invoice generated and shared successfully!'),
-              ],
-            ),
-            backgroundColor: Colors.green,
-            behavior: SnackBarBehavior.floating,
-          ),
+        await Share.shareXFiles(
+          [XFile(file.path)],
+          subject: 'Invoice #${booking.id.substring(0, 8).toUpperCase()}',
+          text: 'Invoice for ${booking.service?.name ?? "Service"}',
         );
       }
     } catch (e) {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text('Error generating invoice: $e'),
+            content: Text('Error generating PDF: ${e.toString()}'),
             backgroundColor: Colors.red,
-            behavior: SnackBarBehavior.floating,
           ),
         );
       }
@@ -444,8 +467,8 @@ class _InvoiceScreenState extends State<InvoiceScreen> {
               decoration: BoxDecoration(
                 gradient: LinearGradient(
                   colors: [
-                    const Color(0xFF6B5B9A).withOpacity(0.1),
-                    const Color(0xFF6B5B9A).withOpacity(0.1),
+                    AppColors.electricBlue.withOpacity(0.1),
+                    AppColors.electricBlue.withOpacity(0.1),
                   ],
                 ),
                 shape: BoxShape.circle,
@@ -453,7 +476,7 @@ class _InvoiceScreenState extends State<InvoiceScreen> {
               child: const Icon(
                 Icons.receipt_long,
                 size: 80,
-                color: Color(0xFF6B5B9A),
+                color: AppColors.electricBlue,
               ),
             ),
             const SizedBox(height: 24),
@@ -500,17 +523,18 @@ class _InvoiceScreenState extends State<InvoiceScreen> {
                 borderRadius: BorderRadius.circular(16),
                 onTap: () => _generateAndSharePdf(booking),
                 child: Padding(
-                  padding: const EdgeInsets.all(16),
+                  padding: const EdgeInsets.all(20),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
+                      // Header Row
                       Row(
                         children: [
                           Container(
                             padding: const EdgeInsets.all(12),
                             decoration: BoxDecoration(
                               gradient: const LinearGradient(
-                                colors: [Color(0xFF6B5B9A), Color(0xFF7C3AED)],
+                                colors: [AppColors.electricBlue, Color(0xFF7C3AED)],
                               ),
                               borderRadius: BorderRadius.circular(12),
                             ),
@@ -566,13 +590,15 @@ class _InvoiceScreenState extends State<InvoiceScreen> {
                       ),
                       const SizedBox(height: 16),
                       Divider(color: isDark ? Colors.grey.shade700 : Colors.grey.shade300),
-                      const SizedBox(height: 12),
+                      const SizedBox(height: 16),
+
+                      // Service and Amount Row with improved alignment
                       Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
+                          // Service Info
                           Expanded(
-                            flex: 3,
+                            flex: 2,
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
@@ -581,15 +607,17 @@ class _InvoiceScreenState extends State<InvoiceScreen> {
                                   style: TextStyle(
                                     fontSize: 12,
                                     color: subtitleColor,
+                                    fontWeight: FontWeight.w500,
                                   ),
                                 ),
-                                const SizedBox(height: 4),
+                                const SizedBox(height: 6),
                                 Text(
                                   booking.service?.name ?? 'Service',
                                   style: TextStyle(
-                                    fontSize: 14,
+                                    fontSize: 15,
                                     fontWeight: FontWeight.w600,
                                     color: textColor,
+                                    height: 1.3,
                                   ),
                                   maxLines: 2,
                                   overflow: TextOverflow.ellipsis,
@@ -597,53 +625,56 @@ class _InvoiceScreenState extends State<InvoiceScreen> {
                               ],
                             ),
                           ),
-                          const SizedBox(width: 12),
-                          Expanded(
-                            flex: 2,
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.end,
-                              children: [
-                                Text(
-                                  'Amount',
-                                  style: TextStyle(
-                                    fontSize: 12,
-                                    color: subtitleColor,
-                                  ),
+                          const SizedBox(width: 20),
+
+                          // Amount Info
+                          Column(
+                            crossAxisAlignment: CrossAxisAlignment.end,
+                            children: [
+                              Text(
+                                'Amount',
+                                style: TextStyle(
+                                  fontSize: 12,
+                                  color: subtitleColor,
+                                  fontWeight: FontWeight.w500,
                                 ),
-                                const SizedBox(height: 4),
-                                Text(
-                                  'SAR ${booking.totalPrice.toStringAsFixed(0)}',
-                                  style: const TextStyle(
-                                    fontSize: 18,
-                                    fontWeight: FontWeight.bold,
-                                    color: Color(0xFF6B5B9A),
-                                  ),
+                              ),
+                              const SizedBox(height: 6),
+                              Text(
+                                'SAR ${booking.totalPrice.toStringAsFixed(0)}',
+                                style: const TextStyle(
+                                  fontSize: 20,
+                                  fontWeight: FontWeight.bold,
+                                  color: AppColors.electricBlue,
                                 ),
-                              ],
-                            ),
+                              ),
+                            ],
                           ),
                         ],
                       ),
-                      const SizedBox(height: 16),
+                      const SizedBox(height: 20),
+
+                      // Download Button
                       Container(
                         width: double.infinity,
-                        padding: const EdgeInsets.symmetric(vertical: 12),
+                        padding: const EdgeInsets.symmetric(vertical: 14),
                         decoration: BoxDecoration(
                           gradient: const LinearGradient(
-                            colors: [Color(0xFF6B5B9A), Color(0xFF7C3AED)],
+                            colors: [AppColors.electricBlue, Color(0xFF7C3AED)],
                           ),
-                          borderRadius: BorderRadius.circular(10),
+                          borderRadius: BorderRadius.circular(12),
                         ),
                         child: const Row(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
-                            Icon(Icons.download, color: Colors.white, size: 18),
-                            SizedBox(width: 8),
+                            Icon(Icons.download, color: Colors.white, size: 20),
+                            SizedBox(width: 10),
                             Text(
                               'Download / Share Invoice',
                               style: TextStyle(
                                 color: Colors.white,
                                 fontWeight: FontWeight.w600,
+                                fontSize: 15,
                               ),
                             ),
                           ],
