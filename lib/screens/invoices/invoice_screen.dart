@@ -46,7 +46,7 @@ class _InvoiceScreenState extends State<InvoiceScreen> {
     });
   }
 
-  Future<void> _generateAndSharePdf(Booking booking) async {
+  Future<void> _generateAndSharePdf(Booking booking, AppLocalizations l10n) async {
     try {
       final pdf = pw.Document();
 
@@ -453,7 +453,7 @@ class _InvoiceScreenState extends State<InvoiceScreen> {
     return Scaffold(
       backgroundColor: backgroundColor,
       appBar: AppBar(
-        title: const Text(l10n.invoices),
+        title: Text(l10n.invoices),
         backgroundColor: cardColor,
         foregroundColor: textColor,
         elevation: 0,
@@ -524,7 +524,7 @@ class _InvoiceScreenState extends State<InvoiceScreen> {
               color: Colors.transparent,
               child: InkWell(
                 borderRadius: BorderRadius.circular(16),
-                onTap: () => _generateAndSharePdf(booking),
+                onTap: () => _generateAndSharePdf(booking, l10n),
                 child: Padding(
                   padding: const EdgeInsets.all(20),
                   child: Column(
@@ -580,8 +580,7 @@ class _InvoiceScreenState extends State<InvoiceScreen> {
                               color: Colors.green.withValues(alpha: 0.1),
                               borderRadius: BorderRadius.circular(8),
                             ),
-                            child: const Text(
-                              l10n.paid,
+                            child: Text(l10n.paid,
                               style: TextStyle(
                                 fontSize: 12,
                                 fontWeight: FontWeight.bold,
@@ -667,14 +666,14 @@ class _InvoiceScreenState extends State<InvoiceScreen> {
                           ),
                           borderRadius: BorderRadius.circular(12),
                         ),
-                        child: const Row(
+                        child: Row(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
-                            Icon(Icons.download, color: Colors.white, size: 20),
-                            SizedBox(width: 10),
+                            const Icon(Icons.download, color: Colors.white, size: 20),
+                            const SizedBox(width: 10),
                             Text(
                               l10n.downloadShareInvoice,
-                              style: TextStyle(
+                              style: const TextStyle(
                                 color: Colors.white,
                                 fontWeight: FontWeight.w600,
                                 fontSize: 15,

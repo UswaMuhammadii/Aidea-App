@@ -69,7 +69,7 @@ class _CartScreenState extends State<CartScreen> {
       return Scaffold(
         backgroundColor: backgroundColor,
         appBar: AppBar(
-          title: const Text(l10n.cart),
+          title: Text(l10n.cart),
           backgroundColor: cardColor,
           foregroundColor: textColor,
           elevation: 0,
@@ -163,15 +163,14 @@ class _CartScreenState extends State<CartScreen> {
                             backgroundColor: Colors.transparent,
                             shadowColor: Colors.transparent,
                           ),
-                          child: const Text(l10n.clear),
+                          child: Text(l10n.clear),
                         ),
                       ),
                     ],
                   ),
                 );
               },
-              child: const Text(
-                l10n.clearAll,
+              child: Text(l10n.clearAll,
                 style: TextStyle(color: Colors.red),
               ),
             ),
@@ -383,8 +382,7 @@ class _CartScreenState extends State<CartScreen> {
                         ),
                         elevation: 4,
                       ),
-                      child: const Text(
-                        l10n.proceedToCheckout,
+                      child: Text(l10n.proceedToCheckout,
                         style: TextStyle(
                           fontSize: 16,
                           fontWeight: FontWeight.bold,

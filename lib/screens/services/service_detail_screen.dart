@@ -45,7 +45,7 @@ class _ServiceDetailScreenState extends State<ServiceDetailScreen> with TickerPr
     super.dispose();
   }
 
-  void addToCart() async {
+  void addToCart(AppLocalizations l10n) async {
     _buttonAnimationController.forward().then((_) => _buttonAnimationController.reverse());
 
     setState(() => isAddingToCart = true);
@@ -73,7 +73,7 @@ class _ServiceDetailScreenState extends State<ServiceDetailScreen> with TickerPr
             children: [
               const Icon(Icons.check_circle, color: Colors.white),
               const SizedBox(width: 8),
-              Text('Added ${widget.service.name} to cart successfully!'),
+              Text(l10n.addedToCartSuccessfully(widget.service.name)),
             ],
           ),
           backgroundColor: Colors.green,
@@ -86,6 +86,16 @@ class _ServiceDetailScreenState extends State<ServiceDetailScreen> with TickerPr
           ),
         ),
       );
+    }
+  }
+
+  // Helper method to get currency display based on locale
+  String _getCurrencyDisplay(AppLocalizations l10n, double price) {
+    final locale = Localizations.localeOf(context);
+    if (locale.languageCode == 'ar') {
+      return '${price.toStringAsFixed(0)} ريال';
+    } else {
+      return 'SAR ${price.toStringAsFixed(0)}';
     }
   }
 
@@ -229,7 +239,7 @@ class _ServiceDetailScreenState extends State<ServiceDetailScreen> with TickerPr
                                 borderRadius: BorderRadius.circular(12),
                               ),
                               child: Text(
-                                  'SAR ${widget.service.price.toStringAsFixed(0)}',
+                                  _getCurrencyDisplay(l10n, widget.service.price),
                                   style: const TextStyle(
                                       fontSize: 20,
                                       fontWeight: FontWeight.bold,
@@ -243,6 +253,7 @@ class _ServiceDetailScreenState extends State<ServiceDetailScreen> with TickerPr
 
                       const SizedBox(height: 32),
 
+                      // What's Included section
                       Container(
                         padding: const EdgeInsets.all(20),
                         decoration: BoxDecoration(
@@ -258,7 +269,7 @@ class _ServiceDetailScreenState extends State<ServiceDetailScreen> with TickerPr
                                 const Icon(Icons.check_circle, color: Colors.green, size: 24),
                                 const SizedBox(width: 8),
                                 Text(
-                                    "What's Included",
+                                    l10n.whatsIncluded,
                                     style: Theme.of(context).textTheme.titleLarge?.copyWith(
                                         fontWeight: FontWeight.bold,
                                         color: textColor
@@ -299,9 +310,9 @@ class _ServiceDetailScreenState extends State<ServiceDetailScreen> with TickerPr
                               ],
                             ),
                             const SizedBox(height: 16),
-                            _buildIncludeItem('✗', 'Any type of repair', Colors.red, textColor, subtitleColor),
-                            _buildIncludeItem('✗', 'Any type of material', Colors.red, textColor, subtitleColor),
-                            _buildIncludeItem('✗', 'Ladder', Colors.red, textColor, subtitleColor),
+                            _buildIncludeItem('✗', l10n.anyTypeOfRepair, Colors.red, textColor, subtitleColor),
+                            _buildIncludeItem('✗', l10n.anyTypeOfMaterial, Colors.red, textColor, subtitleColor),
+                            _buildIncludeItem('✗', l10n.ladder, Colors.red, textColor, subtitleColor),
                           ],
                         ),
                       ),
@@ -341,7 +352,7 @@ class _ServiceDetailScreenState extends State<ServiceDetailScreen> with TickerPr
                 )],
               ),
               child: ElevatedButton(
-                onPressed: isAddingToCart ? null : addToCart,
+                onPressed: isAddingToCart ? null : () => addToCart(l10n),
                 style: ElevatedButton.styleFrom(
                   backgroundColor: Colors.transparent,
                   shadowColor: Colors.transparent,
@@ -356,14 +367,14 @@ class _ServiceDetailScreenState extends State<ServiceDetailScreen> with TickerPr
                         strokeWidth: 3
                     )
                 )
-                    : const Row(
+                    : Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    Icon(Icons.shopping_cart, size: 22, color: Colors.white),
-                    SizedBox(width: 16),
+                    const Icon(Icons.shopping_cart, size: 22, color: Colors.white),
+                    const SizedBox(width: 16),
                     Text(
                         l10n.addToCart,
-                        style: TextStyle(
+                        style: const TextStyle(
                             fontSize: 18,
                             fontWeight: FontWeight.w600,
                             color: Colors.white

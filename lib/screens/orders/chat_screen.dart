@@ -139,7 +139,7 @@ class _ChatScreenState extends State<ChatScreen> {
             icon: Icon(Icons.call, color: textColor),
             onPressed: () {
               ScaffoldMessenger.of(context).showSnackBar(
-                const SnackBar(
+                SnackBar(
                   content: Text(l10n.callingTechnician),
                   backgroundColor: Colors.green,
                 ),
@@ -192,7 +192,7 @@ class _ChatScreenState extends State<ChatScreen> {
               padding: const EdgeInsets.all(16),
               itemCount: _messages.length,
               itemBuilder: (context, index) {
-                return _buildMessageBubble(_messages[index], isDark);
+                return _buildMessageBubble(_messages[index], isDark, l10n);
               },
             ),
           ),
@@ -265,7 +265,7 @@ class _ChatScreenState extends State<ChatScreen> {
     );
   }
 
-  Widget _buildMessageBubble(ChatMessage message, bool isDark) {
+  Widget _buildMessageBubble(ChatMessage message, bool isDark, AppLocalizations l10n) {
     return Align(
       alignment: message.isMe ? Alignment.centerRight : Alignment.centerLeft,
       child: Container(
@@ -321,7 +321,7 @@ class _ChatScreenState extends State<ChatScreen> {
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 8),
               child: Text(
-                _formatTime(message.time),
+                _formatTime(message.time, l10n),
                 style: TextStyle(
                   fontSize: 11,
                   color: Colors.grey.shade500,
@@ -334,7 +334,7 @@ class _ChatScreenState extends State<ChatScreen> {
     );
   }
 
-  String _formatTime(DateTime time) {
+  String _formatTime(DateTime time, AppLocalizations l10n) {
     final now = DateTime.now();
     final difference = now.difference(time);
 

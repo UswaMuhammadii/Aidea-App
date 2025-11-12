@@ -86,9 +86,10 @@ class _OTPVerificationScreenState extends State<OTPVerificationScreen> {
   Future<void> _verifyOTP() async {
     String otp = _controllers.map((c) => c.text).join();
     if (otp.length != 4) {
+      final l10n = AppLocalizations.of(context)!;
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Please enter complete OTP'),
+        SnackBar(
+          content: Text(l10n.pleaseEnterCompleteOtp),
           backgroundColor: Colors.red,
         ),
       );
@@ -105,9 +106,10 @@ class _OTPVerificationScreenState extends State<OTPVerificationScreen> {
   Future<void> _resendOTP() async {
     if (!_canResend) return;
 
+    final l10n = AppLocalizations.of(context)!;
     ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(
-        content: Text('OTP sent successfully!'),
+      SnackBar(
+        content: Text(l10n.otpSentSuccessfully),
         backgroundColor: Colors.green,
       ),
     );
@@ -145,7 +147,7 @@ class _OTPVerificationScreenState extends State<OTPVerificationScreen> {
 
               // Header
               Text(
-                'Enter the code sent to you',
+                l10n.enterCodeSentToYou,
                 style: TextStyle(
                   fontSize: 24,
                   fontWeight: FontWeight.bold,
@@ -155,7 +157,7 @@ class _OTPVerificationScreenState extends State<OTPVerificationScreen> {
               const SizedBox(height: 12),
 
               Text(
-                'Confirmation code has been sent to\n${widget.phoneNumber}',
+                '${l10n.confirmationCodeSentTo}\n${widget.phoneNumber}',
                 style: TextStyle(
                   fontSize: 14,
                   color: isDark ? Colors.grey.shade400 : Colors.grey.shade600,
@@ -220,7 +222,7 @@ class _OTPVerificationScreenState extends State<OTPVerificationScreen> {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   Text(
-                    "Didn't receive the code?  ",
+                    l10n.didntReceiveCode,
                     style: TextStyle(
                       fontSize: 14,
                       color: isDark ? Colors.grey.shade400 : Colors.grey.shade600,
@@ -234,7 +236,7 @@ class _OTPVerificationScreenState extends State<OTPVerificationScreen> {
                       tapTargetSize: MaterialTapTargetSize.shrinkWrap,
                     ),
                     child: Text(
-                      'Resend',
+                      l10n.resend,
                       style: TextStyle(
                         fontSize: 14,
                         fontWeight: FontWeight.bold,

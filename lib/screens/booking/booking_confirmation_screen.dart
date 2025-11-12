@@ -1,5 +1,3 @@
-// ===== UPDATED: booking_confirmation_screen.dart =====
-
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import '../../models/user_model.dart';
@@ -67,7 +65,7 @@ class BookingConfirmationScreen extends StatelessWidget {
 
               // Success Message
               Text(
-                'Booking Confirmed!',
+                l10n.bookingConfirmed,
                 style: TextStyle(
                   fontSize: 28,
                   fontWeight: FontWeight.bold,
@@ -77,8 +75,8 @@ class BookingConfirmationScreen extends StatelessWidget {
               const SizedBox(height: 8),
               Text(
                 bookings.length > 1
-                    ? 'Your ${bookings.length} services have been successfully booked'
-                    : 'Your service has been successfully booked',
+                    ? l10n.yourServicesHaveBeenSuccessfullyBooked(bookings.length)
+                    : l10n.yourServiceHasBeenSuccessfullyBooked,
                 style: TextStyle(
                   fontSize: 16,
                   color: subtitleColor,
@@ -121,7 +119,7 @@ class BookingConfirmationScreen extends StatelessWidget {
                           ),
                           const SizedBox(width: 12),
                           Text(
-                            'Booking Details',
+                            l10n.bookingDetails,
                             style: TextStyle(
                               fontSize: 20,
                               fontWeight: FontWeight.bold,
@@ -134,7 +132,7 @@ class BookingConfirmationScreen extends StatelessWidget {
 
                       // Services List
                       if (bookings.length > 1) ...[
-                        _buildDetailRow(l10n.services, '${bookings.length} services booked', textColor, subtitleColor),
+                        _buildDetailRow(l10n.services, '${bookings.length} ${l10n.servicesBooked.toLowerCase()}', textColor, subtitleColor),
                         const SizedBox(height: 12),
                         Container(
                           padding: const EdgeInsets.all(12),
@@ -160,7 +158,7 @@ class BookingConfirmationScreen extends StatelessWidget {
                                     const SizedBox(width: 8),
                                     Expanded(
                                       child: Text(
-                                        '${booking.service?.name ?? 'Service'} (Qty: ${booking.quantity})',
+                                        '${booking.service?.name ?? l10n.service} (${l10n.quantity}: ${booking.quantity})',
                                         style: TextStyle(
                                           fontSize: 14,
                                           color: textColor,
@@ -183,18 +181,18 @@ class BookingConfirmationScreen extends StatelessWidget {
                         ),
                         const SizedBox(height: 12),
                       ] else
-                        _buildDetailRow('Service', firstBooking.service?.name ?? 'Service', textColor, subtitleColor),
+                        _buildDetailRow(l10n.service, firstBooking.service?.name ?? l10n.service, textColor, subtitleColor),
 
-                      _buildDetailRow('Date', DateFormat('EEEE, MMMM d, y').format(firstBooking.bookingDate), textColor, subtitleColor),
-                      _buildDetailRow('Time', DateFormat('h:mm a').format(firstBooking.bookingTime), textColor, subtitleColor),
+                      _buildDetailRow(l10n.date, DateFormat('EEEE, MMMM d, y').format(firstBooking.bookingDate), textColor, subtitleColor),
+                      _buildDetailRow(l10n.time, DateFormat('h:mm a').format(firstBooking.bookingTime), textColor, subtitleColor),
                       if (bookings.length == 1)
-                        _buildDetailRow('Quantity', '${firstBooking.quantity}', textColor, subtitleColor),
+                        _buildDetailRow(l10n.quantity, '${firstBooking.quantity}', textColor, subtitleColor),
                       Divider(height: 32, color: isDark ? Colors.grey.shade700 : Colors.grey.shade300),
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
                           Text(
-                            'Total Amount',
+                            l10n.totalAmount,
                             style: TextStyle(
                               fontSize: 16,
                               fontWeight: FontWeight.bold,
@@ -267,7 +265,7 @@ class BookingConfirmationScreen extends StatelessWidget {
                         ),
                         const SizedBox(width: 8),
                         Text(
-                          'What\'s Next?',
+                          l10n.whatsNext,
                           style: TextStyle(
                             fontWeight: FontWeight.bold,
                             fontSize: 16,
@@ -277,9 +275,9 @@ class BookingConfirmationScreen extends StatelessWidget {
                       ],
                     ),
                     const SizedBox(height: 12),
-                    _buildInfoItem('You will receive a confirmation email shortly', textColor),
-                    _buildInfoItem('A reminder will be sent 24 hours before', textColor),
-                    _buildInfoItem('View your bookings in the Orders section', textColor),
+                    _buildInfoItem(l10n.youWillReceiveConfirmationEmailShortly, textColor),
+                    _buildInfoItem(l10n.reminderWillBeSent24HoursBefore, textColor),
+                    _buildInfoItem(l10n.viewYourBookingsInOrdersSection, textColor),
                   ],
                 ),
               ),
@@ -314,7 +312,7 @@ class BookingConfirmationScreen extends StatelessWidget {
                         ),
                       ),
                       child: Text(
-                        'Back to Home',
+                        l10n.backToHome,
                         style: TextStyle(
                           fontSize: 16,
                           fontWeight: FontWeight.w600,
@@ -360,9 +358,9 @@ class BookingConfirmationScreen extends StatelessWidget {
                           child: Container(
                             padding: const EdgeInsets.symmetric(vertical: 16),
                             alignment: Alignment.center,
-                            child: const Text(
-                              'View Bookings',
-                              style: TextStyle(
+                            child: Text(
+                              l10n.viewBookings,
+                              style: const TextStyle(
                                 color: Colors.white,
                                 fontSize: 16,
                                 fontWeight: FontWeight.w600,
@@ -454,6 +452,8 @@ class ServiceImageWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
+
     final isDark = Theme.of(context).brightness == Brightness.dark;
     final isAsset = imageUrl.startsWith('assets/');
 
@@ -497,56 +497,5 @@ class ServiceImageWidget extends StatelessWidget {
         color: isDark ? Colors.grey.shade500 : Colors.grey.shade400,
       ),
     );
-  }
-}
-
-// ===== UPDATED: service_checkout_screen.dart (Dark Mode) =====
-// Add to build method:
-// final isDark = Theme.of(context).brightness == Brightness.dark;
-// final backgroundColor = isDark ? const Color(0xFF0F172A) : Colors.white;
-// final cardColor = isDark ? const Color(0xFF1E293B) : Colors.white;
-// final textColor = isDark ? Colors.white : Colors.black87;
-
-// Then update Container decorations:
-// body: Container(
-//   color: backgroundColor,
-//   child: ...
-
-// And TextField backgrounds:
-// fillColor: isDark ? const Color(0xFF1E293B) : Colors.white,
-// hintStyle: TextStyle(color: isDark ? Colors.grey.shade400 : Colors.grey.shade600),
-// style: TextStyle(color: textColor),
-
-// ===== UPDATED: service_detail_screen.dart (Dark Mode) =====
-// In build() add:
-// final isDark = Theme.of(context).brightness == Brightness.dark;
-// final backgroundColor = isDark ? const Color(0xFF0F172A) : const Color(0xFFF8F9FA);
-// final cardColor = isDark ? const Color(0xFF1E293B) : Colors.white;
-// final textColor = isDark ? Colors.white : Colors.black87;
-
-// Update Scaffold:
-// Scaffold(
-//   backgroundColor: backgroundColor,
-//   ...
-
-// Update Container backgrounds in build:
-// Container(
-//   color: isDark ? const Color(0xFF0F172A) : const Color(0xFFF8F9FA),
-//   ...
-
-// ===== DARK MODE THEME HELPER =====
-// Use this across all screens for consistency:
-
-class DarkModeHelper {
-  static Map<String, Color> getColors(BuildContext context) {
-    final isDark = Theme.of(context).brightness == Brightness.dark;
-    return {
-      'background': isDark ? const Color(0xFF0F172A) : const Color(0xFFF8F9FA),
-      'surface': isDark ? const Color(0xFF1E293B) : Colors.white,
-      'text': isDark ? Colors.white : Colors.black87,
-      'subtitle': isDark ? Colors.grey.shade400 : Colors.grey.shade600,
-      'border': isDark ? Colors.grey.shade700 : Colors.grey.shade300,
-      //'shadow': isDark ? 0.3 : 0.08,
-    };
   }
 }

@@ -34,7 +34,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
     super.dispose();
   }
 
-  Future<void> _saveProfile() async {
+  Future<void> _saveProfile(AppLocalizations l10n) async {
     if (!_formKey.currentState!.validate()) return;
 
     setState(() => _isLoading = true);
@@ -43,7 +43,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
 
     if (mounted) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
+        SnackBar(
             content: Text(l10n.profileUpdatedSuccessfully),
             backgroundColor: Colors.green
         ),
@@ -65,7 +65,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
     return Scaffold(
       backgroundColor: backgroundColor,
       appBar: AppBar(
-        title: const Text(l10n.editProfile),
+        title: Text(l10n.editProfile),
         centerTitle: true,
         backgroundColor: cardColor,
         foregroundColor: textColor,
@@ -207,7 +207,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                 child: Material(
                   color: Colors.transparent,
                   child: InkWell(
-                    onTap: _isLoading ? null : _saveProfile,
+                    onTap: _isLoading ? null : () => _saveProfile(l10n),
                     borderRadius: BorderRadius.circular(16),
                     child: Padding(
                       padding: const EdgeInsets.symmetric(vertical: 18),
@@ -222,14 +222,14 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                           ),
                         ),
                       )
-                          : const Row(
+                          : Row(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
-                          Icon(Icons.save, color: Colors.white),
-                          SizedBox(width: 8),
+                          const Icon(Icons.save, color: Colors.white),
+                          const SizedBox(width: 8),
                           Text(
                             l10n.saveChanges,
-                            style: TextStyle(
+                            style: const TextStyle(
                                 color: Colors.white,
                                 fontSize: 16,
                                 fontWeight: FontWeight.bold

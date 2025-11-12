@@ -160,7 +160,7 @@ class _ServiceListingScreenState extends State<ServiceListingScreen> with Ticker
     });
   }
 
-  void _addToCart(Service service) {
+  void _addToCart(Service service, AppLocalizations l10n) {
     final existingIndex = globalCart.indexWhere((item) => item.service.id == service.id);
 
     if (existingIndex != -1) {
@@ -306,16 +306,16 @@ class _ServiceListingScreenState extends State<ServiceListingScreen> with Ticker
             ),
           ),
           child: _selectedSubcategory == null
-              ? _buildSubcategoryView()
+              ? _buildSubcategoryView(l10n)
               : (_subSubcategories != null && _selectedSubSubcategory == null)
-              ? _buildSubSubcategoryView()
-              : _buildServicesView(),
+              ? _buildSubSubcategoryView(l10n)
+              : _buildServicesView(l10n),
         ),
       ),
     );
   }
 
-  Widget _buildSubcategoryView() {
+  Widget _buildSubcategoryView(AppLocalizations l10n) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
 
     return FadeTransition(
@@ -406,7 +406,7 @@ class _ServiceListingScreenState extends State<ServiceListingScreen> with Ticker
     );
   }
 
-  Widget _buildSubSubcategoryView() {
+  Widget _buildSubSubcategoryView(AppLocalizations l10n) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
 
     return FadeTransition(
@@ -495,7 +495,7 @@ class _ServiceListingScreenState extends State<ServiceListingScreen> with Ticker
     );
   }
 
-  Widget _buildServicesView() {
+  Widget _buildServicesView(AppLocalizations l10n) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
 
     return Column(
@@ -742,7 +742,7 @@ class _ServiceListingScreenState extends State<ServiceListingScreen> with Ticker
                                         borderRadius: BorderRadius.circular(10),
                                       ),
                                       child: IconButton(
-                                        onPressed: () => _addToCart(service),
+                                        onPressed: () => _addToCart(service, l10n),
                                         icon: const Icon(
                                           Icons.add_shopping_cart,
                                           color: Colors.white,

@@ -76,7 +76,7 @@ class _OrderDetailsWithWorkerScreenState extends State<OrderDetailsWithWorkerScr
     return Scaffold(
       backgroundColor: backgroundColor,
       appBar: AppBar(
-        title: const Text(l10n.orderDetails),
+        title: Text(l10n.orderDetails),
         backgroundColor: cardColor,
         foregroundColor: textColor,
         elevation: 0,
@@ -144,7 +144,7 @@ class _OrderDetailsWithWorkerScreenState extends State<OrderDetailsWithWorkerScr
                       child: InkWell(
                         onTap: () {
                           ScaffoldMessenger.of(context).showSnackBar(
-                            const SnackBar(
+                            SnackBar(
                               content: Text('Emergency contact initiated'),
                               backgroundColor: Colors.red,
                             ),
@@ -284,7 +284,7 @@ class _OrderDetailsWithWorkerScreenState extends State<OrderDetailsWithWorkerScr
                                     );
                                   },
                                   icon: const Icon(Icons.person),
-                                  label: const Text(l10n.viewProfile),
+                                  label: Text(l10n.viewProfile),
                                   style: OutlinedButton.styleFrom(
                                     foregroundColor: Colors.blue,
                                     side: const BorderSide(color: Colors.blue),
@@ -307,7 +307,7 @@ class _OrderDetailsWithWorkerScreenState extends State<OrderDetailsWithWorkerScr
                                     );
                                   },
                                   icon: const Icon(Icons.chat),
-                                  label: const Text(l10n.chat),
+                                  label: Text(l10n.chat),
                                   style: ElevatedButton.styleFrom(
                                     backgroundColor: Colors.blue,
                                     foregroundColor: Colors.white,
@@ -418,7 +418,7 @@ class _OrderDetailsWithWorkerScreenState extends State<OrderDetailsWithWorkerScr
     );
   }
 
-  void _showCancelDialog(BuildContext context) {
+  void _showCancelDialog(BuildContext context, AppLocalizations l10n) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
     final dialogBg = isDark ? const Color(0xFF1E293B) : Colors.white;
     final textColor = isDark ? Colors.white : Colors.black87;
@@ -589,7 +589,7 @@ class _OrderDetailsWithWorkerScreenState extends State<OrderDetailsWithWorkerScr
                                 ? null
                                 : () {
                               Navigator.pop(context);
-                              _confirmCancellation(context, selectedReason!);
+                              _confirmCancellation(context, selectedReason!, l10n);
                             },
                             style: ElevatedButton.styleFrom(
                               backgroundColor: Colors.red.shade600,
@@ -598,7 +598,7 @@ class _OrderDetailsWithWorkerScreenState extends State<OrderDetailsWithWorkerScr
                               shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
                               disabledBackgroundColor: Colors.grey.shade300,
                             ),
-                            child: const Text(l10n.cancelBooking, style: TextStyle(fontWeight: FontWeight.w600)),
+                            child: Text(l10n.cancelBooking, style: TextStyle(fontWeight: FontWeight.w600)),
                           ),
                         ),
                       ],
@@ -613,7 +613,7 @@ class _OrderDetailsWithWorkerScreenState extends State<OrderDetailsWithWorkerScr
     );
   }
 
-  void _confirmCancellation(BuildContext context, String reason) {
+  void _confirmCancellation(BuildContext context, String reason, AppLocalizations l10n) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
     final dialogBg = isDark ? const Color(0xFF1E293B) : Colors.white;
     final textColor = isDark ? Colors.white : Colors.black87;
@@ -674,7 +674,7 @@ class _OrderDetailsWithWorkerScreenState extends State<OrderDetailsWithWorkerScr
                       padding: const EdgeInsets.symmetric(vertical: 14),
                       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
                     ),
-                    child: const Text(l10n.done, style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600)),
+                    child: Text(l10n.done, style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600)),
                   ),
                 ),
               ],

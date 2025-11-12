@@ -87,7 +87,7 @@ class _OrderTrackingScreenState extends State<OrderTrackingScreen> {
     return Scaffold(
         backgroundColor: backgroundColor,
         appBar: AppBar(
-          title: const Text(l10n.orderDetails),
+          title: Text(l10n.orderDetails),
           backgroundColor: cardColor,
           foregroundColor: textColor,
           elevation: 0,
@@ -95,7 +95,7 @@ class _OrderTrackingScreenState extends State<OrderTrackingScreen> {
             if (_currentStatus == BookingStatus.pending)
               TextButton.icon(
                 onPressed: () {
-                  _showCancelDialog(context);
+                  _showCancelDialog(context, l10n);
                 },
                 icon: Icon(Icons.cancel_outlined, color: Colors.red.shade600, size: 20),
                 label: Text(
@@ -322,8 +322,7 @@ class _OrderTrackingScreenState extends State<OrderTrackingScreen> {
                           Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
-                              const Text(
-                                l10n.orderStatus,
+                              Text(l10n.orderStatus,
                                 style: TextStyle(
                                   fontSize: 18,
                                   fontWeight: FontWeight.bold,
@@ -337,7 +336,7 @@ class _OrderTrackingScreenState extends State<OrderTrackingScreen> {
                                   borderRadius: BorderRadius.circular(20),
                                 ),
                                 child: Text(
-                                  _getStatusText(_currentStatus),
+                                  _getStatusText(_currentStatus, l10n),
                                   style: const TextStyle(
                                     fontSize: 12,
                                     fontWeight: FontWeight.w600,
@@ -461,7 +460,7 @@ class _OrderTrackingScreenState extends State<OrderTrackingScreen> {
                                   });
                                 },
                                 icon: const Icon(Icons.info_outline, size: 20),
-                                label: const Text(l10n.viewTechnicianDetails),
+                                label: Text(l10n.viewTechnicianDetails),
                                 style: ElevatedButton.styleFrom(
                                   backgroundColor: Colors.blue,
                                   foregroundColor: Colors.white,
@@ -516,7 +515,7 @@ class _OrderTrackingScreenState extends State<OrderTrackingScreen> {
     );
   }
 
-  String _getStatusText(BookingStatus status) {
+  String _getStatusText(BookingStatus status, AppLocalizations l10n) {
     switch (status) {
       case BookingStatus.pending:
         return l10n.pending;
@@ -613,7 +612,7 @@ class _OrderTrackingScreenState extends State<OrderTrackingScreen> {
     );
   }
 
-  void _showCancelDialog(BuildContext context) {
+  void _showCancelDialog(BuildContext context, AppLocalizations l10n) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
     final dialogBg = isDark ? const Color(0xFF1E293B) : Colors.white;
     final textColor = isDark ? Colors.white : Colors.black87;
@@ -758,7 +757,7 @@ class _OrderTrackingScreenState extends State<OrderTrackingScreen> {
                               Navigator.pop(context);
                               Navigator.pop(context, BookingStatus.cancelled);
                               ScaffoldMessenger.of(context).showSnackBar(
-                                const SnackBar(
+                                SnackBar(
                                   content: Text('Booking cancelled successfully'),
                                   backgroundColor: Colors.green,
                                 ),
@@ -771,7 +770,7 @@ class _OrderTrackingScreenState extends State<OrderTrackingScreen> {
                               shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
                               disabledBackgroundColor: Colors.grey.shade300,
                             ),
-                            child: const Text(l10n.cancelBooking, style: TextStyle(fontWeight: FontWeight.w600)),
+                            child: Text(l10n.cancelBooking, style: TextStyle(fontWeight: FontWeight.w600)),
                           ),
                         ),
                       ],

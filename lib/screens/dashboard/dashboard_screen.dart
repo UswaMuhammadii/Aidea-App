@@ -89,25 +89,26 @@ class _DashboardScreenState extends State<DashboardScreen> {
     }
   }
 
-  void _handleNotificationPermission() {
+  void _handleNotificationPermission(AppLocalizations l10n) {
     ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(
+      SnackBar(
         content: Row(
           children: [
-            Icon(Icons.check_circle, color: Colors.white),
-            SizedBox(width: 12),
+            const Icon(Icons.check_circle, color: Colors.white),
+            const SizedBox(width: 12),
             Text(l10n.notificationsEnabledSuccessfully),
           ],
         ),
-        backgroundColor: Color(0xFF10B981),
-        duration: Duration(seconds: 2),
+        backgroundColor: const Color(0xFF10B981),
+        duration: const Duration(seconds: 2),
         behavior: SnackBarBehavior.floating,
-        margin: EdgeInsets.all(16),
+        margin: const EdgeInsets.all(16),
       ),
     );
   }
 
   void _showNotificationPopup() {
+    final l10n = AppLocalizations.of(context)!;
     final isDark = Theme.of(context).brightness == Brightness.dark;
     final cardColor = isDark ? const Color(0xFF1E293B) : Colors.white;
     final textColor = isDark ? Colors.white : Colors.black87;
@@ -201,16 +202,16 @@ class _DashboardScreenState extends State<DashboardScreen> {
                         color: Colors.transparent,
                         child: InkWell(
                           onTap: () {
-                            _handleNotificationPermission();
+                            _handleNotificationPermission(l10n);
                             Navigator.pop(context);
                           },
                           borderRadius: BorderRadius.circular(12),
-                          child: const Padding(
-                            padding: EdgeInsets.symmetric(vertical: 14),
+                          child: Padding(
+                            padding: const EdgeInsets.symmetric(vertical: 14),
                             child: Center(
                               child: Text(
                                 l10n.allow,
-                                style: TextStyle(
+                                style: const TextStyle(
                                   color: Colors.white,
                                   fontWeight: FontWeight.bold,
                                   fontSize: 15,
@@ -240,6 +241,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
   }
 
   void _showLocationPicker() {
+    final l10n = AppLocalizations.of(context)!;
     final isDark = Theme.of(context).brightness == Brightness.dark;
     final dialogBg = isDark ? const Color(0xFF1E293B) : Colors.white;
     final textColor = isDark ? Colors.white : Colors.black87;
@@ -347,17 +349,17 @@ class _DashboardScreenState extends State<DashboardScreen> {
     return Scaffold(
       key: _scaffoldKey,
       backgroundColor: backgroundColor,
-      drawer: _buildDrawer(),
+      drawer: _buildDrawer(l10n),
       body: SafeArea(
         child: Column(
           children: [
-            if (_selectedIndex == 0) _buildHeader(),
+            if (_selectedIndex == 0) _buildHeader(l10n),
             Expanded(
               child: IndexedStack(
                 index: _selectedIndex,
                 children: [
-                  _buildHomeTab(),
-                  _buildBookingsTab(),
+                  _buildHomeTab(l10n),
+                  _buildBookingsTab(l10n),
                   InvoiceScreen(user: widget.user),
                   ReviewScreen(user: widget.user),
                   ProfileScreen(user: widget.user, onLogout: widget.onLogout),
@@ -367,11 +369,11 @@ class _DashboardScreenState extends State<DashboardScreen> {
           ],
         ),
       ),
-      bottomNavigationBar: _buildBottomNav(isDark),
+      bottomNavigationBar: _buildBottomNav(isDark, l10n),
     );
   }
 
-  Widget _buildHeader() {
+  Widget _buildHeader(AppLocalizations l10n) {
     return Container(
       decoration: BoxDecoration(
         gradient: DashboardColors.headerGradient,
@@ -555,7 +557,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
     );
   }
 
-  Widget _buildBottomNav(bool isDark) {
+  Widget _buildBottomNav(bool isDark, AppLocalizations l10n) {
     return Container(
       decoration: BoxDecoration(
         color: isDark ? const Color(0xFF1E293B) : Colors.white,
@@ -618,7 +620,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
     );
   }
 
-  Widget _buildDrawer() {
+  Widget _buildDrawer(AppLocalizations l10n) {
     return Drawer(
       child: Container(
         decoration: const BoxDecoration(
@@ -764,7 +766,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
     );
   }
 
-  Widget _buildHomeTab() {
+  Widget _buildHomeTab(AppLocalizations l10n) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
     final textColor = isDark ? Colors.white : Colors.black87;
     final cardColor = isDark ? const Color(0xFF1E293B) : Colors.white;
@@ -915,7 +917,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
     );
   }
 
-  Widget _buildBookingsTab() {
+  Widget _buildBookingsTab(AppLocalizations l10n) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
     final backgroundColor = isDark ? const Color(0xFF0F172A) : const Color(0xFFF8F9FA);
     final cardColor = isDark ? const Color(0xFF1E293B) : Colors.white;
@@ -955,8 +957,8 @@ class _DashboardScreenState extends State<DashboardScreen> {
             color: cardColor,
             child: Row(
               children: [
-                Expanded(child: _buildOrderTab(l10n.active, 0, activeBookings.length)),
-                Expanded(child: _buildOrderTab(l10n.previous, 1, previousBookings.length)),
+                Expanded(child: _buildOrderTab(l10n.active, 0, activeBookings.length, l10n)),
+                Expanded(child: _buildOrderTab(l10n.previous, 1, previousBookings.length, l10n)),
               ],
             ),
           ),
@@ -998,7 +1000,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                                   padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 16),
                                   shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
                                 ),
-                                child: const Text(l10n.bookNow, style: TextStyle(color: Colors.white, fontSize: 16, fontWeight: FontWeight.w600)),
+                                child: Text(l10n.bookNow, style: TextStyle(color: Colors.white, fontSize: 16, fontWeight: FontWeight.w600)),
                               ),
                             ],
                           ],
@@ -1279,7 +1281,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
     );
   }
 
-  Widget _buildOrderTab(String title, int index, int count) {
+  Widget _buildOrderTab(String title, int index, int count, AppLocalizations l10n) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
     final isActive = _orderTabIndex == index;
     final inactiveColor = isDark ? Colors.grey.shade500 : Colors.grey.shade600;

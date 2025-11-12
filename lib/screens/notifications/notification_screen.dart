@@ -134,7 +134,7 @@ class _NotificationScreenState extends State<NotificationScreen> {
     });
   }
 
-  void _clearAllNotifications() {
+  void _clearAllNotifications(AppLocalizations l10n) {
     showDialog(
       context: context,
       builder: (context) {
@@ -184,7 +184,7 @@ class _NotificationScreenState extends State<NotificationScreen> {
                   backgroundColor: Colors.transparent,
                   shadowColor: Colors.transparent,
                 ),
-                child: const Text(l10n.clearAll),
+                child: Text(l10n.clearAll),
               ),
             ),
           ],
@@ -239,7 +239,7 @@ class _NotificationScreenState extends State<NotificationScreen> {
     }
   }
 
-  String _getTimeAgo(DateTime dateTime) {
+  String _getTimeAgo(DateTime dateTime, AppLocalizations l10n) {
     final now = DateTime.now();
     final difference = now.difference(dateTime);
 
@@ -269,7 +269,7 @@ class _NotificationScreenState extends State<NotificationScreen> {
     return Scaffold(
       backgroundColor: backgroundColor,
       appBar: AppBar(
-        title: const Text(l10n.notifications),
+        title: Text(l10n.notifications),
         backgroundColor: cardColor,
         foregroundColor: textColor,
         elevation: 0,
@@ -277,8 +277,7 @@ class _NotificationScreenState extends State<NotificationScreen> {
           if (globalNotifications.isNotEmpty && _unreadCount > 0)
             TextButton(
               onPressed: _markAllAsRead,
-              child: const Text(
-                l10n.markAllRead,
+              child: Text(l10n.markAllRead,
                 style: TextStyle(
                   color: Color(0xFF6B5B9A),
                   fontWeight: FontWeight.w600,
@@ -291,7 +290,7 @@ class _NotificationScreenState extends State<NotificationScreen> {
               color: cardColor,
               itemBuilder: (context) => [
                 PopupMenuItem(
-                  onTap: _clearAllNotifications,
+                  onTap: () => _clearAllNotifications(l10n),
                   child: Row(
                     children: [
                       const Icon(Icons.delete_sweep, color: Colors.red),
@@ -416,7 +415,7 @@ class _NotificationScreenState extends State<NotificationScreen> {
                     _deleteNotification(notification.id);
                     ScaffoldMessenger.of(context).showSnackBar(
                       SnackBar(
-                        content: const Text(l10n.notificationDeleted),
+                        content: Text(l10n.notificationDeleted),
                         backgroundColor: Colors.red,
                         behavior: SnackBarBehavior.floating,
                         action: SnackBarAction(
@@ -538,7 +537,7 @@ class _NotificationScreenState extends State<NotificationScreen> {
                                         ),
                                         const SizedBox(width: 4),
                                         Text(
-                                          _getTimeAgo(notification.createdAt),
+                                          _getTimeAgo(notification.createdAt, l10n),
                                           style: TextStyle(
                                             fontSize: 12,
                                             color: subtitleColor,

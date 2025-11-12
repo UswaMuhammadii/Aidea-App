@@ -38,7 +38,7 @@ class VendorProfileScreen extends StatelessWidget {
     return Scaffold(
       backgroundColor: backgroundColor,
       appBar: AppBar(
-        title: const Text(l10n.vendorProfile),
+        title: Text(l10n.vendorProfile),
         backgroundColor: cardColor,
         foregroundColor: textColor,
         elevation: 0,
@@ -97,7 +97,7 @@ class VendorProfileScreen extends StatelessWidget {
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       Row(
-                        children: const [
+                        children: [
                           Icon(Icons.check_circle, color: Colors.blue, size: 20),
                           SizedBox(width: 4),
                           Text(
@@ -106,9 +106,9 @@ class VendorProfileScreen extends StatelessWidget {
                           ),
                         ],
                       ),
-                      const SizedBox(width: 24),
+                      SizedBox(width: 24),
                       Row(
-                        children: const [
+                        children: [
                           Icon(Icons.check_circle, color: Colors.blue, size: 20),
                           SizedBox(width: 4),
                           Text(

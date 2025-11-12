@@ -32,7 +32,7 @@ class ProfileScreen extends StatefulWidget {
 }
 
 class _ProfileScreenState extends State<ProfileScreen> {
-  void _logout() {
+  void _logout(AppLocalizations l10n) {
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
@@ -70,8 +70,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 backgroundColor: Colors.transparent,
                 padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
               ),
-              child: const Text(
-                l10n.logout,
+              child: Text(l10n.logout,
                 style: TextStyle(color: Colors.white, fontWeight: FontWeight.w600),
               ),
             ),
@@ -136,8 +135,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          const Text(
-                            l10n.profile,
+                          Text(l10n.profile,
                             style: TextStyle(
                               color: Colors.white,
                               fontSize: 28,
@@ -150,7 +148,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                               borderRadius: BorderRadius.circular(12),
                             ),
                             child: IconButton(
-                              onPressed: _logout,
+                              onPressed: () => _logout(l10n),
                               icon: const Icon(Icons.logout, color: Colors.white),
                             ),
                           ),
@@ -220,16 +218,16 @@ class _ProfileScreenState extends State<ProfileScreen> {
                               ),
                               child: Row(
                                 mainAxisSize: MainAxisSize.min,
-                                children: const [
-                                  Icon(
+                                children: [
+                                  const Icon(
                                     Icons.edit,
                                     color: AppColors.deepPurple,
                                     size: 20,
                                   ),
-                                  SizedBox(width: 8),
+                                  const SizedBox(width: 8),
                                   Text(
                                     l10n.editProfile,
-                                    style: TextStyle(
+                                    style: const TextStyle(
                                       color: AppColors.deepPurple,
                                       fontWeight: FontWeight.bold,
                                       fontSize: 14,

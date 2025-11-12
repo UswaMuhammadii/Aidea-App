@@ -81,7 +81,7 @@ class _ReviewScreenState extends State<ReviewScreen> with SingleTickerProviderSt
     });
   }
 
-  void _showRatingDialog(Booking booking) {
+  void _showRatingDialog(Booking booking, AppLocalizations l10n) {
     double rating = 5.0;
     final commentController = TextEditingController();
     final isDark = Theme.of(context).brightness == Brightness.dark;
@@ -118,8 +118,7 @@ class _ReviewScreenState extends State<ReviewScreen> with SingleTickerProviderSt
                             size: 48,
                           ),
                           const SizedBox(height: 12),
-                          const Text(
-                            l10n.rateYourExperience,
+                          Text(l10n.rateYourExperience,
                             style: TextStyle(
                               color: Colors.white,
                               fontSize: 20,
@@ -269,11 +268,11 @@ class _ReviewScreenState extends State<ReviewScreen> with SingleTickerProviderSt
                                 Navigator.pop(context);
 
                                 ScaffoldMessenger.of(context).showSnackBar(
-                                  const SnackBar(
+                                  SnackBar(
                                     content: Row(
                                       children: [
-                                        Icon(Icons.check_circle, color: Colors.white),
-                                        SizedBox(width: 8),
+                                        const Icon(Icons.check_circle, color: Colors.white),
+                                        const SizedBox(width: 8),
                                         Text(l10n.thankYouForYourReview),
                                       ],
                                     ),
@@ -290,8 +289,7 @@ class _ReviewScreenState extends State<ReviewScreen> with SingleTickerProviderSt
                                   borderRadius: BorderRadius.circular(12),
                                 ),
                               ),
-                              child: const Text(
-                                l10n.submit,
+                              child: Text(l10n.submit,
                                 style: TextStyle(
                                   color: Colors.white,
                                   fontWeight: FontWeight.bold,
@@ -325,7 +323,7 @@ class _ReviewScreenState extends State<ReviewScreen> with SingleTickerProviderSt
     return Scaffold(
       backgroundColor: backgroundColor,
       appBar: AppBar(
-        title: const Text(l10n.myReviews),
+        title: Text(l10n.myReviews),
         backgroundColor: cardColor,
         foregroundColor: textColor,
         elevation: 0,
@@ -339,7 +337,7 @@ class _ReviewScreenState extends State<ReviewScreen> with SingleTickerProviderSt
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  const Text(l10n.toReview),
+                  Text(l10n.toReview),
                   if (_unratedBookings.isNotEmpty) ...[
                     const SizedBox(width: 8),
                     Container(
@@ -363,7 +361,7 @@ class _ReviewScreenState extends State<ReviewScreen> with SingleTickerProviderSt
                 ],
               ),
             ),
-            const Tab(text: l10n.myReviews),
+            Tab(text: l10n.myReviews),
           ],
         ),
       ),
@@ -372,14 +370,14 @@ class _ReviewScreenState extends State<ReviewScreen> with SingleTickerProviderSt
           : TabBarView(
         controller: _tabController,
         children: [
-          _buildToReviewTab(),
-          _buildMyReviewsTab(),
+          _buildToReviewTab(l10n),
+          _buildMyReviewsTab(l10n),
         ],
       ),
     );
   }
 
-  Widget _buildToReviewTab() {
+  Widget _buildToReviewTab(AppLocalizations l10n) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
     final cardColor = isDark ? const Color(0xFF1E293B) : Colors.white;
     final textColor = isDark ? Colors.white : Colors.black87;
@@ -505,7 +503,7 @@ class _ReviewScreenState extends State<ReviewScreen> with SingleTickerProviderSt
                       borderRadius: BorderRadius.circular(12),
                     ),
                     child: ElevatedButton(
-                      onPressed: () => _showRatingDialog(booking),
+                      onPressed: () => _showRatingDialog(booking, l10n),
                       style: ElevatedButton.styleFrom(
                         backgroundColor: Colors.transparent,
                         shadowColor: Colors.transparent,
@@ -514,14 +512,14 @@ class _ReviewScreenState extends State<ReviewScreen> with SingleTickerProviderSt
                           borderRadius: BorderRadius.circular(12),
                         ),
                       ),
-                      child: const Row(
+                      child: Row(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
-                          Icon(Icons.star, color: Colors.white, size: 20),
-                          SizedBox(width: 8),
+                          const Icon(Icons.star, color: Colors.white, size: 20),
+                          const SizedBox(width: 8),
                           Text(
                             l10n.writeAReview,
-                            style: TextStyle(
+                            style: const TextStyle(
                               color: Colors.white,
                               fontSize: 15,
                               fontWeight: FontWeight.w600,
@@ -540,7 +538,7 @@ class _ReviewScreenState extends State<ReviewScreen> with SingleTickerProviderSt
     );
   }
 
-  Widget _buildMyReviewsTab() {
+  Widget _buildMyReviewsTab(AppLocalizations l10n) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
     final cardColor = isDark ? const Color(0xFF1E293B) : Colors.white;
     final textColor = isDark ? Colors.white : Colors.black87;

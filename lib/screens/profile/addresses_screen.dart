@@ -1,4 +1,3 @@
-
 import 'package:flutter/material.dart';
 import '../../models/user_model.dart';
 import '../../gen_l10n/app_localizations.dart';
@@ -42,7 +41,7 @@ class _AddressesScreenState extends State<AddressesScreen> {
     super.dispose();
   }
 
-  Future<void> _saveAddress() async {
+  Future<void> _saveAddress(AppLocalizations l10n) async {
     setState(() => _isSaving = true);
     await Future.delayed(const Duration(seconds: 1));
     setState(() {
@@ -52,7 +51,7 @@ class _AddressesScreenState extends State<AddressesScreen> {
 
     if (mounted) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
+        SnackBar(
           content: Text(l10n.addressUpdatedSuccessfully),
           backgroundColor: Colors.green,
         ),
@@ -73,7 +72,7 @@ class _AddressesScreenState extends State<AddressesScreen> {
     return Scaffold(
       backgroundColor: backgroundColor,
       appBar: AppBar(
-        title: const Text(l10n.savedAddresses),
+        title: Text(l10n.savedAddresses),
         centerTitle: true,
         backgroundColor: cardColor,
         foregroundColor: textColor,
@@ -154,8 +153,7 @@ class _AddressesScreenState extends State<AddressesScreen> {
                             color: Colors.orange.shade100,
                             borderRadius: BorderRadius.circular(8),
                           ),
-                          child: const Text(
-                            l10n.editing,
+                          child: Text(l10n.editing,
                             style: TextStyle(
                               color: Colors.orange,
                               fontSize: 12,
@@ -216,7 +214,7 @@ class _AddressesScreenState extends State<AddressesScreen> {
                                 color: isDark ? Colors.grey.shade600 : Colors.grey.shade400,
                               ),
                             ),
-                            child: const Text(l10n.cancel),
+                            child: Text(l10n.cancel),
                           ),
                         ),
                         const SizedBox(width: 12),
@@ -229,7 +227,7 @@ class _AddressesScreenState extends State<AddressesScreen> {
                               borderRadius: BorderRadius.circular(12),
                             ),
                             child: ElevatedButton(
-                              onPressed: _isSaving ? null : _saveAddress,
+                              onPressed: _isSaving ? null : () => _saveAddress(l10n),
                               style: ElevatedButton.styleFrom(
                                 backgroundColor: Colors.transparent,
                                 shadowColor: Colors.transparent,
@@ -245,7 +243,7 @@ class _AddressesScreenState extends State<AddressesScreen> {
                                   ),
                                 ),
                               )
-                                  : const Text(l10n.save),
+                                  : Text(l10n.save),
                             ),
                           ),
                         ),

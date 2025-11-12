@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../../gen_l10n/app_localizations.dart';
+
 class AppColors {
   static const deepPurple = Color(0xFF7C3AED);
   static const electricBlue = Color(0xFF3B82F6);
@@ -34,8 +35,16 @@ class _LocationSelectionScreenState extends State<LocationSelectionScreen> {
   final _otherInfoController = TextEditingController();
 
   bool _saveAsPrimary = true;
-  String _addressType = l10n.home;
+  late String _addressType;
   String _selectedLocation = '19231, Saudi Arabia';
+
+  @override
+  void initState() {
+    super.initState();
+    // Initialize _addressType in initState where we can't access context yet
+    // It will be properly set in build method
+    _addressType = 'Home'; // Default value, will be localized in build
+  }
 
   @override
   void dispose() {
@@ -69,9 +78,12 @@ class _LocationSelectionScreenState extends State<LocationSelectionScreen> {
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
 
-    final isDark = Theme
-        .of(context)
-        .brightness == Brightness.dark;
+    // Initialize _addressType with localized value if it's still the default
+    if (_addressType == 'Home') {
+      _addressType = l10n.home;
+    }
+
+    final isDark = Theme.of(context).brightness == Brightness.dark;
     final backgroundColor = isDark ? const Color(0xFF0F172A) : Colors.white;
 
     return Scaffold(
@@ -413,11 +425,11 @@ class _LocationSelectionScreenState extends State<LocationSelectionScreen> {
                     // Address Type Selection
                     Row(
                       children: [
-                        _buildAddressTypeChip(l10n.home, Icons.home),
+                        _buildAddressTypeChip(l10n.home, Icons.home, l10n),
                         const SizedBox(width: 12),
-                        _buildAddressTypeChip('Work', Icons.work),
+                        _buildAddressTypeChip('Work', Icons.work, l10n),
                         const SizedBox(width: 12),
-                        _buildAddressTypeChip('Friend', Icons.person),
+                        _buildAddressTypeChip('Friend', Icons.person, l10n),
                       ],
                     ),
                     const SizedBox(height: 32),
@@ -466,10 +478,8 @@ class _LocationSelectionScreenState extends State<LocationSelectionScreen> {
     );
   }
 
-  Widget _buildAddressTypeChip(String label, IconData icon) {
-    final isDark = Theme
-        .of(context)
-        .brightness == Brightness.dark;
+  Widget _buildAddressTypeChip(String label, IconData icon, AppLocalizations l10n) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
     final isSelected = _addressType == label;
 
     return Expanded(
