@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import '../../models/user_model.dart';
 import '../../utils/app_colors.dart';
+import '../../gen_l10n/app_localizations.dart';
 
 class ChatScreen extends StatefulWidget {
   final String workerName;
@@ -88,6 +89,8 @@ class _ChatScreenState extends State<ChatScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
+
     final isDark = Theme.of(context).brightness == Brightness.dark;
     final backgroundColor = isDark ? const Color(0xFF0F172A) : const Color(0xFFF8F9FA);
     final cardColor = isDark ? const Color(0xFF1E293B) : Colors.white;
@@ -120,7 +123,7 @@ class _ChatScreenState extends State<ChatScreen> {
                     ),
                   ),
                   Text(
-                    'Technician',
+                    l10n.technician,
                     style: TextStyle(
                       fontSize: 12,
                       color: Colors.grey.shade600,
@@ -137,7 +140,7 @@ class _ChatScreenState extends State<ChatScreen> {
             onPressed: () {
               ScaffoldMessenger.of(context).showSnackBar(
                 const SnackBar(
-                  content: Text('Calling technician...'),
+                  content: Text(l10n.callingTechnician),
                   backgroundColor: Colors.green,
                 ),
               );
@@ -167,7 +170,7 @@ class _ChatScreenState extends State<ChatScreen> {
                   ),
                   const SizedBox(height: 16),
                   Text(
-                    'No messages yet',
+                    l10n.noMessagesYet,
                     style: TextStyle(
                       fontSize: 16,
                       color: Colors.grey.shade600,
@@ -200,7 +203,7 @@ class _ChatScreenState extends State<ChatScreen> {
               color: cardColor,
               boxShadow: [
                 BoxShadow(
-                  color: Colors.black.withOpacity(isDark ? 0.3 : 0.1),
+                  color: Colors.black.withValues(alpha: isDark ? 0.3 : 0.1),
                   blurRadius: 10,
                   offset: const Offset(0, -2),
                 ),
@@ -219,7 +222,7 @@ class _ChatScreenState extends State<ChatScreen> {
                       child: TextField(
                         controller: _messageController,
                         decoration: InputDecoration(
-                          hintText: 'Type a message...',
+                          hintText: l10n.typeAMessage,
                           hintStyle: TextStyle(color: Colors.grey.shade500),
                           border: InputBorder.none,
                           contentPadding: const EdgeInsets.symmetric(
@@ -242,7 +245,7 @@ class _ChatScreenState extends State<ChatScreen> {
                       shape: BoxShape.circle,
                       boxShadow: [
                         BoxShadow(
-                          color: Colors.blue.withOpacity(0.3),
+                          color: Colors.blue.withValues(alpha: 0.3),
                           blurRadius: 8,
                           offset: const Offset(0, 2),
                         ),
@@ -295,7 +298,7 @@ class _ChatScreenState extends State<ChatScreen> {
                 ),
                 boxShadow: [
                   BoxShadow(
-                    color: Colors.black.withOpacity(isDark ? 0.3 : 0.05),
+                    color: Colors.black.withValues(alpha: isDark ? 0.3 : 0.05),
                     blurRadius: 5,
                     offset: const Offset(0, 2),
                   ),
@@ -336,7 +339,7 @@ class _ChatScreenState extends State<ChatScreen> {
     final difference = now.difference(time);
 
     if (difference.inMinutes < 1) {
-      return 'Just now';
+      return l10n.justNow;
     } else if (difference.inMinutes < 60) {
       return '${difference.inMinutes}m ago';
     } else if (difference.inHours < 24) {

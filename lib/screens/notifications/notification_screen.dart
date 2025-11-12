@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import '../../models/user_model.dart';
+import '../../gen_l10n/app_localizations.dart';
 
 enum NotificationType {
   booking,
@@ -144,7 +145,7 @@ class _NotificationScreenState extends State<NotificationScreen> {
           ),
           backgroundColor: isDark ? const Color(0xFF1E293B) : Colors.white,
           title: Text(
-            'Clear All Notifications',
+            l10n.clearAllNotifications,
             style: TextStyle(
               color: isDark ? Colors.white : Colors.black87,
             ),
@@ -159,7 +160,7 @@ class _NotificationScreenState extends State<NotificationScreen> {
             TextButton(
               onPressed: () => Navigator.pop(context),
               child: Text(
-                'Cancel',
+                l10n.cancel,
                 style: TextStyle(
                   color: isDark ? Colors.grey.shade400 : Colors.grey.shade600,
                 ),
@@ -183,7 +184,7 @@ class _NotificationScreenState extends State<NotificationScreen> {
                   backgroundColor: Colors.transparent,
                   shadowColor: Colors.transparent,
                 ),
-                child: const Text('Clear All'),
+                child: const Text(l10n.clearAll),
               ),
             ),
           ],
@@ -249,7 +250,7 @@ class _NotificationScreenState extends State<NotificationScreen> {
     } else if (difference.inMinutes > 0) {
       return '${difference.inMinutes}m ago';
     } else {
-      return 'Just now';
+      return l10n.justNow;
     }
   }
 
@@ -257,6 +258,8 @@ class _NotificationScreenState extends State<NotificationScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
+
     final isDark = Theme.of(context).brightness == Brightness.dark;
     final backgroundColor = isDark ? const Color(0xFF0F172A) : const Color(0xFFF8F9FA);
     final cardColor = isDark ? const Color(0xFF1E293B) : Colors.white;
@@ -266,7 +269,7 @@ class _NotificationScreenState extends State<NotificationScreen> {
     return Scaffold(
       backgroundColor: backgroundColor,
       appBar: AppBar(
-        title: const Text('Notifications'),
+        title: const Text(l10n.notifications),
         backgroundColor: cardColor,
         foregroundColor: textColor,
         elevation: 0,
@@ -275,7 +278,7 @@ class _NotificationScreenState extends State<NotificationScreen> {
             TextButton(
               onPressed: _markAllAsRead,
               child: const Text(
-                'Mark all read',
+                l10n.markAllRead,
                 style: TextStyle(
                   color: Color(0xFF6B5B9A),
                   fontWeight: FontWeight.w600,
@@ -294,7 +297,7 @@ class _NotificationScreenState extends State<NotificationScreen> {
                       const Icon(Icons.delete_sweep, color: Colors.red),
                       const SizedBox(width: 8),
                       Text(
-                        'Clear All',
+                        l10n.clearAll,
                         style: TextStyle(color: textColor),
                       ),
                     ],
@@ -314,8 +317,8 @@ class _NotificationScreenState extends State<NotificationScreen> {
               decoration: BoxDecoration(
                 gradient: LinearGradient(
                   colors: [
-                    const Color(0xFF6B5B9A).withOpacity(0.1),
-                    const Color(0xFF6B5B9A).withOpacity(0.1),
+                    const Color(0xFF6B5B9A).withValues(alpha: 0.1),
+                    const Color(0xFF6B5B9A).withValues(alpha: 0.1),
                   ],
                 ),
                 shape: BoxShape.circle,
@@ -328,7 +331,7 @@ class _NotificationScreenState extends State<NotificationScreen> {
             ),
             const SizedBox(height: 24),
             Text(
-              'No Notifications',
+              l10n.noNotifications,
               style: TextStyle(
                 fontSize: 24,
                 fontWeight: FontWeight.bold,
@@ -337,7 +340,7 @@ class _NotificationScreenState extends State<NotificationScreen> {
             ),
             const SizedBox(height: 8),
             Text(
-              'You\'re all caught up!',
+              l10n.youreAllCaughtUp,
               style: TextStyle(
                 fontSize: 16,
                 color: subtitleColor,
@@ -351,7 +354,7 @@ class _NotificationScreenState extends State<NotificationScreen> {
           if (_unreadCount > 0)
             Container(
               padding: const EdgeInsets.all(16),
-              color: const Color(0xFF6B5B9A).withOpacity(0.1),
+              color: const Color(0xFF6B5B9A).withValues(alpha: 0.1),
               child: Row(
                 children: [
                   Container(
@@ -413,11 +416,11 @@ class _NotificationScreenState extends State<NotificationScreen> {
                     _deleteNotification(notification.id);
                     ScaffoldMessenger.of(context).showSnackBar(
                       SnackBar(
-                        content: const Text('Notification deleted'),
+                        content: const Text(l10n.notificationDeleted),
                         backgroundColor: Colors.red,
                         behavior: SnackBarBehavior.floating,
                         action: SnackBarAction(
-                          label: 'Undo',
+                          label: l10n.undo,
                           textColor: Colors.white,
                           onPressed: () {
                             setState(() {
@@ -434,18 +437,18 @@ class _NotificationScreenState extends State<NotificationScreen> {
                       color: notification.isRead
                           ? cardColor
                           : (isDark
-                          ? const Color(0xFF6B5B9A).withOpacity(0.1)
-                          : const Color(0xFF6B5B9A).withOpacity(0.05)),
+                          ? const Color(0xFF6B5B9A).withValues(alpha: 0.1)
+                          : const Color(0xFF6B5B9A).withValues(alpha: 0.05)),
                       borderRadius: BorderRadius.circular(16),
                       border: notification.isRead
                           ? null
                           : Border.all(
-                        color: const Color(0xFF6B5B9A).withOpacity(0.3),
+                        color: const Color(0xFF6B5B9A).withValues(alpha: 0.3),
                         width: 1,
                       ),
                       boxShadow: [
                         BoxShadow(
-                          color: Colors.black.withOpacity(isDark ? 0.3 : 0.08),
+                          color: Colors.black.withValues(alpha: isDark ? 0.3 : 0.08),
                           blurRadius: 15,
                           offset: const Offset(0, 5),
                         ),
@@ -470,7 +473,7 @@ class _NotificationScreenState extends State<NotificationScreen> {
                                 height: 48,
                                 decoration: BoxDecoration(
                                   color: _getColorForType(notification.type)
-                                      .withOpacity(0.2),
+                                      .withValues(alpha: 0.2),
                                   borderRadius: BorderRadius.circular(12),
                                 ),
                                 child: Icon(

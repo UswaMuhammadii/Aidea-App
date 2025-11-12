@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-
+import '../../gen_l10n/app_localizations.dart';
 enum BookingStatus {
   pending,
   confirmed,

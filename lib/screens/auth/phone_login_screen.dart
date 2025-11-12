@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import '../../gen_l10n/app_localizations.dart';
+
 
 class AppColors {
   static const deepPurple = Color(0xFF7C3AED);
@@ -47,6 +49,7 @@ class _PhoneLoginScreenState extends State<PhoneLoginScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     final isDark = Theme.of(context).brightness == Brightness.dark;
     final backgroundColor = isDark ? const Color(0xFF0F172A) : Colors.white;
 
@@ -78,7 +81,7 @@ class _PhoneLoginScreenState extends State<PhoneLoginScreen> {
                   children: [
                     Expanded(
                       child: Text(
-                        'What is your mobile number?',
+                        l10n.whatIsYourMobileNumber,
                         style: TextStyle(
                           fontSize: 24,
                           fontWeight: FontWeight.bold,
@@ -93,7 +96,7 @@ class _PhoneLoginScreenState extends State<PhoneLoginScreen> {
                 const SizedBox(height: 12),
 
                 Text(
-                  'Enter your mobile number to send you the activation code',
+                  l10n.enterMobileNumberToSendCode,
                   style: TextStyle(
                     fontSize: 14,
                     color: isDark ? Colors.grey.shade400 : Colors.grey.shade600,
@@ -216,7 +219,7 @@ class _PhoneLoginScreenState extends State<PhoneLoginScreen> {
                             Padding(
                               padding: const EdgeInsets.only(left: 4, top: 6),
                               child: Text(
-                                'Invalid number',
+                                l10n.invalidNumber,
                                 style: TextStyle(
                                   color: Colors.red.shade400,
                                   fontSize: 12,
@@ -240,7 +243,7 @@ class _PhoneLoginScreenState extends State<PhoneLoginScreen> {
                     borderRadius: BorderRadius.circular(16),
                     boxShadow: [
                       BoxShadow(
-                        color: AppColors.deepPurple.withOpacity(0.3),
+                        color: AppColors.deepPurple.withValues(alpha: 0.3),
                         blurRadius: 20,
                         offset: const Offset(0, 10),
                       ),
@@ -263,9 +266,9 @@ class _PhoneLoginScreenState extends State<PhoneLoginScreen> {
                             ),
                           ),
                         )
-                            : const Text(
-                          'Login',
-                          style: TextStyle(
+                            : Text(
+                          l10n.login,
+                          style: const TextStyle(
                             color: Colors.white,
                             fontSize: 18,
                             fontWeight: FontWeight.bold,

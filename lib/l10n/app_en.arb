@@ -1,0 +1,329 @@
+{
+  "@@locale": "en",
+  
+  "appTitle": "Aidea Technology",
+  "homeServices": "Home Services",
+  "hello": "Hello",
+  
+  "login": "Login",
+  "logout": "Logout",
+  "phoneNumber": "Phone Number",
+  "whatIsYourMobileNumber": "What is your mobile number?",
+  "enterMobileNumberToSendCode": "Enter your mobile number to send you the activation code",
+  "invalidNumber": "Invalid number",
+  "pleaseEnterCompleteOtp": "Please enter complete OTP",
+  "otpSentSuccessfully": "OTP sent successfully!",
+
+  "enterCodeSentToYou": "Enter the code sent to you",
+  "confirmationCodeSentTo": "Confirmation code has been sent to",
+  "didntReceiveCode": "Didn't receive the code?",
+  "resend": "Resend",
+
+  "completeYourProfile": "Complete Your Profile",
+  "personalInformation": "Personal Information",
+  "fullName": "Full Name",
+  "enterYourFullName": "Enter your full name",
+  "pleaseEnterYourName": "Please enter your name",
+  "emailAddress": "Email Address",
+  "enterYourEmail": "Enter your email",
+  "pleaseEnterYourEmail": "Please enter your email",
+  "pleaseEnterValidEmail": "Please enter a valid email",
+  "deliveryAddress": "Delivery Address",
+  "streetName": "Street Name",
+  "pleaseEnterStreetName": "Please enter street name",
+  "floor": "Floor",
+  "floorNumber": "Floor number",
+  "apartment": "Apartment",
+  "apartmentNumber": "Apartment number",
+  "otherInformation": "Other information",
+  "saveAddressAsPrimary": "Save address as primary",
+  "home": "Home",
+  "work": "Work",
+  "friend": "Friend",
+  "saveAndContinue": "Save & Continue",
+
+  "dashboard": "Dashboard",
+  "ourServices": "Our Services",
+  "services": "services",
+  "viewAllServices": "View all services",
+
+  "orders": "Orders",
+  "myOrders": "My Orders",
+  "active": "Active",
+  "previous": "Previous",
+  "noActiveOrders": "No Active Orders",
+  "bookYourFirstServiceToday": "Book your first service today!",
+  "noPreviousOrders": "No Previous Orders",
+  "yourCompletedOrdersWillAppearHere": "Your completed orders will appear here",
+  "bookNow": "Book Now",
+  "servicesBooked": "Services Booked",
+  "serviceBooked": "Service Booked",
+  "bookingDone": "Booking Done",
+  "technicianAssigned": "Technician Assigned",
+  "workStarted": "Work Started",
+  "workDone": "Work Done",
+  "cancelled": "Cancelled",
+  "trackOrder": "Track Order",
+  "viewTechnicianDetails": "View Technician Details",
+
+  "invoices": "Invoices",
+  "noInvoicesYet": "No Invoices Yet",
+  "completeServiceToGenerateInvoices": "Complete a service to generate invoices",
+  "invoice": "Invoice",
+  "invoiceNumber": "Invoice #",
+  "amount": "Amount",
+  "paid": "PAID",
+  "downloadShareInvoice": "Download / Share Invoice",
+
+  "reviews": "Reviews",
+  "myReviews": "My Reviews",
+  "toReview": "To Review",
+  "noServicesToReview": "No Services to Review",
+  "completeServicesToLeaveReviews": "Complete services to leave reviews",
+  "completedOn": "Completed on",
+  "writeAReview": "Write a Review",
+  "noReviewsYet": "No Reviews Yet",
+  "yourReviewsWillAppearHere": "Your reviews will appear here",
+  "rateYourExperience": "Rate Your Experience",
+  "tapToRate": "Tap to rate",
+  "excellent": "Excellent!",
+  "veryGood": "Very Good!",
+  "good": "Good",
+  "fair": "Fair",
+  "poor": "Poor",
+  "shareYourExperience": "Share your experience (optional)...",
+  "cancel": "Cancel",
+  "submit": "Submit",
+  "thankYouForYourReview": "Thank you for your review!",
+
+  "profile": "Profile",
+  "editProfile": "Edit Profile",
+  "settings": "Settings",
+  "notifications": "Notifications",
+  "manageNotificationPreferences": "Manage notification preferences",
+  "savedAddresses": "Saved Addresses",
+  "paymentMethods": "Payment Methods",
+  "managePaymentOptions": "Manage payment options",
+  "helpAndSupport": "Help & Support",
+  "getHelpAndContactUs": "Get help and contact us",
+  "about": "About",
+  "appVersionAndInformation": "App version and information",
+  "areYouSureYouWantToLogout": "Are you sure you want to logout?",
+
+  "cart": "Cart",
+  "yourCartIsEmpty": "Your cart is empty",
+  "addSomeServicesToGetStarted": "Add some services to get started",
+  "clearAll": "Clear All",
+  "areYouSureYouWantToRemoveAllItems": "Are you sure you want to remove all items?",
+  "clear": "Clear",
+  "total": "Total",
+  "proceedToCheckout": "Proceed to Checkout",
+
+  "bookService": "Book Service",
+  "selectedServices": "Selected Services",
+  "uploadApplianceImages": "Upload Appliance Images",
+  "addPhotos": "Add Photos",
+  "uploadPhotosOfYourAppliance": "Upload photos of your appliance",
+  "imagesSelected": "images selected",
+  "imageSelected": "image selected",
+  "gallery": "Gallery",
+  "camera": "Camera",
+  "chooseImageSource": "Choose Image Source",
+  "selectDate": "Select Date",
+  "chooseADate": "Choose a date",
+  "selectTime": "Select Time",
+  "chooseATime": "Choose a time",
+  "serviceAddress": "Service Address",
+  "enterServiceAddress": "Enter service address",
+  "additionalNotesOptional": "Additional Notes (Optional)",
+  "anySpecialRequestsOrNotes": "Any special requests or notes...",
+  "requestSummary": "Request Summary",
+  "date": "Date",
+  "time": "Time",
+  "notSelected": "Not selected",
+  "images": "Images",
+  "noImages": "No images",
+  "estimatedPrice": "Estimated Price",
+  "submitRequest": "Submit Request",
+  "pleaseSelectBothDateAndTime": "Please select both date and time",
+  "pleaseEnterYourAddress": "Please enter your address",
+
+  "bookingConfirmed": "Booking Confirmed!",
+  "yourServiceHasBeenSuccessfullyBooked": "Your service has been successfully booked",
+  "yourServicesHaveBeenSuccessfullyBooked": "Your {count} services have been successfully booked",
+  "@yourServicesHaveBeenSuccessfullyBooked": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "bookingDetails": "Booking Details",
+  "service": "Service",
+  "quantity": "Quantity",
+  "totalAmount": "Total Amount",
+  "whatsNext": "What's Next?",
+  "youWillReceiveConfirmationEmailShortly": "You will receive a confirmation email shortly",
+  "reminderWillBeSent24HoursBefore": "A reminder will be sent 24 hours before",
+  "viewYourBookingsInOrdersSection": "View your bookings in the Orders section",
+  "backToHome": "Back to Home",
+  "viewBookings": "View Bookings",
+
+  "orderDetails": "Order Details",
+  "orderNumber": "Order #",
+  "servicesList": "Services List",
+  "bookingDate": "Booking Date",
+  "serviceTime": "Service Time",
+  "address": "Address",
+  "orderStatus": "Order Status",
+  "pending": "Pending",
+  "confirmed": "Confirmed",
+  "inProgress": "In Progress",
+  "completed": "Completed",
+  "bookingReceived": "Booking\nReceived",
+  "simulateAssignTechnician": "Simulate: Assign Technician",
+  "simulateStartWork": "Simulate: Start Work",
+  "simulateCompleteWork": "Simulate: Complete Work",
+  "technician": "Technician",
+  "ordersDone": "Orders Done",
+  "experience": "Experience",
+  "viewProfile": "View Profile",
+  "chat": "Chat",
+  "facedAnyEmergency": "Faced any emergency?",
+  "cancelBooking": "Cancel Booking",
+  "pleaseSelectReasonForCancellation": "Please select a reason for cancellation",
+  "changeOfPlans": "Change of plans",
+  "foundBetterService": "Found better service",
+  "incorrectBookingDetails": "Incorrect booking details",
+  "emergencySituation": "Emergency situation",
+  "priceTooHigh": "Price too high",
+  "technicianNotAvailable": "Technician not available",
+  "serviceNoLongerNeeded": "Service no longer needed",
+  "otherReason": "Other reason",
+  "cancellationMayIncurCharges": "Cancellation may incur charges",
+  "keepBooking": "Keep Booking",
+  "bookingCancelled": "Booking Cancelled",
+  "yourBookingHasBeenCancelledSuccessfully": "Your booking has been cancelled successfully",
+  "reason": "Reason",
+  "done": "Done",
+
+  "vendorProfile": "Vendor Profile",
+  "professionalTechnician": "Professional Technician",
+  "timePeriod": "Time Period",
+  "profileVerified": "Profile Verified",
+  "policeVerified": "Police Verified",
+  "servicesProvide": "Services Provide",
+  "orderDone": "Order Done",
+
+  "typeAMessage": "Type a message...",
+  "noMessagesYet": "No messages yet",
+  "startConversationWith": "Start a conversation with {name}",
+  "@startConversationWith": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "justNow": "Just now",
+  "callingTechnician": "Calling technician...",
+  "helloIWillBeArrivingIn30Minutes": "Hello! I will be arriving in 30 minutes. Please keep the service area ready.",
+  "okayNotedThankYou": "Okay, noted. Thank you!",
+  "mAgo": "{minutes}m ago",
+  "@mAgo": {
+    "placeholders": {
+      "minutes": {
+        "type": "int"
+      }
+    }
+  },
+  "hAgo": "{hours}h ago",
+  "@hAgo": {
+    "placeholders": {
+      "hours": {
+        "type": "int"
+      }
+    }
+  },
+
+  "enableNotifications": "Enable Notifications",
+  "getRealTimeUpdatesAboutYourBookings": "Get real-time updates about your bookings, technician assignments, and service completion.",
+  "notNow": "Not Now",
+  "allow": "Allow",
+  "notificationsEnabledSuccessfully": "Notifications enabled successfully!",
+  "noNotifications": "No Notifications",
+  "youreAllCaughtUp": "You're all caught up!",
+  "markAllRead": "Mark all read",
+  "clearAllNotifications": "Clear All Notifications",
+  "areYouSureYouWantToClearAllNotifications": "Are you sure you want to clear all notifications? This action cannot be undone.",
+  "newNotifications": "New",
+  "youHaveUnreadNotifications": "You have {count} unread notification(s)",
+  "@youHaveUnreadNotifications": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "notificationDeleted": "Notification deleted",
+  "undo": "Undo",
+
+  "serviceDetail": "Service Detail",
+  "whatsIncluded": "What's Included",
+  "notIncluded": "Not Included",
+  "anyTypeOfRepair": "Any type of repair",
+  "anyTypeOfMaterial": "Any type of material",
+  "ladder": "Ladder",
+  "addToCart": "Add to Cart",
+  "addedToCartSuccessfully": "Added {serviceName} to cart successfully!",
+  "@addedToCartSuccessfully": {
+    "placeholders": {
+      "serviceName": {
+        "type": "String"
+      }
+    }
+  },
+  "viewCart": "View Cart",
+
+  "searchServices": "Search services...",
+  "noServicesFound": "No services found",
+  "tryAdjustingYourSearchTerms": "Try adjusting your search terms",
+  "chooseMachineType": "Choose machine type",
+  "viewServicesForMachines": "View services for {type} machines",
+  "@viewServicesForMachines": {
+    "placeholders": {
+      "type": {
+        "type": "String"
+      }
+    }
+  },
+  "washingMachine": "Washing Machine",
+  "continueToCheckout": "Continue to Checkout",
+
+  "homeAddress": "Home Address",
+  "editing": "Editing",
+  "enterYourAddress": "Enter your address",
+  "save": "Save",
+  "addressUpdatedSuccessfully": "Address updated successfully!",
+  "addNewAddress": "Add New Address",
+  "addNewAddressFeatureComingSoon": "Add new address feature coming soon!",
+
+  "saveChanges": "Save Changes",
+  "profileUpdatedSuccessfully": "Profile updated successfully!",
+  "pleaseEnterYourPhoneNumber": "Please enter your phone number",
+  "phoneNumberMustContainOnlyDigits": "Phone number must contain only digits",
+
+  "serviceExpertise": "Service Expertise",
+  "previouslyCompletedServicesBy": "Previously completed services by {name}",
+  "@previouslyCompletedServicesBy": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "doneCount": "done",
+
+  "kmAway": "km away",
+  "serviceLocation": "Service Location"
+}

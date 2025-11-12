@@ -7,6 +7,7 @@ import '../../models/user_model.dart';
 import '../../models/booking_model.dart';
 import '../../services/dummy_data_service.dart';
 import '../../utils/app_colors.dart';
+import '../../gen_l10n/app_localizations.dart';
 
 // Review Model
 class Review {
@@ -118,7 +119,7 @@ class _ReviewScreenState extends State<ReviewScreen> with SingleTickerProviderSt
                           ),
                           const SizedBox(height: 12),
                           const Text(
-                            'Rate Your Experience',
+                            l10n.rateYourExperience,
                             style: TextStyle(
                               color: Colors.white,
                               fontSize: 20,
@@ -141,7 +142,7 @@ class _ReviewScreenState extends State<ReviewScreen> with SingleTickerProviderSt
 
                     // Star Rating
                     Text(
-                      'Tap to rate',
+                      l10n.tapToRate,
                       style: TextStyle(
                         fontSize: 14,
                         color: isDark ? Colors.grey.shade400 : Colors.grey.shade600,
@@ -171,14 +172,14 @@ class _ReviewScreenState extends State<ReviewScreen> with SingleTickerProviderSt
                     const SizedBox(height: 8),
                     Text(
                       rating == 5.0
-                          ? 'Excellent!'
+                          ? l10n.excellent
                           : rating >= 4.0
-                          ? 'Very Good!'
+                          ? l10n.veryGood
                           : rating >= 3.0
-                          ? 'Good'
+                          ? l10n.good
                           : rating >= 2.0
-                          ? 'Fair'
-                          : 'Poor',
+                          ? l10n.fair
+                          : l10n.poor,
                       style: TextStyle(
                         fontSize: 16,
                         fontWeight: FontWeight.bold,
@@ -200,7 +201,7 @@ class _ReviewScreenState extends State<ReviewScreen> with SingleTickerProviderSt
                           color: isDark ? Colors.white : Colors.black87,
                         ),
                         decoration: InputDecoration(
-                          hintText: 'Share your experience (optional)...',
+                          hintText: l10n.shareYourExperience,
                           hintStyle: TextStyle(
                             color: isDark ? Colors.grey.shade500 : Colors.grey.shade600,
                           ),
@@ -230,7 +231,7 @@ class _ReviewScreenState extends State<ReviewScreen> with SingleTickerProviderSt
                               ),
                             ),
                             child: Text(
-                              'Cancel',
+                              l10n.cancel,
                               style: TextStyle(
                                 color: isDark ? Colors.grey.shade400 : Colors.grey.shade600,
                               ),
@@ -273,7 +274,7 @@ class _ReviewScreenState extends State<ReviewScreen> with SingleTickerProviderSt
                                       children: [
                                         Icon(Icons.check_circle, color: Colors.white),
                                         SizedBox(width: 8),
-                                        Text('Thank you for your review!'),
+                                        Text(l10n.thankYouForYourReview),
                                       ],
                                     ),
                                     backgroundColor: Colors.green,
@@ -290,7 +291,7 @@ class _ReviewScreenState extends State<ReviewScreen> with SingleTickerProviderSt
                                 ),
                               ),
                               child: const Text(
-                                'Submit',
+                                l10n.submit,
                                 style: TextStyle(
                                   color: Colors.white,
                                   fontWeight: FontWeight.bold,
@@ -313,6 +314,8 @@ class _ReviewScreenState extends State<ReviewScreen> with SingleTickerProviderSt
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
+
     final isDark = Theme.of(context).brightness == Brightness.dark;
     final backgroundColor = isDark ? const Color(0xFF0F172A) : const Color(0xFFF8F9FA);
     final cardColor = isDark ? const Color(0xFF1E293B) : Colors.white;
@@ -322,7 +325,7 @@ class _ReviewScreenState extends State<ReviewScreen> with SingleTickerProviderSt
     return Scaffold(
       backgroundColor: backgroundColor,
       appBar: AppBar(
-        title: const Text('My Reviews'),
+        title: const Text(l10n.myReviews),
         backgroundColor: cardColor,
         foregroundColor: textColor,
         elevation: 0,
@@ -336,7 +339,7 @@ class _ReviewScreenState extends State<ReviewScreen> with SingleTickerProviderSt
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  const Text('To Review'),
+                  const Text(l10n.toReview),
                   if (_unratedBookings.isNotEmpty) ...[
                     const SizedBox(width: 8),
                     Container(
@@ -360,7 +363,7 @@ class _ReviewScreenState extends State<ReviewScreen> with SingleTickerProviderSt
                 ],
               ),
             ),
-            const Tab(text: 'My Reviews'),
+            const Tab(text: l10n.myReviews),
           ],
         ),
       ),
@@ -392,8 +395,8 @@ class _ReviewScreenState extends State<ReviewScreen> with SingleTickerProviderSt
               decoration: BoxDecoration(
                 gradient: LinearGradient(
                   colors: [
-                    AppColors.electricBlue.withOpacity(0.1),
-                    AppColors.electricBlue.withOpacity(0.1),
+                    AppColors.electricBlue.withValues(alpha: 0.1),
+                    AppColors.electricBlue.withValues(alpha: 0.1),
                   ],
                 ),
                 shape: BoxShape.circle,
@@ -406,7 +409,7 @@ class _ReviewScreenState extends State<ReviewScreen> with SingleTickerProviderSt
             ),
             const SizedBox(height: 24),
             Text(
-              'No Services to Review',
+              l10n.noServicesToReview,
               style: TextStyle(
                 fontSize: 24,
                 fontWeight: FontWeight.bold,
@@ -415,7 +418,7 @@ class _ReviewScreenState extends State<ReviewScreen> with SingleTickerProviderSt
             ),
             const SizedBox(height: 8),
             Text(
-              'Complete services to leave reviews',
+              l10n.completeServicesToLeaveReviews,
               style: TextStyle(
                 fontSize: 16,
                 color: subtitleColor,
@@ -438,7 +441,7 @@ class _ReviewScreenState extends State<ReviewScreen> with SingleTickerProviderSt
             borderRadius: BorderRadius.circular(16),
             boxShadow: [
               BoxShadow(
-                color: Colors.black.withOpacity(isDark ? 0.3 : 0.08),
+                color: Colors.black.withValues(alpha: isDark ? 0.3 : 0.08),
                 blurRadius: 15,
                 offset: const Offset(0, 5),
               ),
@@ -517,7 +520,7 @@ class _ReviewScreenState extends State<ReviewScreen> with SingleTickerProviderSt
                           Icon(Icons.star, color: Colors.white, size: 20),
                           SizedBox(width: 8),
                           Text(
-                            'Write a Review',
+                            l10n.writeAReview,
                             style: TextStyle(
                               color: Colors.white,
                               fontSize: 15,
@@ -553,8 +556,8 @@ class _ReviewScreenState extends State<ReviewScreen> with SingleTickerProviderSt
               decoration: BoxDecoration(
                 gradient: LinearGradient(
                   colors: [
-                    AppColors.electricBlue.withOpacity(0.1),
-                    AppColors.electricBlue.withOpacity(0.1),
+                    AppColors.electricBlue.withValues(alpha: 0.1),
+                    AppColors.electricBlue.withValues(alpha: 0.1),
                   ],
                 ),
                 shape: BoxShape.circle,
@@ -567,7 +570,7 @@ class _ReviewScreenState extends State<ReviewScreen> with SingleTickerProviderSt
             ),
             const SizedBox(height: 24),
             Text(
-              'No Reviews Yet',
+              l10n.noReviewsYet,
               style: TextStyle(
                 fontSize: 24,
                 fontWeight: FontWeight.bold,
@@ -576,7 +579,7 @@ class _ReviewScreenState extends State<ReviewScreen> with SingleTickerProviderSt
             ),
             const SizedBox(height: 8),
             Text(
-              'Your reviews will appear here',
+              l10n.yourReviewsWillAppearHere,
               style: TextStyle(
                 fontSize: 16,
                 color: subtitleColor,
@@ -599,7 +602,7 @@ class _ReviewScreenState extends State<ReviewScreen> with SingleTickerProviderSt
             borderRadius: BorderRadius.circular(16),
             boxShadow: [
               BoxShadow(
-                color: Colors.black.withOpacity(isDark ? 0.3 : 0.08),
+                color: Colors.black.withValues(alpha: isDark ? 0.3 : 0.08),
                 blurRadius: 15,
                 offset: const Offset(0, 5),
               ),

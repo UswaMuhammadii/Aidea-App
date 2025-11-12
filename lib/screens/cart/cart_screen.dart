@@ -4,7 +4,7 @@ import '../../models/cart_model.dart';
 import '../services/service_checkout_screen.dart';
 import '../../utils/icons_helper.dart';
 import '../../utils/app_colors.dart';
-
+import '../../gen_l10n/app_localizations.dart';
 
 class CartScreen extends StatefulWidget {
   final User user;
@@ -57,6 +57,8 @@ class _CartScreenState extends State<CartScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
+
     final isDark = Theme.of(context).brightness == Brightness.dark;
     final backgroundColor = isDark ? const Color(0xFF0F172A) : const Color(0xFFF8F9FA);
     final cardColor = isDark ? const Color(0xFF1E293B) : Colors.white;
@@ -67,7 +69,7 @@ class _CartScreenState extends State<CartScreen> {
       return Scaffold(
         backgroundColor: backgroundColor,
         appBar: AppBar(
-          title: const Text('Cart'),
+          title: const Text(l10n.cart),
           backgroundColor: cardColor,
           foregroundColor: textColor,
           elevation: 0,
@@ -81,8 +83,8 @@ class _CartScreenState extends State<CartScreen> {
                 decoration: BoxDecoration(
                   gradient: LinearGradient(
                     colors: [
-                      AppColors.electricBlue.withOpacity(0.1),
-                      AppColors.electricBlue.withOpacity(0.1),
+                      AppColors.electricBlue.withValues(alpha: 0.1),
+                      AppColors.electricBlue.withValues(alpha: 0.1),
                     ],
                   ),
                   shape: BoxShape.circle,
@@ -95,7 +97,7 @@ class _CartScreenState extends State<CartScreen> {
               ),
               const SizedBox(height: 24),
               Text(
-                'Your cart is empty',
+                l10n.yourCartIsEmpty,
                 style: TextStyle(
                   fontSize: 24,
                   fontWeight: FontWeight.bold,
@@ -104,7 +106,7 @@ class _CartScreenState extends State<CartScreen> {
               ),
               const SizedBox(height: 8),
               Text(
-                'Add some services to get started',
+                l10n.addSomeServicesToGetStarted,
                 style: TextStyle(
                   fontSize: 16,
                   color: subtitleColor,
@@ -136,13 +138,13 @@ class _CartScreenState extends State<CartScreen> {
                     backgroundColor: isDark ? const Color(0xFF1E293B) : Colors.white,
                     title: Text('Clear Cart', style: TextStyle(color: textColor)),
                     content: Text(
-                      'Are you sure you want to remove all items?',
+                      l10n.areYouSureYouWantToRemoveAllItems,
                       style: TextStyle(color: subtitleColor),
                     ),
                     actions: [
                       TextButton(
                         onPressed: () => Navigator.pop(context),
-                        child: Text('Cancel', style: TextStyle(color: subtitleColor)),
+                        child: Text(l10n.cancel, style: TextStyle(color: subtitleColor)),
                       ),
                       Container(
                         decoration: BoxDecoration(
@@ -161,7 +163,7 @@ class _CartScreenState extends State<CartScreen> {
                             backgroundColor: Colors.transparent,
                             shadowColor: Colors.transparent,
                           ),
-                          child: const Text('Clear'),
+                          child: const Text(l10n.clear),
                         ),
                       ),
                     ],
@@ -169,7 +171,7 @@ class _CartScreenState extends State<CartScreen> {
                 );
               },
               child: const Text(
-                'Clear All',
+                l10n.clearAll,
                 style: TextStyle(color: Colors.red),
               ),
             ),
@@ -190,7 +192,7 @@ class _CartScreenState extends State<CartScreen> {
                     borderRadius: BorderRadius.circular(20),
                     boxShadow: [
                       BoxShadow(
-                        color: Colors.black.withOpacity(isDark ? 0.3 : 0.08),
+                        color: Colors.black.withValues(alpha: isDark ? 0.3 : 0.08),
                         blurRadius: 15,
                         offset: const Offset(0, 5),
                       ),
@@ -207,8 +209,8 @@ class _CartScreenState extends State<CartScreen> {
                           decoration: BoxDecoration(
                             gradient: LinearGradient(
                               colors: [
-                                AppColors.electricBlue.withOpacity(0.15),
-                                AppColors.electricBlue.withOpacity(0.15),
+                                AppColors.electricBlue.withValues(alpha: 0.15),
+                                AppColors.electricBlue.withValues(alpha: 0.15),
                               ],
                             ),
                             borderRadius: BorderRadius.circular(12),
@@ -338,7 +340,7 @@ class _CartScreenState extends State<CartScreen> {
               color: cardColor,
               boxShadow: [
                 BoxShadow(
-                  color: Colors.black.withOpacity(isDark ? 0.3 : 0.1),
+                  color: Colors.black.withValues(alpha: isDark ? 0.3 : 0.1),
                   blurRadius: 10,
                   offset: const Offset(0, -5),
                 ),
@@ -382,7 +384,7 @@ class _CartScreenState extends State<CartScreen> {
                         elevation: 4,
                       ),
                       child: const Text(
-                        'Proceed to Checkout',
+                        l10n.proceedToCheckout,
                         style: TextStyle(
                           fontSize: 16,
                           fontWeight: FontWeight.bold,

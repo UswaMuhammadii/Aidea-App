@@ -5,6 +5,7 @@ import '../../models/cart_model.dart';
 import '../cart/cart_screen.dart';
 import '../../utils/icons_helper.dart';
 import '../../utils/app_colors.dart';
+import '../../gen_l10n/app_localizations.dart';
 
 class ServiceDetailScreen extends StatefulWidget {
   final Service service;
@@ -79,7 +80,7 @@ class _ServiceDetailScreenState extends State<ServiceDetailScreen> with TickerPr
           behavior: SnackBarBehavior.floating,
           shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
           action: SnackBarAction(
-            label: 'View Cart',
+            label: l10n.viewCart,
             textColor: Colors.white,
             onPressed: () => Navigator.push(context, MaterialPageRoute(builder: (_) => CartScreen(user: widget.user))),
           ),
@@ -90,6 +91,8 @@ class _ServiceDetailScreenState extends State<ServiceDetailScreen> with TickerPr
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
+
     final isDark = Theme.of(context).brightness == Brightness.dark;
     final backgroundColor = isDark ? const Color(0xFF0F172A) : const Color(0xFFF8F9FA);
     final cardColor = isDark ? const Color(0xFF1E293B) : Colors.white;
@@ -101,7 +104,7 @@ class _ServiceDetailScreenState extends State<ServiceDetailScreen> with TickerPr
       backgroundColor: backgroundColor,
       body: Column(
         children: [
-          // Header with image
+
           Container(
             height: 350,
             decoration: BoxDecoration(
@@ -109,13 +112,12 @@ class _ServiceDetailScreenState extends State<ServiceDetailScreen> with TickerPr
                 begin: Alignment.topLeft,
                 end: Alignment.bottomRight,
                 colors: isDark
-                    ? [const Color(0xFF1E293B).withOpacity(0.5), const Color(0xFF0F172A)]
-                    : [Theme.of(context).colorScheme.primary.withOpacity(0.1), Theme.of(context).colorScheme.secondary.withOpacity(0.05)],
+                    ? [const Color(0xFF1E293B).withValues(alpha: 0.5), const Color(0xFF0F172A)]
+                    : [Theme.of(context).colorScheme.primary.withValues(alpha: 0.1), Theme.of(context).colorScheme.secondary.withValues(alpha: 0.05)],
               ),
             ),
             child: Stack(
               children: [
-                // Back button
                 Positioned(
                   top: 50,
                   left: 16,
@@ -125,7 +127,7 @@ class _ServiceDetailScreenState extends State<ServiceDetailScreen> with TickerPr
                     decoration: BoxDecoration(
                       color: cardColor,
                       borderRadius: BorderRadius.circular(22),
-                      boxShadow: [BoxShadow(color: Colors.black.withOpacity(0.1), blurRadius: 15, offset: const Offset(0, 5))],
+                      boxShadow: [BoxShadow(color: Colors.black.withValues(alpha: 0.1), blurRadius: 15, offset: const Offset(0, 5))],
                     ),
                     child: IconButton(
                       icon: Icon(Icons.arrow_back, color: textColor, size: 20),
@@ -133,7 +135,7 @@ class _ServiceDetailScreenState extends State<ServiceDetailScreen> with TickerPr
                     ),
                   ),
                 ),
-                // Service image with animation
+
                 Center(
                   child: ScaleTransition(
                     scale: _scaleAnimation,
@@ -149,7 +151,7 @@ class _ServiceDetailScreenState extends State<ServiceDetailScreen> with TickerPr
                             colors: isDark ? [const Color(0xFF334155), const Color(0xFF1E293B)] : [Colors.white, Colors.grey.shade50],
                           ),
                           borderRadius: BorderRadius.circular(24),
-                          boxShadow: [BoxShadow(color: Colors.black.withOpacity(isDark ? 0.4 : 0.15), blurRadius: 30, offset: const Offset(0, 10))],
+                          boxShadow: [BoxShadow(color: Colors.black.withValues(alpha: isDark ? 0.4 : 0.15), blurRadius: 30, offset: const Offset(0, 10))],
                         ),
                         child: Column(
                           mainAxisAlignment: MainAxisAlignment.center,
@@ -181,7 +183,6 @@ class _ServiceDetailScreenState extends State<ServiceDetailScreen> with TickerPr
             ),
           ),
 
-          // Content with animations
           Expanded(
             child: FadeTransition(
               opacity: _fadeAnimation,
@@ -198,7 +199,7 @@ class _ServiceDetailScreenState extends State<ServiceDetailScreen> with TickerPr
                         decoration: BoxDecoration(
                           color: cardColor,
                           borderRadius: BorderRadius.circular(20),
-                          boxShadow: [BoxShadow(color: Colors.black.withOpacity(shadowOpacity), blurRadius: 15, offset: const Offset(0, 5))],
+                          boxShadow: [BoxShadow(color: Colors.black.withValues(alpha: shadowOpacity), blurRadius: 15, offset: const Offset(0, 5))],
                         ),
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
@@ -242,13 +243,12 @@ class _ServiceDetailScreenState extends State<ServiceDetailScreen> with TickerPr
 
                       const SizedBox(height: 32),
 
-                      // Includes section
                       Container(
                         padding: const EdgeInsets.all(20),
                         decoration: BoxDecoration(
                           color: cardColor,
                           borderRadius: BorderRadius.circular(20),
-                          boxShadow: [BoxShadow(color: Colors.black.withOpacity(shadowOpacity), blurRadius: 15, offset: const Offset(0, 5))],
+                          boxShadow: [BoxShadow(color: Colors.black.withValues(alpha: shadowOpacity), blurRadius: 15, offset: const Offset(0, 5))],
                         ),
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
@@ -280,7 +280,7 @@ class _ServiceDetailScreenState extends State<ServiceDetailScreen> with TickerPr
                         decoration: BoxDecoration(
                           color: cardColor,
                           borderRadius: BorderRadius.circular(20),
-                          boxShadow: [BoxShadow(color: Colors.black.withOpacity(shadowOpacity), blurRadius: 15, offset: const Offset(0, 5))],
+                          boxShadow: [BoxShadow(color: Colors.black.withValues(alpha: shadowOpacity), blurRadius: 15, offset: const Offset(0, 5))],
                         ),
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
@@ -290,7 +290,7 @@ class _ServiceDetailScreenState extends State<ServiceDetailScreen> with TickerPr
                                 const Icon(Icons.cancel, color: Colors.red, size: 24),
                                 const SizedBox(width: 8),
                                 Text(
-                                    'Not Included',
+                                    l10n.notIncluded,
                                     style: Theme.of(context).textTheme.titleLarge?.copyWith(
                                         fontWeight: FontWeight.bold,
                                         color: textColor
@@ -321,7 +321,7 @@ class _ServiceDetailScreenState extends State<ServiceDetailScreen> with TickerPr
         padding: const EdgeInsets.all(16),
         decoration: BoxDecoration(
           color: cardColor,
-          boxShadow: [BoxShadow(color: Colors.black.withOpacity(isDark ? 0.4 : 0.1), blurRadius: 20, offset: const Offset(0, -10))],
+          boxShadow: [BoxShadow(color: Colors.black.withValues(alpha: isDark ? 0.4 : 0.1), blurRadius: 20, offset: const Offset(0, -10))],
         ),
         child: SafeArea(
           child: ScaleTransition(
@@ -335,7 +335,7 @@ class _ServiceDetailScreenState extends State<ServiceDetailScreen> with TickerPr
                 ),
                 borderRadius: BorderRadius.circular(16),
                 boxShadow: [BoxShadow(
-                    color: AppColors.electricBlue.withOpacity(0.3),
+                    color: AppColors.electricBlue.withValues(alpha: 0.3),
                     blurRadius: 15,
                     offset: const Offset(0, 8)
                 )],
@@ -362,7 +362,7 @@ class _ServiceDetailScreenState extends State<ServiceDetailScreen> with TickerPr
                     Icon(Icons.shopping_cart, size: 22, color: Colors.white),
                     SizedBox(width: 16),
                     Text(
-                        'Add to Cart',
+                        l10n.addToCart,
                         style: TextStyle(
                             fontSize: 18,
                             fontWeight: FontWeight.w600,
@@ -388,9 +388,9 @@ class _ServiceDetailScreenState extends State<ServiceDetailScreen> with TickerPr
             width: 28,
             height: 28,
             decoration: BoxDecoration(
-              color: color.withOpacity(0.1),
+              color: color.withValues(alpha: 0.1),
               shape: BoxShape.circle,
-              border: Border.all(color: color.withOpacity(0.3), width: 1),
+              border: Border.all(color: color.withValues(alpha: 0.3), width: 1),
             ),
             child: Center(
               child: Text(

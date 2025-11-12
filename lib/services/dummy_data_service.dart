@@ -1,6 +1,7 @@
 import '../models/user_model.dart';
 import '../models/service_model.dart';
 import '../models/booking_model.dart';
+import '../../gen_l10n/app_localizations.dart';
 
 class DummyDataService {
   static List<Service> get _services => [

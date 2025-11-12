@@ -6,9 +6,9 @@ import '../../services/dummy_data_service.dart';
 import 'service_checkout_screen.dart';
 import 'service_detail_screen.dart';
 import '../cart/cart_screen.dart';
+import '../../gen_l10n/app_localizations.dart';
 import '../../utils/icons_helper.dart';
 
-// AppColors
 class AppColors {
   static const deepPurple = Color(0xFF7C3AED);
   static const electricBlue = Color(0xFF3B82F6);
@@ -186,7 +186,7 @@ class _ServiceListingScreenState extends State<ServiceListingScreen> with Ticker
         behavior: SnackBarBehavior.floating,
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
         action: SnackBarAction(
-          label: 'View Cart',
+          label: l10n.viewCart,
           textColor: Colors.white,
           onPressed: () {
             Navigator.push(
@@ -222,6 +222,8 @@ class _ServiceListingScreenState extends State<ServiceListingScreen> with Ticker
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
+
     final isDark = Theme.of(context).brightness == Brightness.dark;
 
     return PopScope(
@@ -298,7 +300,7 @@ class _ServiceListingScreenState extends State<ServiceListingScreen> with Ticker
                 const Color(0xFF1E293B),
               ]
                   : [
-                AppColors.deepPurple.withOpacity(0.03),
+                AppColors.deepPurple.withValues(alpha: 0.03),
                 Colors.white,
               ],
             ),
@@ -332,7 +334,7 @@ class _ServiceListingScreenState extends State<ServiceListingScreen> with Ticker
                 borderRadius: BorderRadius.circular(20),
                 boxShadow: [
                   BoxShadow(
-                    color: Colors.black.withOpacity(isDark ? 0.3 : 0.05),
+                    color: Colors.black.withValues(alpha: isDark ? 0.3 : 0.05),
                     blurRadius: 15,
                     offset: const Offset(0, 5),
                   ),
@@ -372,7 +374,7 @@ class _ServiceListingScreenState extends State<ServiceListingScreen> with Ticker
                               Text(
                                 subcategory == 'Washing Machine'
                                     ? 'Choose machine type'
-                                    : 'View all services',
+                                    : l10n.viewAllServices,
                                 style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                                   color: Theme.of(context).colorScheme.onSurfaceVariant,
                                 ),
@@ -423,7 +425,7 @@ class _ServiceListingScreenState extends State<ServiceListingScreen> with Ticker
                 borderRadius: BorderRadius.circular(20),
                 boxShadow: [
                   BoxShadow(
-                    color: Colors.black.withOpacity(isDark ? 0.3 : 0.05),
+                    color: Colors.black.withValues(alpha: isDark ? 0.3 : 0.05),
                     blurRadius: 15,
                     offset: const Offset(0, 5),
                   ),
@@ -506,7 +508,7 @@ class _ServiceListingScreenState extends State<ServiceListingScreen> with Ticker
               borderRadius: BorderRadius.circular(16),
               boxShadow: [
                 BoxShadow(
-                  color: Colors.black.withOpacity(isDark ? 0.3 : 0.05),
+                  color: Colors.black.withValues(alpha: isDark ? 0.3 : 0.05),
                   blurRadius: 15,
                   offset: const Offset(0, 5),
                 ),
@@ -517,7 +519,7 @@ class _ServiceListingScreenState extends State<ServiceListingScreen> with Ticker
               onChanged: _filterServices,
               style: TextStyle(color: Theme.of(context).colorScheme.onSurface),
               decoration: InputDecoration(
-                hintText: 'Search services...',
+                hintText: l10n.searchServices,
                 hintStyle: TextStyle(color: Theme.of(context).colorScheme.onSurfaceVariant),
                 prefixIcon: Container(
                   margin: const EdgeInsets.all(8),
@@ -555,18 +557,18 @@ class _ServiceListingScreenState extends State<ServiceListingScreen> with Ticker
                 Icon(
                   Icons.search_off,
                   size: 64,
-                  color: Theme.of(context).colorScheme.onSurfaceVariant.withOpacity(0.5),
+                  color: Theme.of(context).colorScheme.onSurfaceVariant.withValues(alpha: 0.5),
                 ),
                 const SizedBox(height: 16),
                 Text(
-                  'No services found',
+                  l10n.noServicesFound,
                   style: Theme.of(context).textTheme.titleMedium?.copyWith(
                     color: Theme.of(context).colorScheme.onSurface,
                   ),
                 ),
                 const SizedBox(height: 8),
                 Text(
-                  'Try adjusting your search terms',
+                  l10n.tryAdjustingYourSearchTerms,
                   style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                     color: Theme.of(context).colorScheme.onSurfaceVariant,
                   ),
@@ -595,8 +597,8 @@ class _ServiceListingScreenState extends State<ServiceListingScreen> with Ticker
                       boxShadow: [
                         BoxShadow(
                           color: isSelected
-                              ? AppColors.deepPurple.withOpacity(0.3)
-                              : Colors.black.withOpacity(isDark ? 0.3 : 0.05),
+                              ? AppColors.deepPurple.withValues(alpha: 0.3)
+                              : Colors.black.withValues(alpha: isDark ? 0.3 : 0.05),
                           blurRadius: isSelected ? 20 : 15,
                           offset: const Offset(0, 5),
                         ),
@@ -802,7 +804,7 @@ class _ServiceListingScreenState extends State<ServiceListingScreen> with Ticker
                 borderRadius: BorderRadius.circular(16),
                 boxShadow: [
                   BoxShadow(
-                    color: AppColors.deepPurple.withOpacity(0.4),
+                    color: AppColors.deepPurple.withValues(alpha: 0.4),
                     blurRadius: 20,
                     offset: const Offset(0, 10),
                   ),

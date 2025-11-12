@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'dart:async';
+import '../../gen_l10n/app_localizations.dart';
 
 class AppColors {
   static const deepPurple = Color(0xFF7C3AED);
@@ -116,6 +117,8 @@ class _OTPVerificationScreenState extends State<OTPVerificationScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
+
     final isDark = Theme.of(context).brightness == Brightness.dark;
     final backgroundColor = isDark ? const Color(0xFF0F172A) : Colors.white;
 
@@ -265,7 +268,7 @@ class _OTPVerificationScreenState extends State<OTPVerificationScreen> {
                       borderRadius: BorderRadius.circular(16),
                       boxShadow: [
                         BoxShadow(
-                          color: AppColors.deepPurple.withOpacity(0.3),
+                          color: AppColors.deepPurple.withValues(alpha: 0.3),
                           blurRadius: 20,
                           offset: const Offset(0, 10),
                         ),

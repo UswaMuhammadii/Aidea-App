@@ -4,6 +4,7 @@ import '../../services/dummy_data_service.dart';
 import 'phone_login_screen.dart';
 import 'otp_verification_screen.dart';
 import 'location_selection_screen.dart';
+import '../../gen_l10n/app_localizations.dart';
 
 class AuthFlowCoordinator extends StatefulWidget {
   final Function(User) onAuthComplete;
@@ -74,6 +75,8 @@ class _AuthFlowCoordinatorState extends State<AuthFlowCoordinator> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
+
     return Scaffold(
       body: IndexedStack(
         index: _currentStep,

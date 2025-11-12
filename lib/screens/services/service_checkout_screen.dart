@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:image_picker/image_picker.dart';
 import 'dart:io';
+import '../../gen_l10n/app_localizations.dart';
 import '../../models/user_model.dart';
 import '../../models/service_model.dart';
 import '../../models/booking_model.dart';
@@ -219,7 +220,7 @@ class _ServiceCheckoutScreenState extends State<ServiceCheckoutScreen> {
           bookingTime: bookingDateTime,
           totalPrice: cartItem.totalPrice,
           quantity: cartItem.quantity,
-          paymentMethod: 'pending', // Changed from cash/card to pending
+          paymentMethod: 'pending',
           notes: _notesController.text.isNotEmpty ? _notesController.text : null,
         );
         bookings.add(booking);
@@ -259,6 +260,8 @@ class _ServiceCheckoutScreenState extends State<ServiceCheckoutScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
+
     final isDark = Theme.of(context).brightness == Brightness.dark;
     final backgroundColor = isDark ? const Color(0xFF0F172A) : const Color(0xFFF8F9FA);
     final cardColor = isDark ? const Color(0xFF1E293B) : Colors.white;
@@ -286,8 +289,8 @@ class _ServiceCheckoutScreenState extends State<ServiceCheckoutScreen> {
             end: Alignment.bottomCenter,
             colors: [
               isDark
-                  ? const Color(0xFF1E293B).withOpacity(0.8)
-                  : Theme.of(context).colorScheme.primary.withOpacity(0.05),
+                  ? const Color(0xFF1E293B).withValues(alpha: 0.8)
+                  : Theme.of(context).colorScheme.primary.withValues(alpha: 0.05),
               isDark ? const Color(0xFF0F172A) : const Color(0xFFF8F9FA),
             ],
           ),
@@ -312,7 +315,7 @@ class _ServiceCheckoutScreenState extends State<ServiceCheckoutScreen> {
                   color: cardColor,
                   boxShadow: [
                     BoxShadow(
-                      color: Colors.black.withOpacity(shadowOpacity),
+                      color: Colors.black.withValues(alpha: shadowOpacity),
                       blurRadius: 10,
                       offset: const Offset(0, 5),
                     ),
@@ -439,7 +442,7 @@ class _ServiceCheckoutScreenState extends State<ServiceCheckoutScreen> {
                   color: cardColor,
                   boxShadow: [
                     BoxShadow(
-                      color: Colors.black.withOpacity(shadowOpacity),
+                      color: Colors.black.withValues(alpha: shadowOpacity),
                       blurRadius: 10,
                       offset: const Offset(0, 5),
                     ),
@@ -461,7 +464,7 @@ class _ServiceCheckoutScreenState extends State<ServiceCheckoutScreen> {
                                 gradient: LinearGradient(
                                   colors: [
                                     Theme.of(context).colorScheme.primary,
-                                    Theme.of(context).colorScheme.primary.withOpacity(0.7),
+                                    Theme.of(context).colorScheme.primary.withValues(alpha: 0.7),
                                   ],
                                 ),
                                 borderRadius: BorderRadius.circular(12),
@@ -583,7 +586,7 @@ class _ServiceCheckoutScreenState extends State<ServiceCheckoutScreen> {
                   borderRadius: BorderRadius.circular(16),
                   boxShadow: [
                     BoxShadow(
-                      color: Colors.black.withOpacity(shadowOpacity),
+                      color: Colors.black.withValues(alpha: shadowOpacity),
                       blurRadius: 10,
                       offset: const Offset(0, 5),
                     ),
@@ -623,7 +626,7 @@ class _ServiceCheckoutScreenState extends State<ServiceCheckoutScreen> {
                   borderRadius: BorderRadius.circular(16),
                   boxShadow: [
                     BoxShadow(
-                      color: Colors.black.withOpacity(shadowOpacity),
+                      color: Colors.black.withValues(alpha: shadowOpacity),
                       blurRadius: 10,
                       offset: const Offset(0, 5),
                     ),
@@ -663,7 +666,7 @@ class _ServiceCheckoutScreenState extends State<ServiceCheckoutScreen> {
                   borderRadius: BorderRadius.circular(16),
                   boxShadow: [
                     BoxShadow(
-                      color: Colors.black.withOpacity(shadowOpacity),
+                      color: Colors.black.withValues(alpha: shadowOpacity),
                       blurRadius: 10,
                       offset: const Offset(0, 5),
                     ),
@@ -714,7 +717,7 @@ class _ServiceCheckoutScreenState extends State<ServiceCheckoutScreen> {
                   borderRadius: BorderRadius.circular(16),
                   boxShadow: [
                     BoxShadow(
-                      color: Colors.black.withOpacity(shadowOpacity),
+                      color: Colors.black.withValues(alpha: shadowOpacity),
                       blurRadius: 10,
                       offset: const Offset(0, 5),
                     ),
@@ -755,13 +758,13 @@ class _ServiceCheckoutScreenState extends State<ServiceCheckoutScreen> {
                     begin: Alignment.topLeft,
                     end: Alignment.bottomRight,
                     colors: [
-                      Theme.of(context).colorScheme.primary.withOpacity(isDark ? 0.15 : 0.1),
-                      Theme.of(context).colorScheme.secondary.withOpacity(isDark ? 0.08 : 0.05),
+                      Theme.of(context).colorScheme.primary.withValues(alpha: isDark ? 0.15 : 0.1),
+                      Theme.of(context).colorScheme.secondary.withValues(alpha: isDark ? 0.08 : 0.05),
                     ],
                   ),
                   boxShadow: [
                     BoxShadow(
-                      color: Colors.black.withOpacity(shadowOpacity),
+                      color: Colors.black.withValues(alpha: shadowOpacity),
                       blurRadius: 15,
                       offset: const Offset(0, 5),
                     ),
@@ -907,12 +910,12 @@ class _ServiceCheckoutScreenState extends State<ServiceCheckoutScreen> {
                   gradient: LinearGradient(
                     colors: [
                       Theme.of(context).colorScheme.primary,
-                      Theme.of(context).colorScheme.primary.withOpacity(0.8),
+                      Theme.of(context).colorScheme.primary.withValues(alpha: 0.8),
                     ],
                   ),
                   boxShadow: [
                     BoxShadow(
-                      color: Theme.of(context).colorScheme.primary.withOpacity(0.3),
+                      color: Theme.of(context).colorScheme.primary.withValues(alpha: 0.3),
                       blurRadius: 15,
                       offset: const Offset(0, 8),
                     ),

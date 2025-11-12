@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../../models/user_model.dart';
+import '../../gen_l10n/app_localizations.dart';
 
 class EditProfileScreen extends StatefulWidget {
   final User user;
@@ -43,7 +44,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
     if (mounted) {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
-            content: Text('Profile updated successfully!'),
+            content: Text(l10n.profileUpdatedSuccessfully),
             backgroundColor: Colors.green
         ),
       );
@@ -53,6 +54,8 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
+
     final isDark = Theme.of(context).brightness == Brightness.dark;
     final backgroundColor = isDark ? const Color(0xFF0F172A) : const Color(0xFFF8F9FA);
     final cardColor = isDark ? const Color(0xFF1E293B) : Colors.white;
@@ -62,7 +65,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
     return Scaffold(
       backgroundColor: backgroundColor,
       appBar: AppBar(
-        title: const Text('Edit Profile'),
+        title: const Text(l10n.editProfile),
         centerTitle: true,
         backgroundColor: cardColor,
         foregroundColor: textColor,
@@ -88,7 +91,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                         shape: BoxShape.circle,
                         boxShadow: [
                           BoxShadow(
-                            color: const Color(0xFF2563EB).withOpacity(0.3),
+                            color: const Color(0xFF2563EB).withValues(alpha: 0.3),
                             blurRadius: 15,
                             offset: const Offset(0, 8),
                           ),
@@ -136,11 +139,11 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
               _buildTextField(
                 context: context,
                 controller: _nameController,
-                label: 'Full Name',
+                label: l10n.fullName,
                 icon: Icons.person,
                 validator: (value) {
                   if (value == null || value.isEmpty) {
-                    return 'Please enter your name';
+                    return l10n.pleaseEnterYourName;
                   }
                   return null;
                 },
@@ -151,15 +154,15 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
               _buildTextField(
                 context: context,
                 controller: _emailController,
-                label: 'Email Address',
+                label: l10n.emailAddress,
                 icon: Icons.email,
                 keyboardType: TextInputType.emailAddress,
                 validator: (value) {
                   if (value == null || value.isEmpty) {
-                    return 'Please enter your email';
+                    return l10n.pleaseEnterYourEmail;
                   }
                   if (!value.contains('@')) {
-                    return 'Please enter a valid email';
+                    return l10n.pleaseEnterValidEmail;
                   }
                   return null;
                 },
@@ -170,15 +173,15 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
               _buildTextField(
                 context: context,
                 controller: _phoneController,
-                label: 'Phone Number',
+                label: l10n.phoneNumber,
                 icon: Icons.phone,
                 keyboardType: TextInputType.phone,
                 validator: (value) {
                   if (value == null || value.isEmpty) {
-                    return 'Please enter your phone number';
+                    return l10n.pleaseEnterYourPhoneNumber;
                   }
                   if (!RegExp(r'^[0-9]+$').hasMatch(value)) {
-                    return 'Phone number must contain only digits';
+                    return l10n.phoneNumberMustContainOnlyDigits;
                   }
                   return null;
                 },
@@ -195,7 +198,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                   borderRadius: BorderRadius.circular(16),
                   boxShadow: [
                     BoxShadow(
-                      color: const Color(0xFF6B5B9A).withOpacity(0.4),
+                      color: const Color(0xFF6B5B9A).withValues(alpha: 0.4),
                       blurRadius: 12,
                       offset: const Offset(0, 6),
                     ),
@@ -225,7 +228,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                           Icon(Icons.save, color: Colors.white),
                           SizedBox(width: 8),
                           Text(
-                            'Save Changes',
+                            l10n.saveChanges,
                             style: TextStyle(
                                 color: Colors.white,
                                 fontSize: 16,
@@ -264,7 +267,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
         borderRadius: BorderRadius.circular(16),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(isDark ? 0.3 : 0.05),
+            color: Colors.black.withValues(alpha: isDark ? 0.3 : 0.05),
             blurRadius: 10,
             offset: const Offset(0, 5),
           ),
@@ -283,8 +286,8 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
             decoration: BoxDecoration(
               gradient: LinearGradient(
                 colors: [
-                  const Color(0xFF6B5B9A).withOpacity(0.1),
-                  const Color(0xFF7C3AED).withOpacity(0.1)
+                  const Color(0xFF6B5B9A).withValues(alpha: 0.1),
+                  const Color(0xFF7C3AED).withValues(alpha: 0.1)
                 ],
               ),
               borderRadius: BorderRadius.circular(8),

@@ -5,7 +5,7 @@ class Service {
   final double price;
   final String category;
   final String? subcategory;
-  final String? subSubcategory; // Added for washing machine types
+  final String? subSubcategory;
   final List<String> features;
 
   Service({
@@ -15,7 +15,7 @@ class Service {
     required this.price,
     required this.category,
     this.subcategory,
-    this.subSubcategory, // New field
+    this.subSubcategory,
     required this.features,
   });
 

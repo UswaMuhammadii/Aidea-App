@@ -1,8 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
+//import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'gen_l10n/app_localizations.dart';
 import 'screens/auth/auth_flow_coordinator.dart';
+import 'screens/auth/language_selection_screen.dart';
 import 'screens/dashboard/dashboard_screen.dart';
 import 'models/user_model.dart';
 import 'services/dummy_data_service.dart';
+
 
 void main() {
   runApp(const CustomerApp());
@@ -43,19 +48,68 @@ class AppColors {
   );
 }
 
-/// 🌟 Main App Widget
-class CustomerApp extends StatelessWidget {
+/// 🌟 Main App Widget with Localization
+class CustomerApp extends StatefulWidget {
   const CustomerApp({super.key});
+
+  @override
+  State<CustomerApp> createState() => _CustomerAppState();
+}
+
+class _CustomerAppState extends State<CustomerApp> {
+  Locale _locale = const Locale('en'); // Default locale
+
+  void _changeLanguage(Locale locale) {
+    setState(() {
+      _locale = locale;
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'Aidea Technology',
       debugShowCheckedModeBanner: false,
+      
+      // Localization delegates
+      localizationsDelegates: const [
+        AppLocalizations.delegate,
+        GlobalMaterialLocalizations.delegate,
+        GlobalWidgetsLocalizations.delegate,
+        GlobalCupertinoLocalizations.delegate,
+      ],
+      
+      // Supported locales
+      supportedLocales: const [
+        Locale('en'), // English
+        Locale('ar'), // Arabic
+      ],
+      
+      // Current locale
+      locale: _locale,
+      
+      // RTL support
+      localeResolutionCallback: (locale, supportedLocales) {
+        if (locale == null) {
+          return supportedLocales.first;
+        }
+        
+        for (var supportedLocale in supportedLocales) {
+          if (supportedLocale.languageCode == locale.languageCode) {
+            return supportedLocale;
+          }
+        }
+        
+        return supportedLocales.first;
+      },
+      
       theme: _buildLightTheme(),
       darkTheme: _buildDarkTheme(),
       themeMode: ThemeMode.system,
-      home: const AuthWrapper(),
+      home: AuthWrapperWithLanguage(
+        currentLocale: _locale,
+        onLanguageChanged: _changeLanguage,
+      ),
     );
   }
 
@@ -92,17 +146,32 @@ class CustomerApp extends StatelessWidget {
   }
 }
 
-/// 🔐 Auth Wrapper with Phone Authentication Flow
-class AuthWrapper extends StatefulWidget {
-  const AuthWrapper({super.key});
+/// 🔐 Auth Wrapper with Language Selection
+class AuthWrapperWithLanguage extends StatefulWidget {
+  final Locale currentLocale;
+  final Function(Locale) onLanguageChanged;
+
+  const AuthWrapperWithLanguage({
+    super.key,
+    required this.currentLocale,
+    required this.onLanguageChanged,
+  });
 
   @override
-  State<AuthWrapper> createState() => _AuthWrapperState();
+  State<AuthWrapperWithLanguage> createState() => _AuthWrapperWithLanguageState();
 }
 
-class _AuthWrapperState extends State<AuthWrapper> {
+class _AuthWrapperWithLanguageState extends State<AuthWrapperWithLanguage> {
+  bool _languageSelected = false;
   bool _isLoggedIn = false;
   User? _currentUser;
+
+  void _handleLanguageSelection(Locale locale) {
+    widget.onLanguageChanged(locale);
+    setState(() {
+      _languageSelected = true;
+    });
+  }
 
   void _handleAuthComplete(User user) {
     // Add dummy bookings for demo purposes
@@ -118,20 +187,30 @@ class _AuthWrapperState extends State<AuthWrapper> {
     setState(() {
       _isLoggedIn = false;
       _currentUser = null;
+      _languageSelected = false; // Reset to language selection on logout
     });
   }
 
   @override
   Widget build(BuildContext context) {
+    // Show language selection if not selected
+    if (!_languageSelected) {
+      return LanguageSelectionScreen(
+        onLanguageSelected: _handleLanguageSelection,
+      );
+    }
+
+    // Show dashboard if logged in
     if (_isLoggedIn && _currentUser != null) {
       return DashboardScreen(
         user: _currentUser!,
         onLogout: _handleLogout,
       );
-    } else {
-      return AuthFlowCoordinator(
-        onAuthComplete: _handleAuthComplete,
-      );
     }
+
+    // Show auth flow
+    return AuthFlowCoordinator(
+      onAuthComplete: _handleAuthComplete,
+    );
   }
 }

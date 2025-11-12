@@ -1,5 +1,5 @@
 import 'service_model.dart';
-
+import '../../gen_l10n/app_localizations.dart';
 class CartItem {
   final String id;
   final Service service;

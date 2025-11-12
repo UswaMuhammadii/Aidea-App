@@ -3,6 +3,7 @@ import '../../models/user_model.dart';
 import 'edit_profile_screen.dart';
 import 'addresses_screen.dart';
 import '../notifications/notification_screen.dart';
+import '../../gen_l10n/app_localizations.dart';
 
 class AppColors {
   static const deepPurple = Color(0xFF7C3AED);
@@ -38,18 +39,18 @@ class _ProfileScreenState extends State<ProfileScreen> {
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
         backgroundColor: Theme.of(context).colorScheme.surface,
         title: Text(
-          'Logout',
+          l10n.logout,
           style: TextStyle(color: Theme.of(context).colorScheme.onSurface),
         ),
         content: Text(
-          'Are you sure you want to logout?',
+          l10n.areYouSureYouWantToLogout,
           style: TextStyle(color: Theme.of(context).colorScheme.onSurfaceVariant),
         ),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(context),
             child: Text(
-              'Cancel',
+              l10n.cancel,
               style: TextStyle(color: Theme.of(context).colorScheme.onSurfaceVariant),
             ),
           ),
@@ -70,7 +71,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
               ),
               child: const Text(
-                'Logout',
+                l10n.logout,
                 style: TextStyle(color: Colors.white, fontWeight: FontWeight.w600),
               ),
             ),
@@ -100,6 +101,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
+
     final isDark = Theme.of(context).brightness == Brightness.dark;
     final textColor = isDark ? Colors.white : Colors.black87;
     final subtitleColor = isDark ? Colors.white70 : Colors.grey.shade600;
@@ -110,7 +113,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
       body: SingleChildScrollView(
         child: Column(
           children: [
-            // Profile Header with Gradient
             Container(
               decoration: BoxDecoration(
                 gradient: AppColors.primaryGradient,
@@ -120,7 +122,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 ),
                 boxShadow: [
                   BoxShadow(
-                    color: AppColors.deepPurple.withOpacity(0.3),
+                    color: AppColors.deepPurple.withValues(alpha: 0.3),
                     blurRadius: 20,
                     offset: const Offset(0, 10),
                   ),
@@ -135,7 +137,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
                           const Text(
-                            'Profile',
+                            l10n.profile,
                             style: TextStyle(
                               color: Colors.white,
                               fontSize: 28,
@@ -144,7 +146,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                           ),
                           Container(
                             decoration: BoxDecoration(
-                              color: Colors.white.withOpacity(0.2),
+                              color: Colors.white.withValues(alpha: 0.2),
                               borderRadius: BorderRadius.circular(12),
                             ),
                             child: IconButton(
@@ -158,7 +160,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       Container(
                         padding: const EdgeInsets.all(4),
                         decoration: BoxDecoration(
-                          color: Colors.white.withOpacity(0.2),
+                          color: Colors.white.withValues(alpha: 0.2),
                           shape: BoxShape.circle,
                         ),
                         child: CircleAvatar(
@@ -189,7 +191,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       Text(
                         widget.user.email,
                         style: TextStyle(
-                          color: Colors.white.withOpacity(0.9),
+                          color: Colors.white.withValues(alpha: 0.9),
                           fontSize: 14,
                         ),
                       ),
@@ -200,7 +202,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                           borderRadius: BorderRadius.circular(16),
                           boxShadow: [
                             BoxShadow(
-                              color: Colors.black.withOpacity(0.1),
+                              color: Colors.black.withValues(alpha: 0.1),
                               blurRadius: 10,
                               offset: const Offset(0, 5),
                             ),
@@ -226,7 +228,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                   ),
                                   SizedBox(width: 8),
                                   Text(
-                                    'Edit Profile',
+                                    l10n.editProfile,
                                     style: TextStyle(
                                       color: AppColors.deepPurple,
                                       fontWeight: FontWeight.bold,
@@ -254,7 +256,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    'Settings',
+                    l10n.settings,
                     style: TextStyle(
                       fontSize: 20,
                       fontWeight: FontWeight.bold,
@@ -269,7 +271,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       boxShadow: [
                         if (!isDark)
                           BoxShadow(
-                            color: Colors.black.withOpacity(0.08),
+                            color: Colors.black.withValues(alpha: 0.08),
                             blurRadius: 15,
                             offset: const Offset(0, 5),
                           ),
@@ -279,8 +281,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       children: [
                         _buildSettingsTile(
                           icon: Icons.notifications_outlined,
-                          title: 'Notifications',
-                          subtitle: 'Manage notification preferences',
+                          title: l10n.notifications,
+                          subtitle: l10n.manageNotificationPreferences,
                           iconColor: Colors.orange,
                           textColor: textColor,
                           subtitleColor: subtitleColor,
@@ -296,7 +298,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                         const Divider(height: 1, indent: 72),
                         _buildSettingsTile(
                           icon: Icons.location_on_outlined,
-                          title: 'Saved Addresses',
+                          title: l10n.savedAddresses,
                           subtitle: widget.user.address,
                           iconColor: Colors.red,
                           textColor: textColor,
@@ -306,8 +308,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
                         const Divider(height: 1, indent: 72),
                         _buildSettingsTile(
                           icon: Icons.payment_outlined,
-                          title: 'Payment Methods',
-                          subtitle: 'Manage payment options',
+                          title: l10n.paymentMethods,
+                          subtitle: l10n.managePaymentOptions,
                           iconColor: Colors.green,
                           textColor: textColor,
                           subtitleColor: subtitleColor,
@@ -322,8 +324,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
                         const Divider(height: 1, indent: 72),
                         _buildSettingsTile(
                           icon: Icons.help_outline,
-                          title: 'Help & Support',
-                          subtitle: 'Get help and contact us',
+                          title: l10n.helpAndSupport,
+                          subtitle: l10n.getHelpAndContactUs,
                           iconColor: Colors.blue,
                           textColor: textColor,
                           subtitleColor: subtitleColor,
@@ -338,8 +340,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
                         const Divider(height: 1, indent: 72),
                         _buildSettingsTile(
                           icon: Icons.info_outline,
-                          title: 'About',
-                          subtitle: 'App version and information',
+                          title: l10n.about,
+                          subtitle: l10n.appVersionAndInformation,
                           iconColor: Colors.purple,
                           textColor: textColor,
                           subtitleColor: subtitleColor,
@@ -388,7 +390,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
       leading: Container(
         padding: const EdgeInsets.all(10),
         decoration: BoxDecoration(
-          color: AppColors.deepPurple.withOpacity(0.1),
+          color: AppColors.deepPurple.withValues(alpha: 0.1),
           borderRadius: BorderRadius.circular(12),
         ),
         child: Icon(icon, color: AppColors.deepPurple, size: 24),
@@ -427,7 +429,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
       leading: Container(
         padding: const EdgeInsets.all(10),
         decoration: BoxDecoration(
-          color: iconColor.withOpacity(0.1),
+          color: iconColor.withValues(alpha: 0.1),
           borderRadius: BorderRadius.circular(12),
         ),
         child: Icon(icon, color: iconColor, size: 24),

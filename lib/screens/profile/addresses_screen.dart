@@ -1,14 +1,13 @@
-// ===== ADDRESSES SCREEN FIXES =====
 
 import 'package:flutter/material.dart';
 import '../../models/user_model.dart';
+import '../../gen_l10n/app_localizations.dart';
 
 const Color backgroundColor = Color(0xFFF8F9FA);
 const Color surfaceColor = Colors.white;
 const Color textColor = Colors.black87;
-const Color subtitleColor = Colors.grey; // shade 600
+const Color subtitleColor = Colors.grey;
 
-// Dark Mode
 const Color darkBackgroundColor = Color(0xFF0F172A);
 const Color darkSurfaceColor = Color(0xFF1E293B);
 const Color darkTextColor = Colors.white;
@@ -54,7 +53,7 @@ class _AddressesScreenState extends State<AddressesScreen> {
     if (mounted) {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
-          content: Text('Address updated successfully!'),
+          content: Text(l10n.addressUpdatedSuccessfully),
           backgroundColor: Colors.green,
         ),
       );
@@ -63,6 +62,8 @@ class _AddressesScreenState extends State<AddressesScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
+
     final isDark = Theme.of(context).brightness == Brightness.dark;
     final backgroundColor = isDark ? const Color(0xFF0F172A) : const Color(0xFFF8F9FA);
     final cardColor = isDark ? const Color(0xFF1E293B) : Colors.white;
@@ -72,7 +73,7 @@ class _AddressesScreenState extends State<AddressesScreen> {
     return Scaffold(
       backgroundColor: backgroundColor,
       appBar: AppBar(
-        title: const Text('Saved Addresses'),
+        title: const Text(l10n.savedAddresses),
         centerTitle: true,
         backgroundColor: cardColor,
         foregroundColor: textColor,
@@ -104,7 +105,7 @@ class _AddressesScreenState extends State<AddressesScreen> {
                 borderRadius: BorderRadius.circular(20),
                 boxShadow: [
                   BoxShadow(
-                    color: Colors.black.withOpacity(isDark ? 0.3 : 0.05),
+                    color: Colors.black.withValues(alpha: isDark ? 0.3 : 0.05),
                     blurRadius: 15,
                     offset: const Offset(0, 5),
                   ),
@@ -120,8 +121,8 @@ class _AddressesScreenState extends State<AddressesScreen> {
                         decoration: BoxDecoration(
                           gradient: LinearGradient(
                             colors: [
-                              const Color(0xFF6B5B9A).withOpacity(0.1),
-                              const Color(0xFF7C3AED).withOpacity(0.1),
+                              const Color(0xFF6B5B9A).withValues(alpha: 0.1),
+                              const Color(0xFF7C3AED).withValues(alpha: 0.1),
                             ],
                           ),
                           borderRadius: BorderRadius.circular(12),
@@ -135,7 +136,7 @@ class _AddressesScreenState extends State<AddressesScreen> {
                       const SizedBox(width: 12),
                       Expanded(
                         child: Text(
-                          'Home Address',
+                          l10n.homeAddress,
                           style: TextStyle(
                             fontSize: 18,
                             fontWeight: FontWeight.bold,
@@ -154,7 +155,7 @@ class _AddressesScreenState extends State<AddressesScreen> {
                             borderRadius: BorderRadius.circular(8),
                           ),
                           child: const Text(
-                            'Editing',
+                            l10n.editing,
                             style: TextStyle(
                               color: Colors.orange,
                               fontSize: 12,
@@ -172,7 +173,7 @@ class _AddressesScreenState extends State<AddressesScreen> {
                       maxLines: 3,
                       style: TextStyle(color: textColor),
                       decoration: InputDecoration(
-                        hintText: 'Enter your address',
+                        hintText: l10n.enterYourAddress,
                         filled: true,
                         fillColor: isDark ? const Color(0xFF0F172A) : Colors.white,
                         border: OutlineInputBorder(
@@ -215,7 +216,7 @@ class _AddressesScreenState extends State<AddressesScreen> {
                                 color: isDark ? Colors.grey.shade600 : Colors.grey.shade400,
                               ),
                             ),
-                            child: const Text('Cancel'),
+                            child: const Text(l10n.cancel),
                           ),
                         ),
                         const SizedBox(width: 12),
@@ -244,7 +245,7 @@ class _AddressesScreenState extends State<AddressesScreen> {
                                   ),
                                 ),
                               )
-                                  : const Text('Save'),
+                                  : const Text(l10n.save),
                             ),
                           ),
                         ),
@@ -261,7 +262,7 @@ class _AddressesScreenState extends State<AddressesScreen> {
               width: double.infinity,
               decoration: BoxDecoration(
                 border: Border.all(
-                  color: const Color(0xFF6B5B9A).withOpacity(0.3),
+                  color: const Color(0xFF6B5B9A).withValues(alpha: 0.3),
                   width: 2,
                   style: BorderStyle.solid,
                 ),
@@ -289,7 +290,7 @@ class _AddressesScreenState extends State<AddressesScreen> {
                         ),
                         const SizedBox(width: 12),
                         Text(
-                          'Add New Address',
+                          l10n.addNewAddress,
                           style: TextStyle(
                             color: const Color(0xFF6B5B9A),
                             fontSize: 16,

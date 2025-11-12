@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-
+import '../../gen_l10n/app_localizations.dart';
 class AppColors {
   static const deepPurple = Color(0xFF7C3AED);
   static const electricBlue = Color(0xFF3B82F6);
@@ -34,7 +34,7 @@ class _LocationSelectionScreenState extends State<LocationSelectionScreen> {
   final _otherInfoController = TextEditingController();
 
   bool _saveAsPrimary = true;
-  String _addressType = 'Home';
+  String _addressType = l10n.home;
   String _selectedLocation = '19231, Saudi Arabia';
 
   @override
@@ -67,6 +67,8 @@ class _LocationSelectionScreenState extends State<LocationSelectionScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
+
     final isDark = Theme
         .of(context)
         .brightness == Brightness.dark;
@@ -162,7 +164,7 @@ class _LocationSelectionScreenState extends State<LocationSelectionScreen> {
 
                     // Full Name
                     Text(
-                      'Full Name',
+                      l10n.fullName,
                       style: TextStyle(
                         fontSize: 14,
                         color: isDark ? Colors.grey.shade400 : Colors.grey.shade600,
@@ -189,7 +191,7 @@ class _LocationSelectionScreenState extends State<LocationSelectionScreen> {
                       ),
                       validator: (value) {
                         if (value == null || value.isEmpty) {
-                          return 'Please enter your name';
+                          return l10n.pleaseEnterYourName;
                         }
                         return null;
                       },
@@ -198,7 +200,7 @@ class _LocationSelectionScreenState extends State<LocationSelectionScreen> {
 
                     // Email
                     Text(
-                      'Email Address',
+                      l10n.emailAddress,
                       style: TextStyle(
                         fontSize: 14,
                         color: isDark ? Colors.grey.shade400 : Colors.grey.shade600,
@@ -226,10 +228,10 @@ class _LocationSelectionScreenState extends State<LocationSelectionScreen> {
                       ),
                       validator: (value) {
                         if (value == null || value.isEmpty) {
-                          return 'Please enter your email';
+                          return l10n.pleaseEnterYourEmail;
                         }
                         if (!value.contains('@')) {
-                          return 'Please enter a valid email';
+                          return l10n.pleaseEnterValidEmail;
                         }
                         return null;
                       },
@@ -411,7 +413,7 @@ class _LocationSelectionScreenState extends State<LocationSelectionScreen> {
                     // Address Type Selection
                     Row(
                       children: [
-                        _buildAddressTypeChip('Home', Icons.home),
+                        _buildAddressTypeChip(l10n.home, Icons.home),
                         const SizedBox(width: 12),
                         _buildAddressTypeChip('Work', Icons.work),
                         const SizedBox(width: 12),
@@ -429,7 +431,7 @@ class _LocationSelectionScreenState extends State<LocationSelectionScreen> {
                         borderRadius: BorderRadius.circular(16),
                         boxShadow: [
                           BoxShadow(
-                            color: AppColors.deepPurple.withOpacity(0.3),
+                            color: AppColors.deepPurple.withValues(alpha: 0.3),
                             blurRadius: 20,
                             offset: const Offset(0, 10),
                           ),
@@ -480,7 +482,7 @@ class _LocationSelectionScreenState extends State<LocationSelectionScreen> {
           padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 16),
           decoration: BoxDecoration(
             color: isSelected
-                ? (isDark ? AppColors.deepPurple.withOpacity(0.2) : Colors.grey.shade200)
+                ? (isDark ? AppColors.deepPurple.withValues(alpha: 0.2) : Colors.grey.shade200)
                 : (isDark ? const Color(0xFF1E293B) : Colors.grey.shade100),
             border: Border.all(
               color: isSelected

@@ -9,6 +9,7 @@ import '../../models/user_model.dart';
 import '../../models/booking_model.dart';
 import '../../services/dummy_data_service.dart';
 import '../../utils/app_colors.dart';
+import '../../gen_l10n/app_localizations.dart';
 
 class InvoiceScreen extends StatefulWidget {
   final User user;
@@ -281,7 +282,7 @@ class _InvoiceScreenState extends State<InvoiceScreen> {
                         pw.Padding(
                           padding: const pw.EdgeInsets.all(10),
                           child: pw.Text(
-                            'Total',
+                            l10n.total,
                             style: pw.TextStyle(fontWeight: pw.FontWeight.bold),
                             textAlign: pw.TextAlign.right,
                           ),
@@ -441,6 +442,8 @@ class _InvoiceScreenState extends State<InvoiceScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
+
     final isDark = Theme.of(context).brightness == Brightness.dark;
     final backgroundColor = isDark ? const Color(0xFF0F172A) : const Color(0xFFF8F9FA);
     final cardColor = isDark ? const Color(0xFF1E293B) : Colors.white;
@@ -450,7 +453,7 @@ class _InvoiceScreenState extends State<InvoiceScreen> {
     return Scaffold(
       backgroundColor: backgroundColor,
       appBar: AppBar(
-        title: const Text('Invoices'),
+        title: const Text(l10n.invoices),
         backgroundColor: cardColor,
         foregroundColor: textColor,
         elevation: 0,
@@ -467,8 +470,8 @@ class _InvoiceScreenState extends State<InvoiceScreen> {
               decoration: BoxDecoration(
                 gradient: LinearGradient(
                   colors: [
-                    AppColors.electricBlue.withOpacity(0.1),
-                    AppColors.electricBlue.withOpacity(0.1),
+                    AppColors.electricBlue.withValues(alpha: 0.1),
+                    AppColors.electricBlue.withValues(alpha: 0.1),
                   ],
                 ),
                 shape: BoxShape.circle,
@@ -481,7 +484,7 @@ class _InvoiceScreenState extends State<InvoiceScreen> {
             ),
             const SizedBox(height: 24),
             Text(
-              'No Invoices Yet',
+              l10n.noInvoicesYet,
               style: TextStyle(
                 fontSize: 24,
                 fontWeight: FontWeight.bold,
@@ -490,7 +493,7 @@ class _InvoiceScreenState extends State<InvoiceScreen> {
             ),
             const SizedBox(height: 8),
             Text(
-              'Complete a service to generate invoices',
+              l10n.completeServiceToGenerateInvoices,
               style: TextStyle(
                 fontSize: 16,
                 color: subtitleColor,
@@ -511,7 +514,7 @@ class _InvoiceScreenState extends State<InvoiceScreen> {
               borderRadius: BorderRadius.circular(16),
               boxShadow: [
                 BoxShadow(
-                  color: Colors.black.withOpacity(isDark ? 0.3 : 0.08),
+                  color: Colors.black.withValues(alpha: isDark ? 0.3 : 0.08),
                   blurRadius: 15,
                   offset: const Offset(0, 5),
                 ),
@@ -574,11 +577,11 @@ class _InvoiceScreenState extends State<InvoiceScreen> {
                               vertical: 6,
                             ),
                             decoration: BoxDecoration(
-                              color: Colors.green.withOpacity(0.1),
+                              color: Colors.green.withValues(alpha: 0.1),
                               borderRadius: BorderRadius.circular(8),
                             ),
                             child: const Text(
-                              'PAID',
+                              l10n.paid,
                               style: TextStyle(
                                 fontSize: 12,
                                 fontWeight: FontWeight.bold,
@@ -670,7 +673,7 @@ class _InvoiceScreenState extends State<InvoiceScreen> {
                             Icon(Icons.download, color: Colors.white, size: 20),
                             SizedBox(width: 10),
                             Text(
-                              'Download / Share Invoice',
+                              l10n.downloadShareInvoice,
                               style: TextStyle(
                                 color: Colors.white,
                                 fontWeight: FontWeight.w600,

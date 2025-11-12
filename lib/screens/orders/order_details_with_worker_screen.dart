@@ -5,6 +5,7 @@ import '../../models/booking_model.dart';
 import 'vendor_profile_screen.dart';
 import 'chat_screen.dart';
 import '../../utils/app_colors.dart';
+import '../../gen_l10n/app_localizations.dart';
 
 class OrderDetailsWithWorkerScreen extends StatefulWidget {
   final User user;
@@ -64,6 +65,8 @@ class _OrderDetailsWithWorkerScreenState extends State<OrderDetailsWithWorkerScr
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
+
     final isDark = Theme.of(context).brightness == Brightness.dark;
     final backgroundColor = isDark ? const Color(0xFF0F172A) : const Color(0xFFF8F9FA);
     final cardColor = isDark ? const Color(0xFF1E293B) : Colors.white;
@@ -73,7 +76,7 @@ class _OrderDetailsWithWorkerScreenState extends State<OrderDetailsWithWorkerScr
     return Scaffold(
       backgroundColor: backgroundColor,
       appBar: AppBar(
-        title: const Text('Order Details'),
+        title: const Text(l10n.orderDetails),
         backgroundColor: cardColor,
         foregroundColor: textColor,
         elevation: 0,
@@ -178,7 +181,7 @@ class _OrderDetailsWithWorkerScreenState extends State<OrderDetailsWithWorkerScr
                       borderRadius: BorderRadius.circular(16),
                       boxShadow: [
                         BoxShadow(
-                          color: Colors.black.withOpacity(isDark ? 0.3 : 0.08),
+                          color: Colors.black.withValues(alpha: isDark ? 0.3 : 0.08),
                           blurRadius: 15,
                           offset: const Offset(0, 5),
                         ),
@@ -193,7 +196,7 @@ class _OrderDetailsWithWorkerScreenState extends State<OrderDetailsWithWorkerScr
                             children: [
                               CircleAvatar(
                                 radius: 30,
-                                backgroundColor: AppColors.electricBlue.withOpacity(0.1),
+                                backgroundColor: AppColors.electricBlue.withValues(alpha: 0.1),
                                 child: const Icon(Icons.person, size: 35, color: AppColors.electricBlue),
                               ),
                               const SizedBox(width: 12),
@@ -240,7 +243,7 @@ class _OrderDetailsWithWorkerScreenState extends State<OrderDetailsWithWorkerScr
                               _buildStatItem(
                                 Icons.check_circle,
                                 '$totalOrders',
-                                'Orders Done',
+                                l10n.ordersDone,
                                 textColor,
                                 subtitleColor,
                               ),
@@ -252,7 +255,7 @@ class _OrderDetailsWithWorkerScreenState extends State<OrderDetailsWithWorkerScr
                               _buildStatItem(
                                 Icons.access_time,
                                 workingPeriod,
-                                'Experience',
+                                l10n.experience,
                                 textColor,
                                 subtitleColor,
                               ),
@@ -281,7 +284,7 @@ class _OrderDetailsWithWorkerScreenState extends State<OrderDetailsWithWorkerScr
                                     );
                                   },
                                   icon: const Icon(Icons.person),
-                                  label: const Text('View Profile'),
+                                  label: const Text(l10n.viewProfile),
                                   style: OutlinedButton.styleFrom(
                                     foregroundColor: Colors.blue,
                                     side: const BorderSide(color: Colors.blue),
@@ -304,7 +307,7 @@ class _OrderDetailsWithWorkerScreenState extends State<OrderDetailsWithWorkerScr
                                     );
                                   },
                                   icon: const Icon(Icons.chat),
-                                  label: const Text('Chat'),
+                                  label: const Text(l10n.chat),
                                   style: ElevatedButton.styleFrom(
                                     backgroundColor: Colors.blue,
                                     foregroundColor: Colors.white,
@@ -347,7 +350,7 @@ class _OrderDetailsWithWorkerScreenState extends State<OrderDetailsWithWorkerScr
                       borderRadius: BorderRadius.circular(16),
                       boxShadow: [
                         BoxShadow(
-                          color: Colors.black.withOpacity(isDark ? 0.3 : 0.08),
+                          color: Colors.black.withValues(alpha: isDark ? 0.3 : 0.08),
                           blurRadius: 15,
                           offset: const Offset(0, 5),
                         ),
@@ -368,7 +371,7 @@ class _OrderDetailsWithWorkerScreenState extends State<OrderDetailsWithWorkerScr
                           leading: Container(
                             padding: const EdgeInsets.all(10),
                             decoration: BoxDecoration(
-                              color: (service['color'] as Color).withOpacity(0.1),
+                              color: (service['color'] as Color).withValues(alpha: 0.1),
                               borderRadius: BorderRadius.circular(10),
                             ),
                             child: Icon(
@@ -388,7 +391,7 @@ class _OrderDetailsWithWorkerScreenState extends State<OrderDetailsWithWorkerScr
                           trailing: Container(
                             padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
                             decoration: BoxDecoration(
-                              color: (service['color'] as Color).withOpacity(0.1),
+                              color: (service['color'] as Color).withValues(alpha: 0.1),
                               borderRadius: BorderRadius.circular(20),
                             ),
                             child: Text(
@@ -466,7 +469,7 @@ class _OrderDetailsWithWorkerScreenState extends State<OrderDetailsWithWorkerScr
                         const SizedBox(width: 12),
                         Expanded(
                           child: Text(
-                            'Cancel Booking',
+                            l10n.cancelBooking,
                             style: TextStyle(
                               fontSize: 20,
                               fontWeight: FontWeight.bold,
@@ -595,7 +598,7 @@ class _OrderDetailsWithWorkerScreenState extends State<OrderDetailsWithWorkerScr
                               shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
                               disabledBackgroundColor: Colors.grey.shade300,
                             ),
-                            child: const Text('Cancel Booking', style: TextStyle(fontWeight: FontWeight.w600)),
+                            child: const Text(l10n.cancelBooking, style: TextStyle(fontWeight: FontWeight.w600)),
                           ),
                         ),
                       ],
@@ -671,7 +674,7 @@ class _OrderDetailsWithWorkerScreenState extends State<OrderDetailsWithWorkerScr
                       padding: const EdgeInsets.symmetric(vertical: 14),
                       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
                     ),
-                    child: const Text('Done', style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600)),
+                    child: const Text(l10n.done, style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600)),
                   ),
                 ),
               ],

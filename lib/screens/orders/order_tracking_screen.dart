@@ -4,6 +4,7 @@ import '../../models/user_model.dart';
 import '../../models/booking_model.dart';
 import 'order_details_with_worker_screen.dart';
 import '../../utils/app_colors.dart';
+import '../../gen_l10n/app_localizations.dart';
 
 class OrderTrackingScreen extends StatefulWidget {
   final User user;
@@ -72,6 +73,8 @@ class _OrderTrackingScreenState extends State<OrderTrackingScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
+
     final isDark = Theme.of(context).brightness == Brightness.dark;
     final backgroundColor = isDark ? const Color(0xFF0F172A) : Colors.white;
     final cardColor = isDark ? const Color(0xFF1E293B) : Colors.white;
@@ -84,7 +87,7 @@ class _OrderTrackingScreenState extends State<OrderTrackingScreen> {
     return Scaffold(
         backgroundColor: backgroundColor,
         appBar: AppBar(
-          title: const Text('Order Details'),
+          title: const Text(l10n.orderDetails),
           backgroundColor: cardColor,
           foregroundColor: textColor,
           elevation: 0,
@@ -96,7 +99,7 @@ class _OrderTrackingScreenState extends State<OrderTrackingScreen> {
                 },
                 icon: Icon(Icons.cancel_outlined, color: Colors.red.shade600, size: 20),
                 label: Text(
-                  'Cancel Booking',
+                  l10n.cancelBooking,
                   style: TextStyle(
                     color: Colors.red.shade600,
                     fontWeight: FontWeight.w600,
@@ -159,7 +162,7 @@ class _OrderTrackingScreenState extends State<OrderTrackingScreen> {
                           borderRadius: BorderRadius.circular(20),
                           boxShadow: [
                             BoxShadow(
-                              color: Colors.black.withOpacity(0.2),
+                              color: Colors.black.withValues(alpha: 0.2),
                               blurRadius: 8,
                               offset: const Offset(0, 2),
                             ),
@@ -192,7 +195,7 @@ class _OrderTrackingScreenState extends State<OrderTrackingScreen> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      'Services List',
+                      l10n.servicesList,
                       style: TextStyle(
                         fontSize: 18,
                         fontWeight: FontWeight.bold,
@@ -219,7 +222,7 @@ class _OrderTrackingScreenState extends State<OrderTrackingScreen> {
                               Container(
                                 padding: const EdgeInsets.all(8),
                                 decoration: BoxDecoration(
-                                  color: Colors.blue.withOpacity(0.1),
+                                  color: Colors.blue.withValues(alpha: 0.1),
                                   borderRadius: BorderRadius.circular(8),
                                 ),
                                 child: const Icon(Icons.cleaning_services, color: Colors.blue, size: 24),
@@ -280,15 +283,15 @@ class _OrderTrackingScreenState extends State<OrderTrackingScreen> {
                               '#${widget.booking.id.substring(0, widget.booking.id.length > 15 ? 15 : widget.booking.id.length).toUpperCase()}',
                               textColor, subtitleColor),
                           const Divider(height: 24),
-                          _buildInfoRow(Icons.calendar_today, 'Booking Date',
+                          _buildInfoRow(Icons.calendar_today, l10n.bookingDate,
                               DateFormat('MMM d, y').format(widget.booking.bookingDate),
                               textColor, subtitleColor),
                           const Divider(height: 24),
-                          _buildInfoRow(Icons.access_time, 'Service Time',
+                          _buildInfoRow(Icons.access_time, l10n.serviceTime,
                               DateFormat('h:mm a').format(widget.booking.bookingTime),
                               textColor, subtitleColor),
                           const Divider(height: 24),
-                          _buildInfoRow(Icons.location_on, 'Address',
+                          _buildInfoRow(Icons.location_on, l10n.address,
                               widget.user.address,
                               textColor, subtitleColor),
                         ],
@@ -307,7 +310,7 @@ class _OrderTrackingScreenState extends State<OrderTrackingScreen> {
                         borderRadius: BorderRadius.circular(16),
                         boxShadow: [
                           BoxShadow(
-                            color: Colors.blue.withOpacity(0.3),
+                            color: Colors.blue.withValues(alpha: 0.3),
                             blurRadius: 15,
                             offset: const Offset(0, 5),
                           ),
@@ -320,7 +323,7 @@ class _OrderTrackingScreenState extends State<OrderTrackingScreen> {
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
                               const Text(
-                                'Order Status',
+                                l10n.orderStatus,
                                 style: TextStyle(
                                   fontSize: 18,
                                   fontWeight: FontWeight.bold,
@@ -330,7 +333,7 @@ class _OrderTrackingScreenState extends State<OrderTrackingScreen> {
                               Container(
                                 padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
                                 decoration: BoxDecoration(
-                                  color: Colors.white.withOpacity(0.2),
+                                  color: Colors.white.withValues(alpha: 0.2),
                                   borderRadius: BorderRadius.circular(20),
                                 ),
                                 child: Text(
@@ -458,7 +461,7 @@ class _OrderTrackingScreenState extends State<OrderTrackingScreen> {
                                   });
                                 },
                                 icon: const Icon(Icons.info_outline, size: 20),
-                                label: const Text('View Technician Details'),
+                                label: const Text(l10n.viewTechnicianDetails),
                                 style: ElevatedButton.styleFrom(
                                   backgroundColor: Colors.blue,
                                   foregroundColor: Colors.white,
@@ -516,15 +519,15 @@ class _OrderTrackingScreenState extends State<OrderTrackingScreen> {
   String _getStatusText(BookingStatus status) {
     switch (status) {
       case BookingStatus.pending:
-        return 'Pending';
+        return l10n.pending;
       case BookingStatus.confirmed:
-        return 'Confirmed';
+        return l10n.confirmed;
       case BookingStatus.inProgress:
-        return 'In Progress';
+        return l10n.inProgress;
       case BookingStatus.completed:
-        return 'Completed';
+        return l10n.completed;
       case BookingStatus.cancelled:
-        return 'Cancelled';
+        return l10n.cancelled;
       default:
         return 'Unknown';
     }
@@ -568,7 +571,7 @@ class _OrderTrackingScreenState extends State<OrderTrackingScreen> {
                       width: 40,
                       height: 40,
                       decoration: BoxDecoration(
-                        color: isActive ? Colors.white : Colors.white.withOpacity(0.3),
+                        color: isActive ? Colors.white : Colors.white.withValues(alpha: 0.3),
                         shape: BoxShape.circle,
                       ),
                       child: Center(
@@ -577,7 +580,7 @@ class _OrderTrackingScreenState extends State<OrderTrackingScreen> {
                             : Text(
                           '${index + 1}',
                           style: TextStyle(
-                            color: Colors.white.withOpacity(0.7),
+                            color: Colors.white.withValues(alpha: 0.7),
                             fontWeight: FontWeight.bold,
                             fontSize: 16,
                           ),
@@ -590,7 +593,7 @@ class _OrderTrackingScreenState extends State<OrderTrackingScreen> {
                       textAlign: TextAlign.center,
                       style: TextStyle(
                         fontSize: 11,
-                        color: isActive ? Colors.white : Colors.white.withOpacity(0.6),
+                        color: isActive ? Colors.white : Colors.white.withValues(alpha: 0.6),
                         fontWeight: isActive ? FontWeight.w600 : FontWeight.normal,
                       ),
                     ),
@@ -601,7 +604,7 @@ class _OrderTrackingScreenState extends State<OrderTrackingScreen> {
                 Container(
                   height: 2,
                   width: 20,
-                  color: isActive ? Colors.white : Colors.white.withOpacity(0.3),
+                  color: isActive ? Colors.white : Colors.white.withValues(alpha: 0.3),
                 ),
             ],
           ),
@@ -654,7 +657,7 @@ class _OrderTrackingScreenState extends State<OrderTrackingScreen> {
                         ),
                         const SizedBox(width: 12),
                         Expanded(
-                          child: Text('Cancel Booking', style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: textColor)),
+                          child: Text(l10n.cancelBooking, style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: textColor)),
                         ),
                         IconButton(
                           onPressed: () => Navigator.pop(context),
@@ -768,7 +771,7 @@ class _OrderTrackingScreenState extends State<OrderTrackingScreen> {
                               shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
                               disabledBackgroundColor: Colors.grey.shade300,
                             ),
-                            child: const Text('Cancel Booking', style: TextStyle(fontWeight: FontWeight.w600)),
+                            child: const Text(l10n.cancelBooking, style: TextStyle(fontWeight: FontWeight.w600)),
                           ),
                         ),
                       ],

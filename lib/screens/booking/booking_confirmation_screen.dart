@@ -6,6 +6,7 @@ import '../../models/user_model.dart';
 import '../../models/booking_model.dart';
 import '../dashboard/dashboard_screen.dart';
 import '../../utils/app_colors.dart';
+import '../../gen_l10n/app_localizations.dart';
 
 class BookingConfirmationScreen extends StatelessWidget {
   final List<Booking> bookings;
@@ -21,6 +22,8 @@ class BookingConfirmationScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
+
     final isDark = Theme.of(context).brightness == Brightness.dark;
     final backgroundColor = isDark ? const Color(0xFF0F172A) : const Color(0xFFF8F9FA);
     final cardColor = isDark ? const Color(0xFF1E293B) : Colors.white;
@@ -48,7 +51,7 @@ class BookingConfirmationScreen extends StatelessWidget {
                   shape: BoxShape.circle,
                   boxShadow: [
                     BoxShadow(
-                      color: AppColors.success.withOpacity(0.3),
+                      color: AppColors.success.withValues(alpha: 0.3),
                       blurRadius: 20,
                       offset: const Offset(0, 10),
                     ),
@@ -91,7 +94,7 @@ class BookingConfirmationScreen extends StatelessWidget {
                   color: cardColor,
                   boxShadow: [
                     BoxShadow(
-                      color: Colors.black.withOpacity(isDark ? 0.3 : 0.08),
+                      color: Colors.black.withValues(alpha: isDark ? 0.3 : 0.08),
                       blurRadius: 20,
                       offset: const Offset(0, 10),
                     ),
@@ -107,7 +110,7 @@ class BookingConfirmationScreen extends StatelessWidget {
                           Container(
                             padding: const EdgeInsets.all(8),
                             decoration: BoxDecoration(
-                              color: AppColors.electricBlue.withOpacity(0.1),
+                              color: AppColors.electricBlue.withValues(alpha: 0.1),
                               borderRadius: BorderRadius.circular(8),
                             ),
                             child: const Icon(
@@ -131,7 +134,7 @@ class BookingConfirmationScreen extends StatelessWidget {
 
                       // Services List
                       if (bookings.length > 1) ...[
-                        _buildDetailRow('Services', '${bookings.length} services booked', textColor, subtitleColor),
+                        _buildDetailRow(l10n.services, '${bookings.length} services booked', textColor, subtitleColor),
                         const SizedBox(height: 12),
                         Container(
                           padding: const EdgeInsets.all(12),
@@ -214,7 +217,7 @@ class BookingConfirmationScreen extends StatelessWidget {
                         Container(
                           padding: const EdgeInsets.all(12),
                           decoration: BoxDecoration(
-                            color: AppColors.electricBlue.withOpacity(isDark ? 0.2 : 0.1),
+                            color: AppColors.electricBlue.withValues(alpha: isDark ? 0.2 : 0.1),
                             borderRadius: BorderRadius.circular(12),
                           ),
                           child: Row(
@@ -249,7 +252,7 @@ class BookingConfirmationScreen extends StatelessWidget {
               Container(
                 padding: const EdgeInsets.all(20),
                 decoration: BoxDecoration(
-                  color: AppColors.electricBlue.withOpacity(isDark ? 0.15 : 0.1),
+                  color: AppColors.electricBlue.withValues(alpha: isDark ? 0.15 : 0.1),
                   borderRadius: BorderRadius.circular(16),
                 ),
                 child: Column(
@@ -330,7 +333,7 @@ class BookingConfirmationScreen extends StatelessWidget {
                         borderRadius: BorderRadius.circular(12),
                         boxShadow: [
                           BoxShadow(
-                            color: AppColors.electricBlue.withOpacity(0.4),
+                            color: AppColors.electricBlue.withValues(alpha: 0.4),
                             blurRadius: 12,
                             offset: const Offset(0, 6),
                           ),

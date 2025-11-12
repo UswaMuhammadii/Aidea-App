@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../../utils/app_colors.dart';
+import '../../gen_l10n/app_localizations.dart';
 
 class VendorProfileScreen extends StatelessWidget {
   final String workerName;
@@ -15,6 +16,8 @@ class VendorProfileScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
+
     final isDark = Theme.of(context).brightness == Brightness.dark;
     final backgroundColor = isDark ? const Color(0xFF0F172A) : const Color(0xFFF8F9FA);
     final cardColor = isDark ? const Color(0xFF1E293B) : Colors.white;
@@ -35,7 +38,7 @@ class VendorProfileScreen extends StatelessWidget {
     return Scaffold(
       backgroundColor: backgroundColor,
       appBar: AppBar(
-        title: const Text('Vendor Profile'),
+        title: const Text(l10n.vendorProfile),
         backgroundColor: cardColor,
         foregroundColor: textColor,
         elevation: 0,
@@ -77,12 +80,12 @@ class VendorProfileScreen extends StatelessWidget {
                         _buildStatCard(
                           Icons.check_circle,
                           '$totalOrders',
-                          'Order Done',
+                          l10n.orderDone,
                         ),
                         _buildStatCard(
                           Icons.access_time,
                           workingPeriod,
-                          'Time Period',
+                          l10n.timePeriod,
                         ),
                       ],
                     ),
@@ -98,7 +101,7 @@ class VendorProfileScreen extends StatelessWidget {
                           Icon(Icons.check_circle, color: Colors.blue, size: 20),
                           SizedBox(width: 4),
                           Text(
-                            'Profile Verified',
+                            l10n.profileVerified,
                             style: TextStyle(color: Colors.blue, fontSize: 13),
                           ),
                         ],
@@ -109,7 +112,7 @@ class VendorProfileScreen extends StatelessWidget {
                           Icon(Icons.check_circle, color: Colors.blue, size: 20),
                           SizedBox(width: 4),
                           Text(
-                            'Police Verified',
+                            l10n.policeVerified,
                             style: TextStyle(color: Colors.blue, fontSize: 13),
                           ),
                         ],
@@ -127,7 +130,7 @@ class VendorProfileScreen extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    'Services Provide',
+                    l10n.servicesProvide,
                     style: TextStyle(
                       fontSize: 18,
                       fontWeight: FontWeight.bold,
@@ -146,7 +149,7 @@ class VendorProfileScreen extends StatelessWidget {
                         borderRadius: BorderRadius.circular(12),
                         boxShadow: [
                           BoxShadow(
-                            color: Colors.black.withOpacity(isDark ? 0.3 : 0.05),
+                            color: Colors.black.withValues(alpha: isDark ? 0.3 : 0.05),
                             blurRadius: 10,
                             offset: const Offset(0, 3),
                           ),
@@ -177,10 +180,10 @@ class VendorProfileScreen extends StatelessWidget {
         padding: const EdgeInsets.all(16),
         margin: const EdgeInsets.symmetric(horizontal: 4),
         decoration: BoxDecoration(
-          color: Colors.white.withOpacity(0.1),
+          color: Colors.white.withValues(alpha: 0.1),
           borderRadius: BorderRadius.circular(12),
           border: Border.all(
-            color: Colors.white.withOpacity(0.2),
+            color: Colors.white.withValues(alpha: 0.2),
             width: 1,
           ),
         ),
@@ -202,7 +205,7 @@ class VendorProfileScreen extends StatelessWidget {
               textAlign: TextAlign.center,
               style: TextStyle(
                 fontSize: 11,
-                color: Colors.white.withOpacity(0.8),
+                color: Colors.white.withValues(alpha: 0.8),
               ),
             ),
           ],
