@@ -8,12 +8,11 @@ class AppColors {
   static const deepPurple = Color(0xFF7C3AED);    // Accent color
   static const brightTeal = Color(0xFF14B8A6);
 
-  // Gradient Definitions
-  static const primaryGradient = LinearGradient(
-    colors: [electricBlue, brightTeal],  // Blue to Teal
-    begin: Alignment.topLeft,
-    end: Alignment.bottomRight,
-  );
+static const primaryGradient = LinearGradient(
+  colors: [electricBlue, electricBlue], // simple blue
+  begin: Alignment.centerLeft,
+  end: Alignment.centerRight,
+);
 
   static const accentGradient = LinearGradient(
     colors: [electricBlue, brightTeal],
