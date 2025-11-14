@@ -1,28 +1,4 @@
-import 'package:flutter/material.dart';
-
-class AppColors {
-  static const deepPurple = Color(0xFF7C3AED);
-  static const electricBlue = Color(0xFF3B82F6);
-  static const brightTeal = Color(0xFF14B8A6);
-
-  static const primaryGradient = LinearGradient(
-    colors: [deepPurple, electricBlue, brightTeal],
-    begin: Alignment.topLeft,
-    end: Alignment.bottomRight,
-  );
-}
-
-class LocationSelectionScreen extends StatefulWidget {
-  final Function(Map<String, String>) onLocationSelected;
-
-  const LocationSelectionScreen({
-    super.key,
-    required this.onLocationSelected,
-  });
-
-  @override
-  State<LocationSelectionScreen> createState() => _LocationSelectionScreenState();
-}
+// Update location_selection_screen.dart - Add better validation
 
 class _LocationSelectionScreenState extends State<LocationSelectionScreen> {
   final _formKey = GlobalKey<FormState>();
@@ -37,27 +13,79 @@ class _LocationSelectionScreenState extends State<LocationSelectionScreen> {
   String _addressType = 'Home';
   String _selectedLocation = '19231, Saudi Arabia';
 
-  @override
-  void dispose() {
-    _nameController.dispose();
-    _emailController.dispose();
-    _streetController.dispose();
-    _floorController.dispose();
-    _apartmentController.dispose();
-    _otherInfoController.dispose();
-    super.dispose();
+  // Add email validation
+  String? _validateEmail(String? value) {
+    if (value == null || value.isEmpty) {
+      return 'Email is required';
+    }
+    
+    // Email regex pattern
+    final emailRegex = RegExp(
+      r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$'
+    );
+    
+    if (!emailRegex.hasMatch(value)) {
+      return 'Enter a valid email address';
+    }
+    
+    return null;
+  }
+
+  // Add name validation
+  String? _validateName(String? value) {
+    if (value == null || value.isEmpty) {
+      return 'Name is required';
+    }
+    
+    if (value.trim().length < 2) {
+      return 'Name must be at least 2 characters';
+    }
+    
+    if (value.trim().length > 50) {
+      return 'Name must be less than 50 characters';
+    }
+    
+    // Check if name contains only letters and spaces
+    final nameRegex = RegExp(r'^[a-zA-Z\s]+$');
+    if (!nameRegex.hasMatch(value)) {
+      return 'Name can only contain letters and spaces';
+    }
+    
+    return null;
+  }
+
+  // Add street validation
+  String? _validateStreet(String? value) {
+    if (value == null || value.isEmpty) {
+      return 'Street name is required';
+    }
+    
+    if (value.trim().length < 3) {
+      return 'Street name must be at least 3 characters';
+    }
+    
+    return null;
   }
 
   Future<void> _saveAddress() async {
-    if (!_formKey.currentState!.validate()) return;
+    if (!_formKey.currentState!.validate()) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Please fix the errors in the form'),
+          backgroundColor: Colors.red,
+          behavior: SnackBarBehavior.floating,
+        ),
+      );
+      return;
+    }
 
     final addressData = {
-      'name': _nameController.text,
-      'email': _emailController.text,
-      'street': _streetController.text,
-      'floor': _floorController.text,
-      'apartment': _apartmentController.text,
-      'otherInfo': _otherInfoController.text,
+      'name': _nameController.text.trim(),
+      'email': _emailController.text.trim().toLowerCase(),
+      'street': _streetController.text.trim(),
+      'floor': _floorController.text.trim(),
+      'apartment': _apartmentController.text.trim(),
+      'otherInfo': _otherInfoController.text.trim(),
       'type': _addressType,
       'location': _selectedLocation,
     };
@@ -67,9 +95,7 @@ class _LocationSelectionScreenState extends State<LocationSelectionScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final isDark = Theme
-        .of(context)
-        .brightness == Brightness.dark;
+    final isDark = Theme.of(context).brightness == Brightness.dark;
     final backgroundColor = isDark ? const Color(0xFF0F172A) : Colors.white;
 
     return Scaffold(
@@ -100,7 +126,7 @@ class _LocationSelectionScreenState extends State<LocationSelectionScreen> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              // Map Preview
+              // Map Preview (keep existing)
               Container(
                 height: 250,
                 width: double.infinity,
@@ -149,7 +175,6 @@ class _LocationSelectionScreenState extends State<LocationSelectionScreen> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    // Personal Information Section
                     Text(
                       'Personal Information',
                       style: TextStyle(
@@ -160,9 +185,9 @@ class _LocationSelectionScreenState extends State<LocationSelectionScreen> {
                     ),
                     const SizedBox(height: 20),
 
-                    // Full Name
+                    // Full Name with validation
                     Text(
-                      'Full Name',
+                      'Full Name *',
                       style: TextStyle(
                         fontSize: 14,
                         color: isDark ? Colors.grey.shade400 : Colors.grey.shade600,
@@ -174,6 +199,7 @@ class _LocationSelectionScreenState extends State<LocationSelectionScreen> {
                       style: TextStyle(
                         color: isDark ? Colors.white : Colors.black87,
                       ),
+                      textCapitalization: TextCapitalization.words,
                       decoration: InputDecoration(
                         hintText: 'Enter your full name',
                         hintStyle: TextStyle(
@@ -185,20 +211,27 @@ class _LocationSelectionScreenState extends State<LocationSelectionScreen> {
                           borderRadius: BorderRadius.circular(12),
                           borderSide: BorderSide.none,
                         ),
+                        errorBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(12),
+                          borderSide: const BorderSide(color: Colors.red, width: 1),
+                        ),
+                        focusedErrorBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(12),
+                          borderSide: const BorderSide(color: Colors.red, width: 2),
+                        ),
                         contentPadding: const EdgeInsets.all(16),
+                        prefixIcon: Icon(
+                          Icons.person_outline,
+                          color: isDark ? Colors.grey.shade400 : Colors.grey.shade600,
+                        ),
                       ),
-                      validator: (value) {
-                        if (value == null || value.isEmpty) {
-                          return 'Please enter your name';
-                        }
-                        return null;
-                      },
+                      validator: _validateName,
                     ),
                     const SizedBox(height: 16),
 
-                    // Email
+                    // Email with validation
                     Text(
-                      'Email Address',
+                      'Email Address *',
                       style: TextStyle(
                         fontSize: 14,
                         color: isDark ? Colors.grey.shade400 : Colors.grey.shade600,
@@ -222,21 +255,24 @@ class _LocationSelectionScreenState extends State<LocationSelectionScreen> {
                           borderRadius: BorderRadius.circular(12),
                           borderSide: BorderSide.none,
                         ),
+                        errorBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(12),
+                          borderSide: const BorderSide(color: Colors.red, width: 1),
+                        ),
+                        focusedErrorBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(12),
+                          borderSide: const BorderSide(color: Colors.red, width: 2),
+                        ),
                         contentPadding: const EdgeInsets.all(16),
+                        prefixIcon: Icon(
+                          Icons.email_outlined,
+                          color: isDark ? Colors.grey.shade400 : Colors.grey.shade600,
+                        ),
                       ),
-                      validator: (value) {
-                        if (value == null || value.isEmpty) {
-                          return 'Please enter your email';
-                        }
-                        if (!value.contains('@')) {
-                          return 'Please enter a valid email';
-                        }
-                        return null;
-                      },
+                      validator: _validateEmail,
                     ),
                     const SizedBox(height: 24),
 
-                    // Address Details Section
                     Text(
                       'Delivery Address',
                       style: TextStyle(
@@ -247,9 +283,9 @@ class _LocationSelectionScreenState extends State<LocationSelectionScreen> {
                     ),
                     const SizedBox(height: 20),
 
-                    // Street Name
+                    // Street Name with validation
                     Text(
-                      'Street Name',
+                      'Street Name *',
                       style: TextStyle(
                         fontSize: 14,
                         color: isDark ? Colors.grey.shade400 : Colors.grey.shade600,
@@ -261,25 +297,37 @@ class _LocationSelectionScreenState extends State<LocationSelectionScreen> {
                       style: TextStyle(
                         color: isDark ? Colors.white : Colors.black87,
                       ),
+                      textCapitalization: TextCapitalization.words,
                       decoration: InputDecoration(
+                        hintText: 'Enter street name',
+                        hintStyle: TextStyle(
+                          color: isDark ? Colors.grey.shade600 : Colors.grey.shade400,
+                        ),
                         filled: true,
                         fillColor: isDark ? const Color(0xFF1E293B) : Colors.grey.shade100,
                         border: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(12),
                           borderSide: BorderSide.none,
                         ),
+                        errorBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(12),
+                          borderSide: const BorderSide(color: Colors.red, width: 1),
+                        ),
+                        focusedErrorBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(12),
+                          borderSide: const BorderSide(color: Colors.red, width: 2),
+                        ),
                         contentPadding: const EdgeInsets.all(16),
+                        prefixIcon: Icon(
+                          Icons.location_on_outlined,
+                          color: isDark ? Colors.grey.shade400 : Colors.grey.shade600,
+                        ),
                       ),
-                      validator: (value) {
-                        if (value == null || value.isEmpty) {
-                          return 'Please enter street name';
-                        }
-                        return null;
-                      },
+                      validator: _validateStreet,
                     ),
                     const SizedBox(height: 20),
 
-                    // Floor and Apartment
+                    // Floor and Apartment (Optional)
                     Row(
                       children: [
                         Expanded(
@@ -287,7 +335,7 @@ class _LocationSelectionScreenState extends State<LocationSelectionScreen> {
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               Text(
-                                'Floor',
+                                'Floor (Optional)',
                                 style: TextStyle(
                                   fontSize: 14,
                                   color: isDark ? Colors.grey.shade400 : Colors.grey.shade600,
@@ -299,6 +347,7 @@ class _LocationSelectionScreenState extends State<LocationSelectionScreen> {
                                 style: TextStyle(
                                   color: isDark ? Colors.white : Colors.black87,
                                 ),
+                                keyboardType: TextInputType.text,
                                 decoration: InputDecoration(
                                   hintText: 'Floor number',
                                   hintStyle: TextStyle(
@@ -324,7 +373,7 @@ class _LocationSelectionScreenState extends State<LocationSelectionScreen> {
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               Text(
-                                'Apartment',
+                                'Apartment (Optional)',
                                 style: TextStyle(
                                   fontSize: 14,
                                   color: isDark ? Colors.grey.shade400 : Colors.grey.shade600,
@@ -336,6 +385,7 @@ class _LocationSelectionScreenState extends State<LocationSelectionScreen> {
                                 style: TextStyle(
                                   color: isDark ? Colors.white : Colors.black87,
                                 ),
+                                keyboardType: TextInputType.text,
                                 decoration: InputDecoration(
                                   hintText: 'Apartment number',
                                   hintStyle: TextStyle(
@@ -359,9 +409,9 @@ class _LocationSelectionScreenState extends State<LocationSelectionScreen> {
                     ),
                     const SizedBox(height: 20),
 
-                    // Other Information
+                    // Other Information (keep existing)
                     Text(
-                      'Other information',
+                      'Other information (Optional)',
                       style: TextStyle(
                         fontSize: 14,
                         color: isDark ? Colors.grey.shade400 : Colors.grey.shade600,
@@ -371,10 +421,15 @@ class _LocationSelectionScreenState extends State<LocationSelectionScreen> {
                     TextFormField(
                       controller: _otherInfoController,
                       maxLines: 3,
+                      maxLength: 200,
                       style: TextStyle(
                         color: isDark ? Colors.white : Colors.black87,
                       ),
                       decoration: InputDecoration(
+                        hintText: 'Landmarks, special instructions, etc.',
+                        hintStyle: TextStyle(
+                          color: isDark ? Colors.grey.shade600 : Colors.grey.shade400,
+                        ),
                         filled: true,
                         fillColor: isDark ? const Color(0xFF1E293B) : Colors.grey.shade100,
                         border: OutlineInputBorder(
@@ -386,7 +441,7 @@ class _LocationSelectionScreenState extends State<LocationSelectionScreen> {
                     ),
                     const SizedBox(height: 24),
 
-                    // Save as Primary
+                    // Save as Primary (keep existing)
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
@@ -408,7 +463,7 @@ class _LocationSelectionScreenState extends State<LocationSelectionScreen> {
                     ),
                     const SizedBox(height: 24),
 
-                    // Address Type Selection
+                    // Address Type Selection (keep existing)
                     Row(
                       children: [
                         _buildAddressTypeChip('Home', Icons.home),
@@ -464,57 +519,8 @@ class _LocationSelectionScreenState extends State<LocationSelectionScreen> {
     );
   }
 
+  // Keep existing _buildAddressTypeChip method
   Widget _buildAddressTypeChip(String label, IconData icon) {
-    final isDark = Theme
-        .of(context)
-        .brightness == Brightness.dark;
-    final isSelected = _addressType == label;
-
-    return Expanded(
-      child: InkWell(
-        onTap: () {
-          setState(() => _addressType = label);
-        },
-        borderRadius: BorderRadius.circular(12),
-        child: Container(
-          padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 16),
-          decoration: BoxDecoration(
-            color: isSelected
-                ? (isDark ? AppColors.deepPurple.withOpacity(0.2) : Colors.grey.shade200)
-                : (isDark ? const Color(0xFF1E293B) : Colors.grey.shade100),
-            border: Border.all(
-              color: isSelected
-                  ? AppColors.deepPurple
-                  : (isDark ? Colors.grey.shade700 : Colors.grey.shade300),
-              width: isSelected ? 2 : 1,
-            ),
-            borderRadius: BorderRadius.circular(12),
-          ),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Icon(
-                icon,
-                color: isSelected
-                    ? AppColors.deepPurple
-                    : (isDark ? Colors.grey.shade400 : Colors.grey.shade600),
-                size: 20,
-              ),
-              const SizedBox(width: 6),
-              Text(
-                label,
-                style: TextStyle(
-                  fontSize: 14,
-                  fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
-                  color: isSelected
-                      ? AppColors.deepPurple
-                      : (isDark ? Colors.grey.shade400 : Colors.grey.shade600),
-                ),
-              ),
-            ],
-          ),
-        ),
-      ),
-    );
+    // ... existing code
   }
 }
