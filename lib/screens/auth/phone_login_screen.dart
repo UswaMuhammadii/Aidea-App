@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import '../../utils/validators.dart';
 
 class AppColors {
   static const deepPurple = Color(0xFF7C3AED);
@@ -28,6 +29,7 @@ class _PhoneLoginScreenState extends State<PhoneLoginScreen> {
   bool _isLoading = false;
   String _selectedCountryCode = '+966';
   bool _showError = false;
+  String _errorMessage = '';
 
   @override
   void dispose() {
@@ -35,8 +37,25 @@ class _PhoneLoginScreenState extends State<PhoneLoginScreen> {
     super.dispose();
   }
 
+  // Enhanced validation using Validators utility
+  String? _validatePhoneNumber(String? value) {
+    return Validators.validatePhone(value, _selectedCountryCode);
+  }
+
   Future<void> _handleSubmit() async {
-    if (!_formKey.currentState!.validate()) return;
+    // Clear previous errors
+    setState(() {
+      _showError = false;
+      _errorMessage = '';
+    });
+
+    if (!_formKey.currentState!.validate()) {
+      setState(() {
+        _showError = true;
+        _errorMessage = _validatePhoneNumber(_phoneController.text) ?? 'Invalid number';
+      });
+      return;
+    }
 
     setState(() => _isLoading = true);
     await Future.delayed(const Duration(seconds: 1));
@@ -126,9 +145,13 @@ class _PhoneLoginScreenState extends State<PhoneLoginScreen> {
                               height: 18,
                               decoration: BoxDecoration(
                                 borderRadius: BorderRadius.circular(4),
-                                image: const DecorationImage(
+                                image: DecorationImage(
                                   image: NetworkImage(
-                                    'https://flagcdn.com/w40/sa.png',
+                                    _selectedCountryCode == '+966'
+                                        ? 'https://flagcdn.com/w40/sa.png'
+                                        : _selectedCountryCode == '+971'
+                                            ? 'https://flagcdn.com/w40/ae.png'
+                                            : 'https://flagcdn.com/w40/pk.png',
                                   ),
                                   fit: BoxFit.cover,
                                 ),
@@ -181,7 +204,11 @@ class _PhoneLoginScreenState extends State<PhoneLoginScreen> {
                                   LengthLimitingTextInputFormatter(10),
                                 ],
                                 decoration: InputDecoration(
-                                  hintText: '5xxxxxxxxx',
+                                  hintText: _selectedCountryCode == '+966'
+                                      ? '5xxxxxxxx'
+                                      : _selectedCountryCode == '+971'
+                                          ? '5xxxxxxxx'
+                                          : '3xxxxxxxxx',
                                   hintStyle: TextStyle(
                                     color: isDark ? Colors.grey.shade600 : Colors.grey.shade400,
                                     fontSize: 15,
@@ -196,27 +223,25 @@ class _PhoneLoginScreenState extends State<PhoneLoginScreen> {
                                 ),
                                 onChanged: (value) {
                                   setState(() {
-                                    _showError = value.isNotEmpty && value.length < 9;
+                                    _showError = false;
+                                    _errorMessage = '';
+                                    String? error = _validatePhoneNumber(value);
+                                    if (error != null && value.isNotEmpty) {
+                                      _showError = true;
+                                      _errorMessage = error;
+                                    }
                                   });
                                 },
-                                validator: (value) {
-                                  if (value == null || value.isEmpty) {
-                                    return 'error';
-                                  }
-                                  if (value.length < 9) {
-                                    return 'error';
-                                  }
-                                  return null;
-                                },
+                                validator: _validatePhoneNumber,
                               ),
                             ),
                           ),
                           // Error message below the field
-                          if (_showError)
+                          if (_showError && _errorMessage.isNotEmpty)
                             Padding(
                               padding: const EdgeInsets.only(left: 4, top: 6),
                               child: Text(
-                                'Invalid number',
+                                _errorMessage,
                                 style: TextStyle(
                                   color: Colors.red.shade400,
                                   fontSize: 12,
@@ -254,24 +279,24 @@ class _PhoneLoginScreenState extends State<PhoneLoginScreen> {
                       child: Center(
                         child: _isLoading
                             ? const SizedBox(
-                          height: 24,
-                          width: 24,
-                          child: CircularProgressIndicator(
-                            strokeWidth: 2.5,
-                            valueColor: AlwaysStoppedAnimation<Color>(
-                              Colors.white,
-                            ),
-                          ),
-                        )
+                                height: 24,
+                                width: 24,
+                                child: CircularProgressIndicator(
+                                  strokeWidth: 2.5,
+                                  valueColor: AlwaysStoppedAnimation<Color>(
+                                    Colors.white,
+                                  ),
+                                ),
+                              )
                             : const Text(
-                          'Login',
-                          style: TextStyle(
-                            color: Colors.white,
-                            fontSize: 18,
-                            fontWeight: FontWeight.bold,
-                            letterSpacing: 0.5,
-                          ),
-                        ),
+                                'Login',
+                                style: TextStyle(
+                                  color: Colors.white,
+                                  fontSize: 18,
+                                  fontWeight: FontWeight.bold,
+                                  letterSpacing: 0.5,
+                                ),
+                              ),
                       ),
                     ),
                   ),
