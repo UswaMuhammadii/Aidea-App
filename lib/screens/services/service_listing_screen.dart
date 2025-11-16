@@ -6,8 +6,8 @@ import '../../services/dummy_data_service.dart';
 import 'service_checkout_screen.dart';
 import 'service_detail_screen.dart';
 import '../cart/cart_screen.dart';
-import '../../gen_l10n/app_localizations.dart';
 import '../../utils/icons_helper.dart';
+import '../../gen_l10n/app_localizations.dart';
 
 class AppColors {
   static const deepPurple = Color(0xFF7C3AED);
@@ -42,12 +42,12 @@ class ServiceListingScreen extends StatefulWidget {
 }
 
 class _ServiceListingScreenState extends State<ServiceListingScreen> with TickerProviderStateMixin {
-  late List<String> _subcategories;
+  List<String> _subcategories = [];
   String? _selectedSubcategory;
   List<String>? _subSubcategories;
   String? _selectedSubSubcategory;
-  late List<Service> _services;
-  late List<Service> _filteredServices;
+  List<Service> _services = [];
+  List<Service> _filteredServices = [];
   int _selectedQuantity = 1;
   String? _selectedServiceId;
   final TextEditingController _searchController = TextEditingController();
@@ -55,13 +55,11 @@ class _ServiceListingScreenState extends State<ServiceListingScreen> with Ticker
   late AnimationController _animationController;
   late Animation<double> _fadeAnimation;
   late Animation<Offset> _slideAnimation;
+  bool _isDataLoaded = false; // Track if data is loaded
 
   @override
   void initState() {
     super.initState();
-    _subcategories = DummyDataService.getSubcategories(widget.categoryName);
-    _services = [];
-    _filteredServices = [];
 
     _animationController = AnimationController(
       duration: const Duration(milliseconds: 800),
@@ -85,6 +83,25 @@ class _ServiceListingScreenState extends State<ServiceListingScreen> with Ticker
     ));
 
     _animationController.forward();
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    // Load data when dependencies are available
+    if (!_isDataLoaded) {
+      _loadSubcategories();
+    }
+  }
+
+  void _loadSubcategories() {
+    final l10n = AppLocalizations.of(context);
+    if (l10n != null) {
+      setState(() {
+        _subcategories = DummyDataService.getSubcategories(widget.categoryName, l10n);
+        _isDataLoaded = true;
+      });
+    }
   }
 
   @override
@@ -115,11 +132,14 @@ class _ServiceListingScreenState extends State<ServiceListingScreen> with Ticker
   }
 
   void _selectSubcategory(String subcategory) {
+    final l10n = AppLocalizations.of(context);
+    if (l10n == null) return;
+
     setState(() {
       _selectedSubcategory = subcategory;
 
       if (subcategory == 'Washing Machine') {
-        _subSubcategories = DummyDataService.getWashingMachineTypes();
+        _subSubcategories = DummyDataService.getWashingMachineTypes(l10n);
         _services = [];
         _filteredServices = [];
       } else {
@@ -128,6 +148,7 @@ class _ServiceListingScreenState extends State<ServiceListingScreen> with Ticker
         _services = DummyDataService.getServicesBySubcategory(
           widget.categoryName,
           subcategory,
+          l10n,
         );
         _filteredServices = List.from(_services);
       }
@@ -138,9 +159,12 @@ class _ServiceListingScreenState extends State<ServiceListingScreen> with Ticker
   }
 
   void _selectSubSubcategory(String type) {
+    final l10n = AppLocalizations.of(context);
+    if (l10n == null) return;
+
     setState(() {
       _selectedSubSubcategory = type;
-      _services = DummyDataService.getWashingMachineServices(type);
+      _services = DummyDataService.getWashingMachineServices(type, l10n);
       _filteredServices = List.from(_services);
       _selectedServiceId = null;
       _selectedQuantity = 1;
@@ -181,7 +205,7 @@ class _ServiceListingScreenState extends State<ServiceListingScreen> with Ticker
 
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
-        content: Text('Added ${service.name} to cart!'),
+        content: Text(l10n.addedToCartSuccessfully(service.name)),
         backgroundColor: AppColors.electricBlue,
         behavior: SnackBarBehavior.floating,
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
@@ -220,9 +244,103 @@ class _ServiceListingScreenState extends State<ServiceListingScreen> with Ticker
 
   int get _cartItemCount => globalCart.fold(0, (sum, item) => sum + item.quantity);
 
+  // Helper method to get localized title with fallback
+  String _getLocalizedTitle(String title, AppLocalizations l10n) {
+    try {
+      switch (title) {
+      // Categories
+        case 'AC Services': return l10n.acServices;
+        case 'Home Appliances': return l10n.homeAppliances;
+        case 'Plumbing': return l10n.plumbing;
+        case 'Electric': return l10n.electric;
+
+      // AC Subcategories
+        case 'Split AC': return l10n.splitAc;
+        case 'Window AC': return l10n.windowAc;
+        case 'Central AC': return l10n.centralAc;
+
+      // Home Appliances Subcategories
+        case 'Washing Machine': return l10n.washingMachine;
+        case 'Refrigerator': return l10n.refrigerator;
+        case 'Oven': return l10n.oven;
+        case 'Stove': return l10n.stove;
+        case 'Dishwasher': return l10n.dishwasher;
+
+      // Washing Machine Types
+        case 'Automatic': return l10n.automatic;
+        case 'Regular': return l10n.regular;
+        case 'Semi-Automatic': return l10n.semiAutomatic;
+        case 'Top Load': return l10n.topLoad;
+        case 'Front Load': return l10n.frontLoad;
+
+        default: return title;
+      }
+    } catch (e) {
+      // Fallback to English if localization fails
+      return _getFallbackTitle(title);
+    }
+  }
+
+  // Fallback English titles
+  String _getFallbackTitle(String title) {
+    switch (title) {
+      case 'AC Services': return 'AC Services';
+      case 'Home Appliances': return 'Home Appliances';
+      case 'Plumbing': return 'Plumbing';
+      case 'Electric': return 'Electric';
+      case 'Split AC': return 'Split AC';
+      case 'Window AC': return 'Window AC';
+      case 'Central AC': return 'Central AC';
+      case 'Washing Machine': return 'Washing Machine';
+      case 'Refrigerator': return 'Refrigerator';
+      case 'Oven': return 'Oven';
+      case 'Stove': return 'Stove';
+      case 'Dishwasher': return 'Dishwasher';
+      case 'Automatic': return 'Automatic';
+      case 'Regular': return 'Regular';
+      case 'Semi-Automatic': return 'Semi-Automatic';
+      case 'Top Load': return 'Top Load';
+      case 'Front Load': return 'Front Load';
+      default: return title;
+    }
+  }
+
+  // Helper method to get localized subcategory description with fallback
+  String _getSubcategoryDescription(String subcategory, AppLocalizations l10n) {
+    try {
+      if (subcategory == 'Washing Machine') {
+        return l10n.chooseMachineType;
+      }
+      return l10n.viewAllServices;
+    } catch (e) {
+      // Fallback to English if localization fails
+      if (subcategory == 'Washing Machine') {
+        return 'Choose your machine type';
+      }
+      return 'View all services';
+    }
+  }
+
+  // Helper method to get localized washing machine type description with fallback
+  String _getWashingMachineTypeDescription(String type, AppLocalizations l10n) {
+    try {
+      return l10n.viewServicesForMachines(type);
+    } catch (e) {
+      // Fallback to English if localization fails
+      return 'View services for $type machines';
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
-    final l10n = AppLocalizations.of(context)!;
+    final l10n = AppLocalizations.of(context);
+    if (l10n == null) {
+      return const Scaffold(
+        body: Center(
+          child: CircularProgressIndicator(),
+        ),
+      );
+    }
 
     final isDark = Theme.of(context).brightness == Brightness.dark;
 
@@ -234,10 +352,10 @@ class _ServiceListingScreenState extends State<ServiceListingScreen> with Ticker
         }
       },
       child: Scaffold(
-        backgroundColor: Theme.of(context).colorScheme.background,
+        backgroundColor: Theme.of(context).colorScheme.surface,
         appBar: AppBar(
           title: Text(
-            _selectedSubSubcategory ?? _selectedSubcategory ?? widget.categoryName,
+            _getLocalizedTitle(_selectedSubSubcategory ?? _selectedSubcategory ?? widget.categoryName, l10n),
             style: TextStyle(color: Theme.of(context).colorScheme.onSurface),
           ),
           centerTitle: true,
@@ -275,7 +393,7 @@ class _ServiceListingScreenState extends State<ServiceListingScreen> with Ticker
                         minHeight: 18,
                       ),
                       child: Text(
-                        '$_cartItemCount',
+                        _cartItemCount.toString(),
                         style: const TextStyle(
                           color: Colors.white,
                           fontSize: 10,
@@ -300,7 +418,7 @@ class _ServiceListingScreenState extends State<ServiceListingScreen> with Ticker
                 const Color(0xFF1E293B),
               ]
                   : [
-                AppColors.deepPurple.withValues(alpha: 0.03),
+                AppColors.deepPurple.withOpacity(0.03),
                 Colors.white,
               ],
             ),
@@ -318,6 +436,13 @@ class _ServiceListingScreenState extends State<ServiceListingScreen> with Ticker
   Widget _buildSubcategoryView(AppLocalizations l10n) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
 
+    // Show loading if subcategories are not loaded yet
+    if (_subcategories.isEmpty) {
+      return const Center(
+        child: CircularProgressIndicator(),
+      );
+    }
+
     return FadeTransition(
       opacity: _fadeAnimation,
       child: SlideTransition(
@@ -327,6 +452,9 @@ class _ServiceListingScreenState extends State<ServiceListingScreen> with Ticker
           itemCount: _subcategories.length,
           itemBuilder: (context, index) {
             final subcategory = _subcategories[index];
+            final localizedTitle = _getLocalizedTitle(subcategory, l10n);
+            final localizedDescription = _getSubcategoryDescription(subcategory, l10n);
+
             return Container(
               margin: const EdgeInsets.only(bottom: 16),
               decoration: BoxDecoration(
@@ -334,7 +462,7 @@ class _ServiceListingScreenState extends State<ServiceListingScreen> with Ticker
                 borderRadius: BorderRadius.circular(20),
                 boxShadow: [
                   BoxShadow(
-                    color: Colors.black.withValues(alpha: isDark ? 0.3 : 0.05),
+                    color: Colors.black.withOpacity(isDark ? 0.3 : 0.05),
                     blurRadius: 15,
                     offset: const Offset(0, 5),
                   ),
@@ -364,7 +492,7 @@ class _ServiceListingScreenState extends State<ServiceListingScreen> with Ticker
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               Text(
-                                subcategory,
+                                localizedTitle,
                                 style: Theme.of(context).textTheme.titleMedium?.copyWith(
                                   fontWeight: FontWeight.w700,
                                   color: Theme.of(context).colorScheme.onSurface,
@@ -372,9 +500,7 @@ class _ServiceListingScreenState extends State<ServiceListingScreen> with Ticker
                               ),
                               const SizedBox(height: 4),
                               Text(
-                                subcategory == 'Washing Machine'
-                                    ? 'Choose machine type'
-                                    : l10n.viewAllServices,
+                                localizedDescription,
                                 style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                                   color: Theme.of(context).colorScheme.onSurfaceVariant,
                                 ),
@@ -418,6 +544,9 @@ class _ServiceListingScreenState extends State<ServiceListingScreen> with Ticker
           itemCount: _subSubcategories!.length,
           itemBuilder: (context, index) {
             final type = _subSubcategories![index];
+            final localizedTitle = _getLocalizedTitle(type, l10n);
+            final localizedDescription = _getWashingMachineTypeDescription(type, l10n);
+
             return Container(
               margin: const EdgeInsets.only(bottom: 16),
               decoration: BoxDecoration(
@@ -425,7 +554,7 @@ class _ServiceListingScreenState extends State<ServiceListingScreen> with Ticker
                 borderRadius: BorderRadius.circular(20),
                 boxShadow: [
                   BoxShadow(
-                    color: Colors.black.withValues(alpha: isDark ? 0.3 : 0.05),
+                    color: Colors.black.withOpacity(isDark ? 0.3 : 0.05),
                     blurRadius: 15,
                     offset: const Offset(0, 5),
                   ),
@@ -455,7 +584,7 @@ class _ServiceListingScreenState extends State<ServiceListingScreen> with Ticker
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               Text(
-                                '$type Washing Machine',
+                                '$localizedTitle ${l10n.washingMachine}',
                                 style: Theme.of(context).textTheme.titleMedium?.copyWith(
                                   fontWeight: FontWeight.w700,
                                   color: Theme.of(context).colorScheme.onSurface,
@@ -463,7 +592,7 @@ class _ServiceListingScreenState extends State<ServiceListingScreen> with Ticker
                               ),
                               const SizedBox(height: 4),
                               Text(
-                                'View services for $type machines',
+                                localizedDescription,
                                 style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                                   color: Theme.of(context).colorScheme.onSurfaceVariant,
                                 ),
@@ -508,7 +637,7 @@ class _ServiceListingScreenState extends State<ServiceListingScreen> with Ticker
               borderRadius: BorderRadius.circular(16),
               boxShadow: [
                 BoxShadow(
-                  color: Colors.black.withValues(alpha: isDark ? 0.3 : 0.05),
+                  color: Colors.black.withOpacity(isDark ? 0.3 : 0.05),
                   blurRadius: 15,
                   offset: const Offset(0, 5),
                 ),
@@ -557,7 +686,7 @@ class _ServiceListingScreenState extends State<ServiceListingScreen> with Ticker
                 Icon(
                   Icons.search_off,
                   size: 64,
-                  color: Theme.of(context).colorScheme.onSurfaceVariant.withValues(alpha: 0.5),
+                  color: Theme.of(context).colorScheme.onSurfaceVariant.withOpacity(0.5),
                 ),
                 const SizedBox(height: 16),
                 Text(
@@ -597,8 +726,8 @@ class _ServiceListingScreenState extends State<ServiceListingScreen> with Ticker
                       boxShadow: [
                         BoxShadow(
                           color: isSelected
-                              ? AppColors.deepPurple.withValues(alpha: 0.3)
-                              : Colors.black.withValues(alpha: isDark ? 0.3 : 0.05),
+                              ? AppColors.deepPurple.withOpacity(0.3)
+                              : Colors.black.withOpacity(isDark ? 0.3 : 0.05),
                           blurRadius: isSelected ? 20 : 15,
                           offset: const Offset(0, 5),
                         ),
@@ -804,7 +933,7 @@ class _ServiceListingScreenState extends State<ServiceListingScreen> with Ticker
                 borderRadius: BorderRadius.circular(16),
                 boxShadow: [
                   BoxShadow(
-                    color: AppColors.deepPurple.withValues(alpha: 0.4),
+                    color: AppColors.deepPurple.withOpacity(0.4),
                     blurRadius: 20,
                     offset: const Offset(0, 10),
                   ),
@@ -848,9 +977,9 @@ class _ServiceListingScreenState extends State<ServiceListingScreen> with Ticker
                         ),
                       ),
                       const SizedBox(width: 12),
-                      const Text(
-                        'Continue to Checkout',
-                        style: TextStyle(
+                      Text(
+                        l10n.continueToCheckout,
+                        style: const TextStyle(
                           color: Colors.white,
                           fontSize: 16,
                           fontWeight: FontWeight.w700,

@@ -639,7 +639,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get getRealTimeUpdatesAboutYourBookings =>
-      'Get real-time updates about your bookings, technician assignments, and service completion.';
+      'Get real-time updates about your bookings';
 
   @override
   String get notNow => 'Not Now';
@@ -704,7 +704,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String addedToCartSuccessfully(String serviceName) {
-    return 'Added $serviceName to cart successfully!';
+    return '$serviceName added to cart successfully!';
   }
 
   @override
@@ -720,7 +720,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get tryAdjustingYourSearchTerms => 'Try adjusting your search terms';
 
   @override
-  String get chooseMachineType => 'Choose machine type';
+  String get chooseMachineType => 'Choose your machine type';
 
   @override
   String viewServicesForMachines(String type) {
@@ -784,4 +784,550 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get serviceLocation => 'Service Location';
+
+  @override
+  String get acServices => 'AC Services';
+
+  @override
+  String get homeAppliances => 'Home Appliances';
+
+  @override
+  String get plumbing => 'Plumbing';
+
+  @override
+  String get electric => 'Electric';
+
+  @override
+  String get splitAc => 'Split AC';
+
+  @override
+  String get windowAc => 'Window AC';
+
+  @override
+  String get centralAc => 'Central AC';
+
+  @override
+  String get refrigerator => 'Refrigerator';
+
+  @override
+  String get oven => 'Oven';
+
+  @override
+  String get stove => 'Stove';
+
+  @override
+  String get dishwasher => 'Dishwasher';
+
+  @override
+  String get automatic => 'Automatic';
+
+  @override
+  String get regular => 'Regular';
+
+  @override
+  String get semiAutomatic => 'Semi-Automatic';
+
+  @override
+  String get topLoad => 'Top Load';
+
+  @override
+  String get frontLoad => 'Front Load';
+
+  @override
+  String get pipeRepair => 'Pipe Repair';
+
+  @override
+  String get drainCleaning => 'Drain Cleaning';
+
+  @override
+  String get waterHeater => 'Water Heater';
+
+  @override
+  String get faucetInstallation => 'Faucet Installation';
+
+  @override
+  String get wiring => 'Wiring';
+
+  @override
+  String get switchSocket => 'Switch & Socket';
+
+  @override
+  String get circuitBreaker => 'Circuit Breaker';
+
+  @override
+  String get lightingInstallation => 'Lighting Installation';
+
+  @override
+  String get serviceManagement => 'Service Management';
+
+  @override
+  String get categories => 'Categories';
+
+  @override
+  String get subcategories => 'Subcategories';
+
+  @override
+  String servicesCount(int count) {
+    return '$count Services';
+  }
+
+  @override
+  String get acWashing => 'AC Washing (Cleaning indoor and outdoor unit)';
+
+  @override
+  String get repairingLeaks => 'Repairing leaks';
+
+  @override
+  String get cleaningWithFreon => 'Cleaning all units + Freon filling';
+
+  @override
+  String get installNewAc => 'Installing a new air conditioner';
+
+  @override
+  String get disassembleInside => 'Disassembly and assembly (inside the house)';
+
+  @override
+  String get disassembleOutside =>
+      'Disassembly and assembly (outside the house)';
+
+  @override
+  String get electronicBoardService =>
+      'Disassembling and assembling an electronic board';
+
+  @override
+  String get externalFanService => 'Removing and installing an external fan';
+
+  @override
+  String get changeDynamo => 'Change the dynamo (external)';
+
+  @override
+  String get acWash => 'Air conditioner wash';
+
+  @override
+  String get sewerCleaning => 'Sewer cleaning';
+
+  @override
+  String get installCabinetAc => 'Installing a cabinet air conditioner';
+
+  @override
+  String get cassetteAcInstallation => 'Cassette air conditioner installation';
+
+  @override
+  String get changeSplitCrystal => 'Change the split interior crystal';
+
+  @override
+  String get changeInternalEngine => 'Change the internal engine dynamo';
+
+  @override
+  String get changeCompressor => 'Changing the compressor 36-48-60 units';
+
+  @override
+  String get changeComponents =>
+      'Change the cylinder - coil - cylinder - battery';
+
+  @override
+  String get changeContactor => 'Changing and installing a contactor';
+
+  @override
+  String get disassembleElectronicBoard =>
+      'Disassembling and assembling the electronic board';
+
+  @override
+  String get disassembleDryingMachine =>
+      'Disassembling and assembling the drying machine';
+
+  @override
+  String get disassembleWashingMachine =>
+      'Disassembling and assembling the washing machine';
+
+  @override
+  String get doorDisassembly => 'Door disassembly and installation';
+
+  @override
+  String get balanceBarService => 'Dismantling and installing the balance bar';
+
+  @override
+  String get waterDrainageMaintenance => 'Water drainage maintenance';
+
+  @override
+  String get waterFlowMaintenance => 'Water flow maintenance';
+
+  @override
+  String get electricalShortCircuit => 'Electrical short circuit maintenance';
+
+  @override
+  String get powerSupplyRepair => 'Power Supply Repair';
+
+  @override
+  String get disassembleTimer => 'Disassembling and assembling the timer';
+
+  @override
+  String get compressorChange => 'Compressor change';
+
+  @override
+  String get changeExternalFan => 'Change the external fan';
+
+  @override
+  String get changeInternalFan => 'Change the internal fan';
+
+  @override
+  String get changeHeater => 'Change the heater';
+
+  @override
+  String get changeSensor => 'Change the \"Depressor\" sensor';
+
+  @override
+  String get americanFreonFilling => 'American Freon filling';
+
+  @override
+  String get indianFreonFilling => 'Indian Freon filling';
+
+  @override
+  String get externalLeakageMaintenance => 'External leakage maintenance';
+
+  @override
+  String get changeTimer => 'Change and adjust the timer';
+
+  @override
+  String get smallCompressorReplacement =>
+      'Refrigerator compressor replacement 1/6 - 1/5 - 1/4 - 1/3';
+
+  @override
+  String get largeCompressorReplacement =>
+      'Refrigerator compressor replacement 1/2 - 3/4 - 1';
+
+  @override
+  String get leakRepairAmericanR134 =>
+      'External leakage maintenance + American R134 Freon filling';
+
+  @override
+  String get leakRepairAmericanR12 =>
+      'External leakage maintenance + American R12 Freon filling';
+
+  @override
+  String get leakRepairChineseR134 =>
+      'External leakage maintenance + Chinese R134 Freon filling';
+
+  @override
+  String get leakRepairChineseR12 =>
+      'External leakage maintenance + Chinese R12 Freon filling';
+
+  @override
+  String get leakRepairIndianR134 =>
+      'External leakage maintenance + Indian R134 Freon filling';
+
+  @override
+  String get changeKeys => 'Change keys';
+
+  @override
+  String get changeDoorHinges => 'Change door hinges';
+
+  @override
+  String get ovenCleaning => 'Cleaning';
+
+  @override
+  String get smugglingMaintenance => 'Smuggling maintenance';
+
+  @override
+  String get microwaveMaintenance => 'Microwave maintenance';
+
+  @override
+  String get yourCompletedOrderWillAppearHere =>
+      'Your completed orders will appear here';
+
+  @override
+  String get completeCleaningService => 'Complete cleaning service';
+
+  @override
+  String get leakRepairService => 'Leak repair service';
+
+  @override
+  String get acServicesDescription =>
+      'Professional AC installation and maintenance';
+
+  @override
+  String get homeAppliancesDescription =>
+      'Complete home appliance repair services';
+
+  @override
+  String get plumbingDescription => 'Expert plumbing services';
+
+  @override
+  String get electricDescription => 'Professional electrical services';
+
+  @override
+  String get completeServiceWithGasRefill => 'Complete service with gas refill';
+
+  @override
+  String get professionalInstallation => 'Professional Installation';
+
+  @override
+  String get indoorMountingService => 'Indoor mounting/dismounting';
+
+  @override
+  String get outdoorMountingService => 'Outdoor mounting/dismounting';
+
+  @override
+  String get controlBoardRepair => 'Control board repair';
+
+  @override
+  String get externalMotorReplacement => 'External Motor Replacement';
+
+  @override
+  String get completeCleaning => 'Complete Cleaning';
+
+  @override
+  String get serviceWithGasRefill => 'Service with Gas Refill';
+
+  @override
+  String get installationService => 'Installation Service';
+
+  @override
+  String get drainPipeCleaning => 'Drain pipe cleaning';
+
+  @override
+  String get cabinetInstallation => 'Cabinet installation';
+
+  @override
+  String get controlBoardService => 'Control board service';
+
+  @override
+  String get cassetteTypeInstallation => 'Cassette type installation';
+
+  @override
+  String get indoorUnitCrystalReplacement => 'Indoor unit crystal replacement';
+
+  @override
+  String get internalMotorReplacement => 'Internal motor replacement';
+
+  @override
+  String get compressorReplacementLarge => 'Compressor replacement (large)';
+
+  @override
+  String get majorComponentReplacement => 'Major component replacement';
+
+  @override
+  String get contactorReplacement => 'Contactor Replacement';
+
+  @override
+  String get balanceBarServiceDesc => 'Balance bar service';
+
+  @override
+  String get drainSystemService => 'Drain system service';
+
+  @override
+  String get waterInletService => 'Water inlet service';
+
+  @override
+  String get electricalRepair => 'Electrical repair';
+
+  @override
+  String get powerSystemRepair => 'Power system repair';
+
+  @override
+  String get timerRepair => 'Timer repair';
+
+  @override
+  String get dryerService => 'Dryer service';
+
+  @override
+  String get compressorReplacement => 'Compressor Replacement';
+
+  @override
+  String get externalFanReplacement => 'External fan replacement';
+
+  @override
+  String get internalFanReplacement => 'Internal fan replacement';
+
+  @override
+  String get heaterReplacement => 'Heater replacement';
+
+  @override
+  String get sensorReplacement => 'Sensor replacement';
+
+  @override
+  String get fanReplacement => 'Fan Replacement';
+
+  @override
+  String get professionalsService => 'Professional Service';
+
+  @override
+  String get testingIncluded => 'Testing Included';
+
+  @override
+  String get motorReplacement => 'Motor Replacement';
+
+  @override
+  String get qualityParts => 'Quality Parts';
+
+  @override
+  String get expertservice => 'Expert Service';
+
+  @override
+  String get deepCleaning => 'Deep Cleaning';
+
+  @override
+  String get filterCleaning => 'Filter Cleaning';
+
+  @override
+  String get performanceCheck => 'Performance Check';
+
+  @override
+  String get leakDetection => 'Leak Detection';
+
+  @override
+  String get professionalRepair => 'Professional Repair';
+
+  @override
+  String get teakRepair => 'Teak Repair';
+
+  @override
+  String get teakDetection => 'Teak Detection';
+
+  @override
+  String get professionalsRepair => 'Professional Repair';
+
+  @override
+  String get testing => 'Testing';
+
+  @override
+  String get cleaning => 'Cleaning';
+
+  @override
+  String get gasRefill => 'Gas Refill';
+
+  @override
+  String get performanceOptimization => 'Performance Optimization';
+
+  @override
+  String get indoorUnitCleaning => 'Indoor Unit Cleaning';
+
+  @override
+  String get outdoorUnitCleaning => 'Outdoor Unit Cleaning';
+
+  @override
+  String get warrantyIncluded => 'Warranty Included';
+
+  @override
+  String get indoorService => 'Indoor Service';
+
+  @override
+  String get professionalTools => 'Professional Tools';
+
+  @override
+  String get safeHandling => 'Safe Handling';
+
+  @override
+  String get outdoorService => 'Outdoor Service';
+
+  @override
+  String get safetyEquipment => 'Safety Equipment';
+
+  @override
+  String get expertTechnicians => 'Expert Technicians';
+
+  @override
+  String get electronicRepair => 'Electronic Repair';
+
+  @override
+  String get cleanFinish => 'Clean Finish';
+
+  @override
+  String get quickService => 'Quick Service';
+
+  @override
+  String get pipeUnclogging => 'Pipe Unclogging';
+
+  @override
+  String get completeSetup => 'Complete Setup';
+
+  @override
+  String get boardReplacement => 'Board Replacement';
+
+  @override
+  String get crystalReplacement => 'Crystal Replacement';
+
+  @override
+  String get componentReplacement => 'Component Replacement';
+
+  @override
+  String get boardRepair => 'Board Repair';
+
+  @override
+  String get dryerRepair => 'Dryer Repair';
+
+  @override
+  String get completeDisassembly => 'Complete Disassembly';
+
+  @override
+  String get reassembly => 'Reassembly';
+
+  @override
+  String get doorRepair => 'Door Repair';
+
+  @override
+  String get sealReplacement => 'Seal Replacement';
+
+  @override
+  String get alignmentCheck => 'Alignment Check';
+
+  @override
+  String get balanceBarReplacement => 'Balance Bar Replacement';
+
+  @override
+  String get vibrationReduction => 'Vibration Reduction';
+
+  @override
+  String get pumpCheck => 'Pump Check';
+
+  @override
+  String get inletValveService => 'Inlet Valve Service';
+
+  @override
+  String get waterFlowOptimization => 'Water Flow Optimization';
+
+  @override
+  String get electricalDiagnosis => 'Electrical Diagnosis';
+
+  @override
+  String get wiringRepair => 'Wiring Repair';
+
+  @override
+  String get safetyCheck => 'Safety Check';
+
+  @override
+  String get componentCheck => 'Component Check';
+
+  @override
+  String get timerReplacement => 'Timer Replacement';
+
+  @override
+  String get fullService => 'Full Service';
+
+  @override
+  String get expertService => 'Expert Service';
+
+  @override
+  String get professionalService => 'Professional Service';
+
+  @override
+  String get textRepair => 'Text Repair';
+
+  @override
+  String get completeinstallation => 'Complete Installation';
+
+  @override
+  String get professionalSetup => 'Professional Setup';
+
+  @override
+  String get completeservice => 'Complete Service';
+
+  @override
+  String get leakRepair => 'Leak Repair';
+
+  @override
+  String get completeInstallation => 'Complete Installation';
+
+  @override
+  String get completeService => 'Complete Service';
 }

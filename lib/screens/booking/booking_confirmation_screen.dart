@@ -10,12 +10,14 @@ class BookingConfirmationScreen extends StatelessWidget {
   final List<Booking> bookings;
   final User user;
   final double totalAmount;
+  final AppLocalizations l10n;
 
   const BookingConfirmationScreen({
     super.key,
     required this.bookings,
     required this.user,
     required this.totalAmount,
+    required this.l10n,
   });
 
   @override

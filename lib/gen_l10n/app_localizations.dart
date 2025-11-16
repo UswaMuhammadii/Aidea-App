@@ -1319,7 +1319,7 @@ abstract class AppLocalizations {
   /// No description provided for @getRealTimeUpdatesAboutYourBookings.
   ///
   /// In en, this message translates to:
-  /// **'Get real-time updates about your bookings, technician assignments, and service completion.'**
+  /// **'Get real-time updates about your bookings'**
   String get getRealTimeUpdatesAboutYourBookings;
 
   /// No description provided for @notNow.
@@ -1439,7 +1439,7 @@ abstract class AppLocalizations {
   /// No description provided for @addedToCartSuccessfully.
   ///
   /// In en, this message translates to:
-  /// **'Added {serviceName} to cart successfully!'**
+  /// **'{serviceName} added to cart successfully!'**
   String addedToCartSuccessfully(String serviceName);
 
   /// No description provided for @viewCart.
@@ -1469,7 +1469,7 @@ abstract class AppLocalizations {
   /// No description provided for @chooseMachineType.
   ///
   /// In en, this message translates to:
-  /// **'Choose machine type'**
+  /// **'Choose your machine type'**
   String get chooseMachineType;
 
   /// No description provided for @viewServicesForMachines.
@@ -1585,6 +1585,1062 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Service Location'**
   String get serviceLocation;
+
+  /// No description provided for @acServices.
+  ///
+  /// In en, this message translates to:
+  /// **'AC Services'**
+  String get acServices;
+
+  /// No description provided for @homeAppliances.
+  ///
+  /// In en, this message translates to:
+  /// **'Home Appliances'**
+  String get homeAppliances;
+
+  /// No description provided for @plumbing.
+  ///
+  /// In en, this message translates to:
+  /// **'Plumbing'**
+  String get plumbing;
+
+  /// No description provided for @electric.
+  ///
+  /// In en, this message translates to:
+  /// **'Electric'**
+  String get electric;
+
+  /// No description provided for @splitAc.
+  ///
+  /// In en, this message translates to:
+  /// **'Split AC'**
+  String get splitAc;
+
+  /// No description provided for @windowAc.
+  ///
+  /// In en, this message translates to:
+  /// **'Window AC'**
+  String get windowAc;
+
+  /// No description provided for @centralAc.
+  ///
+  /// In en, this message translates to:
+  /// **'Central AC'**
+  String get centralAc;
+
+  /// No description provided for @refrigerator.
+  ///
+  /// In en, this message translates to:
+  /// **'Refrigerator'**
+  String get refrigerator;
+
+  /// No description provided for @oven.
+  ///
+  /// In en, this message translates to:
+  /// **'Oven'**
+  String get oven;
+
+  /// No description provided for @stove.
+  ///
+  /// In en, this message translates to:
+  /// **'Stove'**
+  String get stove;
+
+  /// No description provided for @dishwasher.
+  ///
+  /// In en, this message translates to:
+  /// **'Dishwasher'**
+  String get dishwasher;
+
+  /// No description provided for @automatic.
+  ///
+  /// In en, this message translates to:
+  /// **'Automatic'**
+  String get automatic;
+
+  /// No description provided for @regular.
+  ///
+  /// In en, this message translates to:
+  /// **'Regular'**
+  String get regular;
+
+  /// No description provided for @semiAutomatic.
+  ///
+  /// In en, this message translates to:
+  /// **'Semi-Automatic'**
+  String get semiAutomatic;
+
+  /// No description provided for @topLoad.
+  ///
+  /// In en, this message translates to:
+  /// **'Top Load'**
+  String get topLoad;
+
+  /// No description provided for @frontLoad.
+  ///
+  /// In en, this message translates to:
+  /// **'Front Load'**
+  String get frontLoad;
+
+  /// No description provided for @pipeRepair.
+  ///
+  /// In en, this message translates to:
+  /// **'Pipe Repair'**
+  String get pipeRepair;
+
+  /// No description provided for @drainCleaning.
+  ///
+  /// In en, this message translates to:
+  /// **'Drain Cleaning'**
+  String get drainCleaning;
+
+  /// No description provided for @waterHeater.
+  ///
+  /// In en, this message translates to:
+  /// **'Water Heater'**
+  String get waterHeater;
+
+  /// No description provided for @faucetInstallation.
+  ///
+  /// In en, this message translates to:
+  /// **'Faucet Installation'**
+  String get faucetInstallation;
+
+  /// No description provided for @wiring.
+  ///
+  /// In en, this message translates to:
+  /// **'Wiring'**
+  String get wiring;
+
+  /// No description provided for @switchSocket.
+  ///
+  /// In en, this message translates to:
+  /// **'Switch & Socket'**
+  String get switchSocket;
+
+  /// No description provided for @circuitBreaker.
+  ///
+  /// In en, this message translates to:
+  /// **'Circuit Breaker'**
+  String get circuitBreaker;
+
+  /// No description provided for @lightingInstallation.
+  ///
+  /// In en, this message translates to:
+  /// **'Lighting Installation'**
+  String get lightingInstallation;
+
+  /// No description provided for @serviceManagement.
+  ///
+  /// In en, this message translates to:
+  /// **'Service Management'**
+  String get serviceManagement;
+
+  /// No description provided for @categories.
+  ///
+  /// In en, this message translates to:
+  /// **'Categories'**
+  String get categories;
+
+  /// No description provided for @subcategories.
+  ///
+  /// In en, this message translates to:
+  /// **'Subcategories'**
+  String get subcategories;
+
+  /// No description provided for @servicesCount.
+  ///
+  /// In en, this message translates to:
+  /// **'{count} Services'**
+  String servicesCount(int count);
+
+  /// No description provided for @acWashing.
+  ///
+  /// In en, this message translates to:
+  /// **'AC Washing (Cleaning indoor and outdoor unit)'**
+  String get acWashing;
+
+  /// No description provided for @repairingLeaks.
+  ///
+  /// In en, this message translates to:
+  /// **'Repairing leaks'**
+  String get repairingLeaks;
+
+  /// No description provided for @cleaningWithFreon.
+  ///
+  /// In en, this message translates to:
+  /// **'Cleaning all units + Freon filling'**
+  String get cleaningWithFreon;
+
+  /// No description provided for @installNewAc.
+  ///
+  /// In en, this message translates to:
+  /// **'Installing a new air conditioner'**
+  String get installNewAc;
+
+  /// No description provided for @disassembleInside.
+  ///
+  /// In en, this message translates to:
+  /// **'Disassembly and assembly (inside the house)'**
+  String get disassembleInside;
+
+  /// No description provided for @disassembleOutside.
+  ///
+  /// In en, this message translates to:
+  /// **'Disassembly and assembly (outside the house)'**
+  String get disassembleOutside;
+
+  /// No description provided for @electronicBoardService.
+  ///
+  /// In en, this message translates to:
+  /// **'Disassembling and assembling an electronic board'**
+  String get electronicBoardService;
+
+  /// No description provided for @externalFanService.
+  ///
+  /// In en, this message translates to:
+  /// **'Removing and installing an external fan'**
+  String get externalFanService;
+
+  /// No description provided for @changeDynamo.
+  ///
+  /// In en, this message translates to:
+  /// **'Change the dynamo (external)'**
+  String get changeDynamo;
+
+  /// No description provided for @acWash.
+  ///
+  /// In en, this message translates to:
+  /// **'Air conditioner wash'**
+  String get acWash;
+
+  /// No description provided for @sewerCleaning.
+  ///
+  /// In en, this message translates to:
+  /// **'Sewer cleaning'**
+  String get sewerCleaning;
+
+  /// No description provided for @installCabinetAc.
+  ///
+  /// In en, this message translates to:
+  /// **'Installing a cabinet air conditioner'**
+  String get installCabinetAc;
+
+  /// No description provided for @cassetteAcInstallation.
+  ///
+  /// In en, this message translates to:
+  /// **'Cassette air conditioner installation'**
+  String get cassetteAcInstallation;
+
+  /// No description provided for @changeSplitCrystal.
+  ///
+  /// In en, this message translates to:
+  /// **'Change the split interior crystal'**
+  String get changeSplitCrystal;
+
+  /// No description provided for @changeInternalEngine.
+  ///
+  /// In en, this message translates to:
+  /// **'Change the internal engine dynamo'**
+  String get changeInternalEngine;
+
+  /// No description provided for @changeCompressor.
+  ///
+  /// In en, this message translates to:
+  /// **'Changing the compressor 36-48-60 units'**
+  String get changeCompressor;
+
+  /// No description provided for @changeComponents.
+  ///
+  /// In en, this message translates to:
+  /// **'Change the cylinder - coil - cylinder - battery'**
+  String get changeComponents;
+
+  /// No description provided for @changeContactor.
+  ///
+  /// In en, this message translates to:
+  /// **'Changing and installing a contactor'**
+  String get changeContactor;
+
+  /// No description provided for @disassembleElectronicBoard.
+  ///
+  /// In en, this message translates to:
+  /// **'Disassembling and assembling the electronic board'**
+  String get disassembleElectronicBoard;
+
+  /// No description provided for @disassembleDryingMachine.
+  ///
+  /// In en, this message translates to:
+  /// **'Disassembling and assembling the drying machine'**
+  String get disassembleDryingMachine;
+
+  /// No description provided for @disassembleWashingMachine.
+  ///
+  /// In en, this message translates to:
+  /// **'Disassembling and assembling the washing machine'**
+  String get disassembleWashingMachine;
+
+  /// No description provided for @doorDisassembly.
+  ///
+  /// In en, this message translates to:
+  /// **'Door disassembly and installation'**
+  String get doorDisassembly;
+
+  /// No description provided for @balanceBarService.
+  ///
+  /// In en, this message translates to:
+  /// **'Dismantling and installing the balance bar'**
+  String get balanceBarService;
+
+  /// No description provided for @waterDrainageMaintenance.
+  ///
+  /// In en, this message translates to:
+  /// **'Water drainage maintenance'**
+  String get waterDrainageMaintenance;
+
+  /// No description provided for @waterFlowMaintenance.
+  ///
+  /// In en, this message translates to:
+  /// **'Water flow maintenance'**
+  String get waterFlowMaintenance;
+
+  /// No description provided for @electricalShortCircuit.
+  ///
+  /// In en, this message translates to:
+  /// **'Electrical short circuit maintenance'**
+  String get electricalShortCircuit;
+
+  /// No description provided for @powerSupplyRepair.
+  ///
+  /// In en, this message translates to:
+  /// **'Power Supply Repair'**
+  String get powerSupplyRepair;
+
+  /// No description provided for @disassembleTimer.
+  ///
+  /// In en, this message translates to:
+  /// **'Disassembling and assembling the timer'**
+  String get disassembleTimer;
+
+  /// No description provided for @compressorChange.
+  ///
+  /// In en, this message translates to:
+  /// **'Compressor change'**
+  String get compressorChange;
+
+  /// No description provided for @changeExternalFan.
+  ///
+  /// In en, this message translates to:
+  /// **'Change the external fan'**
+  String get changeExternalFan;
+
+  /// No description provided for @changeInternalFan.
+  ///
+  /// In en, this message translates to:
+  /// **'Change the internal fan'**
+  String get changeInternalFan;
+
+  /// No description provided for @changeHeater.
+  ///
+  /// In en, this message translates to:
+  /// **'Change the heater'**
+  String get changeHeater;
+
+  /// No description provided for @changeSensor.
+  ///
+  /// In en, this message translates to:
+  /// **'Change the \"Depressor\" sensor'**
+  String get changeSensor;
+
+  /// No description provided for @americanFreonFilling.
+  ///
+  /// In en, this message translates to:
+  /// **'American Freon filling'**
+  String get americanFreonFilling;
+
+  /// No description provided for @indianFreonFilling.
+  ///
+  /// In en, this message translates to:
+  /// **'Indian Freon filling'**
+  String get indianFreonFilling;
+
+  /// No description provided for @externalLeakageMaintenance.
+  ///
+  /// In en, this message translates to:
+  /// **'External leakage maintenance'**
+  String get externalLeakageMaintenance;
+
+  /// No description provided for @changeTimer.
+  ///
+  /// In en, this message translates to:
+  /// **'Change and adjust the timer'**
+  String get changeTimer;
+
+  /// No description provided for @smallCompressorReplacement.
+  ///
+  /// In en, this message translates to:
+  /// **'Refrigerator compressor replacement 1/6 - 1/5 - 1/4 - 1/3'**
+  String get smallCompressorReplacement;
+
+  /// No description provided for @largeCompressorReplacement.
+  ///
+  /// In en, this message translates to:
+  /// **'Refrigerator compressor replacement 1/2 - 3/4 - 1'**
+  String get largeCompressorReplacement;
+
+  /// No description provided for @leakRepairAmericanR134.
+  ///
+  /// In en, this message translates to:
+  /// **'External leakage maintenance + American R134 Freon filling'**
+  String get leakRepairAmericanR134;
+
+  /// No description provided for @leakRepairAmericanR12.
+  ///
+  /// In en, this message translates to:
+  /// **'External leakage maintenance + American R12 Freon filling'**
+  String get leakRepairAmericanR12;
+
+  /// No description provided for @leakRepairChineseR134.
+  ///
+  /// In en, this message translates to:
+  /// **'External leakage maintenance + Chinese R134 Freon filling'**
+  String get leakRepairChineseR134;
+
+  /// No description provided for @leakRepairChineseR12.
+  ///
+  /// In en, this message translates to:
+  /// **'External leakage maintenance + Chinese R12 Freon filling'**
+  String get leakRepairChineseR12;
+
+  /// No description provided for @leakRepairIndianR134.
+  ///
+  /// In en, this message translates to:
+  /// **'External leakage maintenance + Indian R134 Freon filling'**
+  String get leakRepairIndianR134;
+
+  /// No description provided for @changeKeys.
+  ///
+  /// In en, this message translates to:
+  /// **'Change keys'**
+  String get changeKeys;
+
+  /// No description provided for @changeDoorHinges.
+  ///
+  /// In en, this message translates to:
+  /// **'Change door hinges'**
+  String get changeDoorHinges;
+
+  /// No description provided for @ovenCleaning.
+  ///
+  /// In en, this message translates to:
+  /// **'Cleaning'**
+  String get ovenCleaning;
+
+  /// No description provided for @smugglingMaintenance.
+  ///
+  /// In en, this message translates to:
+  /// **'Smuggling maintenance'**
+  String get smugglingMaintenance;
+
+  /// No description provided for @microwaveMaintenance.
+  ///
+  /// In en, this message translates to:
+  /// **'Microwave maintenance'**
+  String get microwaveMaintenance;
+
+  /// No description provided for @yourCompletedOrderWillAppearHere.
+  ///
+  /// In en, this message translates to:
+  /// **'Your completed orders will appear here'**
+  String get yourCompletedOrderWillAppearHere;
+
+  /// No description provided for @completeCleaningService.
+  ///
+  /// In en, this message translates to:
+  /// **'Complete cleaning service'**
+  String get completeCleaningService;
+
+  /// No description provided for @leakRepairService.
+  ///
+  /// In en, this message translates to:
+  /// **'Leak repair service'**
+  String get leakRepairService;
+
+  /// No description provided for @acServicesDescription.
+  ///
+  /// In en, this message translates to:
+  /// **'Professional AC installation and maintenance'**
+  String get acServicesDescription;
+
+  /// No description provided for @homeAppliancesDescription.
+  ///
+  /// In en, this message translates to:
+  /// **'Complete home appliance repair services'**
+  String get homeAppliancesDescription;
+
+  /// No description provided for @plumbingDescription.
+  ///
+  /// In en, this message translates to:
+  /// **'Expert plumbing services'**
+  String get plumbingDescription;
+
+  /// No description provided for @electricDescription.
+  ///
+  /// In en, this message translates to:
+  /// **'Professional electrical services'**
+  String get electricDescription;
+
+  /// No description provided for @completeServiceWithGasRefill.
+  ///
+  /// In en, this message translates to:
+  /// **'Complete service with gas refill'**
+  String get completeServiceWithGasRefill;
+
+  /// No description provided for @professionalInstallation.
+  ///
+  /// In en, this message translates to:
+  /// **'Professional Installation'**
+  String get professionalInstallation;
+
+  /// No description provided for @indoorMountingService.
+  ///
+  /// In en, this message translates to:
+  /// **'Indoor mounting/dismounting'**
+  String get indoorMountingService;
+
+  /// No description provided for @outdoorMountingService.
+  ///
+  /// In en, this message translates to:
+  /// **'Outdoor mounting/dismounting'**
+  String get outdoorMountingService;
+
+  /// No description provided for @controlBoardRepair.
+  ///
+  /// In en, this message translates to:
+  /// **'Control board repair'**
+  String get controlBoardRepair;
+
+  /// No description provided for @externalMotorReplacement.
+  ///
+  /// In en, this message translates to:
+  /// **'External Motor Replacement'**
+  String get externalMotorReplacement;
+
+  /// No description provided for @completeCleaning.
+  ///
+  /// In en, this message translates to:
+  /// **'Complete Cleaning'**
+  String get completeCleaning;
+
+  /// No description provided for @serviceWithGasRefill.
+  ///
+  /// In en, this message translates to:
+  /// **'Service with Gas Refill'**
+  String get serviceWithGasRefill;
+
+  /// No description provided for @installationService.
+  ///
+  /// In en, this message translates to:
+  /// **'Installation Service'**
+  String get installationService;
+
+  /// No description provided for @drainPipeCleaning.
+  ///
+  /// In en, this message translates to:
+  /// **'Drain pipe cleaning'**
+  String get drainPipeCleaning;
+
+  /// No description provided for @cabinetInstallation.
+  ///
+  /// In en, this message translates to:
+  /// **'Cabinet installation'**
+  String get cabinetInstallation;
+
+  /// No description provided for @controlBoardService.
+  ///
+  /// In en, this message translates to:
+  /// **'Control board service'**
+  String get controlBoardService;
+
+  /// No description provided for @cassetteTypeInstallation.
+  ///
+  /// In en, this message translates to:
+  /// **'Cassette type installation'**
+  String get cassetteTypeInstallation;
+
+  /// No description provided for @indoorUnitCrystalReplacement.
+  ///
+  /// In en, this message translates to:
+  /// **'Indoor unit crystal replacement'**
+  String get indoorUnitCrystalReplacement;
+
+  /// No description provided for @internalMotorReplacement.
+  ///
+  /// In en, this message translates to:
+  /// **'Internal motor replacement'**
+  String get internalMotorReplacement;
+
+  /// No description provided for @compressorReplacementLarge.
+  ///
+  /// In en, this message translates to:
+  /// **'Compressor replacement (large)'**
+  String get compressorReplacementLarge;
+
+  /// No description provided for @majorComponentReplacement.
+  ///
+  /// In en, this message translates to:
+  /// **'Major component replacement'**
+  String get majorComponentReplacement;
+
+  /// No description provided for @contactorReplacement.
+  ///
+  /// In en, this message translates to:
+  /// **'Contactor Replacement'**
+  String get contactorReplacement;
+
+  /// No description provided for @balanceBarServiceDesc.
+  ///
+  /// In en, this message translates to:
+  /// **'Balance bar service'**
+  String get balanceBarServiceDesc;
+
+  /// No description provided for @drainSystemService.
+  ///
+  /// In en, this message translates to:
+  /// **'Drain system service'**
+  String get drainSystemService;
+
+  /// No description provided for @waterInletService.
+  ///
+  /// In en, this message translates to:
+  /// **'Water inlet service'**
+  String get waterInletService;
+
+  /// No description provided for @electricalRepair.
+  ///
+  /// In en, this message translates to:
+  /// **'Electrical repair'**
+  String get electricalRepair;
+
+  /// No description provided for @powerSystemRepair.
+  ///
+  /// In en, this message translates to:
+  /// **'Power system repair'**
+  String get powerSystemRepair;
+
+  /// No description provided for @timerRepair.
+  ///
+  /// In en, this message translates to:
+  /// **'Timer repair'**
+  String get timerRepair;
+
+  /// No description provided for @dryerService.
+  ///
+  /// In en, this message translates to:
+  /// **'Dryer service'**
+  String get dryerService;
+
+  /// No description provided for @compressorReplacement.
+  ///
+  /// In en, this message translates to:
+  /// **'Compressor Replacement'**
+  String get compressorReplacement;
+
+  /// No description provided for @externalFanReplacement.
+  ///
+  /// In en, this message translates to:
+  /// **'External fan replacement'**
+  String get externalFanReplacement;
+
+  /// No description provided for @internalFanReplacement.
+  ///
+  /// In en, this message translates to:
+  /// **'Internal fan replacement'**
+  String get internalFanReplacement;
+
+  /// No description provided for @heaterReplacement.
+  ///
+  /// In en, this message translates to:
+  /// **'Heater replacement'**
+  String get heaterReplacement;
+
+  /// No description provided for @sensorReplacement.
+  ///
+  /// In en, this message translates to:
+  /// **'Sensor replacement'**
+  String get sensorReplacement;
+
+  /// No description provided for @fanReplacement.
+  ///
+  /// In en, this message translates to:
+  /// **'Fan Replacement'**
+  String get fanReplacement;
+
+  /// No description provided for @professionalsService.
+  ///
+  /// In en, this message translates to:
+  /// **'Professional Service'**
+  String get professionalsService;
+
+  /// No description provided for @testingIncluded.
+  ///
+  /// In en, this message translates to:
+  /// **'Testing Included'**
+  String get testingIncluded;
+
+  /// No description provided for @motorReplacement.
+  ///
+  /// In en, this message translates to:
+  /// **'Motor Replacement'**
+  String get motorReplacement;
+
+  /// No description provided for @qualityParts.
+  ///
+  /// In en, this message translates to:
+  /// **'Quality Parts'**
+  String get qualityParts;
+
+  /// No description provided for @expertservice.
+  ///
+  /// In en, this message translates to:
+  /// **'Expert Service'**
+  String get expertservice;
+
+  /// No description provided for @deepCleaning.
+  ///
+  /// In en, this message translates to:
+  /// **'Deep Cleaning'**
+  String get deepCleaning;
+
+  /// No description provided for @filterCleaning.
+  ///
+  /// In en, this message translates to:
+  /// **'Filter Cleaning'**
+  String get filterCleaning;
+
+  /// No description provided for @performanceCheck.
+  ///
+  /// In en, this message translates to:
+  /// **'Performance Check'**
+  String get performanceCheck;
+
+  /// No description provided for @leakDetection.
+  ///
+  /// In en, this message translates to:
+  /// **'Leak Detection'**
+  String get leakDetection;
+
+  /// No description provided for @professionalRepair.
+  ///
+  /// In en, this message translates to:
+  /// **'Professional Repair'**
+  String get professionalRepair;
+
+  /// No description provided for @teakRepair.
+  ///
+  /// In en, this message translates to:
+  /// **'Teak Repair'**
+  String get teakRepair;
+
+  /// No description provided for @teakDetection.
+  ///
+  /// In en, this message translates to:
+  /// **'Teak Detection'**
+  String get teakDetection;
+
+  /// No description provided for @professionalsRepair.
+  ///
+  /// In en, this message translates to:
+  /// **'Professional Repair'**
+  String get professionalsRepair;
+
+  /// No description provided for @testing.
+  ///
+  /// In en, this message translates to:
+  /// **'Testing'**
+  String get testing;
+
+  /// No description provided for @cleaning.
+  ///
+  /// In en, this message translates to:
+  /// **'Cleaning'**
+  String get cleaning;
+
+  /// No description provided for @gasRefill.
+  ///
+  /// In en, this message translates to:
+  /// **'Gas Refill'**
+  String get gasRefill;
+
+  /// No description provided for @performanceOptimization.
+  ///
+  /// In en, this message translates to:
+  /// **'Performance Optimization'**
+  String get performanceOptimization;
+
+  /// No description provided for @indoorUnitCleaning.
+  ///
+  /// In en, this message translates to:
+  /// **'Indoor Unit Cleaning'**
+  String get indoorUnitCleaning;
+
+  /// No description provided for @outdoorUnitCleaning.
+  ///
+  /// In en, this message translates to:
+  /// **'Outdoor Unit Cleaning'**
+  String get outdoorUnitCleaning;
+
+  /// No description provided for @warrantyIncluded.
+  ///
+  /// In en, this message translates to:
+  /// **'Warranty Included'**
+  String get warrantyIncluded;
+
+  /// No description provided for @indoorService.
+  ///
+  /// In en, this message translates to:
+  /// **'Indoor Service'**
+  String get indoorService;
+
+  /// No description provided for @professionalTools.
+  ///
+  /// In en, this message translates to:
+  /// **'Professional Tools'**
+  String get professionalTools;
+
+  /// No description provided for @safeHandling.
+  ///
+  /// In en, this message translates to:
+  /// **'Safe Handling'**
+  String get safeHandling;
+
+  /// No description provided for @outdoorService.
+  ///
+  /// In en, this message translates to:
+  /// **'Outdoor Service'**
+  String get outdoorService;
+
+  /// No description provided for @safetyEquipment.
+  ///
+  /// In en, this message translates to:
+  /// **'Safety Equipment'**
+  String get safetyEquipment;
+
+  /// No description provided for @expertTechnicians.
+  ///
+  /// In en, this message translates to:
+  /// **'Expert Technicians'**
+  String get expertTechnicians;
+
+  /// No description provided for @electronicRepair.
+  ///
+  /// In en, this message translates to:
+  /// **'Electronic Repair'**
+  String get electronicRepair;
+
+  /// No description provided for @cleanFinish.
+  ///
+  /// In en, this message translates to:
+  /// **'Clean Finish'**
+  String get cleanFinish;
+
+  /// No description provided for @quickService.
+  ///
+  /// In en, this message translates to:
+  /// **'Quick Service'**
+  String get quickService;
+
+  /// No description provided for @pipeUnclogging.
+  ///
+  /// In en, this message translates to:
+  /// **'Pipe Unclogging'**
+  String get pipeUnclogging;
+
+  /// No description provided for @completeSetup.
+  ///
+  /// In en, this message translates to:
+  /// **'Complete Setup'**
+  String get completeSetup;
+
+  /// No description provided for @boardReplacement.
+  ///
+  /// In en, this message translates to:
+  /// **'Board Replacement'**
+  String get boardReplacement;
+
+  /// No description provided for @crystalReplacement.
+  ///
+  /// In en, this message translates to:
+  /// **'Crystal Replacement'**
+  String get crystalReplacement;
+
+  /// No description provided for @componentReplacement.
+  ///
+  /// In en, this message translates to:
+  /// **'Component Replacement'**
+  String get componentReplacement;
+
+  /// No description provided for @boardRepair.
+  ///
+  /// In en, this message translates to:
+  /// **'Board Repair'**
+  String get boardRepair;
+
+  /// No description provided for @dryerRepair.
+  ///
+  /// In en, this message translates to:
+  /// **'Dryer Repair'**
+  String get dryerRepair;
+
+  /// No description provided for @completeDisassembly.
+  ///
+  /// In en, this message translates to:
+  /// **'Complete Disassembly'**
+  String get completeDisassembly;
+
+  /// No description provided for @reassembly.
+  ///
+  /// In en, this message translates to:
+  /// **'Reassembly'**
+  String get reassembly;
+
+  /// No description provided for @doorRepair.
+  ///
+  /// In en, this message translates to:
+  /// **'Door Repair'**
+  String get doorRepair;
+
+  /// No description provided for @sealReplacement.
+  ///
+  /// In en, this message translates to:
+  /// **'Seal Replacement'**
+  String get sealReplacement;
+
+  /// No description provided for @alignmentCheck.
+  ///
+  /// In en, this message translates to:
+  /// **'Alignment Check'**
+  String get alignmentCheck;
+
+  /// No description provided for @balanceBarReplacement.
+  ///
+  /// In en, this message translates to:
+  /// **'Balance Bar Replacement'**
+  String get balanceBarReplacement;
+
+  /// No description provided for @vibrationReduction.
+  ///
+  /// In en, this message translates to:
+  /// **'Vibration Reduction'**
+  String get vibrationReduction;
+
+  /// No description provided for @pumpCheck.
+  ///
+  /// In en, this message translates to:
+  /// **'Pump Check'**
+  String get pumpCheck;
+
+  /// No description provided for @inletValveService.
+  ///
+  /// In en, this message translates to:
+  /// **'Inlet Valve Service'**
+  String get inletValveService;
+
+  /// No description provided for @waterFlowOptimization.
+  ///
+  /// In en, this message translates to:
+  /// **'Water Flow Optimization'**
+  String get waterFlowOptimization;
+
+  /// No description provided for @electricalDiagnosis.
+  ///
+  /// In en, this message translates to:
+  /// **'Electrical Diagnosis'**
+  String get electricalDiagnosis;
+
+  /// No description provided for @wiringRepair.
+  ///
+  /// In en, this message translates to:
+  /// **'Wiring Repair'**
+  String get wiringRepair;
+
+  /// No description provided for @safetyCheck.
+  ///
+  /// In en, this message translates to:
+  /// **'Safety Check'**
+  String get safetyCheck;
+
+  /// No description provided for @componentCheck.
+  ///
+  /// In en, this message translates to:
+  /// **'Component Check'**
+  String get componentCheck;
+
+  /// No description provided for @timerReplacement.
+  ///
+  /// In en, this message translates to:
+  /// **'Timer Replacement'**
+  String get timerReplacement;
+
+  /// No description provided for @fullService.
+  ///
+  /// In en, this message translates to:
+  /// **'Full Service'**
+  String get fullService;
+
+  /// No description provided for @expertService.
+  ///
+  /// In en, this message translates to:
+  /// **'Expert Service'**
+  String get expertService;
+
+  /// No description provided for @professionalService.
+  ///
+  /// In en, this message translates to:
+  /// **'Professional Service'**
+  String get professionalService;
+
+  /// No description provided for @textRepair.
+  ///
+  /// In en, this message translates to:
+  /// **'Text Repair'**
+  String get textRepair;
+
+  /// No description provided for @completeinstallation.
+  ///
+  /// In en, this message translates to:
+  /// **'Complete Installation'**
+  String get completeinstallation;
+
+  /// No description provided for @professionalSetup.
+  ///
+  /// In en, this message translates to:
+  /// **'Professional Setup'**
+  String get professionalSetup;
+
+  /// No description provided for @completeservice.
+  ///
+  /// In en, this message translates to:
+  /// **'Complete Service'**
+  String get completeservice;
+
+  /// No description provided for @leakRepair.
+  ///
+  /// In en, this message translates to:
+  /// **'Leak Repair'**
+  String get leakRepair;
+
+  /// No description provided for @completeInstallation.
+  ///
+  /// In en, this message translates to:
+  /// **'Complete Installation'**
+  String get completeInstallation;
+
+  /// No description provided for @completeService.
+  ///
+  /// In en, this message translates to:
+  /// **'Complete Service'**
+  String get completeService;
 }
 
 class _AppLocalizationsDelegate

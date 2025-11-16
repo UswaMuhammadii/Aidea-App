@@ -174,8 +174,12 @@ class _AuthWrapperWithLanguageState extends State<AuthWrapperWithLanguage> {
   }
 
   void _handleAuthComplete(User user) {
-    // Add dummy bookings for demo purposes
-    DummyDataService.addDummyCompletedBookings(user.id);
+    // Get localization from the current context
+    final l10n = AppLocalizations.of(context);
+
+    if (l10n != null) {
+      DummyDataService.addDummyCompletedBookings(user.id, l10n);
+    }
 
     setState(() {
       _isLoggedIn = true;

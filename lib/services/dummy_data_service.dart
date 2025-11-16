@@ -4,647 +4,657 @@ import '../models/booking_model.dart';
 import '../../gen_l10n/app_localizations.dart';
 
 class DummyDataService {
-  static List<Service> get _services => [
-    // AC Services - Split AC
-    Service(
-      id: '1',
-      name: 'AC Washing (Cleaning indoor and outdoor unit)',
-      description: 'Split AC - Complete cleaning service',
-      price: 89.00,
-      category: 'AC Services',
-      subcategory: 'Split AC',
-      features: ['Deep cleaning', 'Indoor unit cleaning', 'Outdoor unit cleaning'],
-    ),
-    Service(
-      id: '2',
-      name: 'Repairing leaks',
-      description: 'Split AC - Leak repair service',
-      price: 128.00,
-      category: 'AC Services',
-      subcategory: 'Split AC',
-      features: ['Leak detection', 'Professional repair', 'Quality parts'],
-    ),
-    Service(
-      id: '3',
-      name: 'Cleaning all units + Freon filling',
-      description: 'Split AC - Complete service with gas refill',
-      price: 170.00,
-      category: 'AC Services',
-      subcategory: 'Split AC',
-      features: ['Complete cleaning', 'Gas refill', 'Performance check'],
-    ),
-    Service(
-      id: '4',
-      name: 'Installing a new air conditioner',
-      description: 'Split AC - Professional installation',
-      price: 244.00,
-      category: 'AC Services',
-      subcategory: 'Split AC',
-      features: ['Professional installation', 'Warranty included', 'Testing'],
-    ),
-    Service(
-      id: '5',
-      name: 'Disassembly and assembly (inside the house)',
-      description: 'Split AC - Indoor mounting/dismounting',
-      price: 244.00,
-      category: 'AC Services',
-      subcategory: 'Split AC',
-      features: ['Indoor service', 'Professional tools', 'Safe handling'],
-    ),
-    Service(
-      id: '6',
-      name: 'Disassembly and assembly (outside the house)',
-      description: 'Split AC - Outdoor mounting/dismounting',
-      price: 361.00,
-      category: 'AC Services',
-      subcategory: 'Split AC',
-      features: ['Outdoor service', 'Safety equipment', 'Expert technicians'],
-    ),
-    Service(
-      id: '7',
-      name: 'Disassembling and assembling an electronic board',
-      description: 'Split AC - Control board repair',
-      price: 146.00,
-      category: 'AC Services',
-      subcategory: 'Split AC',
-      features: ['Electronic repair', 'Expert service', 'Quality parts'],
-    ),
-    Service(
-      id: '8',
-      name: 'Removing and installing an external fan',
-      description: 'Split AC - Fan replacement',
-      price: 156.00,
-      category: 'AC Services',
-      subcategory: 'Split AC',
-      features: ['Fan replacement', 'Professional service', 'Testing included'],
-    ),
-    Service(
-      id: '9',
-      name: 'Change the dynamo (external)',
-      description: 'Split AC - External motor replacement',
-      price: 146.00,
-      category: 'AC Services',
-      subcategory: 'Split AC',
-      features: ['Motor replacement', 'Quality parts', 'Expert service'],
-    ),
+  static List<Service> _services = [];
+  static final List<Booking> _bookings = [];
 
-    // AC Services - Window AC
-    Service(
-      id: '10',
-      name: 'Air conditioner wash',
-      description: 'Window AC - Complete cleaning',
-      price: 55.00,
-      category: 'AC Services',
-      subcategory: 'Window AC',
-      features: ['Deep cleaning', 'Filter cleaning', 'Performance check'],
-    ),
-    Service(
-      id: '11',
-      name: 'Repairing leaks',
-      description: 'Window AC - Leak repair',
-      price: 97.00,
-      category: 'AC Services',
-      subcategory: 'Window AC',
-      features: ['Leak detection', 'Professional repair', 'Testing'],
-    ),
-    Service(
-      id: '12',
-      name: 'Cleaning + Freon filling',
-      description: 'Window AC - Service with gas refill',
-      price: 89.00,
-      category: 'AC Services',
-      subcategory: 'Window AC',
-      features: ['Cleaning', 'Gas refill', 'Performance optimization'],
-    ),
-    Service(
-      id: '13',
-      name: 'Installing a new air conditioner',
-      description: 'Window AC - Installation service',
-      price: 78.00,
-      category: 'AC Services',
-      subcategory: 'Window AC',
-      features: ['Professional installation', 'Testing', 'Clean finish'],
-    ),
-    Service(
-      id: '14',
-      name: 'Disassembly and assembly (inside the house)',
-      description: 'Window AC - Indoor service',
-      price: 87.00,
-      category: 'AC Services',
-      subcategory: 'Window AC',
-      features: ['Safe handling', 'Professional tools', 'Quick service'],
-    ),
-    Service(
-      id: '15',
-      name: 'Sewer cleaning',
-      description: 'Window AC - Drain pipe cleaning',
-      price: 97.00,
-      category: 'AC Services',
-      subcategory: 'Window AC',
-      features: ['Drain cleaning', 'Pipe unclogging', 'Quick service'],
-    ),
-    Service(
-      id: '16',
-      name: 'Change the dynamo',
-      description: 'Window AC - Motor replacement',
-      price: 113.00,
-      category: 'AC Services',
-      subcategory: 'Window AC',
-      features: ['Motor replacement', 'Quality parts', 'Testing included'],
-    ),
+  static List<Service> _getServices(AppLocalizations l10n) {
+    if (_services.isNotEmpty) return _services;
 
-    // AC Services - Central AC
-    Service(
-      id: '17',
-      name: 'Installing a cabinet air conditioner',
-      description: 'Central AC - Cabinet installation',
-      price: 403.00,
-      category: 'AC Services',
-      subcategory: 'Central AC',
-      features: ['Professional installation', 'Complete setup', 'Testing'],
-    ),
-    Service(
-      id: '18',
-      name: 'Installing and removing an electronic board',
-      description: 'Central AC - Control board service',
-      price: 173.00,
-      category: 'AC Services',
-      subcategory: 'Central AC',
-      features: ['Board replacement', 'Expert service', 'Quality parts'],
-    ),
-    Service(
-      id: '19',
-      name: 'Installing and removing an external fan',
-      description: 'Central AC - Fan replacement',
-      price: 207.00,
-      category: 'AC Services',
-      subcategory: 'Central AC',
-      features: ['Fan replacement', 'Professional service', 'Testing'],
-    ),
-    Service(
-      id: '20',
-      name: 'Cassette air conditioner installation',
-      description: 'Central AC - Cassette type installation',
-      price: 782.00,
-      category: 'AC Services',
-      subcategory: 'Central AC',
-      features: ['Complete installation', 'Professional setup', 'Warranty included'],
-    ),
-    Service(
-      id: '21',
-      name: 'Change the split interior crystal',
-      description: 'Central AC - Indoor unit crystal replacement',
-      price: 230.00,
-      category: 'AC Services',
-      subcategory: 'Central AC',
-      features: ['Crystal replacement', 'Expert service', 'Quality parts'],
-    ),
-    Service(
-      id: '22',
-      name: 'Change the internal engine dynamo',
-      description: 'Central AC - Internal motor replacement',
-      price: 184.00,
-      category: 'AC Services',
-      subcategory: 'Central AC',
-      features: ['Motor replacement', 'Professional service', 'Testing'],
-    ),
-    Service(
-      id: '23',
-      name: 'Changing the compressor 36-48-60 units',
-      description: 'Central AC - Compressor replacement (large)',
-      price: 207.00,
-      category: 'AC Services',
-      subcategory: 'Central AC',
-      features: ['Compressor replacement', 'Expert technicians', 'Quality parts'],
-    ),
-    Service(
-      id: '24',
-      name: 'Change the cylinder - coil - cylinder - battery',
-      description: 'Central AC - Major component replacement',
-      price: 104.00,
-      category: 'AC Services',
-      subcategory: 'Central AC',
-      features: ['Component replacement', 'Professional service', 'Testing'],
-    ),
-    Service(
-      id: '25',
-      name: 'Changing and installing a contactor',
-      description: 'Central AC - Contactor replacement',
-      price: 115.00,
-      category: 'AC Services',
-      subcategory: 'Central AC',
-      features: ['Contactor replacement', 'Expert service', 'Quality parts'],
-    ),
+    _services = [
+      // AC Services - Split AC (Services 1-9)
+      Service(
+        id: '1',
+        name: l10n.acWashing,
+        description: '${l10n.splitAc} - ${l10n.completeCleaningService}',
+        price: 89.00,
+        category: l10n.acServices,
+        subcategory: l10n.splitAc,
+        features: [l10n.deepCleaning, l10n.indoorUnitCleaning, l10n.outdoorUnitCleaning],
+      ),
+      Service(
+        id: '2',
+        name: l10n.repairingLeaks,
+        description: '${l10n.splitAc} - ${l10n.leakRepairService}',
+        price: 128.00,
+        category: l10n.acServices,
+        subcategory: l10n.splitAc,
+        features: [l10n.leakDetection, l10n.professionalRepair, l10n.qualityParts],
+      ),
+      Service(
+        id: '3',
+        name: l10n.cleaningWithFreon,
+        description: '${l10n.splitAc} - ${l10n.completeServiceWithGasRefill}',
+        price: 170.00,
+        category: l10n.acServices,
+        subcategory: l10n.splitAc,
+        features: [l10n.completeCleaning, l10n.gasRefill, l10n.performanceCheck],
+      ),
+      Service(
+        id: '4',
+        name: l10n.installNewAc,
+        description: '${l10n.splitAc} - ${l10n.professionalInstallation}',
+        price: 244.00,
+        category: l10n.acServices,
+        subcategory: l10n.splitAc,
+        features: [l10n.professionalInstallation, l10n.warrantyIncluded, l10n.testing],
+      ),
+      Service(
+        id: '5',
+        name: l10n.disassembleInside,
+        description: '${l10n.splitAc} - ${l10n.indoorMountingService}',
+        price: 244.00,
+        category: l10n.acServices,
+        subcategory: l10n.splitAc,
+        features: [l10n.indoorService, l10n.professionalTools, l10n.safeHandling],
+      ),
+      Service(
+        id: '6',
+        name: l10n.disassembleOutside,
+        description: '${l10n.splitAc} - ${l10n.outdoorMountingService}',
+        price: 361.00,
+        category: l10n.acServices,
+        subcategory: l10n.splitAc,
+        features: [l10n.outdoorService, l10n.safetyEquipment, l10n.expertTechnicians],
+      ),
+      Service(
+        id: '7',
+        name: l10n.electronicBoardService,
+        description: '${l10n.splitAc} - ${l10n.controlBoardRepair}',
+        price: 146.00,
+        category: l10n.acServices,
+        subcategory: l10n.splitAc,
+        features: [l10n.electronicRepair, l10n.expertService, l10n.qualityParts],
+      ),
+      Service(
+        id: '8',
+        name: l10n.externalFanService,
+        description: '${l10n.splitAc} - ${l10n.fanReplacement}',
+        price: 156.00,
+        category: l10n.acServices,
+        subcategory: l10n.splitAc,
+        features: [l10n.fanReplacement, l10n.professionalService, l10n.testingIncluded],
+      ),
+      Service(
+        id: '9',
+        name: l10n.changeDynamo,
+        description: '${l10n.splitAc} - ${l10n.externalMotorReplacement}',
+        price: 146.00,
+        category: l10n.acServices,
+        subcategory: l10n.splitAc,
+        features: [l10n.motorReplacement, l10n.qualityParts, l10n.expertService],
+      ),
 
-    // Home Appliances - Washing Machine - Automatic
-    Service(
-      id: '26',
-      name: 'Disassembling and assembling the electronic board',
-      description: 'Automatic - Control board service',
-      price: 150.00,
-      category: 'Home Appliances',
-      subcategory: 'Washing Machine',
-      subSubcategory: 'Automatic',
-      features: ['Board repair', 'Expert service', 'Quality parts'],
-    ),
-    Service(
-      id: '27',
-      name: 'Disassembling and assembling the drying machine',
-      description: 'Automatic - Dryer repair',
-      price: 219.00,
-      category: 'Home Appliances',
-      subcategory: 'Washing Machine',
-      subSubcategory: 'Automatic',
-      features: ['Dryer repair', 'Professional service', 'Testing included'],
-    ),
-    Service(
-      id: '28',
-      name: 'Disassembling and assembling the washing machine',
-      description: 'Automatic - Complete service',
-      price: 184.00,
-      category: 'Home Appliances',
-      subcategory: 'Washing Machine',
-      subSubcategory: 'Automatic',
-      features: ['Complete disassembly', 'Professional service', 'Reassembly'],
-    ),
-    Service(
-      id: '29',
-      name: 'Door disassembly and installation',
-      description: 'Automatic - Door repair',
-      price: 138.00,
-      category: 'Home Appliances',
-      subcategory: 'Washing Machine',
-      subSubcategory: 'Automatic',
-      features: ['Door repair', 'Seal replacement', 'Alignment check'],
-    ),
-    Service(
-      id: '30',
-      name: 'Dismantling and installing the balance bar',
-      description: 'Automatic - Balance bar service',
-      price: 161.00,
-      category: 'Home Appliances',
-      subcategory: 'Washing Machine',
-      subSubcategory: 'Automatic',
-      features: ['Balance bar replacement', 'Vibration reduction', 'Testing'],
-    ),
-    Service(
-      id: '31',
-      name: 'Water drainage maintenance',
-      description: 'Automatic - Drain system service',
-      price: 150.00,
-      category: 'Home Appliances',
-      subcategory: 'Washing Machine',
-      subSubcategory: 'Automatic',
-      features: ['Drain cleaning', 'Pump check', 'Quick service'],
-    ),
-    Service(
-      id: '32',
-      name: 'Water flow maintenance',
-      description: 'Automatic - Water inlet service',
-      price: 127.00,
-      category: 'Home Appliances',
-      subcategory: 'Washing Machine',
-      subSubcategory: 'Automatic',
-      features: ['Inlet valve service', 'Water flow optimization', 'Testing'],
-    ),
-    Service(
-      id: '33',
-      name: 'Electrical short circuit maintenance',
-      description: 'Automatic - Electrical repair',
-      price: 127.00,
-      category: 'Home Appliances',
-      subcategory: 'Washing Machine',
-      subSubcategory: 'Automatic',
-      features: ['Electrical diagnosis', 'Wiring repair', 'Safety check'],
-    ),
-    Service(
-      id: '34',
-      name: 'Repairing the power supply',
-      description: 'Automatic - Power system repair',
-      price: 92.00,
-      category: 'Home Appliances',
-      subcategory: 'Washing Machine',
-      subSubcategory: 'Automatic',
-      features: ['Power supply repair', 'Component check', 'Testing'],
-    ),
+      // AC Services - Window AC (Services 10-16)
+      Service(
+        id: '10',
+        name: l10n.acWash,
+        description: '${l10n.windowAc} - ${l10n.completeCleaning}',
+        price: 55.00,
+        category: l10n.acServices,
+        subcategory: l10n.windowAc,
+        features: [l10n.deepCleaning, l10n.filterCleaning, l10n.performanceCheck],
+      ),
+      Service(
+        id: '11',
+        name: l10n.repairingLeaks,
+        description: '${l10n.windowAc} - ${l10n.leakRepair}',
+        price: 97.00,
+        category: l10n.acServices,
+        subcategory: l10n.windowAc,
+        features: [l10n.leakDetection, l10n.professionalRepair, l10n.testing],
+      ),
+      Service(
+        id: '12',
+        name: l10n.cleaningWithFreon,
+        description: '${l10n.windowAc} - ${l10n.serviceWithGasRefill}',
+        price: 89.00,
+        category: l10n.acServices,
+        subcategory: l10n.windowAc,
+        features: [l10n.cleaning, l10n.gasRefill, l10n.performanceOptimization],
+      ),
+      Service(
+        id: '13',
+        name: l10n.installNewAc,
+        description: '${l10n.windowAc} - ${l10n.installationService}',
+        price: 78.00,
+        category: l10n.acServices,
+        subcategory: l10n.windowAc,
+        features: [l10n.professionalInstallation, l10n.testing, l10n.cleanFinish],
+      ),
+      Service(
+        id: '14',
+        name: l10n.disassembleInside,
+        description: '${l10n.windowAc} - ${l10n.indoorService}',
+        price: 87.00,
+        category: l10n.acServices,
+        subcategory: l10n.windowAc,
+        features: [l10n.safeHandling, l10n.professionalTools, l10n.quickService],
+      ),
+      Service(
+        id: '15',
+        name: l10n.sewerCleaning,
+        description: '${l10n.windowAc} - ${l10n.drainPipeCleaning}',
+        price: 97.00,
+        category: l10n.acServices,
+        subcategory: l10n.windowAc,
+        features: [l10n.drainCleaning, l10n.pipeUnclogging, l10n.quickService],
+      ),
+      Service(
+        id: '16',
+        name: l10n.changeDynamo,
+        description: '${l10n.windowAc} - ${l10n.motorReplacement}',
+        price: 113.00,
+        category: l10n.acServices,
+        subcategory: l10n.windowAc,
+        features: [l10n.motorReplacement, l10n.qualityParts, l10n.testingIncluded],
+      ),
 
-    // Home Appliances - Washing Machine - Regular
-    Service(
-      id: '35',
-      name: 'Disassembling and assembling the timer',
-      description: 'Regular - Timer repair',
-      price: 115.00,
-      category: 'Home Appliances',
-      subcategory: 'Washing Machine',
-      subSubcategory: 'Regular',
-      features: ['Timer replacement', 'Expert service', 'Testing'],
-    ),
-    Service(
-      id: '36',
-      name: 'Disassembling and assembling the drying machine',
-      description: 'Regular - Dryer service',
-      price: 156.00,
-      category: 'Home Appliances',
-      subcategory: 'Washing Machine',
-      subSubcategory: 'Regular',
-      features: ['Dryer repair', 'Component check', 'Testing'],
-    ),
-    Service(
-      id: '37',
-      name: 'Disassembling and assembling the washing machine',
-      description: 'Regular - Complete service',
-      price: 144.00,
-      category: 'Home Appliances',
-      subcategory: 'Washing Machine',
-      subSubcategory: 'Regular',
-      features: ['Full service', 'Professional repair', 'Testing'],
-    ),
+      // AC Services - Central AC (Services 17-25)
+      Service(
+        id: '17',
+        name: l10n.installCabinetAc,
+        description: '${l10n.centralAc} - ${l10n.cabinetInstallation}',
+        price: 403.00,
+        category: l10n.acServices,
+        subcategory: l10n.centralAc,
+        features: [l10n.professionalInstallation, l10n.completeSetup, l10n.testing],
+      ),
+      Service(
+        id: '18',
+        name: l10n.electronicBoardService,
+        description: '${l10n.centralAc} - ${l10n.controlBoardService}',
+        price: 173.00,
+        category: l10n.acServices,
+        subcategory: l10n.centralAc,
+        features: [l10n.boardReplacement, l10n.expertService, l10n.qualityParts],
+      ),
+      Service(
+        id: '19',
+        name: l10n.externalFanService,
+        description: '${l10n.centralAc} - ${l10n.fanReplacement}',
+        price: 207.00,
+        category: l10n.acServices,
+        subcategory: l10n.centralAc,
+        features: [l10n.fanReplacement, l10n.professionalService, l10n.testing],
+      ),
+      Service(
+        id: '20',
+        name: l10n.cassetteAcInstallation,
+        description: '${l10n.centralAc} - ${l10n.cassetteTypeInstallation}',
+        price: 782.00,
+        category: l10n.acServices,
+        subcategory: l10n.centralAc,
+        features: [l10n.completeInstallation, l10n.professionalSetup, l10n.warrantyIncluded],
+      ),
+      Service(
+        id: '21',
+        name: l10n.changeSplitCrystal,
+        description: '${l10n.centralAc} - ${l10n.indoorUnitCrystalReplacement}',
+        price: 230.00,
+        category: l10n.acServices,
+        subcategory: l10n.centralAc,
+        features: [l10n.crystalReplacement, l10n.expertService, l10n.qualityParts],
+      ),
+      Service(
+        id: '22',
+        name: l10n.changeInternalEngine,
+        description: '${l10n.centralAc} - ${l10n.internalMotorReplacement}',
+        price: 184.00,
+        category: l10n.acServices,
+        subcategory: l10n.centralAc,
+        features: [l10n.motorReplacement, l10n.professionalService, l10n.testing],
+      ),
+      Service(
+        id: '23',
+        name: l10n.changeCompressor,
+        description: '${l10n.centralAc} - ${l10n.compressorReplacementLarge}',
+        price: 207.00,
+        category: l10n.acServices,
+        subcategory: l10n.centralAc,
+        features: [l10n.compressorReplacement, l10n.expertTechnicians, l10n.qualityParts],
+      ),
+      Service(
+        id: '24',
+        name: l10n.changeComponents,
+        description: '${l10n.centralAc} - ${l10n.majorComponentReplacement}',
+        price: 104.00,
+        category: l10n.acServices,
+        subcategory: l10n.centralAc,
+        features: [l10n.componentReplacement, l10n.professionalService, l10n.testing],
+      ),
+      Service(
+        id: '25',
+        name: l10n.changeContactor,
+        description: '${l10n.centralAc} - ${l10n.contactorReplacement}',
+        price: 115.00,
+        category: l10n.acServices,
+        subcategory: l10n.centralAc,
+        features: [l10n.contactorReplacement, l10n.expertService, l10n.qualityParts],
+      ),
 
-    // Home Appliances - Refrigerator
-    Service(
-      id: '38',
-      name: 'Compressor change',
-      description: 'Refrigerator - Compressor replacement',
-      price: 196.00,
-      category: 'Home Appliances',
-      subcategory: 'Refrigerator',
-      features: ['Compressor replacement', 'Professional service', 'Gas refill'],
-    ),
-    Service(
-      id: '39',
-      name: 'Change the external fan',
-      description: 'Refrigerator - External fan replacement',
-      price: 150.00,
-      category: 'Home Appliances',
-      subcategory: 'Refrigerator',
-      features: ['Fan replacement', 'Expert service', 'Testing'],
-    ),
-    Service(
-      id: '40',
-      name: 'Change the internal fan',
-      description: 'Refrigerator - Internal fan replacement',
-      price: 150.00,
-      category: 'Home Appliances',
-      subcategory: 'Refrigerator',
-      features: ['Fan replacement', 'Professional service', 'Testing'],
-    ),
-    Service(
-      id: '41',
-      name: 'Change the heater',
-      description: 'Refrigerator - Heater replacement',
-      price: 173.00,
-      category: 'Home Appliances',
-      subcategory: 'Refrigerator',
-      features: ['Heater replacement', 'Quality parts', 'Testing'],
-    ),
-    Service(
-      id: '42',
-      name: 'Change the "Depressor" sensor',
-      description: 'Refrigerator - Sensor replacement',
-      price: 104.00,
-      category: 'Home Appliances',
-      subcategory: 'Refrigerator',
-      features: ['Sensor replacement', 'Expert service', 'Testing'],
-    ),
-    Service(
-      id: '43',
-      name: 'American Freon filling',
-      description: 'Refrigerator - R134a gas refill',
-      price: 230.00,
-      category: 'Home Appliances',
-      subcategory: 'Refrigerator',
-      features: ['American gas refill', 'Pressure check', 'Leak test'],
-    ),
-    Service(
-      id: '44',
-      name: 'Indian Freon filling',
-      description: 'Refrigerator - Indian gas refill',
-      price: 196.00,
-      category: 'Home Appliances',
-      subcategory: 'Refrigerator',
-      features: ['Indian gas refill', 'Pressure check', 'Testing'],
-    ),
-    Service(
-      id: '45',
-      name: 'External leakage maintenance',
-      description: 'Refrigerator - External leak repair',
-      price: 173.00,
-      category: 'Home Appliances',
-      subcategory: 'Refrigerator',
-      features: ['Leak detection', 'Professional repair', 'Gas refill'],
-    ),
-    Service(
-      id: '46',
-      name: 'Change and adjust the timer',
-      description: 'Refrigerator - Timer service',
-      price: 104.00,
-      category: 'Home Appliances',
-      subcategory: 'Refrigerator',
-      features: ['Timer replacement', 'Adjustment', 'Testing'],
-    ),
-    Service(
-      id: '47',
-      name: 'Refrigerator compressor replacement 1/6 - 1/5 - 1/4 - 1/3',
-      description: 'Refrigerator - Small compressor replacement',
-      price: 196.00,
-      category: 'Home Appliances',
-      subcategory: 'Refrigerator',
-      features: ['Compressor replacement', 'Gas refill', 'Testing'],
-    ),
-    Service(
-      id: '48',
-      name: 'Refrigerator compressor replacement 1/2 - 3/4 - 1',
-      description: 'Refrigerator - Large compressor replacement',
-      price: 196.00,
-      category: 'Home Appliances',
-      subcategory: 'Refrigerator',
-      features: ['Compressor replacement', 'Gas refill', 'Testing'],
-    ),
-    Service(
-      id: '49',
-      name: 'External leakage maintenance + American R134 Freon filling',
-      description: 'Refrigerator - Leak repair with American gas',
-      price: 288.00,
-      category: 'Home Appliances',
-      subcategory: 'Refrigerator',
-      features: ['Leak repair', 'American gas refill', 'Testing'],
-    ),
-    Service(
-      id: '50',
-      name: 'External leakage maintenance + American R12 Freon filling',
-      description: 'Refrigerator - Leak repair with American R12 gas',
-      price: 380.00,
-      category: 'Home Appliances',
-      subcategory: 'Refrigerator',
-      features: ['Leak repair', 'R12 gas refill', 'Professional service'],
-    ),
-    Service(
-      id: '51',
-      name: 'External leakage maintenance + Chinese R134 Freon filling',
-      description: 'Refrigerator - Leak repair with Chinese R134 gas',
-      price: 380.00,
-      category: 'Home Appliances',
-      subcategory: 'Refrigerator',
-      features: ['Leak repair', 'Chinese gas refill', 'Testing'],
-    ),
-    Service(
-      id: '52',
-      name: 'External leakage maintenance + Chinese R12 Freon filling',
-      description: 'Refrigerator - Leak repair with Chinese R12 gas',
-      price: 219.00,
-      category: 'Home Appliances',
-      subcategory: 'Refrigerator',
-      features: ['Leak repair', 'Chinese R12 gas', 'Testing'],
-    ),
-    Service(
-      id: '53',
-      name: 'External leakage maintenance + Indian R134 Freon filling',
-      description: 'Refrigerator - Leak repair with Indian gas',
-      price: 334.00,
-      category: 'Home Appliances',
-      subcategory: 'Refrigerator',
-      features: ['Leak repair', 'Indian gas refill', 'Professional service'],
-    ),
+      // Home Appliances - Washing Machine - Automatic (Services 26-34)
+      Service(
+        id: '26',
+        name: l10n.disassembleElectronicBoard,
+        description: '${l10n.automatic} - ${l10n.controlBoardService}',
+        price: 150.00,
+        category: l10n.homeAppliances,
+        subcategory: l10n.washingMachine,
+        subSubcategory: l10n.automatic,
+        features: [l10n.boardRepair, l10n.expertService, l10n.qualityParts],
+      ),
+      Service(
+        id: '27',
+        name: l10n.disassembleDryingMachine,
+        description: '${l10n.automatic} - ${l10n.dryerRepair}',
+        price: 219.00,
+        category: l10n.homeAppliances,
+        subcategory: l10n.washingMachine,
+        subSubcategory: l10n.automatic,
+        features: [l10n.dryerRepair, l10n.professionalService, l10n.testingIncluded],
+      ),
+      Service(
+        id: '28',
+        name: l10n.disassembleWashingMachine,
+        description: '${l10n.automatic} - ${l10n.completeService}',
+        price: 184.00,
+        category: l10n.homeAppliances,
+        subcategory: l10n.washingMachine,
+        subSubcategory: l10n.automatic,
+        features: [l10n.completeDisassembly, l10n.professionalService, l10n.reassembly],
+      ),
+      Service(
+        id: '29',
+        name: l10n.doorDisassembly,
+        description: '${l10n.automatic} - ${l10n.doorRepair}',
+        price: 138.00,
+        category: l10n.homeAppliances,
+        subcategory: l10n.washingMachine,
+        subSubcategory: l10n.automatic,
+        features: [l10n.doorRepair, l10n.sealReplacement, l10n.alignmentCheck],
+      ),
+      Service(
+        id: '30',
+        name: l10n.balanceBarService,
+        description: '${l10n.automatic} - ${l10n.balanceBarServiceDesc}',
+        price: 161.00,
+        category: l10n.homeAppliances,
+        subcategory: l10n.washingMachine,
+        subSubcategory: l10n.automatic,
+        features: [l10n.balanceBarReplacement, l10n.vibrationReduction, l10n.testing],
+      ),
+      Service(
+        id: '31',
+        name: l10n.waterDrainageMaintenance,
+        description: '${l10n.automatic} - ${l10n.drainSystemService}',
+        price: 150.00,
+        category: l10n.homeAppliances,
+        subcategory: l10n.washingMachine,
+        subSubcategory: l10n.automatic,
+        features: [l10n.drainCleaning, l10n.pumpCheck, l10n.quickService],
+      ),
+      Service(
+        id: '32',
+        name: l10n.waterFlowMaintenance,
+        description: '${l10n.automatic} - ${l10n.waterInletService}',
+        price: 127.00,
+        category: l10n.homeAppliances,
+        subcategory: l10n.washingMachine,
+        subSubcategory: l10n.automatic,
+        features: [l10n.inletValveService, l10n.waterFlowOptimization, l10n.testing],
+      ),
+      Service(
+        id: '33',
+        name: l10n.electricalShortCircuit,
+        description: '${l10n.automatic} - ${l10n.electricalRepair}',
+        price: 127.00,
+        category: l10n.homeAppliances,
+        subcategory: l10n.washingMachine,
+        subSubcategory: l10n.automatic,
+        features: [l10n.electricalDiagnosis, l10n.wiringRepair, l10n.safetyCheck],
+      ),
+      Service(
+        id: '34',
+        name: l10n.powerSupplyRepair,
+        description: '${l10n.automatic} - ${l10n.powerSystemRepair}',
+        price: 92.00,
+        category: l10n.homeAppliances,
+        subcategory: l10n.washingMachine,
+        subSubcategory: l10n.automatic,
+        features: [l10n.powerSupplyRepair, l10n.componentCheck, l10n.testing],
+      ),
 
-    // Home Appliances - Oven
-    Service(
-      id: '54',
-      name: 'Change keys',
-      description: 'Oven - Control keys replacement',
-      price: 138.00,
-      category: 'Home Appliances',
-      subcategory: 'Oven',
-      features: ['Key replacement', 'Expert service', 'Testing'],
-    ),
-    Service(
-      id: '55',
-      name: 'Change door hinges',
-      description: 'Oven - Door hinge replacement',
-      price: 138.00,
-      category: 'Home Appliances',
-      subcategory: 'Oven',
-      features: ['Hinge replacement', 'Door alignment', 'Testing'],
-    ),
-    Service(
-      id: '56',
-      name: 'Cleaning',
-      description: 'Oven - Deep cleaning service',
-      price: 184.00,
-      category: 'Home Appliances',
-      subcategory: 'Oven',
-      features: ['Deep cleaning', 'Interior & exterior', 'Professional service'],
-    ),
-    Service(
-      id: '57',
-      name: 'Smuggling maintenance',
-      description: 'Oven - Seal maintenance',
-      price: 184.00,
-      category: 'Home Appliances',
-      subcategory: 'Oven',
-      features: ['Seal replacement', 'Temperature check', 'Testing'],
-    ),
-    Service(
-      id: '58',
-      name: 'Microwave maintenance',
-      description: 'Oven - Microwave repair',
-      price: 230.00,
-      category: 'Home Appliances',
-      subcategory: 'Oven',
-      features: ['Microwave repair', 'Component check', 'Testing'],
-    ),
-  ];
+      // Home Appliances - Washing Machine - Regular (Services 35-37)
+      Service(
+        id: '35',
+        name: l10n.disassembleTimer,
+        description: '${l10n.regular} - ${l10n.timerRepair}',
+        price: 115.00,
+        category: l10n.homeAppliances,
+        subcategory: l10n.washingMachine,
+        subSubcategory: l10n.regular,
+        features: [l10n.timerReplacement, l10n.expertService, l10n.testing],
+      ),
+      Service(
+        id: '36',
+        name: l10n.disassembleDryingMachine,
+        description: '${l10n.regular} - ${l10n.dryerService}',
+        price: 156.00,
+        category: l10n.homeAppliances,
+        subcategory: l10n.washingMachine,
+        subSubcategory: l10n.regular,
+        features: [l10n.dryerRepair, l10n.componentCheck, l10n.testing],
+      ),
+      Service(
+        id: '37',
+        name: l10n.disassembleWashingMachine,
+        description: '${l10n.regular} - ${l10n.completeService}',
+        price: 144.00,
+        category: l10n.homeAppliances,
+        subcategory: l10n.washingMachine,
+        subSubcategory: l10n.regular,
+        features: [l10n.fullService, l10n.professionalRepair, l10n.testing],
+      ),
+
+      // Home Appliances - Refrigerator (Services 38-53)
+      Service(
+        id: '38',
+        name: l10n.compressorChange,
+        description: '${l10n.refrigerator} - ${l10n.compressorReplacement}',
+        price: 196.00,
+        category: l10n.homeAppliances,
+        subcategory: l10n.refrigerator,
+        features: [l10n.compressorReplacement, l10n.professionalService, l10n.gasRefill],
+      ),
+      Service(
+        id: '39',
+        name: l10n.changeExternalFan,
+        description: '${l10n.refrigerator} - ${l10n.externalFanReplacement}',
+        price: 150.00,
+        category: l10n.homeAppliances,
+        subcategory: l10n.refrigerator,
+        features: [l10n.fanReplacement, l10n.expertService, l10n.testing],
+      ),
+      Service(
+        id: '40',
+        name: l10n.changeInternalFan,
+        description: '${l10n.refrigerator} - ${l10n.internalFanReplacement}',
+        price: 150.00,
+        category: l10n.homeAppliances,
+        subcategory: l10n.refrigerator,
+        features: [l10n.fanReplacement, l10n.professionalService, l10n.testing],
+      ),
+      Service(
+        id: '41',
+        name: l10n.changeHeater,
+        description: '${l10n.refrigerator} - ${l10n.heaterReplacement}',
+        price: 173.00,
+        category: l10n.homeAppliances,
+        subcategory: l10n.refrigerator,
+        features: [l10n.heaterReplacement, l10n.qualityParts, l10n.testing],
+      ),
+      Service(
+        id: '42',
+        name: l10n.changeSensor,
+        description: '${l10n.refrigerator} - ${l10n.sensorReplacement}',
+        price: 104.00,
+        category: l10n.homeAppliances,
+        subcategory: l10n.refrigerator,
+        features: [l10n.sensorReplacement, l10n.expertService, l10n.testing],
+      ),
+      Service(
+        id: '43',
+        name: l10n.americanFreonFilling,
+        description: '${l10n.refrigerator} - R134a gas refill',
+        price: 230.00,
+        category: l10n.homeAppliances,
+        subcategory: l10n.refrigerator,
+        features: ['American gas refill', 'Pressure check', 'Leak test'],
+      ),
+      Service(
+        id: '44',
+        name: l10n.indianFreonFilling,
+        description: '${l10n.refrigerator} - Indian gas refill',
+        price: 196.00,
+        category: l10n.homeAppliances,
+        subcategory: l10n.refrigerator,
+        features: ['Indian gas refill', 'Pressure check', 'Testing'],
+      ),
+      Service(
+        id: '45',
+        name: l10n.externalLeakageMaintenance,
+        description: '${l10n.refrigerator} - External leak repair',
+        price: 173.00,
+        category: l10n.homeAppliances,
+        subcategory: l10n.refrigerator,
+        features: [l10n.leakDetection, l10n.professionalRepair, l10n.gasRefill],
+      ),
+      Service(
+        id: '46',
+        name: l10n.changeTimer,
+        description: '${l10n.refrigerator} - Timer service',
+        price: 104.00,
+        category: l10n.homeAppliances,
+        subcategory: l10n.refrigerator,
+        features: [l10n.timerReplacement, 'Adjustment', l10n.testing],
+      ),
+      Service(
+        id: '47',
+        name: l10n.smallCompressorReplacement,
+        description: '${l10n.refrigerator} - Small compressor replacement',
+        price: 196.00,
+        category: l10n.homeAppliances,
+        subcategory: l10n.refrigerator,
+        features: [l10n.compressorReplacement, l10n.gasRefill, l10n.testing],
+      ),
+      Service(
+        id: '48',
+        name: l10n.largeCompressorReplacement,
+        description: '${l10n.refrigerator} - Large compressor replacement',
+        price: 196.00,
+        category: l10n.homeAppliances,
+        subcategory: l10n.refrigerator,
+        features: [l10n.compressorReplacement, l10n.gasRefill, l10n.testing],
+      ),
+      Service(
+        id: '49',
+        name: l10n.leakRepairAmericanR134,
+        description: '${l10n.refrigerator} - Leak repair with American gas',
+        price: 288.00,
+        category: l10n.homeAppliances,
+        subcategory: l10n.refrigerator,
+        features: [l10n.leakRepair, 'American gas refill', l10n.testing],
+      ),
+      Service(
+        id: '50',
+        name: l10n.leakRepairAmericanR12,
+        description: '${l10n.refrigerator} - Leak repair with American R12 gas',
+        price: 380.00,
+        category: l10n.homeAppliances,
+        subcategory: l10n.refrigerator,
+        features: [l10n.leakRepair, 'R12 gas refill', l10n.professionalService],
+      ),
+      Service(
+        id: '51',
+        name: l10n.leakRepairChineseR134,
+        description: '${l10n.refrigerator} - Leak repair with Chinese R134 gas',
+        price: 380.00,
+        category: l10n.homeAppliances,
+        subcategory: l10n.refrigerator,
+        features: [l10n.leakRepair, 'Chinese gas refill', l10n.testing],
+      ),
+      Service(
+        id: '52',
+        name: l10n.leakRepairChineseR12,
+        description: '${l10n.refrigerator} - Leak repair with Chinese R12 gas',
+        price: 219.00,
+        category: l10n.homeAppliances,
+        subcategory: l10n.refrigerator,
+        features: [l10n.leakRepair, 'Chinese R12 gas', l10n.testing],
+      ),
+      Service(
+        id: '53',
+        name: l10n.leakRepairIndianR134,
+        description: '${l10n.refrigerator} - Leak repair with Indian gas',
+        price: 334.00,
+        category: l10n.homeAppliances,
+        subcategory: l10n.refrigerator,
+        features: [l10n.leakRepair, 'Indian gas refill', l10n.professionalService],
+      ),
+
+      // Home Appliances - Oven (Services 54-58)
+      Service(
+        id: '54',
+        name: l10n.changeKeys,
+        description: '${l10n.oven} - Control keys replacement',
+        price: 138.00,
+        category: l10n.homeAppliances,
+        subcategory: l10n.oven,
+        features: ['Key replacement', l10n.expertService, l10n.testing],
+      ),
+      Service(
+        id: '55',
+        name: l10n.changeDoorHinges,
+        description: '${l10n.oven} - Door hinge replacement',
+        price: 138.00,
+        category: l10n.homeAppliances,
+        subcategory: l10n.oven,
+        features: ['Hinge replacement', 'Door alignment', l10n.testing],
+      ),
+      Service(
+        id: '56',
+        name: l10n.ovenCleaning,
+        description: '${l10n.oven} - Deep cleaning service',
+        price: 184.00,
+        category: l10n.homeAppliances,
+        subcategory: l10n.oven,
+        features: [l10n.deepCleaning, 'Interior & exterior', l10n.professionalService],
+      ),
+      Service(
+        id: '57',
+        name: l10n.smugglingMaintenance,
+        description: '${l10n.oven} - Seal maintenance',
+        price: 184.00,
+        category: l10n.homeAppliances,
+        subcategory: l10n.oven,
+        features: ['Seal replacement', 'Temperature check', l10n.testing],
+      ),
+      Service(
+        id: '58',
+        name: l10n.microwaveMaintenance,
+        description: '${l10n.oven} - Microwave repair',
+        price: 230.00,
+        category: l10n.homeAppliances,
+        subcategory: l10n.oven,
+        features: ['Microwave repair', 'Component check', l10n.testing],
+      ),
+    ];
+
+    return _services;
+  }
+
 
   static String getCategoryImage(String categoryName) {
     switch (categoryName) {
       case 'AC Services':
+      case 'خدمات التكييف':
         return 'assets/images/ac_service.png';
       case 'Home Appliances':
+      case 'الأجهزة المنزلية':
         return 'assets/images/home_appliances.png';
       case 'Plumbing':
+      case 'السباكة':
         return 'assets/images/plumbing.png';
       case 'Electric':
+      case 'الكهرباء':
         return 'assets/images/electric.png';
       default:
         return 'assets/images/ac_service.png';
     }
   }
 
-  static final List<ServiceCategory> _categories = [
-    ServiceCategory(
-      id: '1',
-      name: 'AC Services',
-      description: 'Professional AC installation and maintenance',
-      icon: '❄️',
-      services: _services.where((s) => s.category == 'AC Services').toList(),
-      subcategories: ['Split AC', 'Window AC', 'Central AC'],
-    ),
-    ServiceCategory(
-      id: '2',
-      name: 'Home Appliances',
-      description: 'Complete home appliance repair services',
-      icon: '🏠',
-      services: _services.where((s) => s.category == 'Home Appliances').toList(),
-      subcategories: ['Washing Machine', 'Refrigerator', 'Oven', 'Stove', 'Dishwasher'],
-    ),
-    ServiceCategory(
-      id: '3',
-      name: 'Plumbing',
-      description: 'Expert plumbing services',
-      icon: '🔧',
-      services: [],
-      subcategories: ['Pipe Repair', 'Drain Cleaning', 'Water Heater', 'Faucet Installation'],
-    ),
-    ServiceCategory(
-      id: '4',
-      name: 'Electric',
-      description: 'Professional electrical services',
-      icon: '⚡',
-      services: [],
-      subcategories: ['Wiring', 'Switch & Socket', 'Circuit Breaker', 'Lighting Installation'],
-    ),
-  ];
-
-  static final List<Booking> _bookings = [];
-
-  static List<ServiceCategory> getCategories() {
-    return _categories;
+  static List<ServiceCategory> getCategories(AppLocalizations l10n) {
+    final services = _getServices(l10n);
+    return [
+      ServiceCategory(
+        id: '1',
+        name: l10n.acServices,
+        description: l10n.acServicesDescription,
+        icon: '❄️',
+        services: services.where((s) => s.category == l10n.acServices).toList(),
+        subcategories: [l10n.splitAc, l10n.windowAc, l10n.centralAc],
+      ),
+      ServiceCategory(
+        id: '2',
+        name: l10n.homeAppliances,
+        description: l10n.homeAppliancesDescription,
+        icon: '🏠',
+        services: services.where((s) => s.category == l10n.homeAppliances).toList(),
+        subcategories: [l10n.washingMachine, l10n.refrigerator, l10n.oven, l10n.stove, l10n.dishwasher],
+      ),
+      ServiceCategory(
+        id: '3',
+        name: l10n.plumbing,
+        description: l10n.plumbingDescription,
+        icon: '🔧',
+        services: [],
+        subcategories: [l10n.pipeRepair, l10n.drainCleaning, l10n.waterHeater, l10n.faucetInstallation],
+      ),
+      ServiceCategory(
+        id: '4',
+        name: l10n.electric,
+        description: l10n.electricDescription,
+        icon: '⚡',
+        services: [],
+        subcategories: [l10n.wiring, l10n.switchSocket, l10n.circuitBreaker, l10n.lightingInstallation],
+      ),
+    ];
   }
 
-  static List<String> getSubcategories(String categoryName) {
+  static List<String> getSubcategories(String categoryName, AppLocalizations l10n) {
     try {
-      final category = _categories.firstWhere((c) => c.name == categoryName);
+      final categories = getCategories(l10n);
+      final category = categories.firstWhere((c) => c.name == categoryName);
       return category.subcategories ?? [];
     } catch (e) {
       return [];
     }
   }
 
-  static List<String> getWashingMachineTypes() {
-    return ['Automatic', 'Regular'];
+  static List<String> getWashingMachineTypes(AppLocalizations l10n) {
+    return [l10n.automatic, l10n.regular, l10n.semiAutomatic, l10n.topLoad, l10n.frontLoad];
   }
 
-  static List<Service> getWashingMachineServices(String type) {
-    return _services.where((s) =>
-    s.category == 'Home Appliances' &&
-        s.subcategory == 'Washing Machine' &&
+  static List<Service> getWashingMachineServices(String type, AppLocalizations l10n) {
+    final services = _getServices(l10n);
+    return services.where((s) =>
+    s.category == l10n.homeAppliances &&
+        s.subcategory == l10n.washingMachine &&
         s.subSubcategory == type
     ).toList();
   }
 
-  static List<Service> getServicesByCategory(String categoryId) {
-    final category = _categories.firstWhere((c) => c.id == categoryId);
-    return category.services;
-  }
-
-  static List<Service> getServicesBySubcategory(String categoryName, String subcategory) {
-    return _services.where((s) =>
+  static List<Service> getServicesBySubcategory(String categoryName, String subcategory, AppLocalizations l10n) {
+    final services = _getServices(l10n);
+    return services.where((s) =>
     s.category == categoryName && s.subcategory == subcategory
     ).toList();
   }
 
-  static Service? getServiceById(String serviceId) {
+  static Service? getServiceById(String serviceId, AppLocalizations l10n) {
     try {
-      return _services.firstWhere((s) => s.id == serviceId);
+      final services = _getServices(l10n);
+      return services.firstWhere((s) => s.id == serviceId);
     } catch (e) {
       return null;
     }
@@ -663,7 +673,9 @@ class DummyDataService {
     int quantity = 1,
     String paymentMethod = 'cash',
     String? notes,
+    required AppLocalizations l10n,
   }) {
+    final service = getServiceById(serviceId, l10n);
     final booking = Booking(
       id: DateTime.now().millisecondsSinceEpoch.toString(),
       userId: userId,
@@ -674,7 +686,7 @@ class DummyDataService {
       status: BookingStatus.pending,
       createdAt: DateTime.now(),
       notes: notes,
-      service: getServiceById(serviceId),
+      service: service,
       quantity: quantity,
       paymentMethod: paymentMethod,
     );
@@ -697,7 +709,9 @@ class DummyDataService {
     );
   }
 
-  static void addDummyCompletedBookings(String userId) {
+  static void addDummyCompletedBookings(String userId, AppLocalizations l10n) {
+    final services = _getServices(l10n);
+
     _bookings.add(Booking(
       id: '${DateTime.now().millisecondsSinceEpoch - 100000}',
       userId: userId,
@@ -707,7 +721,7 @@ class DummyDataService {
       totalPrice: 128.00,
       status: BookingStatus.completed,
       createdAt: DateTime.now().subtract(const Duration(days: 6)),
-      service: getServiceById('2'),
+      service: services.firstWhere((s) => s.id == '2'),
       quantity: 1,
       paymentMethod: 'cash',
     ));
@@ -721,7 +735,7 @@ class DummyDataService {
       totalPrice: 150.00,
       status: BookingStatus.completed,
       createdAt: DateTime.now().subtract(const Duration(days: 13)),
-      service: getServiceById('26'),
+      service: services.firstWhere((s) => s.id == '26'),
       quantity: 1,
       paymentMethod: 'card',
     ));
@@ -735,7 +749,7 @@ class DummyDataService {
       totalPrice: 196.00,
       status: BookingStatus.completed,
       createdAt: DateTime.now().subtract(const Duration(days: 21)),
-      service: getServiceById('38'),
+      service: services.firstWhere((s) => s.id == '38'),
       quantity: 1,
       paymentMethod: 'cash',
     ));

@@ -631,7 +631,7 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get getRealTimeUpdatesAboutYourBookings =>
-      'احصل على تحديثات فورية حول حجوزاتك وتعيينات الفنيين وإكمال الخدمة.';
+      'احصل على تحديثات فورية حول حجوزاتك';
 
   @override
   String get notNow => 'ليس الآن';
@@ -640,7 +640,7 @@ class AppLocalizationsAr extends AppLocalizations {
   String get allow => 'السماح';
 
   @override
-  String get notificationsEnabledSuccessfully => 'تم تفعيل الإشعارات بنجاح!';
+  String get notificationsEnabledSuccessfully => 'تم تفعيل الإشعارات بنجاح';
 
   @override
   String get noNotifications => 'لا توجد إشعارات';
@@ -775,4 +775,543 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get serviceLocation => 'موقع الخدمة';
+
+  @override
+  String get acServices => 'خدمات التكييف';
+
+  @override
+  String get homeAppliances => 'الأجهزة المنزلية';
+
+  @override
+  String get plumbing => 'السباكة';
+
+  @override
+  String get electric => 'الكهرباء';
+
+  @override
+  String get splitAc => 'مكيف سبليت';
+
+  @override
+  String get windowAc => 'مكيف نافذة';
+
+  @override
+  String get centralAc => 'مكيف مركزي';
+
+  @override
+  String get refrigerator => 'ثلاجة';
+
+  @override
+  String get oven => 'فرن';
+
+  @override
+  String get stove => 'موقد';
+
+  @override
+  String get dishwasher => 'غسالة صحون';
+
+  @override
+  String get automatic => 'أوتوماتيكي';
+
+  @override
+  String get regular => 'عادي';
+
+  @override
+  String get semiAutomatic => 'شبه أوتوماتيكي';
+
+  @override
+  String get topLoad => 'تحميل علوي';
+
+  @override
+  String get frontLoad => 'تحميل أمامي';
+
+  @override
+  String get pipeRepair => 'إصلاح الأنابيب';
+
+  @override
+  String get drainCleaning => 'تنظيف المصارف';
+
+  @override
+  String get waterHeater => 'سخان المياه';
+
+  @override
+  String get faucetInstallation => 'تركيب الحنفيات';
+
+  @override
+  String get wiring => 'الأسلاك';
+
+  @override
+  String get switchSocket => 'المفاتيح والمقابس';
+
+  @override
+  String get circuitBreaker => 'قاطع الدائرة';
+
+  @override
+  String get lightingInstallation => 'تركيب الإضاءة';
+
+  @override
+  String get serviceManagement => 'إدارة الخدمات';
+
+  @override
+  String get categories => 'الفئات';
+
+  @override
+  String get subcategories => 'الفئات الفرعية';
+
+  @override
+  String servicesCount(int count) {
+    return '$count خدمات';
+  }
+
+  @override
+  String get acWashing => 'غسيل مكيف الهواء (تنظيف الوحدة الداخلية والخارجية)';
+
+  @override
+  String get repairingLeaks => 'إصلاح التسريبات';
+
+  @override
+  String get cleaningWithFreon => 'تنظيف جميع الوحدات + تعبئة الفريون';
+
+  @override
+  String get installNewAc => 'تركيب مكيف هواء جديد';
+
+  @override
+  String get disassembleInside => 'تفكيك وتجميع (داخل المنزل)';
+
+  @override
+  String get disassembleOutside => 'تفكيك وتجميع (خارج المنزل)';
+
+  @override
+  String get electronicBoardService => 'تفكيك وتجميع اللوحة الإلكترونية';
+
+  @override
+  String get externalFanService => 'إزالة وتركيب المروحة الخارجية';
+
+  @override
+  String get changeDynamo => 'تغيير الدينامو (الخارجي)';
+
+  @override
+  String get acWash => 'غسيل مكيف الهواء';
+
+  @override
+  String get sewerCleaning => 'تنظيف المجاري';
+
+  @override
+  String get installCabinetAc => 'تركيب مكيف الهواء الخزانة';
+
+  @override
+  String get cassetteAcInstallation => 'تركيب مكيف هواء كاسيت';
+
+  @override
+  String get changeSplitCrystal => 'تغيير الكريستال الداخلي للسبليت';
+
+  @override
+  String get changeInternalEngine => 'تغيير دينامو المحرك الداخلي';
+
+  @override
+  String get changeCompressor => 'تغيير الضاغط 36-48-60 وحدة';
+
+  @override
+  String get changeComponents =>
+      'تغيير الأسطوانة - الملف - الأسطوانة - البطارية';
+
+  @override
+  String get changeContactor => 'تغيير وتركيب الكونتاكتور';
+
+  @override
+  String get disassembleElectronicBoard => 'تفكيك وتجميع اللوحة الإلكترونية';
+
+  @override
+  String get disassembleDryingMachine => 'تفكيك وتجميع آلة التجفيف';
+
+  @override
+  String get disassembleWashingMachine => 'تفكيك وتجميع الغسالة';
+
+  @override
+  String get doorDisassembly => 'تفكيك وتركيب الباب';
+
+  @override
+  String get balanceBarService => 'تفكيك وتركيب شريط التوازن';
+
+  @override
+  String get waterDrainageMaintenance => 'صيانة تصريف المياه';
+
+  @override
+  String get waterFlowMaintenance => 'صيانة تدفق المياه';
+
+  @override
+  String get electricalShortCircuit => 'صيانة الدائرة القصيرة الكهربائية';
+
+  @override
+  String get powerSupplyRepair => 'إصلاح مصدر الطاقة';
+
+  @override
+  String get disassembleTimer => 'تفكيك وتجميع المؤقت';
+
+  @override
+  String get compressorChange => 'تغيير الضاغط';
+
+  @override
+  String get changeExternalFan => 'تغيير المروحة الخارجية';
+
+  @override
+  String get changeInternalFan => 'تغيير المروحة الداخلية';
+
+  @override
+  String get changeHeater => 'تغيير السخان';
+
+  @override
+  String get changeSensor => 'تغيير مستشعر \"الضاغط\"';
+
+  @override
+  String get americanFreonFilling => 'تعبئة الفريون الأمريكي';
+
+  @override
+  String get indianFreonFilling => 'تعبئة الفريون الهندي';
+
+  @override
+  String get externalLeakageMaintenance => 'صيانة التسرب الخارجي';
+
+  @override
+  String get changeTimer => 'تغيير وضبط المؤقت';
+
+  @override
+  String get smallCompressorReplacement =>
+      'استبدال ضاغط الثلاجة 1/6 - 1/5 - 1/4 - 1/3';
+
+  @override
+  String get largeCompressorReplacement => 'استبدال ضاغط الثلاجة 1/2 - 3/4 - 1';
+
+  @override
+  String get leakRepairAmericanR134 =>
+      'صيانة التسرب الخارجي + تعبئة الفريون الأمريكي R134';
+
+  @override
+  String get leakRepairAmericanR12 =>
+      'صيانة التسرب الخارجي + تعبئة الفريون الأمريكي R12';
+
+  @override
+  String get leakRepairChineseR134 =>
+      'صيانة التسرب الخارجي + تعبئة الفريون الصيني R134';
+
+  @override
+  String get leakRepairChineseR12 =>
+      'صيانة التسرب الخارجي + تعبئة الفريون الصيني R12';
+
+  @override
+  String get leakRepairIndianR134 =>
+      'صيانة التسرب الخارجي + تعبئة الفريون الهندي R134';
+
+  @override
+  String get changeKeys => 'تغيير المفاتيح';
+
+  @override
+  String get changeDoorHinges => 'تغيير مفصلات الباب';
+
+  @override
+  String get ovenCleaning => 'التنظيف';
+
+  @override
+  String get smugglingMaintenance => 'صيانة التسرب';
+
+  @override
+  String get microwaveMaintenance => 'صيانة الميكروويف';
+
+  @override
+  String get yourCompletedOrderWillAppearHere =>
+      'Your completed orders will appear here';
+
+  @override
+  String get completeCleaningService => 'خدمة تنظيف كاملة';
+
+  @override
+  String get leakRepairService => 'خدمة إصلاح التسرب';
+
+  @override
+  String get acServicesDescription => 'تركيب وصيانة مكيفات الهواء الاحترافية';
+
+  @override
+  String get homeAppliancesDescription =>
+      'خدمات إصلاح الأجهزة المنزلية الكاملة';
+
+  @override
+  String get plumbingDescription => 'خدمات السباكة الخبيرة';
+
+  @override
+  String get electricDescription => 'خدمات كهربائية احترافية';
+
+  @override
+  String get completeServiceWithGasRefill => 'خدمة كاملة مع تعبئة الغاز';
+
+  @override
+  String get professionalInstallation => 'تركيب احترافي';
+
+  @override
+  String get indoorMountingService => 'تركيب/فك داخلي';
+
+  @override
+  String get outdoorMountingService => 'تركيب/فك خارجي';
+
+  @override
+  String get controlBoardRepair => 'إصلاح لوحة التحكم';
+
+  @override
+  String get externalMotorReplacement => 'استبدال المحرك الخارجي';
+
+  @override
+  String get completeCleaning => 'تنظيف كامل';
+
+  @override
+  String get serviceWithGasRefill => 'خدمة مع تعبئة الغاز';
+
+  @override
+  String get installationService => 'خدمة التركيب';
+
+  @override
+  String get drainPipeCleaning => 'تنظيف أنبوب الصرف';
+
+  @override
+  String get cabinetInstallation => 'تركيب الخزانة';
+
+  @override
+  String get controlBoardService => 'خدمة لوحة التحكم';
+
+  @override
+  String get cassetteTypeInstallation => 'تركيب نوع الكاسيت';
+
+  @override
+  String get indoorUnitCrystalReplacement => 'استبدال الكريستال الداخلي';
+
+  @override
+  String get internalMotorReplacement => 'استبدال المحرك الداخلي';
+
+  @override
+  String get compressorReplacementLarge => 'استبدال الضاغط (كبير)';
+
+  @override
+  String get majorComponentReplacement => 'استبدال المكونات الرئيسية';
+
+  @override
+  String get contactorReplacement => 'استبدال الكونتاكتور';
+
+  @override
+  String get balanceBarServiceDesc => 'خدمة شريط التوازن';
+
+  @override
+  String get drainSystemService => 'خدمة نظام الصرف';
+
+  @override
+  String get waterInletService => 'خدمة مدخل المياه';
+
+  @override
+  String get electricalRepair => 'إصلاح كهربائي';
+
+  @override
+  String get powerSystemRepair => 'إصلاح نظام الطاقة';
+
+  @override
+  String get timerRepair => 'إصلاح المؤقت';
+
+  @override
+  String get dryerService => 'خدمة المجفف';
+
+  @override
+  String get compressorReplacement => 'استبدال الضاغط';
+
+  @override
+  String get externalFanReplacement => 'استبدال المروحة الخارجية';
+
+  @override
+  String get internalFanReplacement => 'استبدال المروحة الداخلية';
+
+  @override
+  String get heaterReplacement => 'استبدال السخان';
+
+  @override
+  String get sensorReplacement => 'استبدال المستشعر';
+
+  @override
+  String get fanReplacement => 'استبدال المروحة';
+
+  @override
+  String get professionalsService => 'خدمة احترافية';
+
+  @override
+  String get testingIncluded => 'يشمل الاختبار';
+
+  @override
+  String get motorReplacement => 'استبدال المحرك';
+
+  @override
+  String get qualityParts => 'قطع غيار عالية الجودة';
+
+  @override
+  String get expertservice => 'خدمة خبيرة';
+
+  @override
+  String get deepCleaning => 'تنظيف عميق';
+
+  @override
+  String get filterCleaning => 'تنظيف الفلتر';
+
+  @override
+  String get performanceCheck => 'فحص الأداء';
+
+  @override
+  String get leakDetection => 'كشف التسرب';
+
+  @override
+  String get professionalRepair => 'إصلاح احترافي';
+
+  @override
+  String get teakRepair => 'إصلاح التسرب';
+
+  @override
+  String get teakDetection => 'كشف التسرب';
+
+  @override
+  String get professionalsRepair => 'إصلاح احترافي';
+
+  @override
+  String get testing => 'اختبار';
+
+  @override
+  String get cleaning => 'تنظيف';
+
+  @override
+  String get gasRefill => 'تعبئة الغاز';
+
+  @override
+  String get performanceOptimization => 'تحسين الأداء';
+
+  @override
+  String get indoorUnitCleaning => 'تنظيف الوحدة الداخلية';
+
+  @override
+  String get outdoorUnitCleaning => 'تنظيف الوحدة الخارجية';
+
+  @override
+  String get warrantyIncluded => 'يشمل الضمان';
+
+  @override
+  String get indoorService => 'خدمة داخلية';
+
+  @override
+  String get professionalTools => 'أدوات احترافية';
+
+  @override
+  String get safeHandling => 'معالجة آمنة';
+
+  @override
+  String get outdoorService => 'خدمة خارجية';
+
+  @override
+  String get safetyEquipment => 'معدات السلامة';
+
+  @override
+  String get expertTechnicians => 'فنيون خبراء';
+
+  @override
+  String get electronicRepair => 'إصلاح إلكتروني';
+
+  @override
+  String get cleanFinish => 'إنهاء نظيف';
+
+  @override
+  String get quickService => 'خدمة سريعة';
+
+  @override
+  String get pipeUnclogging => 'إزالة انسداد الأنابيب';
+
+  @override
+  String get completeSetup => 'إعداد كامل';
+
+  @override
+  String get boardReplacement => 'استبدال اللوحة';
+
+  @override
+  String get crystalReplacement => 'استبدال الكريستال';
+
+  @override
+  String get componentReplacement => 'استبدال المكونات';
+
+  @override
+  String get boardRepair => 'إصلاح اللوحة';
+
+  @override
+  String get dryerRepair => 'إصلاح المجفف';
+
+  @override
+  String get completeDisassembly => 'تفكيك كامل';
+
+  @override
+  String get reassembly => 'إعادة التجميع';
+
+  @override
+  String get doorRepair => 'إصلاح الباب';
+
+  @override
+  String get sealReplacement => 'استبدال السدادة';
+
+  @override
+  String get alignmentCheck => 'فحص المحاذاة';
+
+  @override
+  String get balanceBarReplacement => 'استبدال شريط التوازن';
+
+  @override
+  String get vibrationReduction => 'تقليل الاهتزاز';
+
+  @override
+  String get pumpCheck => 'فحص المضخة';
+
+  @override
+  String get inletValveService => 'خدمة صمام المدخل';
+
+  @override
+  String get waterFlowOptimization => 'تحسين تدفق المياه';
+
+  @override
+  String get electricalDiagnosis => 'تشخيص كهربائي';
+
+  @override
+  String get wiringRepair => 'إصلاح الأسلاك';
+
+  @override
+  String get safetyCheck => 'فحص السلامة';
+
+  @override
+  String get componentCheck => 'فحص المكونات';
+
+  @override
+  String get timerReplacement => 'استبدال المؤقت';
+
+  @override
+  String get fullService => 'خدمة كاملة';
+
+  @override
+  String get expertService => 'خدمة خبيرة';
+
+  @override
+  String get professionalService => 'خدمة احترافية';
+
+  @override
+  String get textRepair => 'إصلاح النص';
+
+  @override
+  String get completeinstallation => 'Complete Installation';
+
+  @override
+  String get professionalSetup => 'إعداد احترافي';
+
+  @override
+  String get completeservice => 'خدمة كاملة';
+
+  @override
+  String get leakRepair => 'إصلاح التسرب';
+
+  @override
+  String get completeInstallation => 'تركيب كامل';
+
+  @override
+  String get completeService => 'خدمة كاملة';
 }

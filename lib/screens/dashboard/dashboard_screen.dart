@@ -16,6 +16,7 @@ import '../cart/cart_screen.dart';
 import '../../widget/service_image_widget.dart';
 import '../../utils/icons_helper.dart';
 import '../../gen_l10n/app_localizations.dart';
+//import '../../gen/app_localizations.dart';
 
 class DashboardColors {
   static const deepPurple = Color(0xFF7C3AED);
@@ -63,8 +64,8 @@ class DashboardScreen extends StatefulWidget {
 }
 
 class _DashboardScreenState extends State<DashboardScreen> {
-  late int _selectedIndex;
-  late List<ServiceCategory> _categories;
+  int _selectedIndex=0;
+  List<ServiceCategory> _categories = [];
   String _selectedAddress = 'Building Sultan Town Lahore Punjab';
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
   int _orderTabIndex = 0;
@@ -74,7 +75,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
   void initState() {
     super.initState();
     _selectedIndex = widget.initialTab;
-    _categories = DummyDataService.getCategories();
+    //_categories = DummyDataService.getCategories();
 
     // Show notification popup only once per app session
     if (!_hasShownNotificationPopup) {
@@ -342,6 +343,10 @@ class _DashboardScreenState extends State<DashboardScreen> {
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
+
+    if (_categories.isEmpty) {
+      _categories = DummyDataService.getCategories(l10n);
+    }
 
     final isDark = Theme.of(context).brightness == Brightness.dark;
     final backgroundColor = isDark ? const Color(0xFF0F172A) : const Color(0xFFF8F9FA);

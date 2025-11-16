@@ -35,7 +35,7 @@ class _ServiceCheckoutScreenState extends State<ServiceCheckoutScreen> {
   final TextEditingController _notesController = TextEditingController();
   final TextEditingController _addressController = TextEditingController();
   bool _isLoading = false;
-  List<File> _selectedImages = [];
+  final List<File> _selectedImages = [];
   final ImagePicker _picker = ImagePicker();
 
   Icon _getIconForServiceItem(Service service) {
@@ -79,12 +79,14 @@ class _ServiceCheckoutScreenState extends State<ServiceCheckoutScreen> {
 
   Future<void> _selectTime() async {
     if (_selectedDate == null) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Please select a date first'),
-          backgroundColor: Colors.orange,
-        ),
-      );
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('Please select a date first'),
+            backgroundColor: Colors.orange,
+          ),
+        );
+      }
       return;
     }
 
@@ -108,12 +110,14 @@ class _ServiceCheckoutScreenState extends State<ServiceCheckoutScreen> {
         });
       }
     } catch (e) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text('Error picking images: $e'),
-          backgroundColor: Colors.red,
-        ),
-      );
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('Error picking images: $e'),
+            backgroundColor: Colors.red,
+          ),
+        );
+      }
     }
   }
 
@@ -126,12 +130,14 @@ class _ServiceCheckoutScreenState extends State<ServiceCheckoutScreen> {
         });
       }
     } catch (e) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text('Error taking photo: $e'),
-          backgroundColor: Colors.red,
-        ),
-      );
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('Error taking photo: $e'),
+            backgroundColor: Colors.red,
+          ),
+        );
+      }
     }
   }
 
@@ -179,22 +185,26 @@ class _ServiceCheckoutScreenState extends State<ServiceCheckoutScreen> {
 
   Future<void> _submitRequest() async {
     if (_selectedDate == null || _selectedTime == null) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Please select both date and time'),
-          backgroundColor: Colors.red,
-        ),
-      );
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('Please select both date and time'),
+            backgroundColor: Colors.red,
+          ),
+        );
+      }
       return;
     }
 
     if (_addressController.text.isEmpty) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Please enter your address'),
-          backgroundColor: Colors.red,
-        ),
-      );
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('Please enter your address'),
+            backgroundColor: Colors.red,
+          ),
+        );
+      }
       return;
     }
 
@@ -222,6 +232,7 @@ class _ServiceCheckoutScreenState extends State<ServiceCheckoutScreen> {
           quantity: cartItem.quantity,
           paymentMethod: 'pending',
           notes: _notesController.text.isNotEmpty ? _notesController.text : null,
+          l10n: AppLocalizations.of(context)!, // Added l10n parameter
         );
         bookings.add(booking);
         totalPrice += cartItem.totalPrice;
@@ -236,8 +247,9 @@ class _ServiceCheckoutScreenState extends State<ServiceCheckoutScreen> {
         bookingTime: bookingDateTime,
         totalPrice: totalPrice,
         quantity: widget.quantity,
-        paymentMethod: 'pending', // Changed from cash/card to pending
+        paymentMethod: 'pending',
         notes: _notesController.text.isNotEmpty ? _notesController.text : null,
+        l10n: AppLocalizations.of(context)!, // Added l10n parameter
       );
       bookings.add(booking);
     }
@@ -252,6 +264,7 @@ class _ServiceCheckoutScreenState extends State<ServiceCheckoutScreen> {
             bookings: bookings,
             user: widget.user,
             totalAmount: totalPrice,
+            l10n: AppLocalizations.of(context)!, // Added l10n parameter
           ),
         ),
       );
@@ -289,8 +302,8 @@ class _ServiceCheckoutScreenState extends State<ServiceCheckoutScreen> {
             end: Alignment.bottomCenter,
             colors: [
               isDark
-                  ? const Color(0xFF1E293B).withValues(alpha: 0.8)
-                  : Theme.of(context).colorScheme.primary.withValues(alpha: 0.05),
+                  ? const Color(0xFF1E293B).withOpacity(0.8)
+                  : Theme.of(context).colorScheme.primary.withOpacity(0.05),
               isDark ? const Color(0xFF0F172A) : const Color(0xFFF8F9FA),
             ],
           ),
@@ -315,7 +328,7 @@ class _ServiceCheckoutScreenState extends State<ServiceCheckoutScreen> {
                   color: cardColor,
                   boxShadow: [
                     BoxShadow(
-                      color: Colors.black.withValues(alpha: shadowOpacity),
+                      color: Colors.black.withOpacity(shadowOpacity),
                       blurRadius: 10,
                       offset: const Offset(0, 5),
                     ),
@@ -442,7 +455,7 @@ class _ServiceCheckoutScreenState extends State<ServiceCheckoutScreen> {
                   color: cardColor,
                   boxShadow: [
                     BoxShadow(
-                      color: Colors.black.withValues(alpha: shadowOpacity),
+                      color: Colors.black.withOpacity(shadowOpacity),
                       blurRadius: 10,
                       offset: const Offset(0, 5),
                     ),
@@ -464,7 +477,7 @@ class _ServiceCheckoutScreenState extends State<ServiceCheckoutScreen> {
                                 gradient: LinearGradient(
                                   colors: [
                                     Theme.of(context).colorScheme.primary,
-                                    Theme.of(context).colorScheme.primary.withValues(alpha: 0.7),
+                                    Theme.of(context).colorScheme.primary.withOpacity(0.7),
                                   ],
                                 ),
                                 borderRadius: BorderRadius.circular(12),
@@ -586,7 +599,7 @@ class _ServiceCheckoutScreenState extends State<ServiceCheckoutScreen> {
                   borderRadius: BorderRadius.circular(16),
                   boxShadow: [
                     BoxShadow(
-                      color: Colors.black.withValues(alpha: shadowOpacity),
+                      color: Colors.black.withOpacity(shadowOpacity),
                       blurRadius: 10,
                       offset: const Offset(0, 5),
                     ),
@@ -626,7 +639,7 @@ class _ServiceCheckoutScreenState extends State<ServiceCheckoutScreen> {
                   borderRadius: BorderRadius.circular(16),
                   boxShadow: [
                     BoxShadow(
-                      color: Colors.black.withValues(alpha: shadowOpacity),
+                      color: Colors.black.withOpacity(shadowOpacity),
                       blurRadius: 10,
                       offset: const Offset(0, 5),
                     ),
@@ -666,7 +679,7 @@ class _ServiceCheckoutScreenState extends State<ServiceCheckoutScreen> {
                   borderRadius: BorderRadius.circular(16),
                   boxShadow: [
                     BoxShadow(
-                      color: Colors.black.withValues(alpha: shadowOpacity),
+                      color: Colors.black.withOpacity(shadowOpacity),
                       blurRadius: 10,
                       offset: const Offset(0, 5),
                     ),
@@ -717,7 +730,7 @@ class _ServiceCheckoutScreenState extends State<ServiceCheckoutScreen> {
                   borderRadius: BorderRadius.circular(16),
                   boxShadow: [
                     BoxShadow(
-                      color: Colors.black.withValues(alpha: shadowOpacity),
+                      color: Colors.black.withOpacity(shadowOpacity),
                       blurRadius: 10,
                       offset: const Offset(0, 5),
                     ),
@@ -758,13 +771,13 @@ class _ServiceCheckoutScreenState extends State<ServiceCheckoutScreen> {
                     begin: Alignment.topLeft,
                     end: Alignment.bottomRight,
                     colors: [
-                      Theme.of(context).colorScheme.primary.withValues(alpha: isDark ? 0.15 : 0.1),
-                      Theme.of(context).colorScheme.secondary.withValues(alpha: isDark ? 0.08 : 0.05),
+                      Theme.of(context).colorScheme.primary.withOpacity(isDark ? 0.15 : 0.1),
+                      Theme.of(context).colorScheme.secondary.withOpacity(isDark ? 0.08 : 0.05),
                     ],
                   ),
                   boxShadow: [
                     BoxShadow(
-                      color: Colors.black.withValues(alpha: shadowOpacity),
+                      color: Colors.black.withOpacity(shadowOpacity),
                       blurRadius: 15,
                       offset: const Offset(0, 5),
                     ),
@@ -910,12 +923,12 @@ class _ServiceCheckoutScreenState extends State<ServiceCheckoutScreen> {
                   gradient: LinearGradient(
                     colors: [
                       Theme.of(context).colorScheme.primary,
-                      Theme.of(context).colorScheme.primary.withValues(alpha: 0.8),
+                      Theme.of(context).colorScheme.primary.withOpacity(0.8),
                     ],
                   ),
                   boxShadow: [
                     BoxShadow(
-                      color: Theme.of(context).colorScheme.primary.withValues(alpha: 0.3),
+                      color: Theme.of(context).colorScheme.primary.withOpacity(0.3),
                       blurRadius: 15,
                       offset: const Offset(0, 8),
                     ),
