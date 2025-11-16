@@ -1,12 +1,16 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+//import 'package:customer_app/gen/app_localizations.dart';
 import '../../models/user_model.dart';
 import '../../models/service_model.dart';
 import '../../models/cart_model.dart';
 import '../../services/dummy_data_service.dart';
+import '../../services/locale_service.dart';
 import 'service_checkout_screen.dart';
 import 'service_detail_screen.dart';
 import '../cart/cart_screen.dart';
 import '../../utils/icons_helper.dart';
+import 'package:customer_app/app_localizations.dart';
 
 // AppColors
 class AppColors {
@@ -161,6 +165,8 @@ class _ServiceListingScreenState extends State<ServiceListingScreen> with Ticker
   }
 
   void _addToCart(Service service) {
+    final l10n = AppLocalizations.of(context)!;
+
     final existingIndex = globalCart.indexWhere((item) => item.service.id == service.id);
 
     if (existingIndex != -1) {
@@ -181,12 +187,12 @@ class _ServiceListingScreenState extends State<ServiceListingScreen> with Ticker
 
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
-        content: Text('Added ${service.name} to cart!'),
+        content: Text('${l10n.added} ${service.name} ${l10n.toCart}'),
         backgroundColor: AppColors.electricBlue,
         behavior: SnackBarBehavior.floating,
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
         action: SnackBarAction(
-          label: 'View Cart',
+          label: l10n.viewCart,
           textColor: Colors.white,
           onPressed: () {
             Navigator.push(
@@ -223,6 +229,8 @@ class _ServiceListingScreenState extends State<ServiceListingScreen> with Ticker
   @override
   Widget build(BuildContext context) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
+    final l10n = AppLocalizations.of(context)!;
+    final localeService = Provider.of<LocaleService>(context);
 
     return PopScope(
       canPop: _selectedSubSubcategory == null && _selectedSubcategory == null,
@@ -304,16 +312,16 @@ class _ServiceListingScreenState extends State<ServiceListingScreen> with Ticker
             ),
           ),
           child: _selectedSubcategory == null
-              ? _buildSubcategoryView()
+              ? _buildSubcategoryView(l10n)
               : (_subSubcategories != null && _selectedSubSubcategory == null)
-              ? _buildSubSubcategoryView()
-              : _buildServicesView(),
+              ? _buildSubSubcategoryView(l10n)
+              : _buildServicesView(l10n, localeService),
         ),
       ),
     );
   }
 
-  Widget _buildSubcategoryView() {
+  Widget _buildSubcategoryView(AppLocalizations l10n) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
 
     return FadeTransition(
@@ -371,8 +379,8 @@ class _ServiceListingScreenState extends State<ServiceListingScreen> with Ticker
                               const SizedBox(height: 4),
                               Text(
                                 subcategory == 'Washing Machine'
-                                    ? 'Choose machine type'
-                                    : 'View all services',
+                                    ? l10n.chooseMachineType
+                                    : l10n.viewAllServices,
                                 style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                                   color: Theme.of(context).colorScheme.onSurfaceVariant,
                                 ),
@@ -404,7 +412,7 @@ class _ServiceListingScreenState extends State<ServiceListingScreen> with Ticker
     );
   }
 
-  Widget _buildSubSubcategoryView() {
+  Widget _buildSubSubcategoryView(AppLocalizations l10n) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
 
     return FadeTransition(
@@ -453,7 +461,7 @@ class _ServiceListingScreenState extends State<ServiceListingScreen> with Ticker
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               Text(
-                                '$type Washing Machine',
+                                '$type ${l10n.washingMachine}',
                                 style: Theme.of(context).textTheme.titleMedium?.copyWith(
                                   fontWeight: FontWeight.w700,
                                   color: Theme.of(context).colorScheme.onSurface,
@@ -461,7 +469,7 @@ class _ServiceListingScreenState extends State<ServiceListingScreen> with Ticker
                               ),
                               const SizedBox(height: 4),
                               Text(
-                                'View services for $type machines',
+                                '${l10n.viewServicesFor} $type ${l10n.machines}',
                                 style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                                   color: Theme.of(context).colorScheme.onSurfaceVariant,
                                 ),
@@ -493,7 +501,7 @@ class _ServiceListingScreenState extends State<ServiceListingScreen> with Ticker
     );
   }
 
-  Widget _buildServicesView() {
+  Widget _buildServicesView(AppLocalizations l10n, LocaleService localeService) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
 
     return Column(
@@ -517,7 +525,7 @@ class _ServiceListingScreenState extends State<ServiceListingScreen> with Ticker
               onChanged: _filterServices,
               style: TextStyle(color: Theme.of(context).colorScheme.onSurface),
               decoration: InputDecoration(
-                hintText: 'Search services...',
+                hintText: l10n.searchServices,
                 hintStyle: TextStyle(color: Theme.of(context).colorScheme.onSurfaceVariant),
                 prefixIcon: Container(
                   margin: const EdgeInsets.all(8),
@@ -559,14 +567,14 @@ class _ServiceListingScreenState extends State<ServiceListingScreen> with Ticker
                 ),
                 const SizedBox(height: 16),
                 Text(
-                  'No services found',
+                  l10n.noServicesFound,
                   style: Theme.of(context).textTheme.titleMedium?.copyWith(
                     color: Theme.of(context).colorScheme.onSurface,
                   ),
                 ),
                 const SizedBox(height: 8),
                 Text(
-                  'Try adjusting your search terms',
+                  l10n.tryAdjustingYourSearchTerms,
                   style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                     color: Theme.of(context).colorScheme.onSurfaceVariant,
                   ),
@@ -673,7 +681,7 @@ class _ServiceListingScreenState extends State<ServiceListingScreen> with Ticker
                                         borderRadius: BorderRadius.circular(8),
                                       ),
                                       child: Text(
-                                        'SAR ${service.price.toStringAsFixed(0)}',
+                                        localeService.formatCurrency(service.price),
                                         style: const TextStyle(
                                           color: Colors.white,
                                           fontWeight: FontWeight.w700,
@@ -846,9 +854,9 @@ class _ServiceListingScreenState extends State<ServiceListingScreen> with Ticker
                         ),
                       ),
                       const SizedBox(width: 12),
-                      const Text(
-                        'Continue to Checkout',
-                        style: TextStyle(
+                      Text(
+                        l10n.continueToCheckout,
+                        style: const TextStyle(
                           color: Colors.white,
                           fontSize: 16,
                           fontWeight: FontWeight.w700,

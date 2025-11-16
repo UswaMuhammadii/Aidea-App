@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:provider/provider.dart';
+//import 'package:customer_app/gen/app_localizations.dart';
 import '../../models/user_model.dart';
 import '../../models/service_model.dart';
 import '../../models/booking_model.dart';
@@ -10,11 +12,13 @@ import '../reviews/review_screen.dart';
 import '../orders/order_details_with_worker_screen.dart';
 import '../orders/order_tracking_screen.dart';
 import '../../services/dummy_data_service.dart';
+import '../../services/locale_service.dart';
 import '../services/service_listing_screen.dart';
 import '../profile/profile_screen.dart';
 import '../cart/cart_screen.dart';
 import '../../widget/service_image_widget.dart';
 import '../../utils/icons_helper.dart';
+import 'package:customer_app/app_localizations.dart';
 
 class DashboardColors {
   static const deepPurple = Color(0xFF7C3AED);
@@ -67,7 +71,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
   String _selectedAddress = 'Building Sultan Town Lahore Punjab';
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
   int _orderTabIndex = 0;
-  static bool _hasShownNotificationPopup = false; // Static to persist across rebuilds
+  static bool _hasShownNotificationPopup = false;
 
   @override
   void initState() {
@@ -75,7 +79,6 @@ class _DashboardScreenState extends State<DashboardScreen> {
     _selectedIndex = widget.initialTab;
     _categories = DummyDataService.getCategories();
 
-    // Show notification popup only once per app session
     if (!_hasShownNotificationPopup) {
       WidgetsBinding.instance.addPostFrameCallback((_) {
         Future.delayed(const Duration(milliseconds: 500), () {
@@ -90,23 +93,24 @@ class _DashboardScreenState extends State<DashboardScreen> {
 
   void _handleNotificationPermission() {
     ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(
+      SnackBar(
         content: Row(
           children: [
-            Icon(Icons.check_circle, color: Colors.white),
-            SizedBox(width: 12),
-            Text('Notifications enabled successfully!'),
+            const Icon(Icons.check_circle, color: Colors.white),
+            const SizedBox(width: 12),
+            Text(AppLocalizations.of(context)!.notificationsEnabled),
           ],
         ),
-        backgroundColor: Color(0xFF10B981),
-        duration: Duration(seconds: 2),
+        backgroundColor: const Color(0xFF10B981),
+        duration: const Duration(seconds: 2),
         behavior: SnackBarBehavior.floating,
-        margin: EdgeInsets.all(16),
+        margin: const EdgeInsets.all(16),
       ),
     );
   }
 
   void _showNotificationPopup() {
+    final l10n = AppLocalizations.of(context)!;
     final isDark = Theme.of(context).brightness == Brightness.dark;
     final cardColor = isDark ? const Color(0xFF1E293B) : Colors.white;
     final textColor = isDark ? Colors.white : Colors.black87;
@@ -141,7 +145,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
               ),
               const SizedBox(height: 20),
               Text(
-                'Enable Notifications',
+                l10n.enableNotifications,
                 style: TextStyle(
                   fontSize: 20,
                   fontWeight: FontWeight.bold,
@@ -150,7 +154,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
               ),
               const SizedBox(height: 12),
               Text(
-                'Get real-time updates about your bookings, technician assignments, and service completion.',
+                l10n.notificationDescription,
                 textAlign: TextAlign.center,
                 style: TextStyle(
                   fontSize: 14,
@@ -171,7 +175,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                         ),
                       ),
                       child: Text(
-                        'Not Now',
+                        l10n.notNow,
                         style: TextStyle(
                           color: subtitleColor,
                           fontWeight: FontWeight.w600,
@@ -204,12 +208,12 @@ class _DashboardScreenState extends State<DashboardScreen> {
                             Navigator.pop(context);
                           },
                           borderRadius: BorderRadius.circular(12),
-                          child: const Padding(
-                            padding: EdgeInsets.symmetric(vertical: 14),
+                          child: Padding(
+                            padding: const EdgeInsets.symmetric(vertical: 14),
                             child: Center(
                               child: Text(
-                                'Allow',
-                                style: TextStyle(
+                                l10n.allow,
+                                style: const TextStyle(
                                   color: Colors.white,
                                   fontWeight: FontWeight.bold,
                                   fontSize: 15,
@@ -239,6 +243,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
   }
 
   void _showLocationPicker() {
+    final l10n = AppLocalizations.of(context)!;
     final isDark = Theme.of(context).brightness == Brightness.dark;
     final dialogBg = isDark ? const Color(0xFF1E293B) : Colors.white;
     final textColor = isDark ? Colors.white : Colors.black87;
@@ -266,7 +271,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                     child: const Icon(Icons.location_on, color: DashboardColors.deepPurple),
                   ),
                   const SizedBox(width: 12),
-                  Text('Home', style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: textColor)),
+                  Text(l10n.home, style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: textColor)),
                   const Spacer(),
                   IconButton(
                     onPressed: () => Navigator.pop(context),
@@ -279,13 +284,13 @@ class _DashboardScreenState extends State<DashboardScreen> {
               const SizedBox(height: 20),
               ListTile(
                 leading: const Icon(Icons.my_location, color: DashboardColors.deepPurple),
-                title: Text('Use my current location', style: TextStyle(color: textColor)),
+                title: Text(l10n.useCurrentLocation, style: TextStyle(color: textColor)),
                 contentPadding: EdgeInsets.zero,
                 onTap: () {
                   Navigator.pop(context);
                   ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(
-                      content: Text('Getting current location...'),
+                    SnackBar(
+                      content: Text(l10n.gettingCurrentLocation),
                       backgroundColor: DashboardColors.deepPurple,
                     ),
                   );
@@ -324,7 +329,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                     padding: const EdgeInsets.symmetric(vertical: 16),
                     shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
                   ),
-                  child: const Text('Continue', style: TextStyle(color: Colors.white, fontSize: 16, fontWeight: FontWeight.bold)),
+                  child: Text(l10n.continueText, style: const TextStyle(color: Colors.white, fontSize: 16, fontWeight: FontWeight.bold)),
                 ),
               ),
             ],
@@ -340,21 +345,23 @@ class _DashboardScreenState extends State<DashboardScreen> {
   Widget build(BuildContext context) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
     final backgroundColor = isDark ? const Color(0xFF0F172A) : const Color(0xFFF8F9FA);
+    final l10n = AppLocalizations.of(context)!;
+    final localeService = Provider.of<LocaleService>(context);
 
     return Scaffold(
       key: _scaffoldKey,
       backgroundColor: backgroundColor,
-      drawer: _buildDrawer(),
+      drawer: _buildDrawer(l10n, localeService),
       body: SafeArea(
         child: Column(
           children: [
-            if (_selectedIndex == 0) _buildHeader(),
+            if (_selectedIndex == 0) _buildHeader(l10n, localeService),
             Expanded(
               child: IndexedStack(
                 index: _selectedIndex,
                 children: [
-                  _buildHomeTab(),
-                  _buildBookingsTab(),
+                  _buildHomeTab(l10n, localeService),
+                  _buildBookingsTab(l10n, localeService),
                   InvoiceScreen(user: widget.user),
                   ReviewScreen(user: widget.user),
                   ProfileScreen(user: widget.user, onLogout: widget.onLogout),
@@ -364,11 +371,11 @@ class _DashboardScreenState extends State<DashboardScreen> {
           ],
         ),
       ),
-      bottomNavigationBar: _buildBottomNav(isDark),
+      bottomNavigationBar: _buildBottomNav(isDark, l10n),
     );
   }
 
-  Widget _buildHeader() {
+  Widget _buildHeader(AppLocalizations l10n, LocaleService localeService) {
     return Container(
       decoration: BoxDecoration(
         gradient: DashboardColors.headerGradient,
@@ -450,21 +457,21 @@ class _DashboardScreenState extends State<DashboardScreen> {
                   ),
                 ),
                 const SizedBox(width: 12),
-                const Column(
+                Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      'Aidea Technology',
-                      style: TextStyle(
+                      l10n.appName,
+                      style: const TextStyle(
                         color: Colors.white,
                         fontSize: 22,
                         fontWeight: FontWeight.bold,
                       ),
                     ),
-                    SizedBox(height: 2),
+                    const SizedBox(height: 2),
                     Text(
-                      'Home Services',
-                      style: TextStyle(
+                      l10n.homeServices,
+                      style: const TextStyle(
                         color: Colors.white70,
                         fontSize: 12,
                       ),
@@ -475,7 +482,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
             ),
             const SizedBox(height: 8),
             Text(
-              'Hello, ${widget.user.name}',
+              '${l10n.hello}, ${widget.user.name}',
               style: const TextStyle(
                 color: Colors.white70,
                 fontSize: 14,
@@ -552,7 +559,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
     );
   }
 
-  Widget _buildBottomNav(bool isDark) {
+  Widget _buildBottomNav(bool isDark, AppLocalizations l10n) {
     return Container(
       decoration: BoxDecoration(
         color: isDark ? const Color(0xFF1E293B) : Colors.white,
@@ -571,11 +578,11 @@ class _DashboardScreenState extends State<DashboardScreen> {
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceAround,
             children: [
-              _buildBottomNavItem(Icons.home_rounded, 'Home', 0, isDark),
-              _buildBottomNavItem(Icons.shopping_bag_rounded, 'Orders', 1, isDark),
-              _buildBottomNavItem(Icons.receipt_long_rounded, 'Invoices', 2, isDark),
-              _buildBottomNavItem(Icons.star_rounded, 'Reviews', 3, isDark),
-              _buildBottomNavItem(Icons.person_rounded, 'Profile', 4, isDark),
+              _buildBottomNavItem(Icons.home_rounded, l10n.home, 0, isDark, l10n),
+              _buildBottomNavItem(Icons.shopping_bag_rounded, l10n.orders, 1, isDark, l10n),
+              _buildBottomNavItem(Icons.receipt_long_rounded, l10n.invoices, 2, isDark, l10n),
+              _buildBottomNavItem(Icons.star_rounded, l10n.reviews, 3, isDark, l10n),
+              _buildBottomNavItem(Icons.person_rounded, l10n.profile, 4, isDark, l10n),
             ],
           ),
         ),
@@ -583,7 +590,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
     );
   }
 
-  Widget _buildBottomNavItem(IconData icon, String label, int index, bool isDark) {
+  Widget _buildBottomNavItem(IconData icon, String label, int index, bool isDark, AppLocalizations l10n) {
     final isActive = _selectedIndex == index;
     final inactiveColor = isDark ? Colors.grey.shade500 : Colors.grey.shade600;
 
@@ -615,7 +622,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
     );
   }
 
-  Widget _buildDrawer() {
+  Widget _buildDrawer(AppLocalizations l10n, LocaleService localeService) {
     return Drawer(
       child: Container(
         decoration: const BoxDecoration(
@@ -677,23 +684,23 @@ class _DashboardScreenState extends State<DashboardScreen> {
                   padding: const EdgeInsets.symmetric(vertical: 8),
                   child: Column(
                     children: [
-                      _buildDrawerItem(Icons.home, 'Home', () {
+                      _buildDrawerItem(Icons.home, l10n.home, () {
                         Navigator.pop(context);
                         setState(() => _selectedIndex = 0);
-                      }, null),
-                      _buildDrawerItem(Icons.shopping_bag_rounded, 'My Orders', () {
+                      }, null, l10n),
+                      _buildDrawerItem(Icons.shopping_bag_rounded, l10n.myOrders, () {
                         Navigator.pop(context);
                         setState(() => _selectedIndex = 1);
-                      }, null),
-                      _buildDrawerItem(Icons.receipt_long_rounded, 'Invoices', () {
+                      }, null, l10n),
+                      _buildDrawerItem(Icons.receipt_long_rounded, l10n.invoices, () {
                         Navigator.pop(context);
                         setState(() => _selectedIndex = 2);
-                      }, null),
-                      _buildDrawerItem(Icons.star_rounded, 'Reviews', () {
+                      }, null, l10n),
+                      _buildDrawerItem(Icons.star_rounded, l10n.reviews, () {
                         Navigator.pop(context);
                         setState(() => _selectedIndex = 3);
-                      }, null),
-                      _buildDrawerItem(Icons.shopping_cart, 'Cart', () {
+                      }, null, l10n),
+                      _buildDrawerItem(Icons.shopping_cart, l10n.cart, () {
                         Navigator.pop(context);
                         Navigator.push(
                           context,
@@ -701,20 +708,20 @@ class _DashboardScreenState extends State<DashboardScreen> {
                             builder: (context) => CartScreen(user: widget.user),
                           ),
                         ).then((_) => setState(() {}));
-                      }, cartItemsCount > 0 ? cartItemsCount.toString() : null),
-                      _buildDrawerItem(Icons.person, 'Profile', () {
+                      }, cartItemsCount > 0 ? cartItemsCount.toString() : null, l10n),
+                      _buildDrawerItem(Icons.person, l10n.profile, () {
                         Navigator.pop(context);
                         setState(() => _selectedIndex = 4);
-                      }, null),
+                      }, null, l10n),
                     ],
                   ),
                 ),
               ),
               const Divider(color: Colors.white24, height: 1),
-              _buildDrawerItem(Icons.logout, 'Logout', () {
+              _buildDrawerItem(Icons.logout, l10n.logout, () {
                 Navigator.pop(context);
                 widget.onLogout();
-              }, null),
+              }, null, l10n),
               const SizedBox(height: 12),
             ],
           ),
@@ -723,7 +730,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
     );
   }
 
-  Widget _buildDrawerItem(IconData icon, String title, VoidCallback onTap, String? badge) {
+  Widget _buildDrawerItem(IconData icon, String title, VoidCallback onTap, String? badge, AppLocalizations l10n) {
     return ListTile(
       leading: Icon(icon, color: Colors.white, size: 22),
       title: Row(
@@ -761,7 +768,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
     );
   }
 
-  Widget _buildHomeTab() {
+  Widget _buildHomeTab(AppLocalizations l10n, LocaleService localeService) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
     final textColor = isDark ? Colors.white : Colors.black87;
     final cardColor = isDark ? const Color(0xFF1E293B) : Colors.white;
@@ -773,10 +780,9 @@ class _DashboardScreenState extends State<DashboardScreen> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text('Our Services', style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold, color: textColor)),
+            Text(l10n.ourServices, style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold, color: textColor)),
             const SizedBox(height: 12),
 
-            // Grid Layout for Categories - FIXED OVERFLOW
             GridView.builder(
               shrinkWrap: true,
               physics: const NeverScrollableScrollPhysics(),
@@ -784,7 +790,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                 crossAxisCount: 2,
                 crossAxisSpacing: 12,
                 mainAxisSpacing: 12,
-                childAspectRatio: 0.88, // Changed from 0.95 to 0.88 to give more height
+                childAspectRatio: 0.88,
               ),
               itemCount: _categories.length,
               itemBuilder: (context, index) {
@@ -817,7 +823,6 @@ class _DashboardScreenState extends State<DashboardScreen> {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        // Image section - 60% of card height
                         Expanded(
                           flex: 60,
                           child: ClipRRect(
@@ -832,7 +837,6 @@ class _DashboardScreenState extends State<DashboardScreen> {
                             ),
                           ),
                         ),
-                        // Bottom section - 40% of card height
                         Expanded(
                           flex: 40,
                           child: Padding(
@@ -841,7 +845,6 @@ class _DashboardScreenState extends State<DashboardScreen> {
                               crossAxisAlignment: CrossAxisAlignment.start,
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
-                                // Top row with icon and arrow
                                 Row(
                                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                   children: [
@@ -865,7 +868,6 @@ class _DashboardScreenState extends State<DashboardScreen> {
                                   ],
                                 ),
                                 const SizedBox(height: 4),
-                                // Text section - wrapped in Flexible
                                 Flexible(
                                   child: Column(
                                     crossAxisAlignment: CrossAxisAlignment.start,
@@ -884,7 +886,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                                       ),
                                       const SizedBox(height: 2),
                                       Text(
-                                        '${category.services.length} services',
+                                        '${category.services.length} ${l10n.services}',
                                         style: TextStyle(
                                           fontSize: 10,
                                           color: subtitleColor,
@@ -912,7 +914,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
     );
   }
 
-  Widget _buildBookingsTab() {
+  Widget _buildBookingsTab(AppLocalizations l10n, LocaleService localeService) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
     final backgroundColor = isDark ? const Color(0xFF0F172A) : const Color(0xFFF8F9FA);
     final cardColor = isDark ? const Color(0xFF1E293B) : Colors.white;
@@ -952,8 +954,8 @@ class _DashboardScreenState extends State<DashboardScreen> {
             color: cardColor,
             child: Row(
               children: [
-                Expanded(child: _buildOrderTab('Active', 0, activeBookings.length)),
-                Expanded(child: _buildOrderTab('Previous', 1, previousBookings.length)),
+                Expanded(child: _buildOrderTab(l10n.activeOrders, 0, activeBookings.length, l10n)),
+                Expanded(child: _buildOrderTab(l10n.previousOrders, 1, previousBookings.length, l10n)),
               ],
             ),
           ),
@@ -983,9 +985,9 @@ class _DashboardScreenState extends State<DashboardScreen> {
                               child: Icon(Icons.receipt_long_outlined, size: 64, color: DashboardColors.deepPurple.withOpacity(0.5)),
                             ),
                             const SizedBox(height: 20),
-                            Text(_orderTabIndex == 0 ? 'No Active Orders' : 'No Previous Orders', style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: textColor)),
+                            Text(_orderTabIndex == 0 ? l10n.noActiveOrders : l10n.noPreviousOrders, style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: textColor)),
                             const SizedBox(height: 8),
-                            Text(_orderTabIndex == 0 ? 'Book your first service today!' : 'Your completed orders will appear here', style: TextStyle(fontSize: 14, color: subtitleColor)),
+                            Text(_orderTabIndex == 0 ? l10n.bookYourFirstService : l10n.completedOrdersAppearHere, style: TextStyle(fontSize: 14, color: subtitleColor)),
                             if (_orderTabIndex == 0) ...[
                               const SizedBox(height: 24),
                               ElevatedButton(
@@ -995,7 +997,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                                   padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 16),
                                   shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
                                 ),
-                                child: const Text('Book Now', style: TextStyle(color: Colors.white, fontSize: 16, fontWeight: FontWeight.w600)),
+                                child: Text(l10n.bookNow, style: const TextStyle(color: Colors.white, fontSize: 16, fontWeight: FontWeight.w600)),
                               ),
                             ],
                           ],
@@ -1014,11 +1016,11 @@ class _DashboardScreenState extends State<DashboardScreen> {
                           firstBooking.status == BookingStatus.cancelled;
 
                       String getStatusDisplayText() {
-                        if (firstBooking.status == BookingStatus.pending) return 'Booking Done';
-                        if (firstBooking.status == BookingStatus.confirmed) return 'Technician Assigned';
-                        if (firstBooking.status == BookingStatus.inProgress) return 'Work Started';
-                        if (firstBooking.status == BookingStatus.completed) return 'Work Done';
-                        if (firstBooking.status == BookingStatus.cancelled) return 'Cancelled';
+                        if (firstBooking.status == BookingStatus.pending) return l10n.bookingDone;
+                        if (firstBooking.status == BookingStatus.confirmed) return l10n.technicianAssigned;
+                        if (firstBooking.status == BookingStatus.inProgress) return l10n.workStarted;
+                        if (firstBooking.status == BookingStatus.completed) return l10n.workDone;
+                        if (firstBooking.status == BookingStatus.cancelled) return l10n.cancelled;
                         return firstBooking.statusText;
                       }
 
@@ -1067,7 +1069,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                                       crossAxisAlignment: CrossAxisAlignment.start,
                                       children: [
                                         Text(
-                                          bookingGroup.length > 1 ? '${bookingGroup.length} Services Booked' : firstBooking.service?.name ?? 'Service',
+                                          bookingGroup.length > 1 ? '${bookingGroup.length} ${l10n.servicesBooked}' : firstBooking.service?.name ?? l10n.service,
                                           style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: textColor),
                                         ),
                                         const SizedBox(height: 4),
@@ -1113,7 +1115,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                                         const SizedBox(width: 8),
                                         Flexible(
                                           child: Text(
-                                            'Technician: Sarish Naz',
+                                            '${l10n.technician}: Sarish Naz',
                                             style: TextStyle(
                                               fontSize: 12,
                                               fontWeight: FontWeight.w600,
@@ -1142,7 +1144,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                                   child: Column(
                                     crossAxisAlignment: CrossAxisAlignment.start,
                                     children: [
-                                      Text('Services:', style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold, color: textColor)),
+                                      Text(l10n.services, style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold, color: textColor)),
                                       const SizedBox(height: 8),
                                       ...bookingGroup.map((booking) => Padding(
                                         padding: const EdgeInsets.only(bottom: 4),
@@ -1155,9 +1157,9 @@ class _DashboardScreenState extends State<DashboardScreen> {
                                             ),
                                             const SizedBox(width: 8),
                                             Expanded(
-                                              child: Text('${booking.service?.name ?? 'Service'} (${booking.quantity}x)', style: TextStyle(fontSize: 12, color: textColor)),
+                                              child: Text('${booking.service?.name ?? l10n.service} (${booking.quantity}x)', style: TextStyle(fontSize: 12, color: textColor)),
                                             ),
-                                            Text('SAR ${booking.totalPrice.toStringAsFixed(0)}', style: const TextStyle(fontSize: 12, fontWeight: FontWeight.w600, color: DashboardColors.deepPurple)),
+                                            Text('${localeService.formatCurrency(booking.totalPrice)}', style: const TextStyle(fontSize: 12, fontWeight: FontWeight.w600, color: DashboardColors.deepPurple)),
                                           ],
                                         ),
                                       )),
@@ -1177,9 +1179,9 @@ class _DashboardScreenState extends State<DashboardScreen> {
                                     Row(
                                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                       children: [
-                                        Text('Date & Time', style: TextStyle(fontSize: 12, color: subtitleColor)),
+                                        Text(l10n.dateTime, style: TextStyle(fontSize: 12, color: subtitleColor)),
                                         Text(
-                                          '${DateFormat('MMM d, y').format(firstBooking.bookingDate)} at ${DateFormat('h:mm a').format(firstBooking.bookingTime)}',
+                                          '${DateFormat('MMM d, y').format(firstBooking.bookingDate)} ${l10n.at} ${DateFormat('h:mm a').format(firstBooking.bookingTime)}',
                                           style: TextStyle(fontSize: 12, fontWeight: FontWeight.w600, color: textColor),
                                         ),
                                       ],
@@ -1188,8 +1190,8 @@ class _DashboardScreenState extends State<DashboardScreen> {
                                     Row(
                                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                       children: [
-                                        Text('Total Amount', style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold, color: textColor)),
-                                        Text('SAR ${totalPrice.toStringAsFixed(0)}', style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: DashboardColors.deepPurple)),
+                                        Text(l10n.totalAmount, style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold, color: textColor)),
+                                        Text(localeService.formatCurrency(totalPrice), style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: DashboardColors.deepPurple)),
                                       ],
                                     ),
                                   ],
@@ -1243,8 +1245,8 @@ class _DashboardScreenState extends State<DashboardScreen> {
                                         const SizedBox(width: 8),
                                         Text(
                                           firstBooking.status == BookingStatus.pending
-                                              ? 'Track Order'
-                                              : 'View Technician Details',
+                                              ? l10n.trackOrder
+                                              : l10n.viewTechnicianDetails,
                                           style: const TextStyle(
                                             color: DashboardColors.deepPurple,
                                             fontSize: 14,
@@ -1276,7 +1278,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
     );
   }
 
-  Widget _buildOrderTab(String title, int index, int count) {
+  Widget _buildOrderTab(String title, int index, int count, AppLocalizations l10n) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
     final isActive = _orderTabIndex == index;
     final inactiveColor = isDark ? Colors.grey.shade500 : Colors.grey.shade600;

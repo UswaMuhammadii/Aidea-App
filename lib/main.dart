@@ -1,11 +1,20 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
 import 'screens/auth/auth_flow_coordinator.dart';
 import 'screens/dashboard/dashboard_screen.dart';
 import 'models/user_model.dart';
 import 'services/dummy_data_service.dart';
+import 'services/locale_service.dart';
+import 'package:customer_app/app_localizations.dart';
 
 void main() {
-  runApp(const CustomerApp());
+  runApp(
+    ChangeNotifierProvider(
+      create: (_) => LocaleService(),
+      child: const CustomerApp(),
+    ),
+  );
 }
 
 /// 🌈 Brand Colors & Gradients
@@ -29,6 +38,7 @@ class AppColors {
   static const darkSurfaceVariant = Color(0xFF334155);
   static const darkOnSurface = Color(0xFFF8FAFC);
   static const darkOnSurfaceVariant = Color(0xFFCBD5E1);
+  static const success = Color(0xFF10B981);
 
   static const primaryGradient = LinearGradient(
     colors: [deepPurple, electricBlue, brightTeal],
@@ -43,19 +53,51 @@ class AppColors {
   );
 }
 
-/// 🌟 Main App Widget
+/// 🌟 Main App Widget with Localization
 class CustomerApp extends StatelessWidget {
   const CustomerApp({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Aidea Technology',
-      debugShowCheckedModeBanner: false,
-      theme: _buildLightTheme(),
-      darkTheme: _buildDarkTheme(),
-      themeMode: ThemeMode.system,
-      home: const AuthWrapper(),
+    return Consumer<LocaleService>(
+      builder: (context, localeService, child) {
+        return MaterialApp(
+          title: 'Aidea Technology',
+          debugShowCheckedModeBanner: false,
+
+          // Localization delegates - FIXED: Use the static delegate
+          localizationsDelegates: [
+            AppLocalizationsDelegate(), // Create instance instead of using static
+            GlobalMaterialLocalizations.delegate,
+            GlobalWidgetsLocalizations.delegate,
+            GlobalCupertinoLocalizations.delegate,
+          ],
+
+          // Supported locales
+          supportedLocales: const [
+            Locale('en'), // English
+            Locale('ar'), // Arabic
+          ],
+
+          // Current locale
+          locale: localeService.locale,
+
+          // RTL support
+          builder: (context, child) {
+            return Directionality(
+              textDirection: localeService.isArabic
+                  ? TextDirection.rtl
+                  : TextDirection.ltr,
+              child: child!,
+            );
+          },
+
+          theme: _buildLightTheme(),
+          darkTheme: _buildDarkTheme(),
+          themeMode: ThemeMode.system,
+          home: const AuthWrapper(),
+        );
+      },
     );
   }
 
@@ -69,7 +111,7 @@ class CustomerApp extends StatelessWidget {
         surface: AppColors.surface,
         background: AppColors.background,
         onSurface: AppColors.onSurface,
-        onBackground: AppColors.onSurface,
+        // REMOVED: onBackground is deprecated, use onSurface instead
       ),
       scaffoldBackgroundColor: AppColors.background,
     );
@@ -85,7 +127,7 @@ class CustomerApp extends StatelessWidget {
         surface: AppColors.darkSurface,
         background: AppColors.darkBackground,
         onSurface: AppColors.darkOnSurface,
-        onBackground: AppColors.darkOnSurface,
+        // REMOVED: onBackground is deprecated, use onSurface instead
       ),
       scaffoldBackgroundColor: AppColors.darkBackground,
     );
@@ -105,7 +147,6 @@ class _AuthWrapperState extends State<AuthWrapper> {
   User? _currentUser;
 
   void _handleAuthComplete(User user) {
-    // Add dummy bookings for demo purposes
     DummyDataService.addDummyCompletedBookings(user.id);
 
     setState(() {

@@ -1,6 +1,8 @@
+// ===== edit_profile_screen.dart - LOCALIZED VERSION =====
 import 'package:flutter/material.dart';
+//import 'package:customer_app/gen/app_localizations.dart';
 import '../../models/user_model.dart';
-
+import 'package:customer_app/app_localizations.dart';
 class EditProfileScreen extends StatefulWidget {
   final User user;
 
@@ -33,7 +35,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
     super.dispose();
   }
 
-  Future<void> _saveProfile() async {
+  Future<void> _saveProfile(AppLocalizations l10n) async {
     if (!_formKey.currentState!.validate()) return;
 
     setState(() => _isLoading = true);
@@ -42,9 +44,9 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
 
     if (mounted) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-            content: Text('Profile updated successfully!'),
-            backgroundColor: Colors.green
+        SnackBar(
+          content: Text(l10n.profileUpdated), // LOCALIZED
+          backgroundColor: Colors.green,
         ),
       );
       Navigator.pop(context);
@@ -57,12 +59,14 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
     final backgroundColor = isDark ? const Color(0xFF0F172A) : const Color(0xFFF8F9FA);
     final cardColor = isDark ? const Color(0xFF1E293B) : Colors.white;
     final textColor = isDark ? Colors.white : Colors.black87;
-    final subtitleColor = isDark ? Colors.grey.shade400 : Colors.grey.shade600;
+
+    // ADD LOCALIZATION
+    final l10n = AppLocalizations.of(context)!;
 
     return Scaffold(
       backgroundColor: backgroundColor,
       appBar: AppBar(
-        title: const Text('Edit Profile'),
+        title: Text(l10n.editProfile), // LOCALIZED
         centerTitle: true,
         backgroundColor: cardColor,
         foregroundColor: textColor,
@@ -98,12 +102,13 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                         radius: 60,
                         backgroundColor: cardColor,
                         child: Text(
-                          widget.user.name.isNotEmpty ?
-                          widget.user.name[0].toUpperCase() : 'U',
+                          widget.user.name.isNotEmpty
+                              ? widget.user.name[0].toUpperCase()
+                              : 'U',
                           style: const TextStyle(
-                              fontSize: 48,
-                              fontWeight: FontWeight.bold,
-                              color: Color(0xFF6B5B9A)
+                            fontSize: 48,
+                            fontWeight: FontWeight.bold,
+                            color: Color(0xFF6B5B9A),
                           ),
                         ),
                       ),
@@ -121,9 +126,9 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                           border: Border.all(color: cardColor, width: 3),
                         ),
                         child: const Icon(
-                            Icons.camera_alt,
-                            color: Colors.white,
-                            size: 20
+                          Icons.camera_alt,
+                          color: Colors.white,
+                          size: 20,
                         ),
                       ),
                     ),
@@ -136,11 +141,12 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
               _buildTextField(
                 context: context,
                 controller: _nameController,
-                label: 'Full Name',
+                label: l10n.fullName, // LOCALIZED
                 icon: Icons.person,
+                l10n: l10n,
                 validator: (value) {
                   if (value == null || value.isEmpty) {
-                    return 'Please enter your name';
+                    return l10n.pleaseEnterName; // LOCALIZED
                   }
                   return null;
                 },
@@ -151,15 +157,16 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
               _buildTextField(
                 context: context,
                 controller: _emailController,
-                label: 'Email Address',
+                label: l10n.emailAddress, // LOCALIZED
                 icon: Icons.email,
                 keyboardType: TextInputType.emailAddress,
+                l10n: l10n,
                 validator: (value) {
                   if (value == null || value.isEmpty) {
-                    return 'Please enter your email';
+                    return l10n.pleaseEnterEmail; // LOCALIZED
                   }
                   if (!value.contains('@')) {
-                    return 'Please enter a valid email';
+                    return l10n.pleaseEnterValidEmail; // LOCALIZED
                   }
                   return null;
                 },
@@ -170,15 +177,13 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
               _buildTextField(
                 context: context,
                 controller: _phoneController,
-                label: 'Phone Number',
+                label: l10n.phoneNumber, // LOCALIZED
                 icon: Icons.phone,
                 keyboardType: TextInputType.phone,
+                l10n: l10n,
                 validator: (value) {
                   if (value == null || value.isEmpty) {
-                    return 'Please enter your phone number';
-                  }
-                  if (!RegExp(r'^[0-9]+$').hasMatch(value)) {
-                    return 'Phone number must contain only digits';
+                    return l10n.pleaseEnterPhone; // LOCALIZED
                   }
                   return null;
                 },
@@ -204,7 +209,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                 child: Material(
                   color: Colors.transparent,
                   child: InkWell(
-                    onTap: _isLoading ? null : _saveProfile,
+                    onTap: _isLoading ? null : () => _saveProfile(l10n),
                     borderRadius: BorderRadius.circular(16),
                     child: Padding(
                       padding: const EdgeInsets.symmetric(vertical: 18),
@@ -214,22 +219,22 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                           height: 24,
                           width: 24,
                           child: CircularProgressIndicator(
-                              strokeWidth: 2,
-                              valueColor: AlwaysStoppedAnimation<Color>(Colors.white)
+                            strokeWidth: 2,
+                            valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
                           ),
                         ),
                       )
-                          : const Row(
+                          : Row(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
-                          Icon(Icons.save, color: Colors.white),
-                          SizedBox(width: 8),
+                          const Icon(Icons.save, color: Colors.white),
+                          const SizedBox(width: 8),
                           Text(
-                            'Save Changes',
-                            style: TextStyle(
-                                color: Colors.white,
-                                fontSize: 16,
-                                fontWeight: FontWeight.bold
+                            l10n.saveChanges, // LOCALIZED
+                            style: const TextStyle(
+                              color: Colors.white,
+                              fontSize: 16,
+                              fontWeight: FontWeight.bold,
                             ),
                           ),
                         ],
@@ -250,6 +255,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
     required TextEditingController controller,
     required String label,
     required IconData icon,
+    required AppLocalizations l10n,
     TextInputType? keyboardType,
     String? Function(String?)? validator,
   }) {
@@ -284,7 +290,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
               gradient: LinearGradient(
                 colors: [
                   const Color(0xFF6B5B9A).withOpacity(0.1),
-                  const Color(0xFF7C3AED).withOpacity(0.1)
+                  const Color(0xFF7C3AED).withOpacity(0.1),
                 ],
               ),
               borderRadius: BorderRadius.circular(8),
@@ -294,8 +300,8 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
           filled: true,
           fillColor: cardColor,
           border: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(16),
-              borderSide: BorderSide.none
+            borderRadius: BorderRadius.circular(16),
+            borderSide: BorderSide.none,
           ),
           enabledBorder: OutlineInputBorder(
             borderRadius: BorderRadius.circular(16),

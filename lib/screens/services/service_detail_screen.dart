@@ -1,10 +1,14 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+//import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import '../../models/service_model.dart';
 import '../../models/user_model.dart';
 import '../../models/cart_model.dart';
+import '../../services/locale_service.dart';
 import '../cart/cart_screen.dart';
 import '../../utils/icons_helper.dart';
 import '../../utils/app_colors.dart';
+import 'package:customer_app/app_localizations.dart';
 
 class ServiceDetailScreen extends StatefulWidget {
   final Service service;
@@ -45,6 +49,8 @@ class _ServiceDetailScreenState extends State<ServiceDetailScreen> with TickerPr
   }
 
   void addToCart() async {
+    final l10n = AppLocalizations.of(context)!;
+
     _buttonAnimationController.forward().then((_) => _buttonAnimationController.reverse());
 
     setState(() => isAddingToCart = true);
@@ -72,14 +78,14 @@ class _ServiceDetailScreenState extends State<ServiceDetailScreen> with TickerPr
             children: [
               const Icon(Icons.check_circle, color: Colors.white),
               const SizedBox(width: 8),
-              Text('Added ${widget.service.name} to cart successfully!'),
+              Text('${l10n.added} ${widget.service.name} ${l10n.toCartSuccessfully}'),
             ],
           ),
           backgroundColor: Colors.green,
           behavior: SnackBarBehavior.floating,
           shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
           action: SnackBarAction(
-            label: 'View Cart',
+            label: l10n.viewCart,
             textColor: Colors.white,
             onPressed: () => Navigator.push(context, MaterialPageRoute(builder: (_) => CartScreen(user: widget.user))),
           ),
@@ -96,6 +102,9 @@ class _ServiceDetailScreenState extends State<ServiceDetailScreen> with TickerPr
     final textColor = isDark ? Colors.white : Colors.black87;
     final subtitleColor = isDark ? Colors.grey.shade400 : Colors.grey.shade600;
     final shadowOpacity = isDark ? 0.3 : 0.08;
+
+    final l10n = AppLocalizations.of(context)!;
+    final localeService = Provider.of<LocaleService>(context);
 
     return Scaffold(
       backgroundColor: backgroundColor,
@@ -228,7 +237,7 @@ class _ServiceDetailScreenState extends State<ServiceDetailScreen> with TickerPr
                                 borderRadius: BorderRadius.circular(12),
                               ),
                               child: Text(
-                                  'SAR ${widget.service.price.toStringAsFixed(0)}',
+                                  localeService.formatCurrency(widget.service.price),
                                   style: const TextStyle(
                                       fontSize: 20,
                                       fontWeight: FontWeight.bold,
@@ -258,7 +267,7 @@ class _ServiceDetailScreenState extends State<ServiceDetailScreen> with TickerPr
                                 const Icon(Icons.check_circle, color: Colors.green, size: 24),
                                 const SizedBox(width: 8),
                                 Text(
-                                    "What's Included",
+                                    l10n.whatsIncluded,
                                     style: Theme.of(context).textTheme.titleLarge?.copyWith(
                                         fontWeight: FontWeight.bold,
                                         color: textColor
@@ -290,7 +299,7 @@ class _ServiceDetailScreenState extends State<ServiceDetailScreen> with TickerPr
                                 const Icon(Icons.cancel, color: Colors.red, size: 24),
                                 const SizedBox(width: 8),
                                 Text(
-                                    'Not Included',
+                                    l10n.notIncluded,
                                     style: Theme.of(context).textTheme.titleLarge?.copyWith(
                                         fontWeight: FontWeight.bold,
                                         color: textColor
@@ -299,9 +308,9 @@ class _ServiceDetailScreenState extends State<ServiceDetailScreen> with TickerPr
                               ],
                             ),
                             const SizedBox(height: 16),
-                            _buildIncludeItem('✗', 'Any type of repair', Colors.red, textColor, subtitleColor),
-                            _buildIncludeItem('✗', 'Any type of material', Colors.red, textColor, subtitleColor),
-                            _buildIncludeItem('✗', 'Ladder', Colors.red, textColor, subtitleColor),
+                            _buildIncludeItem('✗', l10n.anyTypeOfRepair, Colors.red, textColor, subtitleColor),
+                            _buildIncludeItem('✗', l10n.anyTypeOfMaterial, Colors.red, textColor, subtitleColor),
+                            _buildIncludeItem('✗', l10n.ladder, Colors.red, textColor, subtitleColor),
                           ],
                         ),
                       ),
@@ -356,13 +365,13 @@ class _ServiceDetailScreenState extends State<ServiceDetailScreen> with TickerPr
                         strokeWidth: 3
                     )
                 )
-                    : const Row(
+                    : Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     Icon(Icons.shopping_cart, size: 22, color: Colors.white),
-                    SizedBox(width: 16),
+                    const SizedBox(width: 16),
                     Text(
-                        'Add to Cart',
+                        l10n.addToCart,
                         style: TextStyle(
                             fontSize: 18,
                             fontWeight: FontWeight.w600,

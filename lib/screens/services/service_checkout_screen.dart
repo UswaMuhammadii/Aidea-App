@@ -2,13 +2,17 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:image_picker/image_picker.dart';
 import 'dart:io';
+import 'package:provider/provider.dart';
+//import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import '../../models/user_model.dart';
 import '../../models/service_model.dart';
 import '../../models/booking_model.dart';
 import '../../models/cart_model.dart';
 import '../../services/dummy_data_service.dart';
+import '../../services/locale_service.dart';
 import '../booking/booking_confirmation_screen.dart';
 import '../../utils/icons_helper.dart';
+import 'package:customer_app/app_localizations.dart';
 
 class ServiceCheckoutScreen extends StatefulWidget {
   final Service service;
@@ -79,8 +83,8 @@ class _ServiceCheckoutScreenState extends State<ServiceCheckoutScreen> {
   Future<void> _selectTime() async {
     if (_selectedDate == null) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Please select a date first'),
+        SnackBar(
+          content: Text(AppLocalizations.of(context)!.pleaseSelectDateFirst),
           backgroundColor: Colors.orange,
         ),
       );
@@ -109,7 +113,7 @@ class _ServiceCheckoutScreenState extends State<ServiceCheckoutScreen> {
     } catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-          content: Text('Error picking images: $e'),
+          content: Text('${AppLocalizations.of(context)!.errorPickingImages}: $e'),
           backgroundColor: Colors.red,
         ),
       );
@@ -127,7 +131,7 @@ class _ServiceCheckoutScreenState extends State<ServiceCheckoutScreen> {
     } catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-          content: Text('Error taking photo: $e'),
+          content: Text('${AppLocalizations.of(context)!.errorTakingPhoto}: $e'),
           backgroundColor: Colors.red,
         ),
       );
@@ -141,6 +145,7 @@ class _ServiceCheckoutScreenState extends State<ServiceCheckoutScreen> {
   }
 
   void _showImageSourceDialog() {
+    final l10n = AppLocalizations.of(context)!;
     final isDark = Theme.of(context).brightness == Brightness.dark;
     final cardColor = isDark ? const Color(0xFF1E293B) : Colors.white;
     final textColor = isDark ? Colors.white : Colors.black87;
@@ -150,13 +155,13 @@ class _ServiceCheckoutScreenState extends State<ServiceCheckoutScreen> {
       builder: (context) => AlertDialog(
         backgroundColor: cardColor,
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
-        title: Text('Choose Image Source', style: TextStyle(color: textColor)),
+        title: Text(l10n.chooseImageSource, style: TextStyle(color: textColor)),
         content: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
             ListTile(
               leading: const Icon(Icons.photo_library, color: Colors.blue),
-              title: Text('Gallery', style: TextStyle(color: textColor)),
+              title: Text(l10n.gallery, style: TextStyle(color: textColor)),
               onTap: () {
                 Navigator.pop(context);
                 _pickImages();
@@ -164,7 +169,7 @@ class _ServiceCheckoutScreenState extends State<ServiceCheckoutScreen> {
             ),
             ListTile(
               leading: const Icon(Icons.camera_alt, color: Colors.green),
-              title: Text('Camera', style: TextStyle(color: textColor)),
+              title: Text(l10n.camera, style: TextStyle(color: textColor)),
               onTap: () {
                 Navigator.pop(context);
                 _pickImageFromCamera();
@@ -177,10 +182,12 @@ class _ServiceCheckoutScreenState extends State<ServiceCheckoutScreen> {
   }
 
   Future<void> _submitRequest() async {
+    final l10n = AppLocalizations.of(context)!;
+
     if (_selectedDate == null || _selectedTime == null) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Please select both date and time'),
+        SnackBar(
+          content: Text(l10n.pleaseSelectBothDateAndTime),
           backgroundColor: Colors.red,
         ),
       );
@@ -189,8 +196,8 @@ class _ServiceCheckoutScreenState extends State<ServiceCheckoutScreen> {
 
     if (_addressController.text.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Please enter your address'),
+        SnackBar(
+          content: Text(l10n.pleaseEnterYourAddress),
           backgroundColor: Colors.red,
         ),
       );
@@ -219,7 +226,7 @@ class _ServiceCheckoutScreenState extends State<ServiceCheckoutScreen> {
           bookingTime: bookingDateTime,
           totalPrice: cartItem.totalPrice,
           quantity: cartItem.quantity,
-          paymentMethod: 'pending', // Changed from cash/card to pending
+          paymentMethod: 'pending',
           notes: _notesController.text.isNotEmpty ? _notesController.text : null,
         );
         bookings.add(booking);
@@ -235,7 +242,7 @@ class _ServiceCheckoutScreenState extends State<ServiceCheckoutScreen> {
         bookingTime: bookingDateTime,
         totalPrice: totalPrice,
         quantity: widget.quantity,
-        paymentMethod: 'pending', // Changed from cash/card to pending
+        paymentMethod: 'pending',
         notes: _notesController.text.isNotEmpty ? _notesController.text : null,
       );
       bookings.add(booking);
@@ -267,6 +274,9 @@ class _ServiceCheckoutScreenState extends State<ServiceCheckoutScreen> {
     final borderColor = isDark ? Colors.grey.shade700 : Colors.grey.shade300;
     final shadowOpacity = isDark ? 0.3 : 0.05;
 
+    final l10n = AppLocalizations.of(context)!;
+    final localeService = Provider.of<LocaleService>(context);
+
     double totalPrice = widget.isFromCart
         ? globalCart.fold(0.0, (sum, item) => sum + item.totalPrice)
         : widget.service.price * widget.quantity;
@@ -274,7 +284,7 @@ class _ServiceCheckoutScreenState extends State<ServiceCheckoutScreen> {
     return Scaffold(
       backgroundColor: backgroundColor,
       appBar: AppBar(
-        title: const Text('Book Service'),
+        title: Text(l10n.bookService),
         centerTitle: true,
         backgroundColor: cardColor,
         foregroundColor: textColor,
@@ -299,7 +309,7 @@ class _ServiceCheckoutScreenState extends State<ServiceCheckoutScreen> {
             children: [
               // SELECTED SERVICES SECTION
               Text(
-                'Selected Services',
+                l10n.selectedServices,
                 style: Theme.of(context).textTheme.titleMedium?.copyWith(
                   fontWeight: FontWeight.bold,
                   color: textColor,
@@ -350,7 +360,7 @@ class _ServiceCheckoutScreenState extends State<ServiceCheckoutScreen> {
                                   ),
                                 ),
                                 Text(
-                                  'Qty: ${item.quantity}',
+                                  '${l10n.qty}: ${item.quantity}',
                                   style: TextStyle(
                                     fontSize: 12,
                                     color: subtitleColor,
@@ -360,7 +370,7 @@ class _ServiceCheckoutScreenState extends State<ServiceCheckoutScreen> {
                             ),
                           ),
                           Text(
-                            'SAR ${item.totalPrice.toStringAsFixed(0)}',
+                            localeService.formatCurrency(item.totalPrice),
                             style: TextStyle(
                               fontWeight: FontWeight.bold,
                               color: Theme.of(context).colorScheme.primary,
@@ -400,7 +410,7 @@ class _ServiceCheckoutScreenState extends State<ServiceCheckoutScreen> {
                                   ),
                                 ),
                                 Text(
-                                  'Qty: ${widget.quantity}',
+                                  '${l10n.qty}: ${widget.quantity}',
                                   style: TextStyle(
                                     fontSize: 12,
                                     color: subtitleColor,
@@ -410,7 +420,7 @@ class _ServiceCheckoutScreenState extends State<ServiceCheckoutScreen> {
                             ),
                           ),
                           Text(
-                            'SAR ${totalPrice.toStringAsFixed(0)}',
+                            localeService.formatCurrency(totalPrice),
                             style: TextStyle(
                               fontWeight: FontWeight.bold,
                               color: Theme.of(context).colorScheme.primary,
@@ -426,7 +436,7 @@ class _ServiceCheckoutScreenState extends State<ServiceCheckoutScreen> {
 
               // UPLOAD APPLIANCE IMAGES SECTION
               Text(
-                'Upload Appliance Images',
+                l10n.uploadApplianceImages,
                 style: Theme.of(context).textTheme.titleMedium?.copyWith(
                   fontWeight: FontWeight.bold,
                   color: textColor,
@@ -478,7 +488,7 @@ class _ServiceCheckoutScreenState extends State<ServiceCheckoutScreen> {
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
                                   Text(
-                                    'Add Photos',
+                                    l10n.addPhotos,
                                     style: TextStyle(
                                       fontWeight: FontWeight.bold,
                                       fontSize: 16,
@@ -487,7 +497,7 @@ class _ServiceCheckoutScreenState extends State<ServiceCheckoutScreen> {
                                   ),
                                   const SizedBox(height: 4),
                                   Text(
-                                    'Upload photos of your appliance',
+                                    l10n.uploadPhotosOfYourAppliance,
                                     style: TextStyle(
                                       fontSize: 12,
                                       color: subtitleColor,
@@ -514,7 +524,7 @@ class _ServiceCheckoutScreenState extends State<ServiceCheckoutScreen> {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Text(
-                              '${_selectedImages.length} ${_selectedImages.length == 1 ? 'image' : 'images'} selected',
+                              '${_selectedImages.length} ${_selectedImages.length == 1 ? l10n.image : l10n.images} ${l10n.selected}',
                               style: TextStyle(
                                 fontSize: 13,
                                 fontWeight: FontWeight.w600,
@@ -571,7 +581,7 @@ class _ServiceCheckoutScreenState extends State<ServiceCheckoutScreen> {
 
               // DATE SELECTION SECTION
               Text(
-                'Select Date',
+                l10n.selectDate,
                 style: Theme.of(context).textTheme.titleMedium?.copyWith(
                   fontWeight: FontWeight.bold,
                   color: textColor,
@@ -599,7 +609,7 @@ class _ServiceCheckoutScreenState extends State<ServiceCheckoutScreen> {
                     title: Text(
                       _selectedDate != null
                           ? DateFormat('EEEE, MMMM d, y').format(_selectedDate!)
-                          : 'Choose a date',
+                          : l10n.chooseDate,
                       style: TextStyle(color: textColor),
                     ),
                     trailing: const Icon(Icons.arrow_forward_ios, size: 16),
@@ -611,7 +621,7 @@ class _ServiceCheckoutScreenState extends State<ServiceCheckoutScreen> {
 
               // TIME SELECTION SECTION
               Text(
-                'Select Time',
+                l10n.selectTime,
                 style: Theme.of(context).textTheme.titleMedium?.copyWith(
                   fontWeight: FontWeight.bold,
                   color: textColor,
@@ -639,7 +649,7 @@ class _ServiceCheckoutScreenState extends State<ServiceCheckoutScreen> {
                     title: Text(
                       _selectedTime != null
                           ? _selectedTime!.format(context)
-                          : 'Choose a time',
+                          : l10n.chooseTime,
                       style: TextStyle(color: textColor),
                     ),
                     trailing: const Icon(Icons.arrow_forward_ios, size: 16),
@@ -651,7 +661,7 @@ class _ServiceCheckoutScreenState extends State<ServiceCheckoutScreen> {
 
               // ADDRESS SECTION
               Text(
-                'Service Address',
+                l10n.serviceAddress,
                 style: Theme.of(context).textTheme.titleMedium?.copyWith(
                   fontWeight: FontWeight.bold,
                   color: textColor,
@@ -674,7 +684,7 @@ class _ServiceCheckoutScreenState extends State<ServiceCheckoutScreen> {
                   style: TextStyle(color: textColor),
                   maxLines: 2,
                   decoration: InputDecoration(
-                    hintText: 'Enter service address',
+                    hintText: l10n.enterServiceAddress,
                     hintStyle: TextStyle(
                       color: isDark ? Colors.grey.shade500 : Colors.grey.shade600,
                     ),
@@ -702,7 +712,7 @@ class _ServiceCheckoutScreenState extends State<ServiceCheckoutScreen> {
 
               // NOTES SECTION
               Text(
-                'Additional Notes (Optional)',
+                l10n.additionalNotesOptional,
                 style: Theme.of(context).textTheme.titleMedium?.copyWith(
                   fontWeight: FontWeight.bold,
                   color: textColor,
@@ -725,7 +735,7 @@ class _ServiceCheckoutScreenState extends State<ServiceCheckoutScreen> {
                   style: TextStyle(color: textColor),
                   maxLines: 3,
                   decoration: InputDecoration(
-                    hintText: 'Any special requests or notes...',
+                    hintText: l10n.anySpecialRequestsOrNotes,
                     hintStyle: TextStyle(
                       color: isDark ? Colors.grey.shade500 : Colors.grey.shade600,
                     ),
@@ -780,7 +790,7 @@ class _ServiceCheckoutScreenState extends State<ServiceCheckoutScreen> {
                           ),
                           const SizedBox(width: 12),
                           Text(
-                            'Request Summary',
+                            l10n.requestSummary,
                             style: Theme.of(context).textTheme.titleMedium?.copyWith(
                               fontWeight: FontWeight.bold,
                               color: textColor,
@@ -793,7 +803,7 @@ class _ServiceCheckoutScreenState extends State<ServiceCheckoutScreen> {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(
-                            'Services:',
+                            '${l10n.services}:',
                             style: TextStyle(color: subtitleColor),
                           ),
                           const SizedBox(width: 8),
@@ -830,11 +840,11 @@ class _ServiceCheckoutScreenState extends State<ServiceCheckoutScreen> {
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          Text('Date:', style: TextStyle(color: subtitleColor)),
+                          Text('${l10n.date}:', style: TextStyle(color: subtitleColor)),
                           Text(
                             _selectedDate != null
                                 ? DateFormat('MMM d, y').format(_selectedDate!)
-                                : 'Not selected',
+                                : l10n.notSelected,
                             style: TextStyle(
                               fontWeight: FontWeight.w500,
                               color: textColor,
@@ -846,11 +856,11 @@ class _ServiceCheckoutScreenState extends State<ServiceCheckoutScreen> {
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          Text('Time:', style: TextStyle(color: subtitleColor)),
+                          Text('${l10n.time}:', style: TextStyle(color: subtitleColor)),
                           Text(
                             _selectedTime != null
                                 ? _selectedTime!.format(context)
-                                : 'Not selected',
+                                : l10n.notSelected,
                             style: TextStyle(
                               fontWeight: FontWeight.w500,
                               color: textColor,
@@ -862,11 +872,11 @@ class _ServiceCheckoutScreenState extends State<ServiceCheckoutScreen> {
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          Text('Images:', style: TextStyle(color: subtitleColor)),
+                          Text('${l10n.images}:', style: TextStyle(color: subtitleColor)),
                           Text(
                             _selectedImages.isEmpty
-                                ? 'No images'
-                                : '${_selectedImages.length} ${_selectedImages.length == 1 ? 'image' : 'images'}',
+                                ? l10n.noImages
+                                : '${_selectedImages.length} ${_selectedImages.length == 1 ? l10n.image : l10n.images}',
                             style: TextStyle(
                               fontWeight: FontWeight.w500,
                               color: textColor,
@@ -879,14 +889,14 @@ class _ServiceCheckoutScreenState extends State<ServiceCheckoutScreen> {
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
                           Text(
-                            'Estimated Price:',
+                            l10n.estimatedPrice,
                             style: Theme.of(context).textTheme.titleMedium?.copyWith(
                               fontWeight: FontWeight.bold,
                               color: textColor,
                             ),
                           ),
                           Text(
-                            'SAR ${totalPrice.toStringAsFixed(0)}',
+                            localeService.formatCurrency(totalPrice),
                             style: Theme.of(context).textTheme.titleMedium?.copyWith(
                               fontWeight: FontWeight.bold,
                               color: Theme.of(context).colorScheme.primary,
@@ -939,16 +949,17 @@ class _ServiceCheckoutScreenState extends State<ServiceCheckoutScreen> {
                         valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
                       ),
                     )
-                        : const Row(
+                        : Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        Icon(Icons.send, size: 20),
-                        SizedBox(width: 12),
+                        Icon(Icons.send, size: 20, color: Colors.white),
+                        const SizedBox(width: 12),
                         Text(
-                          'Submit Request',
-                          style: TextStyle(
+                          l10n.submitRequest,
+                          style: const TextStyle(
                             fontSize: 16,
                             fontWeight: FontWeight.w600,
+                            color: Colors.white,
                           ),
                         ),
                       ],

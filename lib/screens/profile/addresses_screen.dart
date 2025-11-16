@@ -1,18 +1,8 @@
-// ===== ADDRESSES SCREEN FIXES =====
-
+// ===== addresses_screen.dart - LOCALIZED VERSION =====
 import 'package:flutter/material.dart';
+//import 'package:customer_app/gen/app_localizations.dart';
 import '../../models/user_model.dart';
-
-const Color backgroundColor = Color(0xFFF8F9FA);
-const Color surfaceColor = Colors.white;
-const Color textColor = Colors.black87;
-const Color subtitleColor = Colors.grey; // shade 600
-
-// Dark Mode
-const Color darkBackgroundColor = Color(0xFF0F172A);
-const Color darkSurfaceColor = Color(0xFF1E293B);
-const Color darkTextColor = Colors.white;
-const Color darkSubtitleColor = Colors.grey;
+import 'package:customer_app/app_localizations.dart';
 
 class AddressesScreen extends StatefulWidget {
   final User user;
@@ -43,7 +33,7 @@ class _AddressesScreenState extends State<AddressesScreen> {
     super.dispose();
   }
 
-  Future<void> _saveAddress() async {
+  Future<void> _saveAddress(AppLocalizations l10n) async {
     setState(() => _isSaving = true);
     await Future.delayed(const Duration(seconds: 1));
     setState(() {
@@ -53,8 +43,8 @@ class _AddressesScreenState extends State<AddressesScreen> {
 
     if (mounted) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Address updated successfully!'),
+        SnackBar(
+          content: Text(l10n.addressUpdated), // LOCALIZED
           backgroundColor: Colors.green,
         ),
       );
@@ -69,10 +59,13 @@ class _AddressesScreenState extends State<AddressesScreen> {
     final textColor = isDark ? Colors.white : Colors.black87;
     final subtitleColor = isDark ? Colors.grey.shade400 : Colors.grey.shade600;
 
+    // ADD LOCALIZATION
+    final l10n = AppLocalizations.of(context)!;
+
     return Scaffold(
       backgroundColor: backgroundColor,
       appBar: AppBar(
-        title: const Text('Saved Addresses'),
+        title: Text(l10n.savedAddresses), // LOCALIZED
         centerTitle: true,
         backgroundColor: cardColor,
         foregroundColor: textColor,
@@ -135,7 +128,7 @@ class _AddressesScreenState extends State<AddressesScreen> {
                       const SizedBox(width: 12),
                       Expanded(
                         child: Text(
-                          'Home Address',
+                          l10n.homeAddress, // LOCALIZED
                           style: TextStyle(
                             fontSize: 18,
                             fontWeight: FontWeight.bold,
@@ -153,9 +146,9 @@ class _AddressesScreenState extends State<AddressesScreen> {
                             color: Colors.orange.shade100,
                             borderRadius: BorderRadius.circular(8),
                           ),
-                          child: const Text(
-                            'Editing',
-                            style: TextStyle(
+                          child: Text(
+                            l10n.editing, // LOCALIZED
+                            style: const TextStyle(
                               color: Colors.orange,
                               fontSize: 12,
                               fontWeight: FontWeight.bold,
@@ -172,7 +165,7 @@ class _AddressesScreenState extends State<AddressesScreen> {
                       maxLines: 3,
                       style: TextStyle(color: textColor),
                       decoration: InputDecoration(
-                        hintText: 'Enter your address',
+                        hintText: l10n.enterYourAddress, // LOCALIZED
                         filled: true,
                         fillColor: isDark ? const Color(0xFF0F172A) : Colors.white,
                         border: OutlineInputBorder(
@@ -215,7 +208,7 @@ class _AddressesScreenState extends State<AddressesScreen> {
                                 color: isDark ? Colors.grey.shade600 : Colors.grey.shade400,
                               ),
                             ),
-                            child: const Text('Cancel'),
+                            child: Text(l10n.cancel), // LOCALIZED
                           ),
                         ),
                         const SizedBox(width: 12),
@@ -228,7 +221,7 @@ class _AddressesScreenState extends State<AddressesScreen> {
                               borderRadius: BorderRadius.circular(12),
                             ),
                             child: ElevatedButton(
-                              onPressed: _isSaving ? null : _saveAddress,
+                              onPressed: _isSaving ? null : () => _saveAddress(l10n),
                               style: ElevatedButton.styleFrom(
                                 backgroundColor: Colors.transparent,
                                 shadowColor: Colors.transparent,
@@ -244,7 +237,7 @@ class _AddressesScreenState extends State<AddressesScreen> {
                                   ),
                                 ),
                               )
-                                  : const Text('Save'),
+                                  : Text(l10n.save), // LOCALIZED
                             ),
                           ),
                         ),
@@ -272,8 +265,8 @@ class _AddressesScreenState extends State<AddressesScreen> {
                 child: InkWell(
                   onTap: () {
                     ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(
-                        content: Text('Add new address feature coming soon!'),
+                      SnackBar(
+                        content: Text(l10n.comingSoon), // LOCALIZED
                       ),
                     );
                   },
@@ -289,9 +282,9 @@ class _AddressesScreenState extends State<AddressesScreen> {
                         ),
                         const SizedBox(width: 12),
                         Text(
-                          'Add New Address',
-                          style: TextStyle(
-                            color: const Color(0xFF6B5B9A),
+                          l10n.addNewAddress, // LOCALIZED
+                          style: const TextStyle(
+                            color: Color(0xFF6B5B9A),
                             fontSize: 16,
                             fontWeight: FontWeight.bold,
                           ),
