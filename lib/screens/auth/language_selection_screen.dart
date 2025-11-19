@@ -36,40 +36,28 @@ class LanguageSelectionScreen extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
                 // Logo or App Name
+// Logo - circular and perfectly fitted
                 Container(
-                  width: 120,
-                  height: 120,
+                  height: 140,
+                  width: double.infinity,
                   decoration: BoxDecoration(
                     color: Colors.white,
-                    borderRadius: BorderRadius.circular(24),
-                    boxShadow: [
-                      BoxShadow(
-                        color: Colors.black.withValues(alpha: 0.2),
-                        blurRadius: 20,
-                        offset: const Offset(0, 10),
-                      ),
-                    ],
+                    borderRadius: BorderRadius.circular(30),
                   ),
                   child: ClipRRect(
-                    borderRadius: BorderRadius.circular(24),
+                    borderRadius: BorderRadius.circular(30),
                     child: Image.asset(
-                      'assets/images/Aidea_logo.png',
-                      fit: BoxFit.cover,
-                      errorBuilder: (context, error, stackTrace) {
-                        return const Icon(
-                          Icons.business,
-                          size: 60,
-                          color: Color(0xFF7C3AED),
-                        );
-                      },
+                      'assets/images/logo.png',
+                      fit: BoxFit.contain,  // makes full logo visible
                     ),
                   ),
                 ),
+
                 const SizedBox(height: 32),
 
                 // Title
                 const Text(
-                  'Aidea Technology',
+                  'HandyMan',
                   style: TextStyle(
                     color: Colors.white,
                     fontSize: 32,

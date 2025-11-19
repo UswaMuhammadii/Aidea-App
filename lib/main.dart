@@ -68,7 +68,7 @@ class _CustomerAppState extends State<CustomerApp> {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Aidea Technology',
+      title: 'HandyMan',
       debugShowCheckedModeBanner: false,
       
       // Localization delegates

@@ -383,7 +383,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                           onTap: () {
                             showAboutDialog(
                               context: context,
-                              applicationName: 'Aidea Technology',
+                              applicationName: 'HandyMan',
                               applicationVersion: '1.0.0',
                               applicationIcon: Container(
                                 padding: const EdgeInsets.all(12),

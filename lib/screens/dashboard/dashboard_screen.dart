@@ -685,7 +685,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                   child: ClipRRect(
                     borderRadius: BorderRadius.circular(8),
                     child: Image.asset(
-                      'assets/images/Aidea_logo.png',
+                      'assets/images/logo.png',
                       fit: BoxFit.cover,
                       errorBuilder: (context, error, stackTrace) {
                         return Container(
@@ -708,7 +708,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      'Aidea Technology',
+                      'HandyMan',
                       style: TextStyle(
                         color: Colors.white,
                         fontSize: 22,

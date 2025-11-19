@@ -107,7 +107,7 @@ class _InvoiceScreenState extends State<InvoiceScreen> {
                           ),
                           pw.SizedBox(height: 5),
                           pw.Text(
-                            'Aidea Technology',
+                            'HandyMan',
                             style: pw.TextStyle(
                               fontSize: 16,
                               fontWeight: pw.FontWeight.bold,
@@ -407,7 +407,7 @@ class _InvoiceScreenState extends State<InvoiceScreen> {
                 pw.SizedBox(height: 5),
                 pw.Center(
                   child: pw.Text(
-                    'For any queries, contact us at support@aideatech.com',
+                    'For any queries, contact us at support@handyman.com',
                     style: const pw.TextStyle(fontSize: 10, color: PdfColors.grey600),
                   ),
                 ),
