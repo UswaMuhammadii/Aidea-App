@@ -16,7 +16,7 @@ import '../cart/cart_screen.dart';
 import '../../widget/service_image_widget.dart';
 import '../../utils/icons_helper.dart';
 import '../../gen_l10n/app_localizations.dart';
-//import '../../gen/app_localizations.dart';
+import 'package:customer_app/screens/maps/map_selection_screen.dart';
 
 class DashboardColors {
   static const deepPurple = Color(0xFF7C3AED);
@@ -64,18 +64,20 @@ class DashboardScreen extends StatefulWidget {
 }
 
 class _DashboardScreenState extends State<DashboardScreen> {
-  int _selectedIndex=0;
+  int _selectedIndex = 0;
   List<ServiceCategory> _categories = [];
   String _selectedAddress = 'Building Sultan Town Lahore Punjab';
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
   int _orderTabIndex = 0;
-  static bool _hasShownNotificationPopup = false; // Static to persist across rebuilds
+  static bool _hasShownNotificationPopup = false;
+  late User _currentUser; // Added for address management
 
   @override
   void initState() {
     super.initState();
     _selectedIndex = widget.initialTab;
-    //_categories = DummyDataService.getCategories();
+    _currentUser = widget.user; // Initialize current user
+    _selectedAddress = _getPrimaryAddress(); // Get primary address from user
 
     // Show notification popup only once per app session
     if (!_hasShownNotificationPopup) {
@@ -88,6 +90,28 @@ class _DashboardScreenState extends State<DashboardScreen> {
         });
       });
     }
+  }
+
+  // Get primary address from user's saved addresses
+  String _getPrimaryAddress() {
+    if (_currentUser.savedAddresses.isEmpty) {
+      return _currentUser.address;
+    }
+
+    final primaryAddress = _currentUser.savedAddresses.firstWhere(
+          (address) => address.isPrimary,
+      orElse: () => _currentUser.savedAddresses.first,
+    );
+
+    return primaryAddress.fullAddress;
+  }
+
+  // Update user when addresses change
+  void _updateUser(User updatedUser) {
+    setState(() {
+      _currentUser = updatedUser;
+      _selectedAddress = _getPrimaryAddress();
+    });
   }
 
   void _handleNotificationPermission(AppLocalizations l10n) {
@@ -193,7 +217,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                         borderRadius: BorderRadius.circular(12),
                         boxShadow: [
                           BoxShadow(
-                            color: const Color(0xFF7C3AED).withValues(alpha: 0.3),
+                            color: const Color(0xFF7C3AED).withOpacity(0.3),
                             blurRadius: 10,
                             offset: const Offset(0, 5),
                           ),
@@ -241,6 +265,57 @@ class _DashboardScreenState extends State<DashboardScreen> {
     _showLocationPicker();
   }
 
+  void _openMapSelection() {
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => MapSelectionScreen(
+          initialAddress: _selectedAddress,
+          onLocationSelected: (address, lat, lng) {
+            // Handle the location selection directly
+            setState(() {
+              _selectedAddress = address;
+            });
+
+            // Save to addresses
+            _saveAddressToProfile(address, lat, lng);
+
+            final l10n = AppLocalizations.of(context)!;
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(
+                content: Text('$address ${l10n.hasBeenSaved}'),
+                backgroundColor: Colors.green,
+              ),
+            );
+          },
+        ),
+      ),
+    );
+  }
+
+  Future<void> _saveAddressToProfile(String address, double? lat, double? lng) async {
+    // Create a new SavedAddress
+    final newAddress = SavedAddress(
+      id: DateTime.now().millisecondsSinceEpoch.toString(),
+      title: 'Location ${_currentUser.savedAddresses.length + 1}',
+      fullAddress: address,
+      latitude: lat,
+      longitude: lng,
+      type: 'other',
+      isPrimary: _currentUser.savedAddresses.isEmpty, // First address is primary
+      createdAt: DateTime.now(),
+    );
+
+    // Update the user with the new address
+    final updatedAddresses = [..._currentUser.savedAddresses, newAddress];
+    final updatedUser = _currentUser.copyWith(savedAddresses: updatedAddresses);
+
+    // Update the current user
+    _updateUser(updatedUser);
+
+    print('Address saved: $address (Lat: $lat, Lng: $lng)');
+  }
+
   void _showLocationPicker() {
     final l10n = AppLocalizations.of(context)!;
     final isDark = Theme.of(context).brightness == Brightness.dark;
@@ -248,78 +323,242 @@ class _DashboardScreenState extends State<DashboardScreen> {
     final textColor = isDark ? Colors.white : Colors.black87;
     final subtitleColor = isDark ? Colors.grey.shade400 : Colors.grey.shade600;
 
-    showDialog(
+    showModalBottomSheet(
       context: context,
-      builder: (context) => Dialog(
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
-        backgroundColor: dialogBg,
-        child: Container(
-          padding: const EdgeInsets.all(20),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Row(
+      isScrollControlled: true,
+      backgroundColor: Colors.transparent,
+      builder: (context) => Container(
+        height: MediaQuery.of(context).size.height * 0.8,
+        decoration: BoxDecoration(
+          color: dialogBg,
+          borderRadius: const BorderRadius.only(
+            topLeft: Radius.circular(20),
+            topRight: Radius.circular(20),
+          ),
+        ),
+        child: Column(
+          children: [
+            // Header
+            Container(
+              padding: const EdgeInsets.all(20),
+              decoration: BoxDecoration(
+                border: Border(
+                  bottom: BorderSide(
+                    color: Colors.grey.shade300,
+                  ),
+                ),
+              ),
+              child: Row(
                 children: [
                   Container(
                     padding: const EdgeInsets.all(8),
                     decoration: BoxDecoration(
-                      color: DashboardColors.deepPurple.withValues(alpha: 0.1),
+                      color: DashboardColors.deepPurple.withOpacity(0.1),
                       borderRadius: BorderRadius.circular(8),
                     ),
                     child: const Icon(Icons.location_on, color: DashboardColors.deepPurple),
                   ),
                   const SizedBox(width: 12),
-                  Text(l10n.home, style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: textColor)),
-                  const Spacer(),
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(l10n.selectDeliveryLocation,
+                            style: TextStyle(
+                                fontSize: 18,
+                                fontWeight: FontWeight.bold,
+                                color: textColor)),
+                        const SizedBox(height: 4),
+                        Text(_selectedAddress,
+                            style: TextStyle(
+                                fontSize: 14,
+                                color: subtitleColor)),
+                      ],
+                    ),
+                  ),
                   IconButton(
                     onPressed: () => Navigator.pop(context),
                     icon: Icon(Icons.close, color: textColor),
                   ),
                 ],
               ),
-              const SizedBox(height: 8),
-              Text(_selectedAddress, style: TextStyle(fontSize: 14, color: subtitleColor)),
-              const SizedBox(height: 20),
-              ListTile(
-                leading: const Icon(Icons.my_location, color: DashboardColors.deepPurple),
-                title: Text('Use my current location', style: TextStyle(color: textColor)),
-                contentPadding: EdgeInsets.zero,
-                onTap: () {
-                  Navigator.pop(context);
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(
-                      content: Text('Getting current location...'),
-                      backgroundColor: DashboardColors.deepPurple,
-                    ),
-                  );
-                },
-              ),
-              const Divider(),
-              Container(
-                padding: const EdgeInsets.all(12),
-                decoration: BoxDecoration(
-                  color: isDark ? const Color(0xFF0F172A) : Colors.grey.shade100,
-                  borderRadius: BorderRadius.circular(12),
-                ),
-                child: Row(
+            ),
+
+            // Options List
+            Expanded(
+              child: SingleChildScrollView(
+                child: Column(
                   children: [
-                    Icon(Icons.location_city, size: 20, color: textColor),
-                    const SizedBox(width: 12),
-                    Expanded(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
+                    // Map Selection Option
+                    ListTile(
+                      leading: Container(
+                        padding: const EdgeInsets.all(8),
+                        decoration: BoxDecoration(
+                          color: DashboardColors.deepPurple.withOpacity(0.1),
+                          borderRadius: BorderRadius.circular(8),
+                        ),
+                        child: const Icon(Icons.map, color: DashboardColors.deepPurple),
+                      ),
+                      title: Text(l10n.selectOnMap, style: TextStyle(fontWeight: FontWeight.bold, color: textColor)),
+                      subtitle: Text(l10n.chooseExactLocationOnMap, style: TextStyle(color: subtitleColor)),
+                      trailing: const Icon(Icons.arrow_forward_ios, size: 16),
+                      onTap: () {
+                        Navigator.pop(context);
+                        _openMapSelection();
+                      },
+                    ),
+                    const Divider(),
+
+                    // Current Location Option
+                    ListTile(
+                      leading: Container(
+                        padding: const EdgeInsets.all(8),
+                        decoration: BoxDecoration(
+                          color: Colors.blue.withOpacity(0.1),
+                          borderRadius: BorderRadius.circular(8),
+                        ),
+                        child: const Icon(Icons.my_location, color: Colors.blue),
+                      ),
+                      title: Text(l10n.useCurrentLocation, style: TextStyle(color: textColor)),
+                      subtitle: Text(l10n.detectYourCurrentLocation, style: TextStyle(color: subtitleColor)),
+                      onTap: () async {
+                        Navigator.pop(context);
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          const SnackBar(
+                            content: Row(
+                              children: [
+                                SizedBox(
+                                  width: 16,
+                                  height: 16,
+                                  child: CircularProgressIndicator(strokeWidth: 2),
+                                ),
+                                SizedBox(width: 12),
+                                Text('Getting current location...'),
+                              ],
+                            ),
+                            backgroundColor: DashboardColors.deepPurple,
+                          ),
+                        );
+
+                        // Simulate getting current location
+                        await Future.delayed(const Duration(seconds: 2));
+
+                        if (mounted) {
+                          ScaffoldMessenger.of(context).hideCurrentSnackBar();
+                          setState(() {
+                            _selectedAddress = 'Current Location - Lahore, Pakistan';
+                          });
+
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(
+                              content: Text('$_selectedAddress ${l10n.hasBeenSaved}'),
+                              backgroundColor: Colors.green,
+                            ),
+                          );
+                        }
+                      },
+                    ),
+                    const Divider(),
+
+                    // Saved Addresses Section
+                    Padding(
+                      padding: const EdgeInsets.all(16),
+                      child: Text(
+                        l10n.savedAddresses,
+                        style: TextStyle(
+                          fontSize: 16,
+                          fontWeight: FontWeight.bold,
+                          color: textColor,
+                        ),
+                      ),
+                    ),
+
+                    // Home Address
+                    Container(
+                      margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
+                      padding: const EdgeInsets.all(12),
+                      decoration: BoxDecoration(
+                        color: isDark ? const Color(0xFF0F172A) : Colors.grey.shade100,
+                        borderRadius: BorderRadius.circular(12),
+                        border: Border.all(
+                          color: DashboardColors.deepPurple.withOpacity(0.3),
+                          width: 2,
+                        ),
+                      ),
+                      child: Row(
                         children: [
-                          Text('Lahore', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16, color: textColor)),
-                          Text(_selectedAddress, style: TextStyle(fontSize: 12, color: subtitleColor), maxLines: 1, overflow: TextOverflow.ellipsis),
+                          Container(
+                            padding: const EdgeInsets.all(6),
+                            decoration: BoxDecoration(
+                              color: DashboardColors.deepPurple.withOpacity(0.1),
+                              borderRadius: BorderRadius.circular(6),
+                            ),
+                            child: const Icon(Icons.home, color: DashboardColors.deepPurple, size: 20),
+                          ),
+                          const SizedBox(width: 12),
+                          Expanded(
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(l10n.home,
+                                    style: TextStyle(fontWeight: FontWeight.bold, fontSize: 14, color: textColor)),
+                                Text(_selectedAddress,
+                                    style: TextStyle(fontSize: 12, color: subtitleColor),
+                                    maxLines: 1,
+                                    overflow: TextOverflow.ellipsis),
+                              ],
+                            ),
+                          ),
+                          Icon(Icons.check_circle, color: DashboardColors.deepPurple, size: 20),
+                        ],
+                      ),
+                    ),
+
+                    // Work Address (example)
+                    Container(
+                      margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                      padding: const EdgeInsets.all(12),
+                      decoration: BoxDecoration(
+                        color: isDark ? const Color(0xFF0F172A) : Colors.grey.shade100,
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                      child: Row(
+                        children: [
+                          Container(
+                            padding: const EdgeInsets.all(6),
+                            decoration: BoxDecoration(
+                              color: Colors.orange.withOpacity(0.1),
+                              borderRadius: BorderRadius.circular(6),
+                            ),
+                            child: const Icon(Icons.work, color: Colors.orange, size: 20),
+                          ),
+                          const SizedBox(width: 12),
+                          Expanded(
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(l10n.work,
+                                    style: TextStyle(fontWeight: FontWeight.bold, fontSize: 14, color: textColor)),
+                                Text('Office Building, Gulberg, Lahore',
+                                    style: TextStyle(fontSize: 12, color: subtitleColor),
+                                    maxLines: 1,
+                                    overflow: TextOverflow.ellipsis),
+                              ],
+                            ),
+                          ),
+                          Icon(Icons.radio_button_unchecked, color: subtitleColor, size: 20),
                         ],
                       ),
                     ),
                   ],
                 ),
               ),
-              const SizedBox(height: 16),
-              SizedBox(
+            ),
+
+            // Continue Button
+            Container(
+              padding: const EdgeInsets.all(16),
+              child: SizedBox(
                 width: double.infinity,
                 child: ElevatedButton(
                   onPressed: () => Navigator.pop(context),
@@ -328,11 +567,12 @@ class _DashboardScreenState extends State<DashboardScreen> {
                     padding: const EdgeInsets.symmetric(vertical: 16),
                     shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
                   ),
-                  child: const Text('Continue', style: TextStyle(color: Colors.white, fontSize: 16, fontWeight: FontWeight.bold)),
+                  child: Text(l10n.continueText,
+                      style: const TextStyle(color: Colors.white, fontSize: 16, fontWeight: FontWeight.bold)),
                 ),
               ),
-            ],
-          ),
+            ),
+          ],
         ),
       ),
     );
@@ -365,9 +605,13 @@ class _DashboardScreenState extends State<DashboardScreen> {
                 children: [
                   _buildHomeTab(l10n),
                   _buildBookingsTab(l10n),
-                  InvoiceScreen(user: widget.user),
-                  ReviewScreen(user: widget.user),
-                  ProfileScreen(user: widget.user, onLogout: widget.onLogout),
+                  InvoiceScreen(user: _currentUser),
+                  ReviewScreen(user: _currentUser),
+                  ProfileScreen(
+                    user: _currentUser,
+                    onLogout: widget.onLogout,
+                    onUserUpdated: _updateUser, // Added callback for address updates
+                  ),
                 ],
               ),
             ),
@@ -388,7 +632,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
         ),
         boxShadow: [
           BoxShadow(
-            color: DashboardColors.deepPurple.withValues(alpha: 0.3),
+            color: DashboardColors.deepPurple.withOpacity(0.3),
             blurRadius: 20,
             offset: const Offset(0, 10),
           ),
@@ -409,12 +653,12 @@ class _DashboardScreenState extends State<DashboardScreen> {
                 Row(
                   children: [
                     _buildHeaderIcon(Icons.shopping_cart_outlined, cartItemsCount, () {
-                      Navigator.push(context, MaterialPageRoute(builder: (context) => CartScreen(user: widget.user)))
+                      Navigator.push(context, MaterialPageRoute(builder: (context) => CartScreen(user: _currentUser)))
                           .then((_) => setState(() {}));
                     }),
                     const SizedBox(width: 12),
                     _buildHeaderIcon(Icons.notifications_outlined, _getUnreadNotificationCount(), () {
-                      Navigator.push(context, MaterialPageRoute(builder: (context) => NotificationScreen(user: widget.user)))
+                      Navigator.push(context, MaterialPageRoute(builder: (context) => NotificationScreen(user: _currentUser)))
                           .then((_) => setState(() {}));
                     }),
                   ],
@@ -432,7 +676,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                     borderRadius: BorderRadius.circular(8),
                     boxShadow: [
                       BoxShadow(
-                        color: Colors.black.withValues(alpha: 0.1),
+                        color: Colors.black.withOpacity(0.1),
                         blurRadius: 8,
                         offset: const Offset(0, 2),
                       ),
@@ -485,7 +729,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
             ),
             const SizedBox(height: 8),
             Text(
-              'Hello, ${widget.user.name}',
+              'Hello, ${_currentUser.name}',
               style: const TextStyle(
                 color: Colors.white70,
                 fontSize: 14,
@@ -497,7 +741,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
               child: Container(
                 padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
                 decoration: BoxDecoration(
-                  color: Colors.white.withValues(alpha: 0.2),
+                  color: Colors.white.withOpacity(0.2),
                   borderRadius: BorderRadius.circular(12),
                 ),
                 child: Row(
@@ -534,7 +778,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
           Container(
             padding: const EdgeInsets.all(8),
             decoration: BoxDecoration(
-              color: Colors.white.withValues(alpha: 0.2),
+              color: Colors.white.withOpacity(0.2),
               borderRadius: BorderRadius.circular(12),
             ),
             child: Icon(icon, color: Colors.white, size: 24),
@@ -569,7 +813,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
         borderRadius: const BorderRadius.only(topLeft: Radius.circular(24), topRight: Radius.circular(24)),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withValues(alpha: isDark ? 0.3 : 0.1),
+            color: Colors.black.withOpacity(isDark ? 0.3 : 0.1),
             blurRadius: 20,
             offset: const Offset(0, -5),
           ),
@@ -603,7 +847,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
       child: Container(
         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
         decoration: BoxDecoration(
-          color: isActive ? DashboardColors.deepPurple.withValues(alpha: 0.1) : Colors.transparent,
+          color: isActive ? DashboardColors.deepPurple.withOpacity(0.1) : Colors.transparent,
           borderRadius: BorderRadius.circular(16),
         ),
         child: Column(
@@ -639,7 +883,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                 margin: const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
                 padding: const EdgeInsets.all(16),
                 decoration: BoxDecoration(
-                  color: Colors.white.withValues(alpha: 0.15),
+                  color: Colors.white.withOpacity(0.15),
                   borderRadius: BorderRadius.circular(16),
                 ),
                 child: Column(
@@ -660,7 +904,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                     ),
                     const SizedBox(height: 8),
                     Text(
-                      widget.user.name,
+                      _currentUser.name,
                       style: const TextStyle(
                         color: Colors.white,
                         fontSize: 16,
@@ -671,7 +915,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                     ),
                     const SizedBox(height: 2),
                     Text(
-                      widget.user.email,
+                      _currentUser.email,
                       style: const TextStyle(
                         color: Colors.white70,
                         fontSize: 12,
@@ -708,7 +952,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                         Navigator.push(
                           context,
                           MaterialPageRoute(
-                            builder: (context) => CartScreen(user: widget.user),
+                            builder: (context) => CartScreen(user: _currentUser),
                           ),
                         ).then((_) => setState(() {}));
                       }, cartItemsCount > 0 ? cartItemsCount.toString() : null),
@@ -794,7 +1038,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                 crossAxisCount: 2,
                 crossAxisSpacing: 12,
                 mainAxisSpacing: 12,
-                childAspectRatio: 0.88, // Changed from 0.95 to 0.88 to give more height
+                childAspectRatio: 0.88,
               ),
               itemCount: _categories.length,
               itemBuilder: (context, index) {
@@ -806,7 +1050,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                       MaterialPageRoute(
                         builder: (context) => ServiceListingScreen(
                           categoryName: category.name,
-                          user: widget.user,
+                          user: _currentUser,
                         ),
                       ),
                     ).then((_) => setState(() {}));
@@ -818,7 +1062,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                       borderRadius: BorderRadius.circular(16),
                       boxShadow: [
                         BoxShadow(
-                          color: Colors.black.withValues(alpha: isDark ? 0.3 : 0.08),
+                          color: Colors.black.withOpacity(isDark ? 0.3 : 0.08),
                           blurRadius: 10,
                           offset: const Offset(0, 3),
                         ),
@@ -858,7 +1102,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                                     Container(
                                       padding: const EdgeInsets.all(5),
                                       decoration: BoxDecoration(
-                                        color: DashboardColors.deepPurple.withValues(alpha: 0.1),
+                                        color: DashboardColors.deepPurple.withOpacity(0.1),
                                         borderRadius: BorderRadius.circular(6),
                                       ),
                                       child: Icon(
@@ -930,7 +1174,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
     final subtitleColor = isDark ? Colors.grey.shade400 : Colors.grey.shade600;
     final shadowOpacity = isDark ? 0.3 : 0.08;
 
-    final bookings = DummyDataService.getUserBookings(widget.user.id);
+    final bookings = DummyDataService.getUserBookings(_currentUser.id);
     final activeBookings = bookings.where((b) =>
     b.status == BookingStatus.pending ||
         b.status == BookingStatus.confirmed ||
@@ -980,17 +1224,17 @@ class _DashboardScreenState extends State<DashboardScreen> {
                         decoration: BoxDecoration(
                           color: cardColor,
                           borderRadius: BorderRadius.circular(24),
-                          boxShadow: [BoxShadow(color: Colors.black.withValues(alpha: 0.05), blurRadius: 15, offset: const Offset(0, 5))],
+                          boxShadow: [BoxShadow(color: Colors.black.withOpacity(0.05), blurRadius: 15, offset: const Offset(0, 5))],
                         ),
                         child: Column(
                           children: [
                             Container(
                               padding: const EdgeInsets.all(20),
                               decoration: BoxDecoration(
-                                color: DashboardColors.deepPurple.withValues(alpha: 0.1),
+                                color: DashboardColors.deepPurple.withOpacity(0.1),
                                 shape: BoxShape.circle,
                               ),
-                              child: Icon(Icons.receipt_long_outlined, size: 64, color: DashboardColors.deepPurple.withValues(alpha: 0.5)),
+                              child: Icon(Icons.receipt_long_outlined, size: 64, color: DashboardColors.deepPurple.withOpacity(0.5)),
                             ),
                             const SizedBox(height: 20),
                             Text(_orderTabIndex == 0 ? l10n.noActiveOrders : l10n.noPreviousOrders, style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: textColor)),
@@ -1037,7 +1281,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                         decoration: BoxDecoration(
                           color: cardColor,
                           borderRadius: BorderRadius.circular(20),
-                          boxShadow: [BoxShadow(color: Colors.black.withValues(alpha: shadowOpacity), blurRadius: 15, offset: const Offset(0, 5))],
+                          boxShadow: [BoxShadow(color: Colors.black.withOpacity(shadowOpacity), blurRadius: 15, offset: const Offset(0, 5))],
                         ),
                         child: Padding(
                           padding: const EdgeInsets.all(20),
@@ -1051,8 +1295,8 @@ class _DashboardScreenState extends State<DashboardScreen> {
                                     decoration: BoxDecoration(
                                       gradient: LinearGradient(
                                         colors: [
-                                          firstBooking.statusColor.withValues(alpha: 0.2),
-                                          firstBooking.statusColor.withValues(alpha: 0.1)
+                                          firstBooking.statusColor.withOpacity(0.2),
+                                          firstBooking.statusColor.withOpacity(0.1)
                                         ],
                                       ),
                                       borderRadius: BorderRadius.circular(12),
@@ -1084,7 +1328,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                                         Container(
                                           padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
                                           decoration: BoxDecoration(
-                                            color: firstBooking.statusColor.withValues(alpha: 0.1),
+                                            color: firstBooking.statusColor.withOpacity(0.1),
                                             borderRadius: BorderRadius.circular(8),
                                           ),
                                           child: Text(
@@ -1107,9 +1351,9 @@ class _DashboardScreenState extends State<DashboardScreen> {
                                 Container(
                                   padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
                                   decoration: BoxDecoration(
-                                    color: Colors.blue.withValues(alpha: 0.1),
+                                    color: Colors.blue.withOpacity(0.1),
                                     borderRadius: BorderRadius.circular(8),
-                                    border: Border.all(color: Colors.blue.withValues(alpha: 0.3)),
+                                    border: Border.all(color: Colors.blue.withOpacity(0.3)),
                                   ),
                                   child: IntrinsicHeight(
                                     child: Row(
@@ -1175,6 +1419,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                                   ),
                                 ),
                               ],
+
                               const SizedBox(height: 16),
                               Container(
                                 padding: const EdgeInsets.all(16),
@@ -1215,7 +1460,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                                         context,
                                         MaterialPageRoute(
                                           builder: (context) => OrderTrackingScreen(
-                                            user: widget.user,
+                                            user: _currentUser,
                                             booking: firstBooking,
                                           ),
                                         ),
@@ -1226,7 +1471,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                                         context,
                                         MaterialPageRoute(
                                           builder: (context) => OrderDetailsWithWorkerScreen(
-                                            user: widget.user,
+                                            user: _currentUser,
                                             booking: firstBooking,
                                           ),
                                         ),
@@ -1237,7 +1482,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                                     width: double.infinity,
                                     padding: const EdgeInsets.symmetric(vertical: 12),
                                     decoration: BoxDecoration(
-                                      color: DashboardColors.deepPurple.withValues(alpha: 0.1),
+                                      color: DashboardColors.deepPurple.withOpacity(0.1),
                                       borderRadius: BorderRadius.circular(10),
                                     ),
                                     child: Row(

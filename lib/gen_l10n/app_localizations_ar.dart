@@ -1314,4 +1314,57 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get completeService => 'خدمة كاملة';
+
+  @override
+  String get selectLocation => 'اختر الموقع';
+
+  @override
+  String get selectedLocation => 'الموقع المحدد';
+
+  @override
+  String get tapOnMapToSelectLocation => 'انقر على الخريطة لتحديد موقعك';
+
+  @override
+  String get tapToChangeLocation => 'انقر لتغيير الموقع';
+
+  @override
+  String get confirmLocation => 'تأكيد الموقع';
+
+  @override
+  String get tapToSelectOnMap => 'انقر للتحديد على الخريطة';
+
+  @override
+  String get pleaseSelectLocationFromMap => 'يرجى تحديد الموقع من الخريطة';
+
+  @override
+  String get tapMapIconToSelectLocation =>
+      'انقر على أيقونة الخريطة لتحديد الموقع';
+
+  @override
+  String get addressType => 'نوع العنوان';
+
+  @override
+  String get additionalLocationDetails =>
+      'تفاصيل إضافية عن الموقع (معلم، اسم المبنى، إلخ)';
+
+  @override
+  String get selectOnMap => 'تحديد على الخريطة';
+
+  @override
+  String get chooseExactLocationOnMap => 'اختر الموقع الدقيق على الخريطة';
+
+  @override
+  String get useCurrentLocation => 'استخدم الموقع الحالي';
+
+  @override
+  String get detectYourCurrentLocation => 'اكتشف موقعك الحالي تلقائياً';
+
+  @override
+  String get continueText => 'متابعة';
+
+  @override
+  String get selectDeliveryLocation => 'اختر موقع التسليم';
+
+  @override
+  String get hasBeenSaved => 'تم الحفظ';
 }

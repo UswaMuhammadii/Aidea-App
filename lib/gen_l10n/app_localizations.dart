@@ -2641,6 +2641,108 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Complete Service'**
   String get completeService;
+
+  /// No description provided for @selectLocation.
+  ///
+  /// In en, this message translates to:
+  /// **'Select Location'**
+  String get selectLocation;
+
+  /// No description provided for @selectedLocation.
+  ///
+  /// In en, this message translates to:
+  /// **'Selected Location'**
+  String get selectedLocation;
+
+  /// No description provided for @tapOnMapToSelectLocation.
+  ///
+  /// In en, this message translates to:
+  /// **'Tap on the map to select your location'**
+  String get tapOnMapToSelectLocation;
+
+  /// No description provided for @tapToChangeLocation.
+  ///
+  /// In en, this message translates to:
+  /// **'Tap to change location'**
+  String get tapToChangeLocation;
+
+  /// No description provided for @confirmLocation.
+  ///
+  /// In en, this message translates to:
+  /// **'Confirm Location'**
+  String get confirmLocation;
+
+  /// No description provided for @tapToSelectOnMap.
+  ///
+  /// In en, this message translates to:
+  /// **'Tap to select on map'**
+  String get tapToSelectOnMap;
+
+  /// No description provided for @pleaseSelectLocationFromMap.
+  ///
+  /// In en, this message translates to:
+  /// **'Please select location from map'**
+  String get pleaseSelectLocationFromMap;
+
+  /// No description provided for @tapMapIconToSelectLocation.
+  ///
+  /// In en, this message translates to:
+  /// **'Tap map icon to select location'**
+  String get tapMapIconToSelectLocation;
+
+  /// No description provided for @addressType.
+  ///
+  /// In en, this message translates to:
+  /// **'Address Type'**
+  String get addressType;
+
+  /// No description provided for @additionalLocationDetails.
+  ///
+  /// In en, this message translates to:
+  /// **'Additional location details (landmark, building name, etc.)'**
+  String get additionalLocationDetails;
+
+  /// No description provided for @selectOnMap.
+  ///
+  /// In en, this message translates to:
+  /// **'Select on Map'**
+  String get selectOnMap;
+
+  /// No description provided for @chooseExactLocationOnMap.
+  ///
+  /// In en, this message translates to:
+  /// **'Choose exact location on map'**
+  String get chooseExactLocationOnMap;
+
+  /// No description provided for @useCurrentLocation.
+  ///
+  /// In en, this message translates to:
+  /// **'Use Current Location'**
+  String get useCurrentLocation;
+
+  /// No description provided for @detectYourCurrentLocation.
+  ///
+  /// In en, this message translates to:
+  /// **'Detect your current location automatically'**
+  String get detectYourCurrentLocation;
+
+  /// No description provided for @continueText.
+  ///
+  /// In en, this message translates to:
+  /// **'Continue'**
+  String get continueText;
+
+  /// No description provided for @selectDeliveryLocation.
+  ///
+  /// In en, this message translates to:
+  /// **'Select Delivery Location'**
+  String get selectDeliveryLocation;
+
+  /// No description provided for @hasBeenSaved.
+  ///
+  /// In en, this message translates to:
+  /// **'has been saved'**
+  String get hasBeenSaved;
 }
 
 class _AppLocalizationsDelegate

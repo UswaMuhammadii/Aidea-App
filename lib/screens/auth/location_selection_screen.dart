@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+//import './map/map_selection_screen.dart';
 import '../../gen_l10n/app_localizations.dart';
+import 'package:customer_app/screens/maps/map_selection_screen.dart';
 
 class AppColors {
   static const deepPurple = Color(0xFF7C3AED);
@@ -36,6 +38,8 @@ class _LocationSelectionScreenState extends State<LocationSelectionScreen> {
 
   bool _saveAsPrimary = true;
   late String _addressType;
+  double? _selectedLatitude;
+  double? _selectedLongitude;
 
   @override
   void initState() {
@@ -54,6 +58,32 @@ class _LocationSelectionScreenState extends State<LocationSelectionScreen> {
     super.dispose();
   }
 
+  void _openMapSelection() async {
+    final result = await Navigator.push<Map<String, dynamic>>(
+      context,
+      MaterialPageRoute(
+        builder: (context) => MapSelectionScreen(
+          initialAddress: _streetController.text.isNotEmpty ? _streetController.text : null,
+          onLocationSelected: (address, lat, lng) {
+            return {
+              'address': address,
+              'latitude': lat,
+              'longitude': lng,
+            };
+          },
+        ),
+      ),
+    );
+
+    if (result != null) {
+      setState(() {
+        _streetController.text = result['address'] ?? '';
+        _selectedLatitude = result['latitude'];
+        _selectedLongitude = result['longitude'];
+      });
+    }
+  }
+
   Future<void> _saveAddress() async {
     if (!_formKey.currentState!.validate()) return;
 
@@ -65,6 +95,8 @@ class _LocationSelectionScreenState extends State<LocationSelectionScreen> {
       'apartment': _apartmentController.text,
       'otherInfo': _otherInfoController.text,
       'type': _addressType,
+      'latitude': _selectedLatitude?.toString() ?? '',
+      'longitude': _selectedLongitude?.toString() ?? '',
     };
 
     widget.onLocationSelected(addressData);
@@ -95,7 +127,7 @@ class _LocationSelectionScreenState extends State<LocationSelectionScreen> {
           onPressed: () => Navigator.pop(context),
         ),
         title: Text(
-          l10n.completeYourProfile, // FIXED: Use localization
+          l10n.completeYourProfile,
           style: TextStyle(
             color: isDark ? Colors.white : Colors.black87,
             fontSize: 18,
@@ -114,36 +146,87 @@ class _LocationSelectionScreenState extends State<LocationSelectionScreen> {
               Container(
                 height: 250,
                 width: double.infinity,
-                color: Colors.grey.shade200,
                 child: Stack(
-                  alignment: Alignment.center,
                   children: [
                     Container(
-                      color: Colors.grey.shade300,
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Icon(
-                            Icons.map,
-                            size: 64,
-                            color: Colors.grey.shade500,
-                          ),
-                          const SizedBox(height: 8),
-                          Text(
-                            l10n.serviceLocation, // FIXED: Use localization
-                            style: TextStyle(
-                              color: Colors.grey.shade600,
-                              fontSize: 16,
+                      color: Colors.grey.shade200,
+                      child: InkWell(
+                        onTap: _openMapSelection,
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Icon(
+                              Icons.map,
+                              size: 64,
+                              color: Colors.grey.shade500,
                             ),
-                          ),
-                        ],
+                            const SizedBox(height: 8),
+                            Text(
+                              _streetController.text.isEmpty
+                                  ? l10n.tapToSelectOnMap
+                                  : l10n.tapToChangeLocation,
+                              style: TextStyle(
+                                color: Colors.grey.shade600,
+                                fontSize: 16,
+                              ),
+                            ),
+                            if (_streetController.text.isNotEmpty) ...[
+                              const SizedBox(height: 8),
+                              Padding(
+                                padding: const EdgeInsets.symmetric(horizontal: 20),
+                                child: Text(
+                                  _streetController.text,
+                                  textAlign: TextAlign.center,
+                                  style: TextStyle(
+                                    color: Colors.grey.shade700,
+                                    fontSize: 14,
+                                    fontWeight: FontWeight.w500,
+                                  ),
+                                  maxLines: 2,
+                                  overflow: TextOverflow.ellipsis,
+                                ),
+                              ),
+                            ],
+                          ],
+                        ),
                       ),
                     ),
-                    const Icon(
-                      Icons.location_on,
-                      color: Colors.green,
-                      size: 48,
+                    Positioned(
+                      bottom: 10,
+                      right: 10,
+                      child: FloatingActionButton.small(
+                        onPressed: _openMapSelection,
+                        backgroundColor: const Color(0xFF7C3AED),
+                        child: const Icon(Icons.edit_location, color: Colors.white),
+                      ),
                     ),
+                    if (_selectedLatitude != null && _selectedLongitude != null)
+                      Positioned(
+                        top: 10,
+                        left: 10,
+                        child: Container(
+                          padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                          decoration: BoxDecoration(
+                            color: Colors.green.withOpacity(0.9),
+                            borderRadius: BorderRadius.circular(8),
+                          ),
+                          child: Row(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              Icon(Icons.check_circle, color: Colors.white, size: 14),
+                              const SizedBox(width: 4),
+                              Text(
+                                'Location Set',
+                                style: TextStyle(
+                                  color: Colors.white,
+                                  fontSize: 12,
+                                  fontWeight: FontWeight.w500,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
                   ],
                 ),
               ),
@@ -155,7 +238,7 @@ class _LocationSelectionScreenState extends State<LocationSelectionScreen> {
                   children: [
                     // Personal Information Section
                     Text(
-                      l10n.personalInformation, // FIXED: Use localization
+                      l10n.personalInformation,
                       style: TextStyle(
                         fontSize: 20,
                         fontWeight: FontWeight.bold,
@@ -166,7 +249,7 @@ class _LocationSelectionScreenState extends State<LocationSelectionScreen> {
 
                     // Full Name
                     Text(
-                      l10n.fullName, // FIXED: Use localization
+                      l10n.fullName,
                       style: TextStyle(
                         fontSize: 14,
                         color: isDark ? Colors.grey.shade400 : Colors.grey.shade600,
@@ -179,7 +262,7 @@ class _LocationSelectionScreenState extends State<LocationSelectionScreen> {
                         color: isDark ? Colors.white : Colors.black87,
                       ),
                       decoration: InputDecoration(
-                        hintText: l10n.enterYourFullName, // FIXED: Use localization
+                        hintText: l10n.enterYourFullName,
                         hintStyle: TextStyle(
                           color: isDark ? Colors.grey.shade600 : Colors.grey.shade400,
                         ),
@@ -193,7 +276,7 @@ class _LocationSelectionScreenState extends State<LocationSelectionScreen> {
                       ),
                       validator: (value) {
                         if (value == null || value.isEmpty) {
-                          return l10n.pleaseEnterYourName; // FIXED: Use localization
+                          return l10n.pleaseEnterYourName;
                         }
                         return null;
                       },
@@ -202,7 +285,7 @@ class _LocationSelectionScreenState extends State<LocationSelectionScreen> {
 
                     // Email
                     Text(
-                      l10n.emailAddress, // FIXED: Use localization
+                      l10n.emailAddress,
                       style: TextStyle(
                         fontSize: 14,
                         color: isDark ? Colors.grey.shade400 : Colors.grey.shade600,
@@ -216,7 +299,7 @@ class _LocationSelectionScreenState extends State<LocationSelectionScreen> {
                       ),
                       keyboardType: TextInputType.emailAddress,
                       decoration: InputDecoration(
-                        hintText: l10n.enterYourEmail, // FIXED: Use localization
+                        hintText: l10n.enterYourEmail,
                         hintStyle: TextStyle(
                           color: isDark ? Colors.grey.shade600 : Colors.grey.shade400,
                         ),
@@ -230,10 +313,10 @@ class _LocationSelectionScreenState extends State<LocationSelectionScreen> {
                       ),
                       validator: (value) {
                         if (value == null || value.isEmpty) {
-                          return l10n.pleaseEnterYourEmail; // FIXED: Use localization
+                          return l10n.pleaseEnterYourEmail;
                         }
                         if (!value.contains('@')) {
-                          return l10n.pleaseEnterValidEmail; // FIXED: Use localization
+                          return l10n.pleaseEnterValidEmail;
                         }
                         return null;
                       },
@@ -242,7 +325,7 @@ class _LocationSelectionScreenState extends State<LocationSelectionScreen> {
 
                     // Address Details Section
                     Text(
-                      l10n.deliveryAddress, // FIXED: Use localization
+                      l10n.deliveryAddress,
                       style: TextStyle(
                         fontSize: 20,
                         fontWeight: FontWeight.bold,
@@ -251,39 +334,65 @@ class _LocationSelectionScreenState extends State<LocationSelectionScreen> {
                     ),
                     const SizedBox(height: 20),
 
-                    // Street Name
-                    Text(
-                      l10n.streetName, // FIXED: Use localization
-                      style: TextStyle(
-                        fontSize: 14,
-                        color: isDark ? Colors.grey.shade400 : Colors.grey.shade600,
-                      ),
+                    // Street Name with Map Button
+                    Row(
+                      children: [
+                        Expanded(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                l10n.streetName,
+                                style: TextStyle(
+                                  fontSize: 14,
+                                  color: isDark ? Colors.grey.shade400 : Colors.grey.shade600,
+                                ),
+                              ),
+                              const SizedBox(height: 8),
+                              TextFormField(
+                                controller: _streetController,
+                                style: TextStyle(
+                                  color: isDark ? Colors.white : Colors.black87,
+                                ),
+                              //  readOnly: true, // Make it read-only since we set it from map
+                                decoration: InputDecoration(
+                                  hintText: l10n.pleaseEnterStreetName,
+                                  hintStyle: TextStyle(
+                                    color: Colors.grey.shade400,
+                                  ),
+                                  filled: true,
+                                  fillColor: isDark ? const Color(0xFF1E293B) : Colors.grey.shade100,
+                                  border: OutlineInputBorder(
+                                    borderRadius: BorderRadius.circular(12),
+                                    borderSide: BorderSide.none,
+                                  ),
+                                  contentPadding: const EdgeInsets.all(16),
+                                  suffixIcon: IconButton(
+                                    icon: const Icon(Icons.map_outlined),
+                                    onPressed: _openMapSelection,
+                                    color: const Color(0xFF7C3AED),
+                                  ),
+                                ),
+                                validator: (value) {
+                                  if (value == null || value.isEmpty) {
+                                    return l10n.pleaseSelectLocationFromMap;
+                                  }
+                                  return null;
+                                },
+                              ),
+                            ],
+                          ),
+                        ),
+                      ],
                     ),
                     const SizedBox(height: 8),
-                    TextFormField(
-                      controller: _streetController,
+                    Text(
+                      l10n.tapMapIconToSelectLocation,
                       style: TextStyle(
-                        color: isDark ? Colors.white : Colors.black87,
+                        fontSize: 12,
+                        color: isDark ? Colors.grey.shade500 : Colors.grey.shade600,
+                        fontStyle: FontStyle.italic,
                       ),
-                      decoration: InputDecoration(
-                        hintText: l10n.pleaseEnterStreetName, // FIXED: Use localization
-                        hintStyle: TextStyle(
-                          color: Colors.grey.shade400,
-                        ),
-                        filled: true,
-                        fillColor: isDark ? const Color(0xFF1E293B) : Colors.grey.shade100,
-                        border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(12),
-                          borderSide: BorderSide.none,
-                        ),
-                        contentPadding: const EdgeInsets.all(16),
-                      ),
-                      validator: (value) {
-                        if (value == null || value.isEmpty) {
-                          return l10n.pleaseEnterStreetName; // FIXED: Use localization
-                        }
-                        return null;
-                      },
                     ),
                     const SizedBox(height: 20),
 
@@ -295,7 +404,7 @@ class _LocationSelectionScreenState extends State<LocationSelectionScreen> {
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               Text(
-                                l10n.floor, // FIXED: Use localization
+                                l10n.floor,
                                 style: TextStyle(
                                   fontSize: 14,
                                   color: isDark ? Colors.grey.shade400 : Colors.grey.shade600,
@@ -308,7 +417,7 @@ class _LocationSelectionScreenState extends State<LocationSelectionScreen> {
                                   color: isDark ? Colors.white : Colors.black87,
                                 ),
                                 decoration: InputDecoration(
-                                  hintText: l10n.floorNumber, // FIXED: Use localization
+                                  hintText: l10n.floorNumber,
                                   hintStyle: TextStyle(
                                     color: Colors.grey.shade400,
                                   ),
@@ -332,7 +441,7 @@ class _LocationSelectionScreenState extends State<LocationSelectionScreen> {
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               Text(
-                                l10n.apartment, // FIXED: Use localization
+                                l10n.apartment,
                                 style: TextStyle(
                                   fontSize: 14,
                                   color: isDark ? Colors.grey.shade400 : Colors.grey.shade600,
@@ -345,7 +454,7 @@ class _LocationSelectionScreenState extends State<LocationSelectionScreen> {
                                   color: isDark ? Colors.white : Colors.black87,
                                 ),
                                 decoration: InputDecoration(
-                                  hintText: l10n.apartmentNumber, // FIXED: Use localization
+                                  hintText: l10n.apartmentNumber,
                                   hintStyle: TextStyle(
                                     color: Colors.grey.shade400,
                                   ),
@@ -369,7 +478,7 @@ class _LocationSelectionScreenState extends State<LocationSelectionScreen> {
 
                     // Other Information
                     Text(
-                      l10n.otherInformation, // FIXED: Use localization
+                      l10n.otherInformation,
                       style: TextStyle(
                         fontSize: 14,
                         color: isDark ? Colors.grey.shade400 : Colors.grey.shade600,
@@ -383,6 +492,10 @@ class _LocationSelectionScreenState extends State<LocationSelectionScreen> {
                         color: isDark ? Colors.white : Colors.black87,
                       ),
                       decoration: InputDecoration(
+                        hintText: l10n.additionalLocationDetails,
+                        hintStyle: TextStyle(
+                          color: Colors.grey.shade400,
+                        ),
                         filled: true,
                         fillColor: isDark ? const Color(0xFF1E293B) : Colors.grey.shade100,
                         border: OutlineInputBorder(
@@ -399,7 +512,7 @@ class _LocationSelectionScreenState extends State<LocationSelectionScreen> {
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         Text(
-                          l10n.saveAddressAsPrimary, // FIXED: Use localization
+                          l10n.saveAddressAsPrimary,
                           style: TextStyle(
                             fontSize: 16,
                             color: isDark ? Colors.white : Colors.black87,
@@ -417,6 +530,14 @@ class _LocationSelectionScreenState extends State<LocationSelectionScreen> {
                     const SizedBox(height: 24),
 
                     // Address Type Selection
+                    Text(
+                      l10n.addressType,
+                      style: TextStyle(
+                        fontSize: 14,
+                        color: isDark ? Colors.grey.shade400 : Colors.grey.shade600,
+                      ),
+                    ),
+                    const SizedBox(height: 8),
                     Row(
                       children: [
                         _buildAddressTypeChip(l10n.home, Icons.home, l10n),
@@ -450,7 +571,7 @@ class _LocationSelectionScreenState extends State<LocationSelectionScreen> {
                           borderRadius: BorderRadius.circular(16),
                           child: Center(
                             child: Text(
-                              l10n.saveAndContinue, // FIXED: Use localization
+                              l10n.saveAndContinue,
                               style: const TextStyle(
                                 color: Colors.white,
                                 fontSize: 18,

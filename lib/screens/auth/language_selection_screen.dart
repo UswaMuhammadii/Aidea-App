@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import '../../gen_l10n/app_localizations.dart';
 
+
 class LanguageSelectionScreen extends StatelessWidget {
   final Function(Locale) onLanguageSelected;
 
@@ -65,7 +66,7 @@ class LanguageSelectionScreen extends StatelessWidget {
                   ),
                 ),
                 const SizedBox(height: 32),
-                
+
                 // Title
                 const Text(
                   'Aidea Technology',
@@ -86,7 +87,7 @@ class LanguageSelectionScreen extends StatelessWidget {
                   textAlign: TextAlign.center,
                 ),
                 const SizedBox(height: 64),
-                
+
                 // Language Selection Title
                 const Text(
                   'Select Language / اختر اللغة',
@@ -98,7 +99,7 @@ class LanguageSelectionScreen extends StatelessWidget {
                   textAlign: TextAlign.center,
                 ),
                 const SizedBox(height: 32),
-                
+
                 // English Button
                 _buildLanguageButton(
                   context: context,
@@ -108,7 +109,7 @@ class LanguageSelectionScreen extends StatelessWidget {
                   onTap: () => onLanguageSelected(const Locale('en')),
                 ),
                 const SizedBox(height: 16),
-                
+
                 // Arabic Button
                 _buildLanguageButton(
                   context: context,
@@ -117,9 +118,9 @@ class LanguageSelectionScreen extends StatelessWidget {
                   locale: const Locale('ar'),
                   onTap: () => onLanguageSelected(const Locale('ar')),
                 ),
-                
+
                 const SizedBox(height: 64),
-                
+
                 // Footer
                 Text(
                   'Version 1.0.0',
@@ -183,7 +184,7 @@ class LanguageSelectionScreen extends StatelessWidget {
                   ),
                 ),
                 const SizedBox(width: 16),
-                
+
                 // Language Name
                 Expanded(
                   child: Text(
@@ -195,7 +196,7 @@ class LanguageSelectionScreen extends StatelessWidget {
                     ),
                   ),
                 ),
-                
+
                 // Arrow
                 Container(
                   padding: const EdgeInsets.all(8),

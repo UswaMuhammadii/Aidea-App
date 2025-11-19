@@ -1330,4 +1330,58 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get completeService => 'Complete Service';
+
+  @override
+  String get selectLocation => 'Select Location';
+
+  @override
+  String get selectedLocation => 'Selected Location';
+
+  @override
+  String get tapOnMapToSelectLocation =>
+      'Tap on the map to select your location';
+
+  @override
+  String get tapToChangeLocation => 'Tap to change location';
+
+  @override
+  String get confirmLocation => 'Confirm Location';
+
+  @override
+  String get tapToSelectOnMap => 'Tap to select on map';
+
+  @override
+  String get pleaseSelectLocationFromMap => 'Please select location from map';
+
+  @override
+  String get tapMapIconToSelectLocation => 'Tap map icon to select location';
+
+  @override
+  String get addressType => 'Address Type';
+
+  @override
+  String get additionalLocationDetails =>
+      'Additional location details (landmark, building name, etc.)';
+
+  @override
+  String get selectOnMap => 'Select on Map';
+
+  @override
+  String get chooseExactLocationOnMap => 'Choose exact location on map';
+
+  @override
+  String get useCurrentLocation => 'Use Current Location';
+
+  @override
+  String get detectYourCurrentLocation =>
+      'Detect your current location automatically';
+
+  @override
+  String get continueText => 'Continue';
+
+  @override
+  String get selectDeliveryLocation => 'Select Delivery Location';
+
+  @override
+  String get hasBeenSaved => 'has been saved';
 }

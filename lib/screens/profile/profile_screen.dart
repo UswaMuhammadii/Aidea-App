@@ -20,11 +20,13 @@ class AppColors {
 class ProfileScreen extends StatefulWidget {
   final User user;
   final VoidCallback onLogout;
+  final Function(User)? onUserUpdated; // Added callback for user updates
 
   const ProfileScreen({
     super.key,
     required this.user,
     required this.onLogout,
+    this.onUserUpdated,
   });
 
   @override
@@ -32,6 +34,14 @@ class ProfileScreen extends StatefulWidget {
 }
 
 class _ProfileScreenState extends State<ProfileScreen> {
+  late User _currentUser;
+
+  @override
+  void initState() {
+    super.initState();
+    _currentUser = widget.user;
+  }
+
   void _logout(AppLocalizations l10n) {
     showDialog(
       context: context,
@@ -71,7 +81,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
               ),
               child: Text(l10n.logout,
-                style: TextStyle(color: Colors.white, fontWeight: FontWeight.w600),
+                style: const TextStyle(color: Colors.white, fontWeight: FontWeight.w600),
               ),
             ),
           ),
@@ -84,7 +94,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
     Navigator.push(
       context,
       MaterialPageRoute(
-        builder: (context) => EditProfileScreen(user: widget.user),
+        builder: (context) => EditProfileScreen(user: _currentUser),
       ),
     );
   }
@@ -93,9 +103,33 @@ class _ProfileScreenState extends State<ProfileScreen> {
     Navigator.push(
       context,
       MaterialPageRoute(
-        builder: (context) => AddressesScreen(user: widget.user),
+        builder: (context) => AddressesScreen(
+          user: _currentUser,
+          onUserUpdated: (updatedUser) {
+            setState(() {
+              _currentUser = updatedUser;
+            });
+            // Propagate the update to parent (DashboardScreen)
+            if (widget.onUserUpdated != null) {
+              widget.onUserUpdated!(updatedUser);
+            }
+          },
+        ),
       ),
     );
+  }
+
+  String _getPrimaryAddressOrDefault() {
+    if (_currentUser.savedAddresses.isEmpty) {
+      return _currentUser.address;
+    }
+
+    final primaryAddress = _currentUser.savedAddresses.firstWhere(
+          (address) => address.isPrimary,
+      orElse: () => _currentUser.savedAddresses.first,
+    );
+
+    return primaryAddress.fullAddress;
   }
 
   @override
@@ -136,7 +170,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
                           Text(l10n.profile,
-                            style: TextStyle(
+                            style: const TextStyle(
                               color: Colors.white,
                               fontSize: 28,
                               fontWeight: FontWeight.w700,
@@ -165,8 +199,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
                           radius: 50,
                           backgroundColor: Colors.white,
                           child: Text(
-                            widget.user.name.isNotEmpty
-                                ? widget.user.name[0].toUpperCase()
+                            _currentUser.name.isNotEmpty
+                                ? _currentUser.name[0].toUpperCase()
                                 : 'U',
                             style: const TextStyle(
                               fontSize: 36,
@@ -178,7 +212,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       ),
                       const SizedBox(height: 16),
                       Text(
-                        widget.user.name,
+                        _currentUser.name,
                         style: const TextStyle(
                           color: Colors.white,
                           fontSize: 24,
@@ -187,7 +221,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       ),
                       const SizedBox(height: 4),
                       Text(
-                        widget.user.email,
+                        _currentUser.email,
                         style: TextStyle(
                           color: Colors.white.withValues(alpha: 0.9),
                           fontSize: 14,
@@ -214,10 +248,10 @@ class _ProfileScreenState extends State<ProfileScreen> {
                             child: Padding(
                               padding: const EdgeInsets.symmetric(
                                 horizontal: 24,
-                                vertical: 12,
+                                vertical: 16,
                               ),
                               child: Row(
-                                mainAxisSize: MainAxisSize.min,
+                                mainAxisAlignment: MainAxisAlignment.center,
                                 children: [
                                   const Icon(
                                     Icons.edit,
@@ -229,8 +263,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                     l10n.editProfile,
                                     style: const TextStyle(
                                       color: AppColors.deepPurple,
+                                      fontSize: 16,
                                       fontWeight: FontWeight.bold,
-                                      fontSize: 14,
                                     ),
                                   ),
                                 ],
@@ -288,7 +322,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                             Navigator.push(
                               context,
                               MaterialPageRoute(
-                                builder: (context) => NotificationScreen(user: widget.user),
+                                builder: (context) => NotificationScreen(user: _currentUser),
                               ),
                             );
                           },
@@ -297,10 +331,13 @@ class _ProfileScreenState extends State<ProfileScreen> {
                         _buildSettingsTile(
                           icon: Icons.location_on_outlined,
                           title: l10n.savedAddresses,
-                          subtitle: widget.user.address,
+                          subtitle: _getPrimaryAddressOrDefault(),
                           iconColor: Colors.red,
                           textColor: textColor,
                           subtitleColor: subtitleColor,
+                          badge: _currentUser.savedAddresses.length > 1
+                              ? '${_currentUser.savedAddresses.length}'
+                              : null,
                           onTap: _navigateToAddresses,
                         ),
                         const Divider(height: 1, indent: 72),
@@ -421,6 +458,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
     required Color textColor,
     required Color subtitleColor,
     required VoidCallback onTap,
+    String? badge,
   }) {
     return ListTile(
       contentPadding: const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
@@ -432,13 +470,35 @@ class _ProfileScreenState extends State<ProfileScreen> {
         ),
         child: Icon(icon, color: iconColor, size: 24),
       ),
-      title: Text(
-        title,
-        style: TextStyle(
-          fontWeight: FontWeight.w600,
-          fontSize: 16,
-          color: textColor,
-        ),
+      title: Row(
+        children: [
+          Text(
+            title,
+            style: TextStyle(
+              fontWeight: FontWeight.w600,
+              fontSize: 16,
+              color: textColor,
+            ),
+          ),
+          if (badge != null) ...[
+            const SizedBox(width: 8),
+            Container(
+              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
+              decoration: BoxDecoration(
+                color: iconColor,
+                borderRadius: BorderRadius.circular(10),
+              ),
+              child: Text(
+                badge,
+                style: const TextStyle(
+                  color: Colors.white,
+                  fontSize: 12,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+            ),
+          ],
+        ],
       ),
       subtitle: Text(
         subtitle,
