@@ -8,6 +8,7 @@ import 'service_detail_screen.dart';
 import '../cart/cart_screen.dart';
 import '../../utils/icons_helper.dart';
 import '../../gen_l10n/app_localizations.dart';
+import '../../utils/formatting_utils.dart'; // Add this import
 
 class AppColors {
   static const deepPurple = Color(0xFF7C3AED);
@@ -334,6 +335,7 @@ class _ServiceListingScreenState extends State<ServiceListingScreen> with Ticker
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
+    final locale = Localizations.localeOf(context); // Add locale variable
     if (l10n == null) {
       return const Scaffold(
         body: Center(
@@ -393,7 +395,7 @@ class _ServiceListingScreenState extends State<ServiceListingScreen> with Ticker
                         minHeight: 18,
                       ),
                       child: Text(
-                        _cartItemCount.toString(),
+                        FormattingUtils.formatNumber(_cartItemCount, locale), // Updated
                         style: const TextStyle(
                           color: Colors.white,
                           fontSize: 10,
@@ -427,7 +429,7 @@ class _ServiceListingScreenState extends State<ServiceListingScreen> with Ticker
               ? _buildSubcategoryView(l10n)
               : (_subSubcategories != null && _selectedSubSubcategory == null)
               ? _buildSubSubcategoryView(l10n)
-              : _buildServicesView(l10n),
+              : _buildServicesView(l10n, locale),
         ),
       ),
     );
@@ -624,7 +626,7 @@ class _ServiceListingScreenState extends State<ServiceListingScreen> with Ticker
     );
   }
 
-  Widget _buildServicesView(AppLocalizations l10n) {
+  Widget _buildServicesView(AppLocalizations l10n, Locale locale) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
 
     return Column(
@@ -804,7 +806,7 @@ class _ServiceListingScreenState extends State<ServiceListingScreen> with Ticker
                                         borderRadius: BorderRadius.circular(8),
                                       ),
                                       child: Text(
-                                        'SAR ${service.price.toStringAsFixed(0)}',
+                                        FormattingUtils.formatCurrency(service.price, l10n, locale), // Updated
                                         style: const TextStyle(
                                           color: Colors.white,
                                           fontWeight: FontWeight.w700,
@@ -840,7 +842,7 @@ class _ServiceListingScreenState extends State<ServiceListingScreen> with Ticker
                                       Container(
                                         padding: const EdgeInsets.symmetric(horizontal: 12),
                                         child: Text(
-                                          _selectedQuantity.toString(),
+                                          FormattingUtils.formatNumber(_selectedQuantity, locale), // Updated
                                           style: const TextStyle(
                                             color: Colors.white,
                                             fontWeight: FontWeight.w700,
@@ -968,7 +970,7 @@ class _ServiceListingScreenState extends State<ServiceListingScreen> with Ticker
                           shape: BoxShape.circle,
                         ),
                         child: Text(
-                          _selectedQuantity.toString(),
+                          FormattingUtils.formatNumber(_selectedQuantity, locale), // Updated
                           style: const TextStyle(
                             color: AppColors.deepPurple,
                             fontWeight: FontWeight.w700,

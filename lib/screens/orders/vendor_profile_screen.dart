@@ -69,9 +69,19 @@ class VendorProfileScreen extends StatelessWidget {
                       color: Colors.white,
                     ),
                   ),
+                  const SizedBox(height: 8),
+
+                  // Professional Technician
+                  Text(
+                    l10n.professionalTechnician,
+                    style: TextStyle(
+                      fontSize: 16,
+                      color: Colors.grey.shade300,
+                    ),
+                  ),
                   const SizedBox(height: 24),
 
-                  // Stats Cards - REMOVED workerRating parameter
+                  // Stats Cards
                   Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 16),
                     child: Row(

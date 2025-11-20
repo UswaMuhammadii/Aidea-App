@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:intl/date_symbol_data_local.dart'; // Add this import
 //import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'gen_l10n/app_localizations.dart';
 import 'screens/auth/auth_flow_coordinator.dart';
@@ -8,8 +9,12 @@ import 'screens/dashboard/dashboard_screen.dart';
 import 'models/user_model.dart';
 import 'services/dummy_data_service.dart';
 
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
 
-void main() {
+  // Initialize date formatting for Arabic
+  await initializeDateFormatting('ar', null);
+
   runApp(const CustomerApp());
 }
 
@@ -70,7 +75,7 @@ class _CustomerAppState extends State<CustomerApp> {
     return MaterialApp(
       title: 'HandyMan',
       debugShowCheckedModeBanner: false,
-      
+
       // Localization delegates
       localizationsDelegates: const [
         AppLocalizations.delegate,
@@ -78,31 +83,31 @@ class _CustomerAppState extends State<CustomerApp> {
         GlobalWidgetsLocalizations.delegate,
         GlobalCupertinoLocalizations.delegate,
       ],
-      
+
       // Supported locales
       supportedLocales: const [
         Locale('en'), // English
         Locale('ar'), // Arabic
       ],
-      
+
       // Current locale
       locale: _locale,
-      
+
       // RTL support
       localeResolutionCallback: (locale, supportedLocales) {
         if (locale == null) {
           return supportedLocales.first;
         }
-        
+
         for (var supportedLocale in supportedLocales) {
           if (supportedLocale.languageCode == locale.languageCode) {
             return supportedLocale;
           }
         }
-        
+
         return supportedLocales.first;
       },
-      
+
       theme: _buildLightTheme(),
       darkTheme: _buildDarkTheme(),
       themeMode: ThemeMode.system,

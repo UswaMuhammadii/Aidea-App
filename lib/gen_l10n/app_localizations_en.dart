@@ -430,7 +430,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String yourServicesHaveBeenSuccessfullyBooked(int count) {
-    return 'Your $count services have been successfully booked';
+    return 'Your service has been successfully booked';
   }
 
   @override
@@ -500,7 +500,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get completed => 'Completed';
 
   @override
-  String get bookingReceived => 'Booking\nReceived';
+  String get bookingReceived => 'Booking Received';
 
   @override
   String get simulateAssignTechnician => 'Simulate: Assign Technician';
@@ -534,7 +534,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get pleaseSelectReasonForCancellation =>
-      'Please select a reason for cancellation';
+      'Please select reason for cancellation';
 
   @override
   String get changeOfPlans => 'Change of plans';
@@ -672,7 +672,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String youHaveUnreadNotifications(int count) {
-    return 'You have $count unread notification(s)';
+    return 'You have \$COUNT\$ unread notifications';
   }
 
   @override
@@ -868,7 +868,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String servicesCount(int count) {
-    return '$count Services';
+    return '\$COUNT\$ Services';
   }
 
   @override
@@ -881,7 +881,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get cleaningWithFreon => 'Cleaning all units + Freon filling';
 
   @override
-  String get installNewAc => 'Installing a new air conditioner';
+  String get installNewAc => 'New AC installation';
 
   @override
   String get disassembleInside => 'Disassembly and assembly (inside the house)';
@@ -938,13 +938,13 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get disassembleWashingMachine =>
-      'Disassembling and assembling the washing machine';
+      'Disassemble and assemble washing machine';
 
   @override
   String get doorDisassembly => 'Door disassembly and installation';
 
   @override
-  String get balanceBarService => 'Dismantling and installing the balance bar';
+  String get balanceBarService => 'Balance bar disassembly and installation';
 
   @override
   String get waterDrainageMaintenance => 'Water drainage maintenance';
@@ -956,10 +956,10 @@ class AppLocalizationsEn extends AppLocalizations {
   String get electricalShortCircuit => 'Electrical short circuit maintenance';
 
   @override
-  String get powerSupplyRepair => 'Power Supply Repair';
+  String get powerSupplyRepair => 'Power supply repair';
 
   @override
-  String get disassembleTimer => 'Disassembling and assembling the timer';
+  String get disassembleTimer => 'Disassemble and assemble timer';
 
   @override
   String get compressorChange => 'Compressor change';
@@ -1059,7 +1059,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get completeServiceWithGasRefill => 'Complete service with gas refill';
 
   @override
-  String get professionalInstallation => 'Professional Installation';
+  String get professionalInstallation => 'Professional installation';
 
   @override
   String get indoorMountingService => 'Indoor mounting/dismounting';
@@ -1071,16 +1071,16 @@ class AppLocalizationsEn extends AppLocalizations {
   String get controlBoardRepair => 'Control board repair';
 
   @override
-  String get externalMotorReplacement => 'External Motor Replacement';
+  String get externalMotorReplacement => 'External motor replacement';
 
   @override
-  String get completeCleaning => 'Complete Cleaning';
+  String get completeCleaning => 'Complete cleaning';
 
   @override
-  String get serviceWithGasRefill => 'Service with Gas Refill';
+  String get serviceWithGasRefill => 'Service with gas refill';
 
   @override
-  String get installationService => 'Installation Service';
+  String get installationService => 'Installation service';
 
   @override
   String get drainPipeCleaning => 'Drain pipe cleaning';
@@ -1107,7 +1107,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get majorComponentReplacement => 'Major component replacement';
 
   @override
-  String get contactorReplacement => 'Contactor Replacement';
+  String get contactorReplacement => 'Contactor replacement';
 
   @override
   String get balanceBarServiceDesc => 'Balance bar service';
@@ -1131,7 +1131,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get dryerService => 'Dryer service';
 
   @override
-  String get compressorReplacement => 'Compressor Replacement';
+  String get compressorReplacement => 'Compressor replacement';
 
   @override
   String get externalFanReplacement => 'External fan replacement';
@@ -1384,4 +1384,244 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get hasBeenSaved => 'has been saved';
+
+  @override
+  String get cartWithCount => 'Cart (\$COUNT\$)';
+
+  @override
+  String get dateAndTime => 'Date & Time';
+
+  @override
+  String get pleaseSelectADateFirst => 'Please select a date first';
+
+  @override
+  String get errorPickingImages => 'Error picking images';
+
+  @override
+  String get errorTakingPhoto => 'Error taking photo';
+
+  @override
+  String get other => 'Other';
+
+  @override
+  String get years => 'years';
+
+  @override
+  String get qty => 'Qty';
+
+  @override
+  String get electricalServices => 'Electrical Services';
+
+  @override
+  String get splitAcServices => 'Split AC Services';
+
+  @override
+  String get windowAcServices => 'Window AC Services';
+
+  @override
+  String get packageAcServices => 'Package AC Services';
+
+  @override
+  String get washingMachineServices => 'Washing Machine Services';
+
+  @override
+  String get refrigeratorServices => 'Refrigerator Services';
+
+  @override
+  String get ovenServices => 'Oven Services';
+
+  @override
+  String get pipeLeak => 'Pipe Leak';
+
+  @override
+  String get cloggedDrains => 'Clogged Drains';
+
+  @override
+  String get faucetRepair => 'Faucet Repair';
+
+  @override
+  String get wiringProblems => 'Wiring Problems';
+
+  @override
+  String get switchRepair => 'Switch Repair';
+
+  @override
+  String get outletRepair => 'Outlet Repair';
+
+  @override
+  String get acCleaning =>
+      'AC Washer (cleaning the internal and external unit)';
+
+  @override
+  String get acCleaningDescription => 'Split AC - Complete cleaning service';
+
+  @override
+  String get acLeakRepair => 'Leak repair';
+
+  @override
+  String get acWithGasRefill => 'Disassemble and assemble electronic board';
+
+  @override
+  String get acInstallation => 'New AC installation';
+
+  @override
+  String get acIndoorMounting => 'Indoor mounting/dismounting';
+
+  @override
+  String get acOutdoorMounting => 'Outdoor mounting/dismounting';
+
+  @override
+  String get externalMotorChange => 'External motor change';
+
+  @override
+  String get acFullCleaning => 'Cleaning all units + Freon filling';
+
+  @override
+  String get cleaningAllUnitsGasRefill => 'Cleaning all units + Freon filling';
+
+  @override
+  String get mountingService => 'Cabinet installation';
+
+  @override
+  String get controlBoardRepairService =>
+      'Disassemble and assemble electronic board';
+
+  @override
+  String get cassetteTypeInstallationService => 'Cassette type installation';
+
+  @override
+  String get internalCrystalChange => 'Internal crystal change';
+
+  @override
+  String get internalMotorChange => 'Internal motor change';
+
+  @override
+  String get largeCompressorChange => 'Large compressor change';
+
+  @override
+  String get largeComponentChange => 'Large compressor change';
+
+  @override
+  String get contactorChange => 'Contactor change';
+
+  @override
+  String get completentialation => 'Complete Installation';
+
+  @override
+  String get notificationTitle => 'Notifications';
+
+  @override
+  String get markAllAsRead => 'Mark All as Read';
+
+  @override
+  String get newNotification => 'New';
+
+  @override
+  String get youHaveUnreadNotificationsSingular =>
+      'You have 1 unread notification';
+
+  @override
+  String get youHaveUnreadNotificationsPlural =>
+      'You have \$COUNT\$ unread notifications';
+
+  @override
+  String get bookingConfirmedNotification => 'Booking Confirmed';
+
+  @override
+  String get bookingConfirmedMessage =>
+      'Your AC Cleaning service has been confirmed for tomorrow at 10:00 AM';
+
+  @override
+  String get specialOfferNotification => 'Special Offer';
+
+  @override
+  String get specialOfferMessage =>
+      'Get 20% off on all plumbing services this weekend!';
+
+  @override
+  String get serviceReminderNotification => 'Service Reminder';
+
+  @override
+  String get serviceReminderMessage =>
+      'Your washing machine cleaning is scheduled for today at 2:00 PM';
+
+  @override
+  String get serviceCompletedNotification => 'Service Completed';
+
+  @override
+  String get serviceCompletedMessage =>
+      'Your electrical repair service has been completed. Rate your experience!';
+
+  @override
+  String get technicianAssignedNotification => 'Technician Assigned';
+
+  @override
+  String get technicianAssignedMessage =>
+      'Your technician Ahmed has been assigned to your AC Cleaning service';
+
+  @override
+  String get workStartedNotification => 'Work Started';
+
+  @override
+  String get workStartedMessage =>
+      'Your technician has started working on your service';
+
+  @override
+  String get workCompletedNotification => 'Work Completed';
+
+  @override
+  String get workCompletedMessage =>
+      'Your service has been completed successfully. Please review and rate!';
+
+  @override
+  String get invoiceGeneratedNotification => 'Invoice Generated';
+
+  @override
+  String get invoiceGeneratedMessage =>
+      'Your invoice is ready. Total amount: SAR \$AMOUNT\$';
+
+  @override
+  String get timeAgoJustNow => 'Just now';
+
+  @override
+  String get timeAgoMinutesAgo => '\$COUNT\$ minute ago';
+
+  @override
+  String get timeAgoMinutesAgoPlural => '\$COUNT\$ minutes ago';
+
+  @override
+  String get timeAgoHoursAgo => '\$COUNT\$ hour ago';
+
+  @override
+  String get timeAgoHoursAgoPlural => '\$COUNT\$ hours ago';
+
+  @override
+  String get timeAgoDaysAgo => '\$COUNT\$ day ago';
+
+  @override
+  String get timeAgoDaysAgoPlural => '\$COUNT\$ days ago';
+
+  @override
+  String get timeAgoWeeksAgo => '\$COUNT\$ week ago';
+
+  @override
+  String get timeAgoWeeksAgoPlural => '\$COUNT\$ weeks ago';
+
+  @override
+  String get timeAgoMonthsAgo => '\$COUNT\$ month ago';
+
+  @override
+  String get timeAgoMonthsAgoPlural => '\$COUNT\$ months ago';
+
+  @override
+  String get currencySAR => 'SAR';
+
+  @override
+  String get sar => 'SAR';
+
+  @override
+  String get orderId => 'Order ID';
+
+  @override
+  String get workCompleted => 'Work Completed';
 }

@@ -5,6 +5,7 @@ import '../services/service_checkout_screen.dart';
 import '../../utils/icons_helper.dart';
 import '../../utils/app_colors.dart';
 import '../../gen_l10n/app_localizations.dart';
+import '../../utils/formatting_utils.dart'; // Add this import
 
 class CartScreen extends StatefulWidget {
   final User user;
@@ -54,10 +55,10 @@ class _CartScreenState extends State<CartScreen> {
     );
   }
 
-
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
+    final locale = Localizations.localeOf(context); // Add locale
 
     final isDark = Theme.of(context).brightness == Brightness.dark;
     final backgroundColor = isDark ? const Color(0xFF0F172A) : const Color(0xFFF8F9FA);
@@ -121,7 +122,9 @@ class _CartScreenState extends State<CartScreen> {
     return Scaffold(
       backgroundColor: backgroundColor,
       appBar: AppBar(
-        title: Text('Cart (${globalCart.length})'),
+        title: Text(globalCart.isEmpty
+            ? l10n.cart
+            : l10n.cartWithCount.replaceAll('\$COUNT\$', globalCart.length.toString())),
         backgroundColor: cardColor,
         foregroundColor: textColor,
         elevation: 0,
@@ -252,7 +255,7 @@ class _CartScreenState extends State<CartScreen> {
                               ),
                               const SizedBox(height: 6),
                               Text(
-                                'SAR ${item.service.price.toStringAsFixed(0)}',
+                                FormattingUtils.formatCurrency(item.service.price, l10n, locale),
                                 style: const TextStyle(
                                   fontSize: 13,
                                   fontWeight: FontWeight.bold,
@@ -291,7 +294,7 @@ class _CartScreenState extends State<CartScreen> {
                                     ),
                                     child: Center(
                                       child: Text(
-                                        '${item.quantity}',
+                                        FormattingUtils.formatNumber(item.quantity, locale), // ← UPDATED
                                         style: const TextStyle(
                                           color: AppColors.electricBlue,
                                           fontWeight: FontWeight.bold,
@@ -311,7 +314,7 @@ class _CartScreenState extends State<CartScreen> {
                             ),
                             const SizedBox(height: 6),
                             Text(
-                              'SAR ${item.totalPrice.toStringAsFixed(0)}',
+                              FormattingUtils.formatCurrency(item.totalPrice, l10n, locale),
                               style: const TextStyle(
                                 fontWeight: FontWeight.bold,
                                 color: AppColors.electricBlue,
@@ -352,7 +355,7 @@ class _CartScreenState extends State<CartScreen> {
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       Text(
-                        'Total:',
+                        '${l10n.total}:',
                         style: TextStyle(
                           fontSize: 18,
                           fontWeight: FontWeight.bold,
@@ -360,7 +363,7 @@ class _CartScreenState extends State<CartScreen> {
                         ),
                       ),
                       Text(
-                        'SAR ${totalPrice.toStringAsFixed(0)}',
+                        FormattingUtils.formatCurrency(totalPrice, l10n, locale),
                         style: const TextStyle(
                           fontSize: 24,
                           fontWeight: FontWeight.bold,

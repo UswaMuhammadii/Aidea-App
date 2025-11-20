@@ -5,6 +5,7 @@ import '../../models/booking_model.dart';
 import 'order_details_with_worker_screen.dart';
 import '../../utils/app_colors.dart';
 import '../../gen_l10n/app_localizations.dart';
+import '../../utils/formatting_utils.dart'; // Add this import
 
 class OrderTrackingScreen extends StatefulWidget {
   final User user;
@@ -74,6 +75,7 @@ class _OrderTrackingScreenState extends State<OrderTrackingScreen> {
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
+    final locale = Localizations.localeOf(context); // Add locale variable
 
     final isDark = Theme.of(context).brightness == Brightness.dark;
     final backgroundColor = isDark ? const Color(0xFF0F172A) : Colors.white;
@@ -242,7 +244,7 @@ class _OrderTrackingScreenState extends State<OrderTrackingScreen> {
                                     ),
                                     const SizedBox(height: 4),
                                     Text(
-                                      'Quantity: ${widget.booking.quantity}',
+                                      '${l10n.quantity}: ${FormattingUtils.formatNumber(widget.booking.quantity, locale)}', // Updated
                                       style: TextStyle(
                                         fontSize: 13,
                                         color: subtitleColor,
@@ -252,7 +254,7 @@ class _OrderTrackingScreenState extends State<OrderTrackingScreen> {
                                 ),
                               ),
                               Text(
-                                'SAR ${widget.booking.totalPrice.toStringAsFixed(0)}',
+                                FormattingUtils.formatCurrency(widget.booking.totalPrice, l10n, locale), // Updated
                                 style: const TextStyle(
                                   fontSize: 18,
                                   fontWeight: FontWeight.bold,
@@ -284,7 +286,7 @@ class _OrderTrackingScreenState extends State<OrderTrackingScreen> {
                               textColor, subtitleColor),
                           const Divider(height: 24),
                           _buildInfoRow(Icons.calendar_today, l10n.bookingDate,
-                              DateFormat('MMM d, y').format(widget.booking.bookingDate),
+                              FormattingUtils.formatDateShort(context, widget.booking.bookingDate), // Updated
                               textColor, subtitleColor),
                           const Divider(height: 24),
                           _buildInfoRow(Icons.access_time, l10n.serviceTime,
@@ -347,7 +349,7 @@ class _OrderTrackingScreenState extends State<OrderTrackingScreen> {
                             ],
                           ),
                           const SizedBox(height: 24),
-                          _buildStatusTimeline(),
+                          _buildStatusTimeline(locale), // Updated
                           const SizedBox(height: 24),
                           if (_currentStatus != BookingStatus.completed && _currentStatus != BookingStatus.cancelled)
                             SizedBox(
@@ -424,7 +426,7 @@ class _OrderTrackingScreenState extends State<OrderTrackingScreen> {
                                           ),
                                           const SizedBox(width: 8),
                                           Text(
-                                            '• 432 jobs',
+                                            '• ${FormattingUtils.formatNumber(432, locale)} ${l10n.ordersDone}', // Updated
                                             style: TextStyle(
                                               fontSize: 13,
                                               color: subtitleColor,
@@ -545,7 +547,7 @@ class _OrderTrackingScreenState extends State<OrderTrackingScreen> {
     }
   }
 
-  Widget _buildStatusTimeline() {
+  Widget _buildStatusTimeline(Locale locale) {
     final stages = [
       {'status': BookingStatus.pending, 'label': 'Booking\nReceived'},
       {'status': BookingStatus.confirmed, 'label': 'Technician\nAssigned'},
@@ -577,7 +579,7 @@ class _OrderTrackingScreenState extends State<OrderTrackingScreen> {
                         child: isActive
                             ? const Icon(Icons.check, color: Colors.blue, size: 20)
                             : Text(
-                          '${index + 1}',
+                          FormattingUtils.formatNumber(index + 1, locale), // Updated
                           style: TextStyle(
                             color: Colors.white.withValues(alpha: 0.7),
                             fontWeight: FontWeight.bold,
@@ -613,6 +615,7 @@ class _OrderTrackingScreenState extends State<OrderTrackingScreen> {
   }
 
   void _showCancelDialog(BuildContext context, AppLocalizations l10n) {
+    final locale = Localizations.localeOf(context); // Add locale
     final isDark = Theme.of(context).brightness == Brightness.dark;
     final dialogBg = isDark ? const Color(0xFF1E293B) : Colors.white;
     final textColor = isDark ? Colors.white : Colors.black87;
@@ -620,14 +623,14 @@ class _OrderTrackingScreenState extends State<OrderTrackingScreen> {
 
     String? selectedReason;
     final reasons = [
-      'Change of plans',
-      'Found better service',
-      'Incorrect booking details',
-      'Emergency situation',
-      'Price too high',
-      'Technician not available',
-      'Service no longer needed',
-      'Other reason',
+      l10n.changeOfPlans,
+      l10n.foundBetterService,
+      l10n.incorrectBookingDetails,
+      l10n.emergencySituation,
+      l10n.priceTooHigh,
+      l10n.technicianNotAvailable,
+      l10n.serviceNoLongerNeeded,
+      l10n.otherReason,
     ];
 
     showDialog(
@@ -665,7 +668,7 @@ class _OrderTrackingScreenState extends State<OrderTrackingScreen> {
                       ],
                     ),
                     const SizedBox(height: 8),
-                    Text('Please select a reason for cancellation', style: TextStyle(fontSize: 14, color: subtitleColor)),
+                    Text(l10n.pleaseSelectReasonForCancellation, style: TextStyle(fontSize: 14, color: subtitleColor)), // Updated
                     const SizedBox(height: 20),
                     Container(
                       constraints: const BoxConstraints(maxHeight: 300),
@@ -727,7 +730,7 @@ class _OrderTrackingScreenState extends State<OrderTrackingScreen> {
                           const SizedBox(width: 8),
                           Expanded(
                             child: Text(
-                              'Cancellation may incur charges',
+                              l10n.cancellationMayIncurCharges, // Updated
                               style: TextStyle(fontSize: 12, color: Colors.orange.shade900, fontWeight: FontWeight.w500),
                             ),
                           ),
@@ -745,7 +748,7 @@ class _OrderTrackingScreenState extends State<OrderTrackingScreen> {
                               padding: const EdgeInsets.symmetric(vertical: 14),
                               shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
                             ),
-                            child: Text('Keep Booking', style: TextStyle(color: textColor, fontWeight: FontWeight.w600)),
+                            child: Text(l10n.keepBooking, style: TextStyle(color: textColor, fontWeight: FontWeight.w600)), // Updated
                           ),
                         ),
                         const SizedBox(width: 12),
@@ -758,7 +761,7 @@ class _OrderTrackingScreenState extends State<OrderTrackingScreen> {
                               Navigator.pop(context, BookingStatus.cancelled);
                               ScaffoldMessenger.of(context).showSnackBar(
                                 SnackBar(
-                                  content: Text('Booking cancelled successfully'),
+                                  content: Text(l10n.bookingCancelled), // Updated
                                   backgroundColor: Colors.green,
                                 ),
                               );

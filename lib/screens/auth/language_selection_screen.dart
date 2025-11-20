@@ -48,7 +48,7 @@ class LanguageSelectionScreen extends StatelessWidget {
                     borderRadius: BorderRadius.circular(30),
                     child: Image.asset(
                       'assets/images/logo.png',
-                      fit: BoxFit.contain,  // makes full logo visible
+                      fit: BoxFit.contain,
                     ),
                   ),
                 ),

@@ -169,7 +169,7 @@ class AppLocalizationsAr extends AppLocalizations {
   String get bookingDone => 'تم الحجز';
 
   @override
-  String get technicianAssigned => 'تم تعيين فني';
+  String get technicianAssigned => 'تم تعيين الفني';
 
   @override
   String get workStarted => 'بدأ العمل';
@@ -426,7 +426,7 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String yourServicesHaveBeenSuccessfullyBooked(int count) {
-    return 'تم حجز $count خدمات بنجاح';
+    return 'تم حجز خدمتك بنجاح';
   }
 
   @override
@@ -494,7 +494,7 @@ class AppLocalizationsAr extends AppLocalizations {
   String get completed => 'مكتمل';
 
   @override
-  String get bookingReceived => 'تم استلام\nالحجز';
+  String get bookingReceived => 'تم استلام الحجز';
 
   @override
   String get simulateAssignTechnician => 'محاكاة: تعيين فني';
@@ -509,13 +509,13 @@ class AppLocalizationsAr extends AppLocalizations {
   String get technician => 'الفني';
 
   @override
-  String get ordersDone => 'طلبات مكتملة';
+  String get ordersDone => 'الطلبات المكتملة';
 
   @override
   String get experience => 'الخبرة';
 
   @override
-  String get viewProfile => 'عرض الملف الشخصي';
+  String get viewProfile => 'عرض الملف';
 
   @override
   String get chat => 'محادثة';
@@ -663,7 +663,7 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String youHaveUnreadNotifications(int count) {
-    return 'لديك $count إشعار غير مقروء';
+    return 'لديك \$COUNT\$ إشعار غير مقروء';
   }
 
   @override
@@ -760,15 +760,15 @@ class AppLocalizationsAr extends AppLocalizations {
       'يجب أن يحتوي رقم الهاتف على أرقام فقط';
 
   @override
-  String get serviceExpertise => 'خبرة الخدمة';
+  String get serviceExpertise => 'الخبرة في الخدمة';
 
   @override
   String previouslyCompletedServicesBy(String name) {
-    return 'الخدمات المكتملة سابقاً بواسطة $name';
+    return 'الخدمات المكتملة سابقًا بواسطة $name';
   }
 
   @override
-  String get doneCount => 'تم';
+  String get doneCount => 'مكتمل';
 
   @override
   String get kmAway => 'كم بعيداً';
@@ -777,13 +777,13 @@ class AppLocalizationsAr extends AppLocalizations {
   String get serviceLocation => 'موقع الخدمة';
 
   @override
-  String get acServices => 'خدمات التكييف';
+  String get acServices => 'خدمات مكيفات الهواء';
 
   @override
-  String get homeAppliances => 'الأجهزة المنزلية';
+  String get homeAppliances => 'أجهزة منزلية';
 
   @override
-  String get plumbing => 'السباكة';
+  String get plumbing => 'سباكة';
 
   @override
   String get electric => 'الكهرباء';
@@ -859,7 +859,7 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String servicesCount(int count) {
-    return '$count خدمات';
+    return '\$COUNT\$ خدمات';
   }
 
   @override
@@ -1367,4 +1367,240 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get hasBeenSaved => 'تم الحفظ';
+
+  @override
+  String get cartWithCount => 'السلة (\$COUNT\$)';
+
+  @override
+  String get dateAndTime => 'التاريخ والوقت';
+
+  @override
+  String get pleaseSelectADateFirst => 'الرجاء تحديد التاريخ أولاً';
+
+  @override
+  String get errorPickingImages => 'خطأ في اختيار الصور';
+
+  @override
+  String get errorTakingPhoto => 'خطأ في التقاط الصورة';
+
+  @override
+  String get other => 'أخرى';
+
+  @override
+  String get years => 'سنوات';
+
+  @override
+  String get qty => 'الكمية';
+
+  @override
+  String get electricalServices => 'خدمات كهربائية';
+
+  @override
+  String get splitAcServices => 'خدمات مكيف سبليت';
+
+  @override
+  String get windowAcServices => 'خدمات مكيف شباك';
+
+  @override
+  String get packageAcServices => 'خدمات مكيف باكج';
+
+  @override
+  String get washingMachineServices => 'خدمات الغسالات';
+
+  @override
+  String get refrigeratorServices => 'خدمات الثلاجات';
+
+  @override
+  String get ovenServices => 'خدمات الأفران';
+
+  @override
+  String get pipeLeak => 'تسرب الأنابيب';
+
+  @override
+  String get cloggedDrains => 'مصارف مسدودة';
+
+  @override
+  String get faucetRepair => 'إصلاح الحنفيات';
+
+  @override
+  String get wiringProblems => 'مشاكل الأسلاك';
+
+  @override
+  String get switchRepair => 'إصلاح المفاتيح';
+
+  @override
+  String get outletRepair => 'إصلاح المنافذ';
+
+  @override
+  String get acCleaning => 'غسيل مكيف الهواء (تنظيف الوحدة الداخلية والخارجية)';
+
+  @override
+  String get acCleaningDescription => 'مكيف سبليت - خدمة تنظيف كاملة';
+
+  @override
+  String get acLeakRepair => 'إصلاح التسريب';
+
+  @override
+  String get acWithGasRefill => 'تفكيك وتجميع اللوحة الإلكترونية';
+
+  @override
+  String get acInstallation => 'تركيب مكيف هواء جديد';
+
+  @override
+  String get acIndoorMounting => 'تركيب/فك داخلي';
+
+  @override
+  String get acOutdoorMounting => 'تركيب/فك خارجي';
+
+  @override
+  String get externalMotorChange => 'تغيير المحرك الخارجي';
+
+  @override
+  String get acFullCleaning => 'تنظيف جميع الوحدات + تعبئة الفريون';
+
+  @override
+  String get cleaningAllUnitsGasRefill => 'تنظيف جميع الوحدات + تعبئة الفريون';
+
+  @override
+  String get mountingService => 'تركيب الخزانة';
+
+  @override
+  String get controlBoardRepairService => 'تفكيك وتجميع اللوحة الإلكترونية';
+
+  @override
+  String get cassetteTypeInstallationService => 'تركيب نوع الكاسيت';
+
+  @override
+  String get internalCrystalChange => 'تغيير الكريستال الداخلي';
+
+  @override
+  String get internalMotorChange => 'تغيير المحرك الداخلي';
+
+  @override
+  String get largeCompressorChange => 'تغيير الضاغط (كبير)';
+
+  @override
+  String get largeComponentChange => 'تغيير الضاغط الكبير';
+
+  @override
+  String get contactorChange => 'تغيير الكونتاكتور';
+
+  @override
+  String get completentialation => 'تركيب كامل';
+
+  @override
+  String get notificationTitle => 'الإشعارات';
+
+  @override
+  String get markAllAsRead => 'تحديد الكل كمقروء';
+
+  @override
+  String get newNotification => 'جديد';
+
+  @override
+  String get youHaveUnreadNotificationsSingular => 'لديك إشعار واحد غير مقروء';
+
+  @override
+  String get youHaveUnreadNotificationsPlural =>
+      'لديك \$COUNT\$ إشعارات غير مقروءة';
+
+  @override
+  String get bookingConfirmedNotification => 'تم تأكيد الحجز';
+
+  @override
+  String get bookingConfirmedMessage =>
+      'تم تأكيد خدمة تنظيف المكيف الخاصة بك لغداً في الساعة ١٠:٠٠ صباحاً';
+
+  @override
+  String get specialOfferNotification => 'عرض خاص';
+
+  @override
+  String get specialOfferMessage =>
+      'احصل على خصم ٢٠٪ على جميع خدمات السباكة هذا الأسبوع!';
+
+  @override
+  String get serviceReminderNotification => 'تذكير بالخدمة';
+
+  @override
+  String get serviceReminderMessage =>
+      'تنظيف الغسالة مجدول اليوم في الساعة ٢:٠٠ مساءً';
+
+  @override
+  String get serviceCompletedNotification => 'اكتملت الخدمة';
+
+  @override
+  String get serviceCompletedMessage =>
+      'اكتملت خدمة الإصلاح الكهربائي. قيّم تجربتك!';
+
+  @override
+  String get technicianAssignedNotification => 'تم تعيين فني';
+
+  @override
+  String get technicianAssignedMessage =>
+      'تم تعيين الفني أحمد لخدمة تنظيف المكيف الخاصة بك';
+
+  @override
+  String get workStartedNotification => 'بدأ العمل';
+
+  @override
+  String get workStartedMessage => 'بدأ الفني في العمل على خدمتك';
+
+  @override
+  String get workCompletedNotification => 'اكتمل العمل';
+
+  @override
+  String get workCompletedMessage =>
+      'اكتملت خدمتك بنجاح. يرجى المراجعة والتقييم!';
+
+  @override
+  String get invoiceGeneratedNotification => 'تم إنشاء الفاتورة';
+
+  @override
+  String get invoiceGeneratedMessage =>
+      'فاتورتك جاهزة. المبلغ الإجمالي: ريال \$AMOUNT\$';
+
+  @override
+  String get timeAgoJustNow => 'الآن';
+
+  @override
+  String get timeAgoMinutesAgo => 'منذ \$COUNT\$ دقيقة';
+
+  @override
+  String get timeAgoMinutesAgoPlural => 'منذ \$COUNT\$ دقائق';
+
+  @override
+  String get timeAgoHoursAgo => 'منذ \$COUNT\$ ساعة';
+
+  @override
+  String get timeAgoHoursAgoPlural => 'منذ \$COUNT\$ ساعات';
+
+  @override
+  String get timeAgoDaysAgo => 'منذ \$COUNT\$ يوم';
+
+  @override
+  String get timeAgoDaysAgoPlural => 'منذ \$COUNT\$ أيام';
+
+  @override
+  String get timeAgoWeeksAgo => 'منذ \$COUNT\$ أسبوع';
+
+  @override
+  String get timeAgoWeeksAgoPlural => 'منذ \$COUNT\$ أسابيع';
+
+  @override
+  String get timeAgoMonthsAgo => 'منذ \$COUNT\$ شهر';
+
+  @override
+  String get timeAgoMonthsAgoPlural => 'منذ \$COUNT\$ أشهر';
+
+  @override
+  String get currencySAR => 'ريال';
+
+  @override
+  String get sar => 'ريال';
+
+  @override
+  String get orderId => 'رقم الطلب';
+
+  @override
+  String get workCompleted => 'تم الانتهاء من العمل';
 }

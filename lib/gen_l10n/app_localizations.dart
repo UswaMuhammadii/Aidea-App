@@ -929,7 +929,7 @@ abstract class AppLocalizations {
   /// No description provided for @yourServicesHaveBeenSuccessfullyBooked.
   ///
   /// In en, this message translates to:
-  /// **'Your {count} services have been successfully booked'**
+  /// **'Your service has been successfully booked'**
   String yourServicesHaveBeenSuccessfullyBooked(int count);
 
   /// No description provided for @bookingDetails.
@@ -1061,7 +1061,7 @@ abstract class AppLocalizations {
   /// No description provided for @bookingReceived.
   ///
   /// In en, this message translates to:
-  /// **'Booking\nReceived'**
+  /// **'Booking Received'**
   String get bookingReceived;
 
   /// No description provided for @simulateAssignTechnician.
@@ -1127,7 +1127,7 @@ abstract class AppLocalizations {
   /// No description provided for @pleaseSelectReasonForCancellation.
   ///
   /// In en, this message translates to:
-  /// **'Please select a reason for cancellation'**
+  /// **'Please select reason for cancellation'**
   String get pleaseSelectReasonForCancellation;
 
   /// No description provided for @changeOfPlans.
@@ -1379,7 +1379,7 @@ abstract class AppLocalizations {
   /// No description provided for @youHaveUnreadNotifications.
   ///
   /// In en, this message translates to:
-  /// **'You have {count} unread notification(s)'**
+  /// **'You have \$COUNT\$ unread notifications'**
   String youHaveUnreadNotifications(int count);
 
   /// No description provided for @notificationDeleted.
@@ -1751,7 +1751,7 @@ abstract class AppLocalizations {
   /// No description provided for @servicesCount.
   ///
   /// In en, this message translates to:
-  /// **'{count} Services'**
+  /// **'\$COUNT\$ Services'**
   String servicesCount(int count);
 
   /// No description provided for @acWashing.
@@ -1775,7 +1775,7 @@ abstract class AppLocalizations {
   /// No description provided for @installNewAc.
   ///
   /// In en, this message translates to:
-  /// **'Installing a new air conditioner'**
+  /// **'New AC installation'**
   String get installNewAc;
 
   /// No description provided for @disassembleInside.
@@ -1877,7 +1877,7 @@ abstract class AppLocalizations {
   /// No description provided for @disassembleWashingMachine.
   ///
   /// In en, this message translates to:
-  /// **'Disassembling and assembling the washing machine'**
+  /// **'Disassemble and assemble washing machine'**
   String get disassembleWashingMachine;
 
   /// No description provided for @doorDisassembly.
@@ -1889,7 +1889,7 @@ abstract class AppLocalizations {
   /// No description provided for @balanceBarService.
   ///
   /// In en, this message translates to:
-  /// **'Dismantling and installing the balance bar'**
+  /// **'Balance bar disassembly and installation'**
   String get balanceBarService;
 
   /// No description provided for @waterDrainageMaintenance.
@@ -1913,13 +1913,13 @@ abstract class AppLocalizations {
   /// No description provided for @powerSupplyRepair.
   ///
   /// In en, this message translates to:
-  /// **'Power Supply Repair'**
+  /// **'Power supply repair'**
   String get powerSupplyRepair;
 
   /// No description provided for @disassembleTimer.
   ///
   /// In en, this message translates to:
-  /// **'Disassembling and assembling the timer'**
+  /// **'Disassemble and assemble timer'**
   String get disassembleTimer;
 
   /// No description provided for @compressorChange.
@@ -2099,7 +2099,7 @@ abstract class AppLocalizations {
   /// No description provided for @professionalInstallation.
   ///
   /// In en, this message translates to:
-  /// **'Professional Installation'**
+  /// **'Professional installation'**
   String get professionalInstallation;
 
   /// No description provided for @indoorMountingService.
@@ -2123,25 +2123,25 @@ abstract class AppLocalizations {
   /// No description provided for @externalMotorReplacement.
   ///
   /// In en, this message translates to:
-  /// **'External Motor Replacement'**
+  /// **'External motor replacement'**
   String get externalMotorReplacement;
 
   /// No description provided for @completeCleaning.
   ///
   /// In en, this message translates to:
-  /// **'Complete Cleaning'**
+  /// **'Complete cleaning'**
   String get completeCleaning;
 
   /// No description provided for @serviceWithGasRefill.
   ///
   /// In en, this message translates to:
-  /// **'Service with Gas Refill'**
+  /// **'Service with gas refill'**
   String get serviceWithGasRefill;
 
   /// No description provided for @installationService.
   ///
   /// In en, this message translates to:
-  /// **'Installation Service'**
+  /// **'Installation service'**
   String get installationService;
 
   /// No description provided for @drainPipeCleaning.
@@ -2195,7 +2195,7 @@ abstract class AppLocalizations {
   /// No description provided for @contactorReplacement.
   ///
   /// In en, this message translates to:
-  /// **'Contactor Replacement'**
+  /// **'Contactor replacement'**
   String get contactorReplacement;
 
   /// No description provided for @balanceBarServiceDesc.
@@ -2243,7 +2243,7 @@ abstract class AppLocalizations {
   /// No description provided for @compressorReplacement.
   ///
   /// In en, this message translates to:
-  /// **'Compressor Replacement'**
+  /// **'Compressor replacement'**
   String get compressorReplacement;
 
   /// No description provided for @externalFanReplacement.
@@ -2743,6 +2743,462 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'has been saved'**
   String get hasBeenSaved;
+
+  /// No description provided for @cartWithCount.
+  ///
+  /// In en, this message translates to:
+  /// **'Cart (\$COUNT\$)'**
+  String get cartWithCount;
+
+  /// No description provided for @dateAndTime.
+  ///
+  /// In en, this message translates to:
+  /// **'Date & Time'**
+  String get dateAndTime;
+
+  /// No description provided for @pleaseSelectADateFirst.
+  ///
+  /// In en, this message translates to:
+  /// **'Please select a date first'**
+  String get pleaseSelectADateFirst;
+
+  /// No description provided for @errorPickingImages.
+  ///
+  /// In en, this message translates to:
+  /// **'Error picking images'**
+  String get errorPickingImages;
+
+  /// No description provided for @errorTakingPhoto.
+  ///
+  /// In en, this message translates to:
+  /// **'Error taking photo'**
+  String get errorTakingPhoto;
+
+  /// No description provided for @other.
+  ///
+  /// In en, this message translates to:
+  /// **'Other'**
+  String get other;
+
+  /// No description provided for @years.
+  ///
+  /// In en, this message translates to:
+  /// **'years'**
+  String get years;
+
+  /// No description provided for @qty.
+  ///
+  /// In en, this message translates to:
+  /// **'Qty'**
+  String get qty;
+
+  /// No description provided for @electricalServices.
+  ///
+  /// In en, this message translates to:
+  /// **'Electrical Services'**
+  String get electricalServices;
+
+  /// No description provided for @splitAcServices.
+  ///
+  /// In en, this message translates to:
+  /// **'Split AC Services'**
+  String get splitAcServices;
+
+  /// No description provided for @windowAcServices.
+  ///
+  /// In en, this message translates to:
+  /// **'Window AC Services'**
+  String get windowAcServices;
+
+  /// No description provided for @packageAcServices.
+  ///
+  /// In en, this message translates to:
+  /// **'Package AC Services'**
+  String get packageAcServices;
+
+  /// No description provided for @washingMachineServices.
+  ///
+  /// In en, this message translates to:
+  /// **'Washing Machine Services'**
+  String get washingMachineServices;
+
+  /// No description provided for @refrigeratorServices.
+  ///
+  /// In en, this message translates to:
+  /// **'Refrigerator Services'**
+  String get refrigeratorServices;
+
+  /// No description provided for @ovenServices.
+  ///
+  /// In en, this message translates to:
+  /// **'Oven Services'**
+  String get ovenServices;
+
+  /// No description provided for @pipeLeak.
+  ///
+  /// In en, this message translates to:
+  /// **'Pipe Leak'**
+  String get pipeLeak;
+
+  /// No description provided for @cloggedDrains.
+  ///
+  /// In en, this message translates to:
+  /// **'Clogged Drains'**
+  String get cloggedDrains;
+
+  /// No description provided for @faucetRepair.
+  ///
+  /// In en, this message translates to:
+  /// **'Faucet Repair'**
+  String get faucetRepair;
+
+  /// No description provided for @wiringProblems.
+  ///
+  /// In en, this message translates to:
+  /// **'Wiring Problems'**
+  String get wiringProblems;
+
+  /// No description provided for @switchRepair.
+  ///
+  /// In en, this message translates to:
+  /// **'Switch Repair'**
+  String get switchRepair;
+
+  /// No description provided for @outletRepair.
+  ///
+  /// In en, this message translates to:
+  /// **'Outlet Repair'**
+  String get outletRepair;
+
+  /// No description provided for @acCleaning.
+  ///
+  /// In en, this message translates to:
+  /// **'AC Washer (cleaning the internal and external unit)'**
+  String get acCleaning;
+
+  /// No description provided for @acCleaningDescription.
+  ///
+  /// In en, this message translates to:
+  /// **'Split AC - Complete cleaning service'**
+  String get acCleaningDescription;
+
+  /// No description provided for @acLeakRepair.
+  ///
+  /// In en, this message translates to:
+  /// **'Leak repair'**
+  String get acLeakRepair;
+
+  /// No description provided for @acWithGasRefill.
+  ///
+  /// In en, this message translates to:
+  /// **'Disassemble and assemble electronic board'**
+  String get acWithGasRefill;
+
+  /// No description provided for @acInstallation.
+  ///
+  /// In en, this message translates to:
+  /// **'New AC installation'**
+  String get acInstallation;
+
+  /// No description provided for @acIndoorMounting.
+  ///
+  /// In en, this message translates to:
+  /// **'Indoor mounting/dismounting'**
+  String get acIndoorMounting;
+
+  /// No description provided for @acOutdoorMounting.
+  ///
+  /// In en, this message translates to:
+  /// **'Outdoor mounting/dismounting'**
+  String get acOutdoorMounting;
+
+  /// No description provided for @externalMotorChange.
+  ///
+  /// In en, this message translates to:
+  /// **'External motor change'**
+  String get externalMotorChange;
+
+  /// No description provided for @acFullCleaning.
+  ///
+  /// In en, this message translates to:
+  /// **'Cleaning all units + Freon filling'**
+  String get acFullCleaning;
+
+  /// No description provided for @cleaningAllUnitsGasRefill.
+  ///
+  /// In en, this message translates to:
+  /// **'Cleaning all units + Freon filling'**
+  String get cleaningAllUnitsGasRefill;
+
+  /// No description provided for @mountingService.
+  ///
+  /// In en, this message translates to:
+  /// **'Cabinet installation'**
+  String get mountingService;
+
+  /// No description provided for @controlBoardRepairService.
+  ///
+  /// In en, this message translates to:
+  /// **'Disassemble and assemble electronic board'**
+  String get controlBoardRepairService;
+
+  /// No description provided for @cassetteTypeInstallationService.
+  ///
+  /// In en, this message translates to:
+  /// **'Cassette type installation'**
+  String get cassetteTypeInstallationService;
+
+  /// No description provided for @internalCrystalChange.
+  ///
+  /// In en, this message translates to:
+  /// **'Internal crystal change'**
+  String get internalCrystalChange;
+
+  /// No description provided for @internalMotorChange.
+  ///
+  /// In en, this message translates to:
+  /// **'Internal motor change'**
+  String get internalMotorChange;
+
+  /// No description provided for @largeCompressorChange.
+  ///
+  /// In en, this message translates to:
+  /// **'Large compressor change'**
+  String get largeCompressorChange;
+
+  /// No description provided for @largeComponentChange.
+  ///
+  /// In en, this message translates to:
+  /// **'Large compressor change'**
+  String get largeComponentChange;
+
+  /// No description provided for @contactorChange.
+  ///
+  /// In en, this message translates to:
+  /// **'Contactor change'**
+  String get contactorChange;
+
+  /// No description provided for @completentialation.
+  ///
+  /// In en, this message translates to:
+  /// **'Complete Installation'**
+  String get completentialation;
+
+  /// No description provided for @notificationTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Notifications'**
+  String get notificationTitle;
+
+  /// No description provided for @markAllAsRead.
+  ///
+  /// In en, this message translates to:
+  /// **'Mark All as Read'**
+  String get markAllAsRead;
+
+  /// No description provided for @newNotification.
+  ///
+  /// In en, this message translates to:
+  /// **'New'**
+  String get newNotification;
+
+  /// No description provided for @youHaveUnreadNotificationsSingular.
+  ///
+  /// In en, this message translates to:
+  /// **'You have 1 unread notification'**
+  String get youHaveUnreadNotificationsSingular;
+
+  /// No description provided for @youHaveUnreadNotificationsPlural.
+  ///
+  /// In en, this message translates to:
+  /// **'You have \$COUNT\$ unread notifications'**
+  String get youHaveUnreadNotificationsPlural;
+
+  /// No description provided for @bookingConfirmedNotification.
+  ///
+  /// In en, this message translates to:
+  /// **'Booking Confirmed'**
+  String get bookingConfirmedNotification;
+
+  /// No description provided for @bookingConfirmedMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'Your AC Cleaning service has been confirmed for tomorrow at 10:00 AM'**
+  String get bookingConfirmedMessage;
+
+  /// No description provided for @specialOfferNotification.
+  ///
+  /// In en, this message translates to:
+  /// **'Special Offer'**
+  String get specialOfferNotification;
+
+  /// No description provided for @specialOfferMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'Get 20% off on all plumbing services this weekend!'**
+  String get specialOfferMessage;
+
+  /// No description provided for @serviceReminderNotification.
+  ///
+  /// In en, this message translates to:
+  /// **'Service Reminder'**
+  String get serviceReminderNotification;
+
+  /// No description provided for @serviceReminderMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'Your washing machine cleaning is scheduled for today at 2:00 PM'**
+  String get serviceReminderMessage;
+
+  /// No description provided for @serviceCompletedNotification.
+  ///
+  /// In en, this message translates to:
+  /// **'Service Completed'**
+  String get serviceCompletedNotification;
+
+  /// No description provided for @serviceCompletedMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'Your electrical repair service has been completed. Rate your experience!'**
+  String get serviceCompletedMessage;
+
+  /// No description provided for @technicianAssignedNotification.
+  ///
+  /// In en, this message translates to:
+  /// **'Technician Assigned'**
+  String get technicianAssignedNotification;
+
+  /// No description provided for @technicianAssignedMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'Your technician Ahmed has been assigned to your AC Cleaning service'**
+  String get technicianAssignedMessage;
+
+  /// No description provided for @workStartedNotification.
+  ///
+  /// In en, this message translates to:
+  /// **'Work Started'**
+  String get workStartedNotification;
+
+  /// No description provided for @workStartedMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'Your technician has started working on your service'**
+  String get workStartedMessage;
+
+  /// No description provided for @workCompletedNotification.
+  ///
+  /// In en, this message translates to:
+  /// **'Work Completed'**
+  String get workCompletedNotification;
+
+  /// No description provided for @workCompletedMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'Your service has been completed successfully. Please review and rate!'**
+  String get workCompletedMessage;
+
+  /// No description provided for @invoiceGeneratedNotification.
+  ///
+  /// In en, this message translates to:
+  /// **'Invoice Generated'**
+  String get invoiceGeneratedNotification;
+
+  /// No description provided for @invoiceGeneratedMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'Your invoice is ready. Total amount: SAR \$AMOUNT\$'**
+  String get invoiceGeneratedMessage;
+
+  /// No description provided for @timeAgoJustNow.
+  ///
+  /// In en, this message translates to:
+  /// **'Just now'**
+  String get timeAgoJustNow;
+
+  /// No description provided for @timeAgoMinutesAgo.
+  ///
+  /// In en, this message translates to:
+  /// **'\$COUNT\$ minute ago'**
+  String get timeAgoMinutesAgo;
+
+  /// No description provided for @timeAgoMinutesAgoPlural.
+  ///
+  /// In en, this message translates to:
+  /// **'\$COUNT\$ minutes ago'**
+  String get timeAgoMinutesAgoPlural;
+
+  /// No description provided for @timeAgoHoursAgo.
+  ///
+  /// In en, this message translates to:
+  /// **'\$COUNT\$ hour ago'**
+  String get timeAgoHoursAgo;
+
+  /// No description provided for @timeAgoHoursAgoPlural.
+  ///
+  /// In en, this message translates to:
+  /// **'\$COUNT\$ hours ago'**
+  String get timeAgoHoursAgoPlural;
+
+  /// No description provided for @timeAgoDaysAgo.
+  ///
+  /// In en, this message translates to:
+  /// **'\$COUNT\$ day ago'**
+  String get timeAgoDaysAgo;
+
+  /// No description provided for @timeAgoDaysAgoPlural.
+  ///
+  /// In en, this message translates to:
+  /// **'\$COUNT\$ days ago'**
+  String get timeAgoDaysAgoPlural;
+
+  /// No description provided for @timeAgoWeeksAgo.
+  ///
+  /// In en, this message translates to:
+  /// **'\$COUNT\$ week ago'**
+  String get timeAgoWeeksAgo;
+
+  /// No description provided for @timeAgoWeeksAgoPlural.
+  ///
+  /// In en, this message translates to:
+  /// **'\$COUNT\$ weeks ago'**
+  String get timeAgoWeeksAgoPlural;
+
+  /// No description provided for @timeAgoMonthsAgo.
+  ///
+  /// In en, this message translates to:
+  /// **'\$COUNT\$ month ago'**
+  String get timeAgoMonthsAgo;
+
+  /// No description provided for @timeAgoMonthsAgoPlural.
+  ///
+  /// In en, this message translates to:
+  /// **'\$COUNT\$ months ago'**
+  String get timeAgoMonthsAgoPlural;
+
+  /// No description provided for @currencySAR.
+  ///
+  /// In en, this message translates to:
+  /// **'SAR'**
+  String get currencySAR;
+
+  /// No description provided for @sar.
+  ///
+  /// In en, this message translates to:
+  /// **'SAR'**
+  String get sar;
+
+  /// No description provided for @orderId.
+  ///
+  /// In en, this message translates to:
+  /// **'Order ID'**
+  String get orderId;
+
+  /// No description provided for @workCompleted.
+  ///
+  /// In en, this message translates to:
+  /// **'Work Completed'**
+  String get workCompleted;
 }
 
 class _AppLocalizationsDelegate

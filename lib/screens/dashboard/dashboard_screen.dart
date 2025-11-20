@@ -17,6 +17,7 @@ import '../../widget/service_image_widget.dart';
 import '../../utils/icons_helper.dart';
 import '../../gen_l10n/app_localizations.dart';
 import 'package:customer_app/screens/maps/map_selection_screen.dart';
+import '../../utils/formatting_utils.dart';
 
 class DashboardColors {
   static const deepPurple = Color(0xFF7C3AED);
@@ -258,8 +259,9 @@ class _DashboardScreenState extends State<DashboardScreen> {
   }
 
   int _getUnreadNotificationCount() {
-    return globalNotifications.where((n) => !n.isRead).length;
+    return globalNotifications.where((n) => n['read'] == false).length;
   }
+
 
   void _changeAddress() {
     _showLocationPicker();
@@ -658,7 +660,8 @@ class _DashboardScreenState extends State<DashboardScreen> {
                     }),
                     const SizedBox(width: 12),
                     _buildHeaderIcon(Icons.notifications_outlined, _getUnreadNotificationCount(), () {
-                      Navigator.push(context, MaterialPageRoute(builder: (context) => NotificationScreen(user: _currentUser)))
+                      Navigator.push(context, MaterialPageRoute(builder: (context) => const NotificationsScreen()
+                      ))
                           .then((_) => setState(() {}));
                     }),
                   ],
@@ -1411,7 +1414,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                                             Expanded(
                                               child: Text('${booking.service?.name ?? 'Service'} (${booking.quantity}x)', style: TextStyle(fontSize: 12, color: textColor)),
                                             ),
-                                            Text('SAR ${booking.totalPrice.toStringAsFixed(0)}', style: const TextStyle(fontSize: 12, fontWeight: FontWeight.w600, color: DashboardColors.deepPurple)),
+                                            Text(FormattingUtils.formatCurrency(totalPrice, l10n, Localizations.localeOf(context)), style: const TextStyle(fontSize: 12, fontWeight: FontWeight.w600, color: DashboardColors.deepPurple)),
                                           ],
                                         ),
                                       )),
