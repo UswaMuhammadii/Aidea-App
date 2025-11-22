@@ -1414,7 +1414,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                                             Expanded(
                                               child: Text('${booking.service?.name ?? 'Service'} (${booking.quantity}x)', style: TextStyle(fontSize: 12, color: textColor)),
                                             ),
-                                            Text(FormattingUtils.formatCurrency(totalPrice, l10n, Localizations.localeOf(context)), style: const TextStyle(fontSize: 12, fontWeight: FontWeight.w600, color: DashboardColors.deepPurple)),
+                                            Text(FormattingUtils.formatCurrency(booking.totalPrice, l10n, Localizations.localeOf(context)), style: const TextStyle(fontSize: 12, fontWeight: FontWeight.w600, color: DashboardColors.deepPurple)),
                                           ],
                                         ),
                                       )),
@@ -1446,8 +1446,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                                     Row(
                                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                       children: [
-                                        Text('Total Amount', style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold, color: textColor)),
-                                        Text('SAR ${totalPrice.toStringAsFixed(0)}', style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: DashboardColors.deepPurple)),
+                                        Text(FormattingUtils.formatCurrency(totalPrice, l10n, Localizations.localeOf(context)), style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: DashboardColors.deepPurple)),
                                       ],
                                     ),
                                   ],

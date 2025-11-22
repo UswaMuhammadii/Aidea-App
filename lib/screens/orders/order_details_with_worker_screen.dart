@@ -6,7 +6,7 @@ import 'vendor_profile_screen.dart';
 import 'chat_screen.dart';
 import '../../utils/app_colors.dart';
 import '../../gen_l10n/app_localizations.dart';
-
+import '../../utils/formatting_utils.dart';
 
 class OrderDetailsWithWorkerScreen extends StatefulWidget {
   final User user;
@@ -30,43 +30,44 @@ class _OrderDetailsWithWorkerScreenState extends State<OrderDetailsWithWorkerScr
   final String workingPeriod = "2 years";
   final String workerImage = "";
 
-  // Previous services done by this technician
-  final List<Map<String, dynamic>> previousServices = [
-    {
-      'icon': Icons.clean_hands,
-      'title': 'Deep House Cleaning',
-      'count': 156,
-      'color': AppColors.electricBlue,
-    },
-    {
-      'icon': Icons.weekend,
-      'title': 'Sofa Cleaning',
-      'count': 98,
-      'color': AppColors.electricBlue,
-    },
-    {
-      'icon': Icons.local_laundry_service,
-      'title': 'Carpet Cleaning',
-      'count': 87,
-      'color': AppColors.brightTeal,
-    },
-    {
-      'icon': Icons.countertops,
-      'title': 'Kitchen Deep Clean',
-      'count': 63,
-      'color': const Color(0xFFF59E0B),
-    },
-    {
-      'icon': Icons.shower,
-      'title': 'Bathroom Sanitization',
-      'count': 28,
-      'color': AppColors.success,
-    },
-  ];
-
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
+    final locale = Localizations.localeOf(context);
+
+    // Move previousServices list INSIDE build method where l10n is available
+    final List<Map<String, dynamic>> previousServices = [
+      {
+        'icon': Icons.clean_hands,
+        'title': l10n.deepHouseCleaning, // FIXED: use l10n object, not string
+        'count': 156,
+        'color': AppColors.electricBlue,
+      },
+      {
+        'icon': Icons.weekend,
+        'title': l10n.sofaCleaning, // FIXED
+        'count': 98,
+        'color': AppColors.electricBlue,
+      },
+      {
+        'icon': Icons.local_laundry_service,
+        'title': l10n.carpetCleaning, // FIXED
+        'count': 87,
+        'color': AppColors.brightTeal,
+      },
+      {
+        'icon': Icons.countertops,
+        'title': l10n.kitchenDeepClean, // FIXED
+        'count': 63,
+        'color': const Color(0xFFF59E0B),
+      },
+      {
+        'icon': Icons.shower,
+        'title': l10n.bathroomSanitization, // FIXED
+        'count': 28,
+        'color': AppColors.success,
+      },
+    ];
 
     final isDark = Theme.of(context).brightness == Brightness.dark;
     final backgroundColor = isDark ? const Color(0xFF0F172A) : const Color(0xFFF8F9FA);
@@ -81,6 +82,22 @@ class _OrderDetailsWithWorkerScreenState extends State<OrderDetailsWithWorkerScr
         backgroundColor: cardColor,
         foregroundColor: textColor,
         elevation: 0,
+        actions: [
+          TextButton.icon(
+            onPressed: () {
+              _showCancelDialog(context, l10n);
+            },
+            icon: Icon(Icons.cancel_outlined, color: Colors.red.shade600, size: 20),
+            label: Text(
+              l10n.cancelBooking,
+              style: TextStyle(
+                color: Colors.red.shade600,
+                fontWeight: FontWeight.w600,
+                fontSize: 14,
+              ),
+            ),
+          ),
+        ],
       ),
       body: SingleChildScrollView(
         child: Column(
@@ -118,7 +135,7 @@ class _OrderDetailsWithWorkerScreenState extends State<OrderDetailsWithWorkerScr
 
                   // Address
                   Text(
-                    'Service Address',
+                    l10n.address, // FIXED: use l10n
                     style: TextStyle(
                       fontSize: 14,
                       fontWeight: FontWeight.w600,
@@ -146,7 +163,7 @@ class _OrderDetailsWithWorkerScreenState extends State<OrderDetailsWithWorkerScr
                         onTap: () {
                           ScaffoldMessenger.of(context).showSnackBar(
                             SnackBar(
-                              content: Text('Emergency contact initiated'),
+                              content: Text(l10n.emergencyContactInitiated), // FIXED: use l10n
                               backgroundColor: Colors.red,
                             ),
                           );
@@ -156,14 +173,14 @@ class _OrderDetailsWithWorkerScreenState extends State<OrderDetailsWithWorkerScr
                           padding: const EdgeInsets.all(16),
                           child: Row(
                             children: [
-                              Icon(Icons.warning, color: Colors.red.shade700, size: 32),
+                              const Icon(Icons.warning, color: Colors.red, size: 32),
                               const SizedBox(width: 12),
                               Text(
-                                'Faced any emergency?',
-                                style: TextStyle(
+                                l10n.facedAnyEmergency,
+                                style: const TextStyle(
                                   fontSize: 16,
                                   fontWeight: FontWeight.bold,
-                                  color: Colors.red.shade700,
+                                  color: Colors.red,
                                 ),
                               ),
                             ],
@@ -215,7 +232,7 @@ class _OrderDetailsWithWorkerScreenState extends State<OrderDetailsWithWorkerScr
                                     ),
                                     const SizedBox(height: 2),
                                     Text(
-                                      'Professional Technician',
+                                      l10n.professionalTechnician, // FIXED: use l10n object
                                       style: TextStyle(
                                         fontSize: 13,
                                         color: subtitleColor,
@@ -243,7 +260,7 @@ class _OrderDetailsWithWorkerScreenState extends State<OrderDetailsWithWorkerScr
                             children: [
                               _buildStatItem(
                                 Icons.check_circle,
-                                '$totalOrders',
+                                FormattingUtils.formatNumber(totalOrders, locale),
                                 l10n.ordersDone,
                                 textColor,
                                 subtitleColor,
@@ -327,7 +344,7 @@ class _OrderDetailsWithWorkerScreenState extends State<OrderDetailsWithWorkerScr
 
                   // Services Expertise Section
                   Text(
-                    'Service Expertise',
+                    l10n.serviceExpertise,
                     style: TextStyle(
                       fontSize: 18,
                       fontWeight: FontWeight.bold,
@@ -336,7 +353,7 @@ class _OrderDetailsWithWorkerScreenState extends State<OrderDetailsWithWorkerScr
                   ),
                   const SizedBox(height: 4),
                   Text(
-                    'Previously completed services by $workerName',
+                    l10n.previouslyCompletedServicesBy(workerName),
                     style: TextStyle(
                       fontSize: 13,
                       color: subtitleColor,
@@ -427,14 +444,14 @@ class _OrderDetailsWithWorkerScreenState extends State<OrderDetailsWithWorkerScr
 
     String? selectedReason;
     final reasons = [
-      'Change of plans',
-      'Found better service',
-      'Incorrect booking details',
-      'Emergency situation',
-      'Price too high',
-      'Technician not available',
-      'Service no longer needed',
-      'Other reason',
+      l10n.changeOfPlans,
+      l10n.foundBetterService,
+      l10n.incorrectBookingDetails,
+      l10n.emergencySituation,
+      l10n.priceTooHigh,
+      l10n.technicianNotAvailable,
+      l10n.serviceNoLongerNeeded,
+      l10n.otherReason,
     ];
 
     showDialog(
@@ -486,7 +503,7 @@ class _OrderDetailsWithWorkerScreenState extends State<OrderDetailsWithWorkerScr
                     ),
                     const SizedBox(height: 8),
                     Text(
-                      'Please select a reason for cancellation',
+                      l10n.pleaseSelectReasonForCancellation,
                       style: TextStyle(
                         fontSize: 14,
                         color: subtitleColor,
@@ -558,7 +575,7 @@ class _OrderDetailsWithWorkerScreenState extends State<OrderDetailsWithWorkerScr
                           const SizedBox(width: 8),
                           Expanded(
                             child: Text(
-                              'Cancellation may incur charges',
+                              l10n.cancellationMayIncurCharges,
                               style: TextStyle(
                                 fontSize: 12,
                                 color: Colors.orange.shade900,
@@ -580,7 +597,7 @@ class _OrderDetailsWithWorkerScreenState extends State<OrderDetailsWithWorkerScr
                               padding: const EdgeInsets.symmetric(vertical: 14),
                               shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
                             ),
-                            child: Text('Keep Booking', style: TextStyle(color: textColor, fontWeight: FontWeight.w600)),
+                            child: Text(l10n.keepBooking, style: TextStyle(color: textColor, fontWeight: FontWeight.w600)),
                           ),
                         ),
                         const SizedBox(width: 12),
@@ -639,7 +656,7 @@ class _OrderDetailsWithWorkerScreenState extends State<OrderDetailsWithWorkerScr
                   child: Icon(Icons.check_circle, color: Colors.green.shade700, size: 48),
                 ),
                 const SizedBox(height: 20),
-                Text('Booking Cancelled', style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: textColor)),
+                Text(l10n.bookingCancelled, style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: textColor)),
                 const SizedBox(height: 12),
                 Text(
                   'Your booking has been cancelled successfully.',

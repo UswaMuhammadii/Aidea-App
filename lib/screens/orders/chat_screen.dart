@@ -20,19 +20,13 @@ class ChatScreen extends StatefulWidget {
 class _ChatScreenState extends State<ChatScreen> {
   final TextEditingController _messageController = TextEditingController();
   final ScrollController _scrollController = ScrollController();
-  final List<ChatMessage> _messages = [];
+  late List<ChatMessage> _messages;
+  bool _initialMessageAdded = false;
 
   @override
   void initState() {
     super.initState();
-    // Add initial welcome message
-    _messages.add(
-      ChatMessage(
-        text: 'Hello! I will be arriving in 30 minutes. Please keep the service area ready.',
-        isMe: false,
-        time: DateTime.now().subtract(const Duration(minutes: 5)),
-      ),
-    );
+    _messages = [];
   }
 
   void _sendMessage() {
@@ -49,8 +43,31 @@ class _ChatScreenState extends State<ChatScreen> {
     });
 
     _messageController.clear();
+    _scrollToBottom();
 
-    // Auto scroll to bottom
+    // Simulate technician response
+    _simulateTechnicianResponse();
+  }
+
+  void _simulateTechnicianResponse() {
+    Future.delayed(const Duration(seconds: 2), () {
+      if (mounted) {
+        final l10n = AppLocalizations.of(context)!;
+        setState(() {
+          _messages.add(
+            ChatMessage(
+              text: l10n.okayNotedThankYou,
+              isMe: false,
+              time: DateTime.now(),
+            ),
+          );
+        });
+        _scrollToBottom();
+      }
+    });
+  }
+
+  void _scrollToBottom() {
     Future.delayed(const Duration(milliseconds: 100), () {
       if (_scrollController.hasClients) {
         _scrollController.animateTo(
@@ -60,36 +77,29 @@ class _ChatScreenState extends State<ChatScreen> {
         );
       }
     });
-
-    // Simulate technician response
-    Future.delayed(const Duration(seconds: 2), () {
-      if (mounted) {
-        setState(() {
-          _messages.add(
-            ChatMessage(
-              text: 'Okay, noted. Thank you!',
-              isMe: false,
-              time: DateTime.now(),
-            ),
-          );
-        });
-
-        Future.delayed(const Duration(milliseconds: 100), () {
-          if (_scrollController.hasClients) {
-            _scrollController.animateTo(
-              _scrollController.position.maxScrollExtent,
-              duration: const Duration(milliseconds: 300),
-              curve: Curves.easeOut,
-            );
-          }
-        });
-      }
-    });
   }
 
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
+
+    // Add initial welcome message
+    if (!_initialMessageAdded && _messages.isEmpty) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (mounted) {
+          setState(() {
+            _messages.add(
+              ChatMessage(
+                text: l10n.helloArrivingSoon,
+                isMe: false,
+                time: DateTime.now().subtract(const Duration(minutes: 5)),
+              ),
+            );
+            _initialMessageAdded = true;
+          });
+        }
+      });
+    }
 
     final isDark = Theme.of(context).brightness == Brightness.dark;
     final backgroundColor = isDark ? const Color(0xFF0F172A) : const Color(0xFFF8F9FA);
@@ -233,6 +243,7 @@ class _ChatScreenState extends State<ChatScreen> {
                         style: TextStyle(color: textColor),
                         maxLines: null,
                         textCapitalization: TextCapitalization.sentences,
+                        onSubmitted: (_) => _sendMessage(),
                       ),
                     ),
                   ),

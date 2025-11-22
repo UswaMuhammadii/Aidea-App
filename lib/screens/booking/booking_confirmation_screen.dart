@@ -5,6 +5,7 @@ import '../../models/booking_model.dart';
 import '../dashboard/dashboard_screen.dart';
 import '../../utils/app_colors.dart';
 import '../../gen_l10n/app_localizations.dart';
+import '../../utils/formatting_utils.dart'; // Add this import
 
 class BookingConfirmationScreen extends StatelessWidget {
   final List<Booking> bookings;
@@ -23,6 +24,7 @@ class BookingConfirmationScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
+    final locale = Localizations.localeOf(context); // Add this
 
     final isDark = Theme.of(context).brightness == Brightness.dark;
     final backgroundColor = isDark ? const Color(0xFF0F172A) : const Color(0xFFF8F9FA);
@@ -160,7 +162,7 @@ class BookingConfirmationScreen extends StatelessWidget {
                                     const SizedBox(width: 8),
                                     Expanded(
                                       child: Text(
-                                        '${booking.service?.name ?? l10n.service} (${l10n.quantity}: ${booking.quantity})',
+                                        '${booking.service?.name ?? l10n.service} (${l10n.quantity}: ${FormattingUtils.formatNumber(booking.quantity, locale)})', // FIXED: Use formatNumber
                                         style: TextStyle(
                                           fontSize: 14,
                                           color: textColor,
@@ -168,7 +170,7 @@ class BookingConfirmationScreen extends StatelessWidget {
                                       ),
                                     ),
                                     Text(
-                                      'SAR ${booking.totalPrice.toStringAsFixed(0)}',
+                                      FormattingUtils.formatCurrency(booking.totalPrice, l10n, locale), // FIXED: Use formatCurrency
                                       style: const TextStyle(
                                         fontSize: 14,
                                         fontWeight: FontWeight.w600,
@@ -188,7 +190,7 @@ class BookingConfirmationScreen extends StatelessWidget {
                       _buildDetailRow(l10n.date, DateFormat('EEEE, MMMM d, y').format(firstBooking.bookingDate), textColor, subtitleColor),
                       _buildDetailRow(l10n.time, DateFormat('h:mm a').format(firstBooking.bookingTime), textColor, subtitleColor),
                       if (bookings.length == 1)
-                        _buildDetailRow(l10n.quantity, '${firstBooking.quantity}', textColor, subtitleColor),
+                        _buildDetailRow(l10n.quantity, FormattingUtils.formatNumber(firstBooking.quantity, locale), textColor, subtitleColor), // FIXED: Use formatNumber
                       Divider(height: 32, color: isDark ? Colors.grey.shade700 : Colors.grey.shade300),
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -202,7 +204,7 @@ class BookingConfirmationScreen extends StatelessWidget {
                             ),
                           ),
                           Text(
-                            'SAR ${totalAmount.toStringAsFixed(0)}',
+                            FormattingUtils.formatCurrency(totalAmount, l10n, locale), // FIXED: Use formatCurrency
                             style: const TextStyle(
                               fontSize: 24,
                               fontWeight: FontWeight.bold,

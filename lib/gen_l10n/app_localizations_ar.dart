@@ -506,7 +506,7 @@ class AppLocalizationsAr extends AppLocalizations {
   String get simulateCompleteWork => 'محاكاة: إكمال العمل';
 
   @override
-  String get technician => 'الفني';
+  String get technician => 'فني';
 
   @override
   String get ordersDone => 'الطلبات المكتملة';
@@ -584,7 +584,7 @@ class AppLocalizationsAr extends AppLocalizations {
   String get profileVerified => 'تم التحقق من الملف الشخصي';
 
   @override
-  String get policeVerified => 'تم التحقق من الشرطة';
+  String get policeVerified => 'تم التحقق من قبل الشرطة';
 
   @override
   String get servicesProvide => 'الخدمات المقدمة';
@@ -764,7 +764,7 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String previouslyCompletedServicesBy(String name) {
-    return 'الخدمات المكتملة سابقًا بواسطة $name';
+    return 'الخدمات المكتملة سابقاً بواسطة';
   }
 
   @override
@@ -1603,4 +1603,47 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get workCompleted => 'تم الانتهاء من العمل';
+
+  @override
+  String get helloArrivingSoon =>
+      'مرحباً! سأصل خلال 30 دقيقة. يرجى إبقاء منطقة الخدمة جاهزة.';
+
+  @override
+  String get sofaCleaning => 'تنظيف الكنب';
+
+  @override
+  String get sevenSeaterSofaCleaning => 'تنظيف كنبة 7 مقاعد';
+
+  @override
+  String get fiveSeaterSofaCleaning => 'تنظيف كنبة 5 مقاعد';
+
+  @override
+  String get sixSeaterSofaCleaning => 'تنظيف كنبة 6 مقاعد';
+
+  @override
+  String get dewanCleaning => 'تنظيف الديوان';
+
+  @override
+  String get sofaCumBedCleaning => 'تنظيف الكنبة السرير';
+
+  @override
+  String get tenSeaterSofaCleaning => 'تنظيف كنبة 10 مقاعد';
+
+  @override
+  String get chairCleaning => 'تنظيف الكراسي - 4 مقاعد';
+
+  @override
+  String get deepHouseCleaning => 'تنظيف المنزل العميق';
+
+  @override
+  String get carpetCleaning => 'تنظيف السجاد';
+
+  @override
+  String get kitchenDeepClean => 'تنظيف المطبخ العميق';
+
+  @override
+  String get bathroomSanitization => 'تعقيم الحمام';
+
+  @override
+  String get emergencyContactInitiated => 'تم بدء الاتصال في حالات الطوارئ';
 }

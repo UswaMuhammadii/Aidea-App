@@ -426,7 +426,8 @@ class _OrderTrackingScreenState extends State<OrderTrackingScreen> {
                                           ),
                                           const SizedBox(width: 8),
                                           Text(
-                                            '• ${FormattingUtils.formatNumber(432, locale)} ${l10n.ordersDone}', // Updated
+                                            //'• ${FormattingUtils.formatNumber(432, locale)} ${l10n.ordersDone}', // Updated
+                                            l10n.ordersDone,
                                             style: TextStyle(
                                               fontSize: 13,
                                               color: subtitleColor,

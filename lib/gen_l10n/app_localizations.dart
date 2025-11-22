@@ -3199,6 +3199,90 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Work Completed'**
   String get workCompleted;
+
+  /// No description provided for @helloArrivingSoon.
+  ///
+  /// In en, this message translates to:
+  /// **'Hello! I will be arriving in 30 minutes. Please keep the service area ready.'**
+  String get helloArrivingSoon;
+
+  /// No description provided for @sofaCleaning.
+  ///
+  /// In en, this message translates to:
+  /// **'Sofa Cleaning'**
+  String get sofaCleaning;
+
+  /// No description provided for @sevenSeaterSofaCleaning.
+  ///
+  /// In en, this message translates to:
+  /// **'7 Seater Sofa Set Cleaning'**
+  String get sevenSeaterSofaCleaning;
+
+  /// No description provided for @fiveSeaterSofaCleaning.
+  ///
+  /// In en, this message translates to:
+  /// **'5 Seater Sofa Set Cleaning'**
+  String get fiveSeaterSofaCleaning;
+
+  /// No description provided for @sixSeaterSofaCleaning.
+  ///
+  /// In en, this message translates to:
+  /// **'6 Seater Sofa Set Cleaning'**
+  String get sixSeaterSofaCleaning;
+
+  /// No description provided for @dewanCleaning.
+  ///
+  /// In en, this message translates to:
+  /// **'Dewan Cleaning'**
+  String get dewanCleaning;
+
+  /// No description provided for @sofaCumBedCleaning.
+  ///
+  /// In en, this message translates to:
+  /// **'Sofa Cum Bed Cleaning'**
+  String get sofaCumBedCleaning;
+
+  /// No description provided for @tenSeaterSofaCleaning.
+  ///
+  /// In en, this message translates to:
+  /// **'10 Seater Sofa Cleaning'**
+  String get tenSeaterSofaCleaning;
+
+  /// No description provided for @chairCleaning.
+  ///
+  /// In en, this message translates to:
+  /// **'Chair Cleaning - 4 Seats'**
+  String get chairCleaning;
+
+  /// No description provided for @deepHouseCleaning.
+  ///
+  /// In en, this message translates to:
+  /// **'Deep House Cleaning'**
+  String get deepHouseCleaning;
+
+  /// No description provided for @carpetCleaning.
+  ///
+  /// In en, this message translates to:
+  /// **'Carpet Cleaning'**
+  String get carpetCleaning;
+
+  /// No description provided for @kitchenDeepClean.
+  ///
+  /// In en, this message translates to:
+  /// **'Kitchen Deep Clean'**
+  String get kitchenDeepClean;
+
+  /// No description provided for @bathroomSanitization.
+  ///
+  /// In en, this message translates to:
+  /// **'Bathroom Sanitization'**
+  String get bathroomSanitization;
+
+  /// No description provided for @emergencyContactInitiated.
+  ///
+  /// In en, this message translates to:
+  /// **'Emergency contact initiated'**
+  String get emergencyContactInitiated;
 }
 
 class _AppLocalizationsDelegate

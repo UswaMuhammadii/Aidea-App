@@ -1624,4 +1624,47 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get workCompleted => 'Work Completed';
+
+  @override
+  String get helloArrivingSoon =>
+      'Hello! I will be arriving in 30 minutes. Please keep the service area ready.';
+
+  @override
+  String get sofaCleaning => 'Sofa Cleaning';
+
+  @override
+  String get sevenSeaterSofaCleaning => '7 Seater Sofa Set Cleaning';
+
+  @override
+  String get fiveSeaterSofaCleaning => '5 Seater Sofa Set Cleaning';
+
+  @override
+  String get sixSeaterSofaCleaning => '6 Seater Sofa Set Cleaning';
+
+  @override
+  String get dewanCleaning => 'Dewan Cleaning';
+
+  @override
+  String get sofaCumBedCleaning => 'Sofa Cum Bed Cleaning';
+
+  @override
+  String get tenSeaterSofaCleaning => '10 Seater Sofa Cleaning';
+
+  @override
+  String get chairCleaning => 'Chair Cleaning - 4 Seats';
+
+  @override
+  String get deepHouseCleaning => 'Deep House Cleaning';
+
+  @override
+  String get carpetCleaning => 'Carpet Cleaning';
+
+  @override
+  String get kitchenDeepClean => 'Kitchen Deep Clean';
+
+  @override
+  String get bathroomSanitization => 'Bathroom Sanitization';
+
+  @override
+  String get emergencyContactInitiated => 'Emergency contact initiated';
 }

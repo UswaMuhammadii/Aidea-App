@@ -23,16 +23,16 @@ class VendorProfileScreen extends StatelessWidget {
     final cardColor = isDark ? const Color(0xFF1E293B) : Colors.white;
     final textColor = isDark ? Colors.white : Colors.black87;
 
-    // Dummy services list
+    // FIXED: Use l10n object instead of hardcoded strings
     final services = [
-      'Sofa Cleaning',
-      '7 Seater Sofa Set Cleaning',
-      '5 Seater Sofa Set Cleaning',
-      '6 Seater Sofa Set Cleaning',
-      'Dewan Cleaning',
-      'Sofa Cum Bed Cleaning',
-      '10 Seater Sofa Cleaning',
-      'Chair Cleaning - 4 Seats',
+      l10n.sofaCleaning,
+      l10n.sevenSeaterSofaCleaning,
+      l10n.fiveSeaterSofaCleaning,
+      l10n.sixSeaterSofaCleaning,
+      l10n.dewanCleaning,
+      l10n.sofaCumBedCleaning,
+      l10n.tenSeaterSofaCleaning,
+      l10n.chairCleaning,
     ];
 
     return Scaffold(
@@ -108,22 +108,22 @@ class VendorProfileScreen extends StatelessWidget {
                     children: [
                       Row(
                         children: [
-                          Icon(Icons.check_circle, color: Colors.blue, size: 20),
-                          SizedBox(width: 4),
+                          const Icon(Icons.check_circle, color: Colors.blue, size: 20),
+                          const SizedBox(width: 4),
                           Text(
                             l10n.profileVerified,
-                            style: TextStyle(color: Colors.blue, fontSize: 13),
+                            style: const TextStyle(color: Colors.blue, fontSize: 13),
                           ),
                         ],
                       ),
-                      SizedBox(width: 24),
+                      const SizedBox(width: 24),
                       Row(
                         children: [
-                          Icon(Icons.check_circle, color: Colors.blue, size: 20),
-                          SizedBox(width: 4),
+                          const Icon(Icons.check_circle, color: Colors.blue, size: 20),
+                          const SizedBox(width: 4),
                           Text(
                             l10n.policeVerified,
-                            style: TextStyle(color: Colors.blue, fontSize: 13),
+                            style: const TextStyle(color: Colors.blue, fontSize: 13),
                           ),
                         ],
                       ),

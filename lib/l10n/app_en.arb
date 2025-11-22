@@ -595,5 +595,31 @@
   "viewProfile": "View Profile",
   "chat": "Chat",
   "years": "years",
-  "previouslyCompletedServicesBy": "Previously completed services by {name}"
+  "previouslyCompletedServicesBy": "Previously completed services by {name}",
+    "@previouslyCompletedServicesBy": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+    }
+  }
+},
+  "years": "years",
+  "qty": "Qty",
+  "other": "Other",
+  "helloArrivingSoon": "Hello! I will be arriving in 30 minutes. Please keep the service area ready.",
+  "okayNotedThankYou": "Okay, noted. Thank you!",
+  "sofaCleaning": "Sofa Cleaning",
+  "sevenSeaterSofaCleaning": "7 Seater Sofa Set Cleaning",
+  "fiveSeaterSofaCleaning": "5 Seater Sofa Set Cleaning",
+  "sixSeaterSofaCleaning": "6 Seater Sofa Set Cleaning",
+  "dewanCleaning": "Dewan Cleaning",
+  "sofaCumBedCleaning": "Sofa Cum Bed Cleaning",
+  "tenSeaterSofaCleaning": "10 Seater Sofa Cleaning",
+  "chairCleaning": "Chair Cleaning - 4 Seats",
+  "deepHouseCleaning": "Deep House Cleaning",
+  "sofaCleaning": "Sofa Cleaning",
+  "carpetCleaning": "Carpet Cleaning",
+  "kitchenDeepClean": "Kitchen Deep Clean",
+  "bathroomSanitization": "Bathroom Sanitization",
+  "emergencyContactInitiated": "Emergency contact initiated"
 }
