@@ -1,11 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:image_picker/image_picker.dart';
+import 'dart:io';
+import '../../gen_l10n/app_localizations.dart';
 import '../../models/user_model.dart';
 import '../../models/service_model.dart';
 import '../../models/booking_model.dart';
 import '../../models/cart_model.dart';
 import '../../services/dummy_data_service.dart';
 import '../booking/booking_confirmation_screen.dart';
+import '../../utils/icons_helper.dart';
+import '../../utils/formatting_utils.dart';
+import '../../utils/app_colors.dart';
 
 class ServiceCheckoutScreen extends StatefulWidget {
   final Service service;
@@ -31,25 +37,18 @@ class _ServiceCheckoutScreenState extends State<ServiceCheckoutScreen> {
   final TextEditingController _notesController = TextEditingController();
   final TextEditingController _addressController = TextEditingController();
   bool _isLoading = false;
-  String _selectedPaymentMethod = 'cash';
+  final List<File> _selectedImages = [];
+  final ImagePicker _picker = ImagePicker();
 
-  // Updated function - subcategory ke basis par icon
-  Icon _getIconForServiceItem(String? subcategory) {
-    switch (subcategory?.toLowerCase() ?? "") {
-      case "automatic washing machines":
-      case "regular washing machines":
-        return const Icon(Icons.local_laundry_service, color: Colors.blue, size: 28);
-      case "split ac":
-      case "window ac":
-      case "central ac":
-        return const Icon(Icons.ac_unit, color: Colors.lightBlue, size: 28);
-      case "refrigerator":
-        return const Icon(Icons.kitchen, color: Colors.teal, size: 28);
-      case "oven":
-        return const Icon(Icons.microwave, color: Colors.deepOrange, size: 28);
-      default:
-        return const Icon(Icons.build, color: Colors.grey, size: 28);
-    }
+  Icon _getIconForServiceItem(Service service) {
+    return IconHelper.getServiceIcon(
+      category: service.category,
+      subcategory: service.subcategory,
+      subSubcategory: service.subSubcategory,
+      serviceName: service.name,
+      color: Colors.blue,
+      size: 28,
+    );
   }
 
   @override
@@ -66,6 +65,7 @@ class _ServiceCheckoutScreenState extends State<ServiceCheckoutScreen> {
   }
 
   Future<void> _selectDate() async {
+    final l10n = AppLocalizations.of(context)!;
     final DateTime? picked = await showDatePicker(
       context: context,
       initialDate: DateTime.now().add(const Duration(days: 1)),
@@ -81,13 +81,16 @@ class _ServiceCheckoutScreenState extends State<ServiceCheckoutScreen> {
   }
 
   Future<void> _selectTime() async {
+    final l10n = AppLocalizations.of(context)!;
     if (_selectedDate == null) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Please select a date first'),
-          backgroundColor: Colors.orange,
-        ),
-      );
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(l10n.pleaseSelectADateFirst),
+            backgroundColor: Colors.orange,
+          ),
+        );
+      }
       return;
     }
 
@@ -102,24 +105,114 @@ class _ServiceCheckoutScreenState extends State<ServiceCheckoutScreen> {
     }
   }
 
-  Future<void> _proceedToBooking() async {
-    if (_selectedDate == null || _selectedTime == null) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Please select both date and time'),
-          backgroundColor: Colors.red,
+  Future<void> _pickImages() async {
+    final l10n = AppLocalizations.of(context)!;
+    try {
+      final List<XFile> images = await _picker.pickMultiImage();
+      if (images.isNotEmpty) {
+        setState(() {
+          _selectedImages.addAll(images.map((xFile) => File(xFile.path)));
+        });
+      }
+    } catch (e) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('${l10n.errorPickingImages}: $e'),
+            backgroundColor: Colors.red,
+          ),
+        );
+      }
+    }
+  }
+
+  Future<void> _pickImageFromCamera() async {
+    final l10n = AppLocalizations.of(context)!;
+    try {
+      final XFile? image = await _picker.pickImage(source: ImageSource.camera);
+      if (image != null) {
+        setState(() {
+          _selectedImages.add(File(image.path));
+        });
+      }
+    } catch (e) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('${l10n.errorTakingPhoto}: $e'),
+            backgroundColor: Colors.red,
+          ),
+        );
+      }
+    }
+  }
+
+  void _removeImage(int index) {
+    setState(() {
+      _selectedImages.removeAt(index);
+    });
+  }
+
+  void _showImageSourceDialog() {
+    final l10n = AppLocalizations.of(context)!;
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    final cardColor = isDark ? const Color(0xFF1E293B) : Colors.white;
+    final textColor = isDark ? Colors.white : Colors.black87;
+
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        backgroundColor: cardColor,
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+        title: Text(l10n.chooseImageSource, style: TextStyle(color: textColor)),
+        content: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            ListTile(
+              leading: const Icon(Icons.photo_library, color: Colors.blue),
+              title: Text(l10n.gallery, style: TextStyle(color: textColor)),
+              onTap: () {
+                Navigator.pop(context);
+                _pickImages();
+              },
+            ),
+            ListTile(
+              leading: const Icon(Icons.camera_alt, color: Colors.green),
+              title: Text(l10n.camera, style: TextStyle(color: textColor)),
+              onTap: () {
+                Navigator.pop(context);
+                _pickImageFromCamera();
+              },
+            ),
+          ],
         ),
-      );
+      ),
+    );
+  }
+
+  Future<void> _submitRequest() async {
+    final l10n = AppLocalizations.of(context)!;
+    if (_selectedDate == null || _selectedTime == null) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(l10n.pleaseSelectBothDateAndTime),
+            backgroundColor: Colors.red,
+          ),
+        );
+      }
       return;
     }
 
     if (_addressController.text.isEmpty) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Please enter your address'),
-          backgroundColor: Colors.red,
-        ),
-      );
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(l10n.pleaseEnterYourAddress),
+            backgroundColor: Colors.red,
+          ),
+        );
+      }
       return;
     }
 
@@ -145,8 +238,9 @@ class _ServiceCheckoutScreenState extends State<ServiceCheckoutScreen> {
           bookingTime: bookingDateTime,
           totalPrice: cartItem.totalPrice,
           quantity: cartItem.quantity,
-          paymentMethod: _selectedPaymentMethod,
+          paymentMethod: 'pending',
           notes: _notesController.text.isNotEmpty ? _notesController.text : null,
+          l10n: AppLocalizations.of(context)!,
         );
         bookings.add(booking);
         totalPrice += cartItem.totalPrice;
@@ -161,8 +255,9 @@ class _ServiceCheckoutScreenState extends State<ServiceCheckoutScreen> {
         bookingTime: bookingDateTime,
         totalPrice: totalPrice,
         quantity: widget.quantity,
-        paymentMethod: _selectedPaymentMethod,
+        paymentMethod: 'pending',
         notes: _notesController.text.isNotEmpty ? _notesController.text : null,
+        l10n: AppLocalizations.of(context)!,
       );
       bookings.add(booking);
     }
@@ -177,6 +272,7 @@ class _ServiceCheckoutScreenState extends State<ServiceCheckoutScreen> {
             bookings: bookings,
             user: widget.user,
             totalAmount: totalPrice,
+            l10n: AppLocalizations.of(context)!,
           ),
         ),
       );
@@ -185,46 +281,54 @@ class _ServiceCheckoutScreenState extends State<ServiceCheckoutScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
+    final locale = Localizations.localeOf(context);
+
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    final backgroundColor = isDark ? const Color(0xFF0F172A) : const Color(0xFFF8F9FA);
+    final cardColor = isDark ? const Color(0xFF1E293B) : Colors.white;
+    final textColor = isDark ? Colors.white : Colors.black87;
+    final subtitleColor = isDark ? Colors.grey.shade400 : Colors.grey.shade600;
+    final borderColor = isDark ? Colors.grey.shade700 : Colors.grey.shade300;
+    final shadowOpacity = isDark ? 0.3 : 0.05;
+
     double totalPrice = widget.isFromCart
         ? globalCart.fold(0.0, (sum, item) => sum + item.totalPrice)
         : widget.service.price * widget.quantity;
 
     return Scaffold(
+      backgroundColor: backgroundColor,
       appBar: AppBar(
-        title: const Text('Book Service'),
+        title: Text(l10n.bookService),
         centerTitle: true,
+        backgroundColor: cardColor,
+        foregroundColor: textColor,
       ),
       body: Container(
         decoration: BoxDecoration(
-          gradient: LinearGradient(
-            begin: Alignment.topCenter,
-            end: Alignment.bottomCenter,
-            colors: [
-              Theme.of(context).colorScheme.primary.withOpacity(0.05),
-              Colors.white,
-            ],
-          ),
+          color: isDark ? const Color(0xFF0F172A) : const Color(0xFFF8F9FA),
         ),
         child: SingleChildScrollView(
           padding: const EdgeInsets.all(16),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              // Selected Services
+              // SELECTED SERVICES SECTION
               Text(
-                'Selected Services',
+                l10n.selectedServices,
                 style: Theme.of(context).textTheme.titleMedium?.copyWith(
                   fontWeight: FontWeight.bold,
+                  color: textColor,
                 ),
               ),
               const SizedBox(height: 12),
               Container(
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(16),
-                  color: Colors.white,
+                  color: cardColor,
                   boxShadow: [
                     BoxShadow(
-                      color: Colors.black.withOpacity(0.05),
+                      color: Colors.black.withOpacity(shadowOpacity),
                       blurRadius: 10,
                       offset: const Offset(0, 5),
                     ),
@@ -232,51 +336,56 @@ class _ServiceCheckoutScreenState extends State<ServiceCheckoutScreen> {
                 ),
                 child: Column(
                   children: widget.isFromCart
-                      ? globalCart.map((item) => Padding(
-                    padding: const EdgeInsets.all(12),
-                    child: Row(
-                      children: [
-                        Container(
-                          width: 50,
-                          height: 50,
-                          decoration: BoxDecoration(
-                            color: Colors.grey.shade100,
-                            borderRadius: BorderRadius.circular(10),
+                      ? globalCart.map((item) {
+                    return Padding(
+                      padding: const EdgeInsets.all(12),
+                      child: Row(
+                        children: [
+                          Container(
+                            width: 50,
+                            height: 50,
+                            decoration: BoxDecoration(
+                              color: isDark
+                                  ? const Color(0xFF334155)
+                                  : Colors.grey.shade100,
+                              borderRadius: BorderRadius.circular(10),
+                            ),
+                            child: _getIconForServiceItem(item.service),
                           ),
-                          child: _getIconForServiceItem(item.service.subcategory),
-                        ),
-                        const SizedBox(width: 12),
-                        Expanded(
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(
-                                item.service.name,
-                                style: const TextStyle(
-                                  fontWeight: FontWeight.bold,
-                                  fontSize: 14,
+                          const SizedBox(width: 12),
+                          Expanded(
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  item.service.name,
+                                  style: TextStyle(
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: 14,
+                                    color: textColor,
+                                  ),
                                 ),
-                              ),
-                              Text(
-                                'Qty: ${item.quantity}',
-                                style: TextStyle(
-                                  fontSize: 12,
-                                  color: Colors.grey.shade600,
+                                Text(
+                                  '${l10n.qty}: ${FormattingUtils.formatNumber(item.quantity, locale)}',
+                                  style: TextStyle(
+                                    fontSize: 12,
+                                    color: subtitleColor,
+                                  ),
                                 ),
-                              ),
-                            ],
+                              ],
+                            ),
                           ),
-                        ),
-                        Text(
-                          'SAR ${item.totalPrice.toStringAsFixed(0)}',
-                          style: TextStyle(
-                            fontWeight: FontWeight.bold,
-                            color: Theme.of(context).colorScheme.primary,
+                          Text(
+                            FormattingUtils.formatCurrency(item.totalPrice, l10n, locale),
+                            style: TextStyle(
+                              fontWeight: FontWeight.bold,
+                              color: Theme.of(context).colorScheme.primary,
+                            ),
                           ),
-                        ),
-                      ],
-                    ),
-                  )).toList()
+                        ],
+                      ),
+                    );
+                  }).toList()
                       : [
                     Padding(
                       padding: const EdgeInsets.all(12),
@@ -286,10 +395,12 @@ class _ServiceCheckoutScreenState extends State<ServiceCheckoutScreen> {
                             width: 50,
                             height: 50,
                             decoration: BoxDecoration(
-                              color: Colors.grey.shade100,
+                              color: isDark
+                                  ? const Color(0xFF334155)
+                                  : Colors.grey.shade100,
                               borderRadius: BorderRadius.circular(10),
                             ),
-                            child: _getIconForServiceItem(widget.service.subcategory),
+                            child: _getIconForServiceItem(widget.service),
                           ),
                           const SizedBox(width: 12),
                           Expanded(
@@ -298,23 +409,24 @@ class _ServiceCheckoutScreenState extends State<ServiceCheckoutScreen> {
                               children: [
                                 Text(
                                   widget.service.name,
-                                  style: const TextStyle(
+                                  style: TextStyle(
                                     fontWeight: FontWeight.bold,
                                     fontSize: 14,
+                                    color: textColor,
                                   ),
                                 ),
                                 Text(
-                                  'Qty: ${widget.quantity}',
+                                  '${l10n.qty}: ${FormattingUtils.formatNumber(widget.quantity, locale)}',
                                   style: TextStyle(
                                     fontSize: 12,
-                                    color: Colors.grey.shade600,
+                                    color: subtitleColor,
                                   ),
                                 ),
                               ],
                             ),
                           ),
                           Text(
-                            'SAR ${totalPrice.toStringAsFixed(0)}',
+                            FormattingUtils.formatCurrency(totalPrice, l10n, locale),
                             style: TextStyle(
                               fontWeight: FontWeight.bold,
                               color: Theme.of(context).colorScheme.primary,
@@ -326,13 +438,154 @@ class _ServiceCheckoutScreenState extends State<ServiceCheckoutScreen> {
                   ],
                 ),
               ),
-              const SizedBox(height: 16),
+              const SizedBox(height: 24),
 
-              // Date Selection
+              // UPLOAD APPLIANCE IMAGES SECTION
               Text(
-                'Select Date',
+                l10n.uploadApplianceImages,
                 style: Theme.of(context).textTheme.titleMedium?.copyWith(
                   fontWeight: FontWeight.bold,
+                  color: textColor,
+                ),
+              ),
+              const SizedBox(height: 12),
+              Container(
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(16),
+                  color: cardColor,
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.black.withOpacity(shadowOpacity),
+                      blurRadius: 10,
+                      offset: const Offset(0, 5),
+                    ),
+                  ],
+                ),
+                child: Column(
+                  children: [
+                    // Upload Button
+                    InkWell(
+                      onTap: _showImageSourceDialog,
+                      borderRadius: BorderRadius.circular(16),
+                      child: Container(
+                        padding: const EdgeInsets.all(20),
+                        child: Row(
+                          children: [
+                            Container(
+                              padding: const EdgeInsets.all(12),
+                              decoration: BoxDecoration(
+                                color: Theme.of(context).colorScheme.primary.withOpacity(0.7),
+                                borderRadius: BorderRadius.circular(12),
+                              ),
+                              child: const Icon(
+                                Icons.add_photo_alternate,
+                                color: Colors.white,
+                                size: 24,
+                              ),
+                            ),
+                            const SizedBox(width: 16),
+                            Expanded(
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    l10n.addPhotos,
+                                    style: TextStyle(
+                                      fontWeight: FontWeight.bold,
+                                      fontSize: 16,
+                                      color: textColor,
+                                    ),
+                                  ),
+                                  const SizedBox(height: 4),
+                                  Text(
+                                    l10n.uploadPhotosOfYourAppliance,
+                                    style: TextStyle(
+                                      fontSize: 12,
+                                      color: subtitleColor,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                            Icon(
+                              Icons.arrow_forward_ios,
+                              size: 16,
+                              color: subtitleColor,
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                    // Display Selected Images
+                    if (_selectedImages.isNotEmpty) ...[
+                      Divider(height: 1, color: borderColor),
+                      Padding(
+                        padding: const EdgeInsets.all(16),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              '${FormattingUtils.formatNumber(_selectedImages.length, locale)} ${_selectedImages.length == 1 ? l10n.imageSelected : l10n.imagesSelected}',
+                              style: TextStyle(
+                                fontSize: 13,
+                                fontWeight: FontWeight.w600,
+                                color: Theme.of(context).colorScheme.primary,
+                              ),
+                            ),
+                            const SizedBox(height: 12),
+                            Wrap(
+                              spacing: 8,
+                              runSpacing: 8,
+                              children: List.generate(_selectedImages.length, (index) {
+                                return Stack(
+                                  children: [
+                                    ClipRRect(
+                                      borderRadius: BorderRadius.circular(12),
+                                      child: Image.file(
+                                        _selectedImages[index],
+                                        width: 80,
+                                        height: 80,
+                                        fit: BoxFit.cover,
+                                      ),
+                                    ),
+                                    Positioned(
+                                      top: 4,
+                                      right: 4,
+                                      child: GestureDetector(
+                                        onTap: () => _removeImage(index),
+                                        child: Container(
+                                          padding: const EdgeInsets.all(4),
+                                          decoration: const BoxDecoration(
+                                            color: Colors.red,
+                                            shape: BoxShape.circle,
+                                          ),
+                                          child: const Icon(
+                                            Icons.close,
+                                            color: Colors.white,
+                                            size: 16,
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                  ],
+                                );
+                              }),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ],
+                  ],
+                ),
+              ),
+              const SizedBox(height: 24),
+
+              // DATE SELECTION SECTION
+              Text(
+                l10n.selectDate,
+                style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                  fontWeight: FontWeight.bold,
+                  color: textColor,
                 ),
               ),
               const SizedBox(height: 12),
@@ -341,13 +594,14 @@ class _ServiceCheckoutScreenState extends State<ServiceCheckoutScreen> {
                   borderRadius: BorderRadius.circular(16),
                   boxShadow: [
                     BoxShadow(
-                      color: Colors.black.withOpacity(0.05),
+                      color: Colors.black.withOpacity(shadowOpacity),
                       blurRadius: 10,
                       offset: const Offset(0, 5),
                     ),
                   ],
                 ),
                 child: Card(
+                  color: cardColor,
                   child: ListTile(
                     leading: Icon(
                       Icons.calendar_today,
@@ -355,21 +609,23 @@ class _ServiceCheckoutScreenState extends State<ServiceCheckoutScreen> {
                     ),
                     title: Text(
                       _selectedDate != null
-                          ? DateFormat('EEEE, MMMM d, y').format(_selectedDate!)
-                          : 'Choose a date',
+                          ? FormattingUtils.formatDateLong(context, _selectedDate!)
+                          : l10n.chooseADate,
+                      style: TextStyle(color: textColor),
                     ),
-                    trailing: const Icon(Icons.arrow_forward_ios),
+                    trailing: const Icon(Icons.arrow_forward_ios, size: 16),
                     onTap: _selectDate,
                   ),
                 ),
               ),
               const SizedBox(height: 16),
 
-              // Time Selection
+              // TIME SELECTION SECTION
               Text(
-                'Select Time',
+                l10n.selectTime,
                 style: Theme.of(context).textTheme.titleMedium?.copyWith(
                   fontWeight: FontWeight.bold,
+                  color: textColor,
                 ),
               ),
               const SizedBox(height: 12),
@@ -378,13 +634,14 @@ class _ServiceCheckoutScreenState extends State<ServiceCheckoutScreen> {
                   borderRadius: BorderRadius.circular(16),
                   boxShadow: [
                     BoxShadow(
-                      color: Colors.black.withOpacity(0.05),
+                      color: Colors.black.withOpacity(shadowOpacity),
                       blurRadius: 10,
                       offset: const Offset(0, 5),
                     ),
                   ],
                 ),
                 child: Card(
+                  color: cardColor,
                   child: ListTile(
                     leading: Icon(
                       Icons.access_time,
@@ -393,20 +650,22 @@ class _ServiceCheckoutScreenState extends State<ServiceCheckoutScreen> {
                     title: Text(
                       _selectedTime != null
                           ? _selectedTime!.format(context)
-                          : 'Choose a time',
+                          : l10n.chooseATime,
+                      style: TextStyle(color: textColor),
                     ),
-                    trailing: const Icon(Icons.arrow_forward_ios),
+                    trailing: const Icon(Icons.arrow_forward_ios, size: 16),
                     onTap: _selectTime,
                   ),
                 ),
               ),
-              const SizedBox(height: 16),
+              const SizedBox(height: 24),
 
-              // Address
+              // ADDRESS SECTION
               Text(
-                'Service Address',
+                l10n.serviceAddress,
                 style: Theme.of(context).textTheme.titleMedium?.copyWith(
                   fontWeight: FontWeight.bold,
+                  color: textColor,
                 ),
               ),
               const SizedBox(height: 12),
@@ -415,7 +674,7 @@ class _ServiceCheckoutScreenState extends State<ServiceCheckoutScreen> {
                   borderRadius: BorderRadius.circular(16),
                   boxShadow: [
                     BoxShadow(
-                      color: Colors.black.withOpacity(0.05),
+                      color: Colors.black.withOpacity(shadowOpacity),
                       blurRadius: 10,
                       offset: const Offset(0, 5),
                     ),
@@ -423,11 +682,15 @@ class _ServiceCheckoutScreenState extends State<ServiceCheckoutScreen> {
                 ),
                 child: TextField(
                   controller: _addressController,
+                  style: TextStyle(color: textColor),
                   maxLines: 2,
                   decoration: InputDecoration(
-                    hintText: 'Enter service address',
+                    hintText: l10n.enterServiceAddress,
+                    hintStyle: TextStyle(
+                      color: isDark ? Colors.grey.shade500 : Colors.grey.shade600,
+                    ),
                     filled: true,
-                    fillColor: Colors.white,
+                    fillColor: cardColor,
                     prefixIcon: Icon(
                       Icons.location_on,
                       color: Theme.of(context).colorScheme.primary,
@@ -448,67 +711,12 @@ class _ServiceCheckoutScreenState extends State<ServiceCheckoutScreen> {
               ),
               const SizedBox(height: 16),
 
-              // Payment Method
+              // NOTES SECTION
               Text(
-                'Payment Method',
+                l10n.additionalNotesOptional,
                 style: Theme.of(context).textTheme.titleMedium?.copyWith(
                   fontWeight: FontWeight.bold,
-                ),
-              ),
-              const SizedBox(height: 12),
-              Container(
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(16),
-                  color: Colors.white,
-                  boxShadow: [
-                    BoxShadow(
-                      color: Colors.black.withOpacity(0.05),
-                      blurRadius: 10,
-                      offset: const Offset(0, 5),
-                    ),
-                  ],
-                ),
-                child: Column(
-                  children: [
-                    RadioListTile<String>(
-                      title: Row(
-                        children: [
-                          Icon(Icons.money, color: Colors.green.shade700),
-                          const SizedBox(width: 12),
-                          const Text('Cash on Service'),
-                        ],
-                      ),
-                      value: 'cash',
-                      groupValue: _selectedPaymentMethod,
-                      onChanged: (value) {
-                        setState(() => _selectedPaymentMethod = value!);
-                      },
-                    ),
-                    const Divider(height: 1),
-                    RadioListTile<String>(
-                      title: Row(
-                        children: [
-                          Icon(Icons.credit_card, color: Colors.blue.shade700),
-                          const SizedBox(width: 12),
-                          const Text('Credit/Debit Card'),
-                        ],
-                      ),
-                      value: 'card',
-                      groupValue: _selectedPaymentMethod,
-                      onChanged: (value) {
-                        setState(() => _selectedPaymentMethod = value!);
-                      },
-                    ),
-                  ],
-                ),
-              ),
-              const SizedBox(height: 16),
-
-              // Notes
-              Text(
-                'Additional Notes (Optional)',
-                style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                  fontWeight: FontWeight.bold,
+                  color: textColor,
                 ),
               ),
               const SizedBox(height: 12),
@@ -517,7 +725,7 @@ class _ServiceCheckoutScreenState extends State<ServiceCheckoutScreen> {
                   borderRadius: BorderRadius.circular(16),
                   boxShadow: [
                     BoxShadow(
-                      color: Colors.black.withOpacity(0.05),
+                      color: Colors.black.withOpacity(shadowOpacity),
                       blurRadius: 10,
                       offset: const Offset(0, 5),
                     ),
@@ -525,11 +733,15 @@ class _ServiceCheckoutScreenState extends State<ServiceCheckoutScreen> {
                 ),
                 child: TextField(
                   controller: _notesController,
+                  style: TextStyle(color: textColor),
                   maxLines: 3,
                   decoration: InputDecoration(
-                    hintText: 'Any special requests or notes...',
+                    hintText: l10n.anySpecialRequestsOrNotes,
+                    hintStyle: TextStyle(
+                      color: isDark ? Colors.grey.shade500 : Colors.grey.shade600,
+                    ),
                     filled: true,
-                    fillColor: Colors.white,
+                    fillColor: cardColor,
                     border: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(16),
                       borderSide: BorderSide.none,
@@ -546,21 +758,14 @@ class _ServiceCheckoutScreenState extends State<ServiceCheckoutScreen> {
               ),
               const SizedBox(height: 32),
 
-              // Booking Summary
+              // BOOKING SUMMARY SECTION (LIGHT BLUE)
               Container(
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(20),
-                  gradient: LinearGradient(
-                    begin: Alignment.topLeft,
-                    end: Alignment.bottomRight,
-                    colors: [
-                      Theme.of(context).colorScheme.primary.withOpacity(0.1),
-                      Theme.of(context).colorScheme.secondary.withOpacity(0.05),
-                    ],
-                  ),
+                  color: AppColors.electricBlue.withOpacity(0.1), // ✅ LIGHT BLUE
                   boxShadow: [
                     BoxShadow(
-                      color: Colors.black.withOpacity(0.08),
+                      color: Colors.black.withOpacity(shadowOpacity),
                       blurRadius: 15,
                       offset: const Offset(0, 5),
                     ),
@@ -579,20 +784,22 @@ class _ServiceCheckoutScreenState extends State<ServiceCheckoutScreen> {
                           ),
                           const SizedBox(width: 12),
                           Text(
-                            'Booking Summary',
+                            l10n.requestSummary,
                             style: Theme.of(context).textTheme.titleMedium?.copyWith(
                               fontWeight: FontWeight.bold,
+                              color: textColor,
                             ),
                           ),
                         ],
                       ),
                       const SizedBox(height: 16),
-
-                      // Services List - Show all service names
                       Row(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          const Text('Services:'),
+                          Text(
+                            '${l10n.services}:',
+                            style: TextStyle(color: subtitleColor),
+                          ),
                           const SizedBox(width: 8),
                           Expanded(
                             child: widget.isFromCart
@@ -602,32 +809,40 @@ class _ServiceCheckoutScreenState extends State<ServiceCheckoutScreen> {
                                 return Padding(
                                   padding: const EdgeInsets.only(bottom: 4),
                                   child: Text(
-                                    '${item.service.name} (x${item.quantity})',
-                                    style: const TextStyle(fontWeight: FontWeight.w500),
+                                    '${item.service.name} (x${FormattingUtils.formatNumber(item.quantity, locale)})',
+                                    style: TextStyle(
+                                      fontWeight: FontWeight.w500,
+                                      color: textColor,
+                                    ),
                                     textAlign: TextAlign.end,
                                   ),
                                 );
                               }).toList(),
                             )
                                 : Text(
-                              '${widget.service.name} (x${widget.quantity})',
-                              style: const TextStyle(fontWeight: FontWeight.w500),
+                              '${widget.service.name} (x${FormattingUtils.formatNumber(widget.quantity, locale)})',
+                              style: TextStyle(
+                                fontWeight: FontWeight.w500,
+                                color: textColor,
+                              ),
                               textAlign: TextAlign.end,
                             ),
                           ),
                         ],
                       ),
-
                       const SizedBox(height: 8),
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          const Text('Date:'),
+                          Text('${l10n.date}:', style: TextStyle(color: subtitleColor)),
                           Text(
                             _selectedDate != null
-                                ? DateFormat('MMM d, y').format(_selectedDate!)
-                                : 'Not selected',
-                            style: const TextStyle(fontWeight: FontWeight.w500),
+                                ? FormattingUtils.formatDateShort(context, _selectedDate!)
+                                : l10n.notSelected,
+                            style: TextStyle(
+                              fontWeight: FontWeight.w500,
+                              color: textColor,
+                            ),
                           ),
                         ],
                       ),
@@ -635,12 +850,15 @@ class _ServiceCheckoutScreenState extends State<ServiceCheckoutScreen> {
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          const Text('Time:'),
+                          Text('${l10n.time}:', style: TextStyle(color: subtitleColor)),
                           Text(
                             _selectedTime != null
                                 ? _selectedTime!.format(context)
-                                : 'Not selected',
-                            style: const TextStyle(fontWeight: FontWeight.w500),
+                                : l10n.notSelected,
+                            style: TextStyle(
+                              fontWeight: FontWeight.w500,
+                              color: textColor,
+                            ),
                           ),
                         ],
                       ),
@@ -648,27 +866,31 @@ class _ServiceCheckoutScreenState extends State<ServiceCheckoutScreen> {
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          const Text('Payment:'),
+                          Text('${l10n.images}:', style: TextStyle(color: subtitleColor)),
                           Text(
-                            _selectedPaymentMethod == 'cash'
-                                ? 'Cash on Service'
-                                : 'Credit/Debit Card',
-                            style: const TextStyle(fontWeight: FontWeight.w500),
+                            _selectedImages.isEmpty
+                                ? l10n.noImages
+                                : '${FormattingUtils.formatNumber(_selectedImages.length, locale)} ${_selectedImages.length == 1 ? l10n.imageSelected : l10n.imagesSelected}',
+                            style: TextStyle(
+                              fontWeight: FontWeight.w500,
+                              color: textColor,
+                            ),
                           ),
                         ],
                       ),
-                      const Divider(),
+                      Divider(height: 20, color: borderColor),
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
                           Text(
-                            'Total:',
+                            l10n.estimatedPrice,
                             style: Theme.of(context).textTheme.titleMedium?.copyWith(
                               fontWeight: FontWeight.bold,
+                              color: textColor,
                             ),
                           ),
                           Text(
-                            'SAR ${totalPrice.toStringAsFixed(0)}',
+                            FormattingUtils.formatCurrency(totalPrice, l10n, locale),
                             style: Theme.of(context).textTheme.titleMedium?.copyWith(
                               fontWeight: FontWeight.bold,
                               color: Theme.of(context).colorScheme.primary,
@@ -682,19 +904,14 @@ class _ServiceCheckoutScreenState extends State<ServiceCheckoutScreen> {
               ),
               const SizedBox(height: 24),
 
-              // Book Now Button
+              // SUBMIT REQUEST BUTTON (ELECTRIC BLUE)
               Container(
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(16),
-                  gradient: LinearGradient(
-                    colors: [
-                      Theme.of(context).colorScheme.primary,
-                      Theme.of(context).colorScheme.primary.withOpacity(0.8),
-                    ],
-                  ),
+                  color: AppColors.electricBlue, // ✅ ELECTRIC BLUE
                   boxShadow: [
                     BoxShadow(
-                      color: Theme.of(context).colorScheme.primary.withOpacity(0.3),
+                      color: AppColors.electricBlue.withOpacity(0.3),
                       blurRadius: 15,
                       offset: const Offset(0, 8),
                     ),
@@ -703,7 +920,7 @@ class _ServiceCheckoutScreenState extends State<ServiceCheckoutScreen> {
                 child: SizedBox(
                   width: double.infinity,
                   child: FilledButton(
-                    onPressed: _isLoading ? null : _proceedToBooking,
+                    onPressed: _isLoading ? null : _submitRequest,
                     style: FilledButton.styleFrom(
                       backgroundColor: Colors.transparent,
                       shadowColor: Colors.transparent,
@@ -721,16 +938,24 @@ class _ServiceCheckoutScreenState extends State<ServiceCheckoutScreen> {
                         valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
                       ),
                     )
-                        : const Text(
-                      'Confirm Booking',
-                      style: TextStyle(
-                        fontSize: 16,
-                        fontWeight: FontWeight.w600,
-                      ),
+                        : Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        const Icon(Icons.send, size: 20),
+                        const SizedBox(width: 12),
+                        Text(
+                          l10n.submitRequest,
+                          style: const TextStyle(
+                            fontSize: 16,
+                            fontWeight: FontWeight.w600,
+                          ),
+                        ),
+                      ],
                     ),
                   ),
                 ),
               ),
+              const SizedBox(height: 24),
             ],
           ),
         ),

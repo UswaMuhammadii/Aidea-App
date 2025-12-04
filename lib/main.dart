@@ -1,159 +1,128 @@
 import 'package:flutter/material.dart';
-import 'screens/auth/login_screen.dart';
-import 'screens/auth/register_screen.dart';
-import 'screens/dashboard/dashboard_screen.dart';
-import 'screens/services/service_checkout_screen.dart';
-import 'screens/services/service_listing_screen.dart';
-import 'screens/booking/booking_confirmation_screen.dart';
-import 'screens/profile/profile_screen.dart';
-import 'screens/cart/cart_screen.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:intl/date_symbol_data_local.dart';
+import 'package:firebase_core/firebase_core.dart';
+import 'firebase_options.dart';
+import 'gen_l10n/app_localizations.dart';
+import 'screens/auth/language_selection_screen.dart';
+import 'screens/auth/auth_flow_coordinator.dart';
+import 'screens/dashboard/dashboard_screen.dart';  // ✅ Add dashboard import
 import 'models/user_model.dart';
-import 'models/service_model.dart';
-import 'models/booking_model.dart';
-import 'models/cart_model.dart';
-import 'services/dummy_data_service.dart';
+import 'utils/app_colors.dart';
 
-void main() {
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+
+  // Initialize Firebase
+  await Firebase.initializeApp(
+    options: DefaultFirebaseOptions.currentPlatform,
+  );
+
+  // Initialize localization for Arabic dates
+  await initializeDateFormatting('ar', null);
+  await initializeDateFormatting('en', null);
+
   runApp(const CustomerApp());
 }
 
-class CustomerApp extends StatelessWidget {
+class CustomerApp extends StatefulWidget {
   const CustomerApp({super.key});
+
+  @override
+  State<CustomerApp> createState() => _CustomerAppState();
+}
+
+class _CustomerAppState extends State<CustomerApp> {
+  Locale _currentLocale = const Locale('en'); // Default to English
+  bool _isLanguageSelected = false;
+  User? _currentUser;
+
+  void _handleLanguageSelection(Locale locale) {
+    setState(() {
+      _currentLocale = locale;
+      _isLanguageSelected = true;
+    });
+  }
+
+  void _handleAuthComplete(User user) {
+    print('🎉 AUTH COMPLETE in main.dart');
+    print('User: ${user.name}');
+    print('Phone: ${user.phone}');
+    print('Address: ${user.address}');
+
+    setState(() {
+      _currentUser = user;
+    });
+
+    print('✅ State updated - Dashboard should appear now!');
+  }
+
+  void _handleLogout() {
+    print('👋 LOGOUT - Returning to auth flow');
+    setState(() {
+      _currentUser = null;
+      _isLanguageSelected = false; // Also reset language selection to go back to language screen
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Aidea Technology',
+      title: 'HandyMan',
       debugShowCheckedModeBanner: false,
+      locale: _currentLocale,
+      supportedLocales: const [
+        Locale('en'),
+        Locale('ar'),
+      ],
+      localizationsDelegates: const [
+        AppLocalizations.delegate,
+        GlobalMaterialLocalizations.delegate,
+        GlobalCupertinoLocalizations.delegate,
+        GlobalWidgetsLocalizations.delegate,
+      ],
       theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(
-          seedColor: const Color(0xFF7C3AED), // Purple
+        useMaterial3: false,
+        primarySwatch: Colors.blue,
+        fontFamily: "Roboto",
+        scaffoldBackgroundColor: Colors.white,
+        colorScheme: ColorScheme.fromSwatch(
+          primarySwatch: Colors.blue,
           brightness: Brightness.light,
-        ),
-        useMaterial3: true,
-        appBarTheme: const AppBarTheme(
-          centerTitle: true,
-          elevation: 0,
-          scrolledUnderElevation: 0,
-        ),
-        cardTheme: CardThemeData(
-          elevation: 0,
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(16),
-          ),
-        ),
-        filledButtonTheme: FilledButtonThemeData(
-          style: FilledButton.styleFrom(
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(12),
-            ),
-            padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 24),
-          ),
-        ),
-        outlinedButtonTheme: OutlinedButtonThemeData(
-          style: OutlinedButton.styleFrom(
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(12),
-            ),
-            padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 24),
-          ),
-        ),
-        inputDecorationTheme: InputDecorationTheme(
-          border: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(12),
-          ),
-          filled: true,
+        ).copyWith(
+          primary: AppColors.electricBlue,
         ),
       ),
-      home: const AuthWrapper(),
-      routes: {
-        '/login': (context) => LoginScreen(onLogin: (user) {}),
-        '/register': (context) => const RegisterScreen(),
-        '/dashboard': (context) {
-          final args = ModalRoute.of(context)?.settings.arguments as Map<String, dynamic>?;
-          final user = args?['user'] as User? ?? User(id: '', email: '', name: '', phone: '', createdAt: DateTime.now());
-          return DashboardScreen(user: user, onLogout: () {});
-        },
-        '/checkout': (context) {
-          final args = ModalRoute.of(context)?.settings.arguments as Map<String, dynamic>?;
-          final service = args?['service'] as Service?;
-          final user = args?['user'] as User?;
-          if (service == null || user == null) {
-            return const Scaffold(body: Center(child: Text('Error: Missing arguments')));
-          }
-          return ServiceCheckoutScreen(service: service, user: user);
-        },
-        '/services': (context) {
-          final args = ModalRoute.of(context)?.settings.arguments as Map<String, dynamic>?;
-          final categoryName = args?['categoryName'] as String? ?? 'AC Services';
-          final user = args?['user'] as User? ?? User(id: '', email: '', name: '', phone: '', createdAt: DateTime.now());
-          return ServiceListingScreen(categoryName: categoryName, user: user);
-        },
-        '/cart': (context) {
-          final args = ModalRoute.of(context)?.settings.arguments as Map<String, dynamic>?;
-          final user = args?['user'] as User? ?? User(id: '', email: '', name: '', phone: '', createdAt: DateTime.now());
-          return CartScreen(user: user);
-        },
-        '/confirmation': (context) {
-          final args = ModalRoute.of(context)?.settings.arguments as Map<String, dynamic>?;
-          final bookings = args?['bookings'] as List<Booking>?;
-          final user = args?['user'] as User?;
-          final totalAmount = args?['totalAmount'] as double?;
-
-          if (bookings == null || user == null || totalAmount == null) {
-            return const Scaffold(body: Center(child: Text('Error: Missing arguments')));
-          }
-
-          return BookingConfirmationScreen(
-            bookings: bookings,
-            user: user,
-            totalAmount: totalAmount,
-          );
-        },
-        '/profile': (context) {
-          final args = ModalRoute.of(context)?.settings.arguments as Map<String, dynamic>?;
-          final user = args?['user'] as User? ?? User(id: '', email: '', name: '', phone: '', createdAt: DateTime.now());
-          return ProfileScreen(user: user, onLogout: () {});
-        },
-      },
+      home: _buildHome(),
     );
   }
-}
 
-class AuthWrapper extends StatefulWidget {
-  const AuthWrapper({super.key});
+  Widget _buildHome() {
+    print('🏗️ Building home - Current state:');
+    print('   Language selected: $_isLanguageSelected');
+    print('   Current user: ${_currentUser?.name ?? "NULL"}');
 
-  @override
-  State<AuthWrapper> createState() => _AuthWrapperState();
-}
-
-class _AuthWrapperState extends State<AuthWrapper> {
-  bool _isLoggedIn = false;
-  User? _currentUser;
-
-  void _login(User user) {
-    setState(() {
-      _isLoggedIn = true;
-      _currentUser = user;
-    });
-  }
-
-  void _logout() {
-    setState(() {
-      _isLoggedIn = false;
-      _currentUser = null;
-    });
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    if (_isLoggedIn && _currentUser != null) {
+    // ✅ If user is logged in, show Dashboard
+    if (_currentUser != null) {
+      print('   → Showing Dashboard');
       return DashboardScreen(
         user: _currentUser!,
-        onLogout: _logout,
+        onLogout: _handleLogout,
       );
-    } else {
-      return LoginScreen(onLogin: _login);
     }
+
+    // If language selected, show Auth Flow
+    if (_isLanguageSelected) {
+      print('   → Showing Auth Flow');
+      return AuthFlowCoordinator(
+        onAuthComplete: _handleAuthComplete,
+      );
+    }
+
+    // Otherwise, show Language Selection
+    print('   → Showing Language Selection');
+    return LanguageSelectionScreen(
+      onLanguageSelected: _handleLanguageSelection,
+    );
   }
 }

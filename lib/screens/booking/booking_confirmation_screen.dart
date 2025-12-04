@@ -3,43 +3,39 @@ import 'package:intl/intl.dart';
 import '../../models/user_model.dart';
 import '../../models/booking_model.dart';
 import '../dashboard/dashboard_screen.dart';
+import '../../utils/app_colors.dart';
+import '../../gen_l10n/app_localizations.dart';
+import '../../utils/formatting_utils.dart'; // Add this import
 
 class BookingConfirmationScreen extends StatelessWidget {
   final List<Booking> bookings;
   final User user;
   final double totalAmount;
+  final AppLocalizations l10n;
 
   const BookingConfirmationScreen({
     super.key,
     required this.bookings,
     required this.user,
     required this.totalAmount,
+    required this.l10n,
   });
-
-  Icon _getServiceIcon(String? subcategory) {
-    switch (subcategory?.toLowerCase() ?? "") {
-      case "automatic washing machines":
-      case "regular washing machines":
-        return const Icon(Icons.local_laundry_service, color: Colors.blue, size: 20);
-      case "split ac":
-      case "window ac":
-      case "central ac":
-        return const Icon(Icons.ac_unit, color: Colors.lightBlue, size: 20);
-      case "refrigerator":
-        return const Icon(Icons.kitchen, color: Colors.teal, size: 20);
-      case "oven":
-        return const Icon(Icons.microwave, color: Colors.deepOrange, size: 20);
-      default:
-        return const Icon(Icons.build, color: Colors.grey, size: 20);
-    }
-  }
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
+    final locale = Localizations.localeOf(context); // Add this
+
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    final backgroundColor = isDark ? const Color(0xFF0F172A) : const Color(0xFFF8F9FA);
+    final cardColor = isDark ? const Color(0xFF1E293B) : Colors.white;
+    final textColor = isDark ? Colors.white : Colors.black87;
+    final subtitleColor = isDark ? Colors.grey.shade400 : Colors.grey.shade600;
+
     final firstBooking = bookings.first;
 
     return Scaffold(
-      backgroundColor: const Color(0xFFF8F9FA),
+      backgroundColor: backgroundColor,
       body: SafeArea(
         child: SingleChildScrollView(
           padding: const EdgeInsets.all(20),
@@ -52,12 +48,12 @@ class BookingConfirmationScreen extends StatelessWidget {
                 height: 100,
                 decoration: BoxDecoration(
                   gradient: const LinearGradient(
-                    colors: [Color(0xFF10B981), Color(0xFF059669)],
+                    colors: [AppColors.success, AppColors.success],
                   ),
                   shape: BoxShape.circle,
                   boxShadow: [
                     BoxShadow(
-                      color: const Color(0xFF10B981).withOpacity(0.3),
+                      color: AppColors.success.withValues(alpha: 0.3),
                       blurRadius: 20,
                       offset: const Offset(0, 10),
                     ),
@@ -72,22 +68,22 @@ class BookingConfirmationScreen extends StatelessWidget {
               const SizedBox(height: 24),
 
               // Success Message
-              const Text(
-                'Booking Confirmed!',
+              Text(
+                l10n.bookingConfirmed,
                 style: TextStyle(
                   fontSize: 28,
                   fontWeight: FontWeight.bold,
-                  color: Color(0xFF10B981),
+                  color: AppColors.success,
                 ),
               ),
               const SizedBox(height: 8),
               Text(
                 bookings.length > 1
-                    ? 'Your ${bookings.length} services have been successfully booked'
-                    : 'Your service has been successfully booked',
+                    ? l10n.yourServicesHaveBeenSuccessfullyBooked(bookings.length)
+                    : l10n.yourServiceHasBeenSuccessfullyBooked,
                 style: TextStyle(
                   fontSize: 16,
-                  color: Colors.grey[600],
+                  color: subtitleColor,
                 ),
                 textAlign: TextAlign.center,
               ),
@@ -97,10 +93,10 @@ class BookingConfirmationScreen extends StatelessWidget {
               Container(
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(20),
-                  color: Colors.white,
+                  color: cardColor,
                   boxShadow: [
                     BoxShadow(
-                      color: Colors.black.withOpacity(0.08),
+                      color: Colors.black.withValues(alpha: isDark ? 0.3 : 0.08),
                       blurRadius: 20,
                       offset: const Offset(0, 10),
                     ),
@@ -116,21 +112,22 @@ class BookingConfirmationScreen extends StatelessWidget {
                           Container(
                             padding: const EdgeInsets.all(8),
                             decoration: BoxDecoration(
-                              color: const Color(0xFF2563EB).withOpacity(0.1),
+                              color: AppColors.electricBlue.withValues(alpha: 0.1),
                               borderRadius: BorderRadius.circular(8),
                             ),
                             child: const Icon(
                               Icons.receipt_long,
-                              color: Color(0xFF2563EB),
+                              color: AppColors.electricBlue,
                               size: 20,
                             ),
                           ),
                           const SizedBox(width: 12),
-                          const Text(
-                            'Booking Details',
+                          Text(
+                            l10n.bookingDetails,
                             style: TextStyle(
                               fontSize: 20,
                               fontWeight: FontWeight.bold,
+                              color: textColor,
                             ),
                           ),
                         ],
@@ -139,12 +136,12 @@ class BookingConfirmationScreen extends StatelessWidget {
 
                       // Services List
                       if (bookings.length > 1) ...[
-                        _buildDetailRow('Services', '${bookings.length} services booked'),
+                        _buildDetailRow(l10n.services, '${bookings.length} ${l10n.servicesBooked.toLowerCase()}', textColor, subtitleColor),
                         const SizedBox(height: 12),
                         Container(
                           padding: const EdgeInsets.all(12),
                           decoration: BoxDecoration(
-                            color: Colors.grey.shade50,
+                            color: isDark ? Colors.grey.shade900 : Colors.grey.shade50,
                             borderRadius: BorderRadius.circular(12),
                           ),
                           child: Column(
@@ -155,26 +152,29 @@ class BookingConfirmationScreen extends StatelessWidget {
                                 child: Row(
                                   children: [
                                     Container(
-                                      padding: const EdgeInsets.all(6),
-                                      decoration: BoxDecoration(
-                                        color: Colors.grey.shade100,
-                                        borderRadius: BorderRadius.circular(8),
+                                      width: 6,
+                                      height: 6,
+                                      decoration: const BoxDecoration(
+                                        color: AppColors.electricBlue,
+                                        shape: BoxShape.circle,
                                       ),
-                                      child: _getServiceIcon(booking.service?.subcategory),
                                     ),
-                                    const SizedBox(width: 12),
+                                    const SizedBox(width: 8),
                                     Expanded(
                                       child: Text(
-                                        '${booking.service?.name ?? 'Service'} (Qty: ${booking.quantity})',
-                                        style: const TextStyle(fontSize: 14),
+                                        '${booking.service?.name ?? l10n.service} (${l10n.quantity}: ${FormattingUtils.formatNumber(booking.quantity, locale)})', // FIXED: Use formatNumber
+                                        style: TextStyle(
+                                          fontSize: 14,
+                                          color: textColor,
+                                        ),
                                       ),
                                     ),
                                     Text(
-                                      'SAR ${booking.totalPrice.toStringAsFixed(0)}',
+                                      FormattingUtils.formatCurrency(booking.totalPrice, l10n, locale), // FIXED: Use formatCurrency
                                       style: const TextStyle(
                                         fontSize: 14,
                                         fontWeight: FontWeight.w600,
-                                        color: Color(0xFF6B5B9A),
+                                        color: AppColors.electricBlue,
                                       ),
                                     ),
                                   ],
@@ -184,66 +184,31 @@ class BookingConfirmationScreen extends StatelessWidget {
                           ),
                         ),
                         const SizedBox(height: 12),
-                      ] else ...[
-                        // Single service with icon
-                        Padding(
-                          padding: const EdgeInsets.only(bottom: 12),
-                          child: Row(
-                            children: [
-                              Text(
-                                'Service',
-                                style: TextStyle(
-                                  fontSize: 14,
-                                  color: Colors.grey.shade600,
-                                ),
-                              ),
-                              const Spacer(),
-                              Container(
-                                padding: const EdgeInsets.all(6),
-                                decoration: BoxDecoration(
-                                  color: Colors.grey.shade100,
-                                  borderRadius: BorderRadius.circular(8),
-                                ),
-                                child: _getServiceIcon(firstBooking.service?.subcategory),
-                              ),
-                              const SizedBox(width: 8),
-                              Flexible(
-                                child: Text(
-                                  firstBooking.service?.name ?? 'Service',
-                                  style: const TextStyle(
-                                    fontSize: 14,
-                                    fontWeight: FontWeight.w600,
-                                  ),
-                                  textAlign: TextAlign.right,
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                      ],
+                      ] else
+                        _buildDetailRow(l10n.service, firstBooking.service?.name ?? l10n.service, textColor, subtitleColor),
 
-                      _buildDetailRow('Date', DateFormat('EEEE, MMMM d, y').format(firstBooking.bookingDate)),
-                      _buildDetailRow('Time', DateFormat('h:mm a').format(firstBooking.bookingTime)),
+                      _buildDetailRow(l10n.date, DateFormat('EEEE, MMMM d, y').format(firstBooking.bookingDate), textColor, subtitleColor),
+                      _buildDetailRow(l10n.time, DateFormat('h:mm a').format(firstBooking.bookingTime), textColor, subtitleColor),
                       if (bookings.length == 1)
-                        _buildDetailRow('Quantity', '${firstBooking.quantity}'),
-                      _buildDetailRow('Payment', firstBooking.paymentMethod == 'cash' ? 'Cash on Service' : firstBooking.paymentMethod == 'card' ? 'Credit/Debit Card' : 'Digital Wallet'),
-                      const Divider(height: 32),
+                        _buildDetailRow(l10n.quantity, FormattingUtils.formatNumber(firstBooking.quantity, locale), textColor, subtitleColor), // FIXED: Use formatNumber
+                      Divider(height: 32, color: isDark ? Colors.grey.shade700 : Colors.grey.shade300),
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          const Text(
-                            'Total Amount',
+                          Text(
+                            l10n.totalAmount,
                             style: TextStyle(
                               fontSize: 16,
                               fontWeight: FontWeight.bold,
+                              color: textColor,
                             ),
                           ),
                           Text(
-                            'SAR ${totalAmount.toStringAsFixed(0)}',
+                            FormattingUtils.formatCurrency(totalAmount, l10n, locale), // FIXED: Use formatCurrency
                             style: const TextStyle(
                               fontSize: 24,
                               fontWeight: FontWeight.bold,
-                              color: Color(0xFF6B5B9A),
+                              color: AppColors.electricBlue,
                             ),
                           ),
                         ],
@@ -254,7 +219,7 @@ class BookingConfirmationScreen extends StatelessWidget {
                         Container(
                           padding: const EdgeInsets.all(12),
                           decoration: BoxDecoration(
-                            color: Color(0xFF6B5B9A).withOpacity(0.1),
+                            color: AppColors.electricBlue.withValues(alpha: isDark ? 0.2 : 0.1),
                             borderRadius: BorderRadius.circular(12),
                           ),
                           child: Row(
@@ -263,13 +228,16 @@ class BookingConfirmationScreen extends StatelessWidget {
                               const Icon(
                                 Icons.note,
                                 size: 16,
-                                color: Color(0xFF2563EB),
+                                color: AppColors.electricBlue,
                               ),
                               const SizedBox(width: 8),
                               Expanded(
                                 child: Text(
                                   firstBooking.notes!,
-                                  style: const TextStyle(fontSize: 14),
+                                  style: TextStyle(
+                                    fontSize: 14,
+                                    color: textColor,
+                                  ),
                                 ),
                               ),
                             ],
@@ -286,33 +254,34 @@ class BookingConfirmationScreen extends StatelessWidget {
               Container(
                 padding: const EdgeInsets.all(20),
                 decoration: BoxDecoration(
-                  color: const Color(0xFF2563EB).withOpacity(0.1),
+                  color: AppColors.electricBlue.withValues(alpha: isDark ? 0.15 : 0.1),
                   borderRadius: BorderRadius.circular(16),
                 ),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    const Row(
+                    Row(
                       children: [
-                        Icon(
+                        const Icon(
                           Icons.info_outline,
-                          color: Color(0xFF2563EB),
+                          color: AppColors.electricBlue,
                           size: 20,
                         ),
-                        SizedBox(width: 8),
+                        const SizedBox(width: 8),
                         Text(
-                          'What\'s Next?',
+                          l10n.whatsNext,
                           style: TextStyle(
                             fontWeight: FontWeight.bold,
                             fontSize: 16,
+                            color: textColor,
                           ),
                         ),
                       ],
                     ),
                     const SizedBox(height: 12),
-                    _buildInfoItem('You will receive a confirmation email shortly'),
-                    _buildInfoItem('A reminder will be sent 24 hours before'),
-                    _buildInfoItem('View your bookings in the Orders section'),
+                    _buildInfoItem(l10n.youWillReceiveConfirmationEmailShortly, textColor),
+                    _buildInfoItem(l10n.reminderWillBeSent24HoursBefore, textColor),
+                    _buildInfoItem(l10n.viewYourBookingsInOrdersSection, textColor),
                   ],
                 ),
               ),
@@ -328,7 +297,7 @@ class BookingConfirmationScreen extends StatelessWidget {
                           MaterialPageRoute(
                             builder: (context) => DashboardScreen(
                               user: user,
-                              initialTab: 0, // Home tab
+                              initialTab: 0,
                               onLogout: () {
                                 Navigator.of(context).pushReplacementNamed('/login');
                               },
@@ -339,16 +308,19 @@ class BookingConfirmationScreen extends StatelessWidget {
                       },
                       style: OutlinedButton.styleFrom(
                         padding: const EdgeInsets.symmetric(vertical: 16),
-                        side: const BorderSide(color: Color(0xFF6B5B9A)),
+                        side: BorderSide(
+                          color: isDark ? Colors.grey.shade600 : AppColors.electricBlue,
+                        ),
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(12),
                         ),
                       ),
-                      child: const Text(
-                        'Back to Home',
+                      child: Text(
+                        l10n.backToHome,
                         style: TextStyle(
                           fontSize: 16,
                           fontWeight: FontWeight.w600,
+                          color: isDark ? Colors.grey.shade300 : AppColors.electricBlue,
                         ),
                       ),
                     ),
@@ -358,12 +330,12 @@ class BookingConfirmationScreen extends StatelessWidget {
                     child: Container(
                       decoration: BoxDecoration(
                         gradient: const LinearGradient(
-                          colors: [Color(0xFF6B5B9A), Color(0xFF6B5B9A)],
+                          colors: [AppColors.electricBlue, AppColors.electricBlue],
                         ),
                         borderRadius: BorderRadius.circular(12),
                         boxShadow: [
                           BoxShadow(
-                            color: const Color(0xFF6B5B9A).withOpacity(0.4),
+                            color: AppColors.electricBlue.withValues(alpha: 0.4),
                             blurRadius: 12,
                             offset: const Offset(0, 6),
                           ),
@@ -377,7 +349,7 @@ class BookingConfirmationScreen extends StatelessWidget {
                               MaterialPageRoute(
                                 builder: (context) => DashboardScreen(
                                   user: user,
-                                  initialTab: 1, // Orders tab
+                                  initialTab: 1,
                                   onLogout: () {
                                     Navigator.of(context).pushReplacementNamed('/login');
                                   },
@@ -390,9 +362,9 @@ class BookingConfirmationScreen extends StatelessWidget {
                           child: Container(
                             padding: const EdgeInsets.symmetric(vertical: 16),
                             alignment: Alignment.center,
-                            child: const Text(
-                              'View Bookings',
-                              style: TextStyle(
+                            child: Text(
+                              l10n.viewBookings,
+                              style: const TextStyle(
                                 color: Colors.white,
                                 fontSize: 16,
                                 fontWeight: FontWeight.w600,
@@ -412,7 +384,7 @@ class BookingConfirmationScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildDetailRow(String label, String value) {
+  Widget _buildDetailRow(String label, String value, Color textColor, Color subtitleColor) {
     return Padding(
       padding: const EdgeInsets.only(bottom: 12),
       child: Row(
@@ -422,15 +394,16 @@ class BookingConfirmationScreen extends StatelessWidget {
             label,
             style: TextStyle(
               fontSize: 14,
-              color: Colors.grey.shade600,
+              color: subtitleColor,
             ),
           ),
           Flexible(
             child: Text(
               value,
-              style: const TextStyle(
+              style: TextStyle(
                 fontSize: 14,
                 fontWeight: FontWeight.w600,
+                color: textColor,
               ),
               textAlign: TextAlign.right,
             ),
@@ -440,7 +413,7 @@ class BookingConfirmationScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildInfoItem(String text) {
+  Widget _buildInfoItem(String text, Color textColor) {
     return Padding(
       padding: const EdgeInsets.only(bottom: 8),
       child: Row(
@@ -449,16 +422,83 @@ class BookingConfirmationScreen extends StatelessWidget {
           const Icon(
             Icons.check_circle,
             size: 16,
-            color: Color(0xFF2563EB),
+            color: AppColors.electricBlue,
           ),
           const SizedBox(width: 8),
           Expanded(
             child: Text(
               text,
-              style: const TextStyle(fontSize: 14),
+              style: TextStyle(
+                fontSize: 14,
+                color: textColor,
+              ),
             ),
           ),
         ],
+      ),
+    );
+  }
+}
+
+class ServiceImageWidget extends StatelessWidget {
+  final String imageUrl;
+  final double? width;
+  final double? height;
+  final BoxFit fit;
+
+  const ServiceImageWidget({
+    Key? key,
+    required this.imageUrl,
+    this.width,
+    this.height,
+    this.fit = BoxFit.cover,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
+
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    final isAsset = imageUrl.startsWith('assets/');
+
+    if (isAsset) {
+      return Image.asset(
+        imageUrl,
+        width: width,
+        height: height,
+        fit: fit,
+        errorBuilder: (context, error, stackTrace) {
+          return _buildFallback(isDark);
+        },
+      );
+    } else {
+      return Image.network(
+        imageUrl,
+        width: width,
+        height: height,
+        fit: fit,
+        errorBuilder: (context, error, stackTrace) {
+          return _buildFallback(isDark);
+        },
+      );
+    }
+  }
+
+  Widget _buildFallback(bool isDark) {
+    return Container(
+      width: width,
+      height: height,
+      decoration: BoxDecoration(
+        gradient: LinearGradient(
+          colors: isDark
+              ? [Colors.grey.shade800, Colors.grey.shade700]
+              : [Colors.grey.shade200, Colors.grey.shade300],
+        ),
+      ),
+      child: Icon(
+        Icons.image,
+        size: 60,
+        color: isDark ? Colors.grey.shade500 : Colors.grey.shade400,
       ),
     );
   }

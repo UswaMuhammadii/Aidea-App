@@ -16,6 +16,8 @@ class ServiceImageWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+
     // Check if it's a local asset
     final isAsset = imageUrl.startsWith('assets/');
 
@@ -26,7 +28,7 @@ class ServiceImageWidget extends StatelessWidget {
         height: height,
         fit: fit,
         errorBuilder: (context, error, stackTrace) {
-          return _buildFallback();
+          return _buildFallback(isDark);
         },
       );
     } else {
@@ -36,19 +38,24 @@ class ServiceImageWidget extends StatelessWidget {
         height: height,
         fit: fit,
         errorBuilder: (context, error, stackTrace) {
-          return _buildFallback();
+          return _buildFallback(isDark);
         },
       );
     }
   }
 
-  Widget _buildFallback() {
+  Widget _buildFallback(bool isDark) {
     return Container(
       width: width,
       height: height,
       decoration: BoxDecoration(
         gradient: LinearGradient(
-          colors: [
+          colors: isDark
+              ? [
+            Colors.grey.shade800,
+            Colors.grey.shade700,
+          ]
+              : [
             Colors.grey.shade200,
             Colors.grey.shade300,
           ],
@@ -57,7 +64,7 @@ class ServiceImageWidget extends StatelessWidget {
       child: Icon(
         Icons.image,
         size: 60,
-        color: Colors.grey.shade400,
+        color: isDark ? Colors.grey.shade500 : Colors.grey.shade400,
       ),
     );
   }

@@ -2,6 +2,10 @@ import 'package:flutter/material.dart';
 import '../../models/user_model.dart';
 import '../../models/cart_model.dart';
 import '../services/service_checkout_screen.dart';
+import '../../utils/icons_helper.dart';
+import '../../utils/app_colors.dart';
+import '../../gen_l10n/app_localizations.dart';
+import '../../utils/formatting_utils.dart'; // Add this import
 
 class CartScreen extends StatefulWidget {
   final User user;
@@ -15,24 +19,6 @@ class CartScreen extends StatefulWidget {
 class _CartScreenState extends State<CartScreen> {
   double get totalPrice {
     return globalCart.fold(0.0, (sum, item) => sum + item.totalPrice);
-  }
-
-  Icon _getServiceIcon(String? subcategory) {
-    switch (subcategory?.toLowerCase() ?? "") {
-      case "automatic washing machines":
-      case "regular washing machines":
-        return const Icon(Icons.local_laundry_service, color: Colors.blue, size: 28);
-      case "split ac":
-      case "window ac":
-      case "central ac":
-        return const Icon(Icons.ac_unit, color: Colors.lightBlue, size: 28);
-      case "refrigerator":
-        return const Icon(Icons.kitchen, color: Colors.teal, size: 28);
-      case "oven":
-        return const Icon(Icons.microwave, color: Colors.deepOrange, size: 28);
-      default:
-        return const Icon(Icons.build, color: Color(0xFF6B5B9A), size: 28);
-    }
   }
 
   void updateQuantity(String itemId, int newQuantity) {
@@ -53,13 +39,16 @@ class _CartScreenState extends State<CartScreen> {
   void proceedToCheckout() {
     if (globalCart.isEmpty) return;
 
+    // For now, take the first service from the cart (you can handle multiple later)
+    final firstItem = globalCart.first;
+
     Navigator.push(
       context,
       MaterialPageRoute(
         builder: (_) => ServiceCheckoutScreen(
-          service: globalCart.first.service,
+          service: firstItem.service, // ✅ REQUIRED parameter
           user: widget.user,
-          quantity: 1,
+          quantity: firstItem.quantity,
           isFromCart: true,
         ),
       ),
@@ -68,13 +57,22 @@ class _CartScreenState extends State<CartScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
+    final locale = Localizations.localeOf(context); // Add locale
+
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    final backgroundColor = isDark ? const Color(0xFF0F172A) : const Color(0xFFF8F9FA);
+    final cardColor = isDark ? const Color(0xFF1E293B) : Colors.white;
+    final textColor = isDark ? Colors.white : Colors.black87;
+    final subtitleColor = isDark ? Colors.grey.shade400 : Colors.grey.shade600;
+
     if (globalCart.isEmpty) {
       return Scaffold(
-        backgroundColor: const Color(0xFFF8F9FA),
+        backgroundColor: backgroundColor,
         appBar: AppBar(
-          title: const Text('Cart'),
-          backgroundColor: Colors.white,
-          foregroundColor: Colors.black,
+          title: Text(l10n.cart),
+          backgroundColor: cardColor,
+          foregroundColor: textColor,
           elevation: 0,
         ),
         body: Center(
@@ -86,8 +84,8 @@ class _CartScreenState extends State<CartScreen> {
                 decoration: BoxDecoration(
                   gradient: LinearGradient(
                     colors: [
-                      const Color(0xFF6B5B9A).withOpacity(0.1),
-                      const Color(0xFF6B5B9A).withOpacity(0.1),
+                      AppColors.electricBlue.withValues(alpha: 0.1),
+                      AppColors.electricBlue.withValues(alpha: 0.1),
                     ],
                   ),
                   shape: BoxShape.circle,
@@ -95,24 +93,24 @@ class _CartScreenState extends State<CartScreen> {
                 child: const Icon(
                   Icons.shopping_cart_outlined,
                   size: 80,
-                  color: Color(0xFF6B5B9A),
+                  color: AppColors.electricBlue,
                 ),
               ),
               const SizedBox(height: 24),
-              const Text(
-                'Your cart is empty',
+              Text(
+                l10n.yourCartIsEmpty,
                 style: TextStyle(
                   fontSize: 24,
                   fontWeight: FontWeight.bold,
-                  color: Colors.black87,
+                  color: textColor,
                 ),
               ),
               const SizedBox(height: 8),
               Text(
-                'Add some services to get started',
+                l10n.addSomeServicesToGetStarted,
                 style: TextStyle(
                   fontSize: 16,
-                  color: Colors.grey.shade600,
+                  color: subtitleColor,
                 ),
               ),
             ],
@@ -122,11 +120,13 @@ class _CartScreenState extends State<CartScreen> {
     }
 
     return Scaffold(
-      backgroundColor: const Color(0xFFF8F9FA),
+      backgroundColor: backgroundColor,
       appBar: AppBar(
-        title: Text('Cart (${globalCart.length})'),
-        backgroundColor: Colors.white,
-        foregroundColor: Colors.black,
+        title: Text(globalCart.isEmpty
+            ? l10n.cart
+            : l10n.cartWithCount.replaceAll('\$COUNT\$', globalCart.length.toString())),
+        backgroundColor: cardColor,
+        foregroundColor: textColor,
         elevation: 0,
         actions: [
           if (globalCart.isNotEmpty)
@@ -138,12 +138,16 @@ class _CartScreenState extends State<CartScreen> {
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(20),
                     ),
-                    title: const Text('Clear Cart'),
-                    content: const Text('Are you sure you want to remove all items?'),
+                    backgroundColor: isDark ? const Color(0xFF1E293B) : Colors.white,
+                    title: Text('Clear Cart', style: TextStyle(color: textColor)),
+                    content: Text(
+                      l10n.areYouSureYouWantToRemoveAllItems,
+                      style: TextStyle(color: subtitleColor),
+                    ),
                     actions: [
                       TextButton(
                         onPressed: () => Navigator.pop(context),
-                        child: const Text('Cancel'),
+                        child: Text(l10n.cancel, style: TextStyle(color: subtitleColor)),
                       ),
                       Container(
                         decoration: BoxDecoration(
@@ -162,15 +166,14 @@ class _CartScreenState extends State<CartScreen> {
                             backgroundColor: Colors.transparent,
                             shadowColor: Colors.transparent,
                           ),
-                          child: const Text('Clear'),
+                          child: Text(l10n.clear),
                         ),
                       ),
                     ],
                   ),
                 );
               },
-              child: const Text(
-                'Clear All',
+              child: Text(l10n.clearAll,
                 style: TextStyle(color: Colors.red),
               ),
             ),
@@ -187,11 +190,11 @@ class _CartScreenState extends State<CartScreen> {
                 return Container(
                   margin: const EdgeInsets.only(bottom: 16),
                   decoration: BoxDecoration(
-                    color: Colors.white,
+                    color: cardColor,
                     borderRadius: BorderRadius.circular(20),
                     boxShadow: [
                       BoxShadow(
-                        color: Colors.black.withOpacity(0.08),
+                        color: Colors.black.withValues(alpha: isDark ? 0.3 : 0.08),
                         blurRadius: 15,
                         offset: const Offset(0, 5),
                       ),
@@ -206,10 +209,22 @@ class _CartScreenState extends State<CartScreen> {
                           width: 60,
                           height: 60,
                           decoration: BoxDecoration(
-                            color: Colors.grey.shade100,  // 👈 Simple light grey background
+                            gradient: LinearGradient(
+                              colors: [
+                                AppColors.electricBlue.withValues(alpha: 0.15),
+                                AppColors.electricBlue.withValues(alpha: 0.15),
+                              ],
+                            ),
                             borderRadius: BorderRadius.circular(12),
                           ),
-                          child: _getServiceIcon(item.service.subcategory),
+                          child: IconHelper.getServiceIcon(
+                            category: item.service.category,
+                            subcategory: item.service.subcategory,
+                            subSubcategory: item.service.subSubcategory,
+                            serviceName: item.service.name,
+                            color: AppColors.electricBlue,
+                            size: 28,
+                          ),
                         ),
                         const SizedBox(width: 12),
                         Expanded(
@@ -218,10 +233,10 @@ class _CartScreenState extends State<CartScreen> {
                             children: [
                               Text(
                                 item.service.name,
-                                style: const TextStyle(
+                                style: TextStyle(
                                   fontSize: 15,
                                   fontWeight: FontWeight.bold,
-                                  color: Colors.black87,
+                                  color: textColor,
                                 ),
                                 maxLines: 2,
                                 overflow: TextOverflow.ellipsis,
@@ -232,7 +247,7 @@ class _CartScreenState extends State<CartScreen> {
                                 item.service.description,
                                 style: TextStyle(
                                   fontSize: 12,
-                                  color: Colors.grey.shade600,
+                                  color: subtitleColor,
                                 ),
                                 maxLines: 2,
                                 overflow: TextOverflow.ellipsis,
@@ -240,11 +255,11 @@ class _CartScreenState extends State<CartScreen> {
                               ),
                               const SizedBox(height: 6),
                               Text(
-                                'SAR ${item.service.price.toStringAsFixed(0)}',
+                                FormattingUtils.formatCurrency(item.service.price, l10n, locale),
                                 style: const TextStyle(
                                   fontSize: 13,
                                   fontWeight: FontWeight.bold,
-                                  color: Color(0xFF6B5B9A),
+                                  color: AppColors.electricBlue,
                                 ),
                               ),
                             ],
@@ -257,7 +272,7 @@ class _CartScreenState extends State<CartScreen> {
                             Container(
                               decoration: BoxDecoration(
                                 gradient: const LinearGradient(
-                                  colors: [Color(0xFF6B5B9A), Color(0xFF6B5B9A)],
+                                  colors: [AppColors.electricBlue, AppColors.electricBlue],
                                 ),
                                 borderRadius: BorderRadius.circular(10),
                               ),
@@ -279,9 +294,9 @@ class _CartScreenState extends State<CartScreen> {
                                     ),
                                     child: Center(
                                       child: Text(
-                                        '${item.quantity}',
+                                        FormattingUtils.formatNumber(item.quantity, locale), // ← UPDATED
                                         style: const TextStyle(
-                                          color: Color(0xFF6B5B9A),
+                                          color: AppColors.electricBlue,
                                           fontWeight: FontWeight.bold,
                                           fontSize: 13,
                                         ),
@@ -299,10 +314,10 @@ class _CartScreenState extends State<CartScreen> {
                             ),
                             const SizedBox(height: 6),
                             Text(
-                              'SAR ${item.totalPrice.toStringAsFixed(0)}',
+                              FormattingUtils.formatCurrency(item.totalPrice, l10n, locale),
                               style: const TextStyle(
                                 fontWeight: FontWeight.bold,
-                                color: Color(0xFF6B5B9A),
+                                color: AppColors.electricBlue,
                                 fontSize: 14,
                               ),
                             ),
@@ -324,10 +339,10 @@ class _CartScreenState extends State<CartScreen> {
           Container(
             padding: const EdgeInsets.all(20),
             decoration: BoxDecoration(
-              color: Colors.white,
+              color: cardColor,
               boxShadow: [
                 BoxShadow(
-                  color: Colors.black.withOpacity(0.1),
+                  color: Colors.black.withValues(alpha: isDark ? 0.3 : 0.1),
                   blurRadius: 10,
                   offset: const Offset(0, -5),
                 ),
@@ -339,19 +354,20 @@ class _CartScreenState extends State<CartScreen> {
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      const Text(
-                        'Total:',
+                      Text(
+                        '${l10n.total}:',
                         style: TextStyle(
                           fontSize: 18,
                           fontWeight: FontWeight.bold,
+                          color: textColor,
                         ),
                       ),
                       Text(
-                        'SAR ${totalPrice.toStringAsFixed(0)}',
+                        FormattingUtils.formatCurrency(totalPrice, l10n, locale),
                         style: const TextStyle(
                           fontSize: 24,
                           fontWeight: FontWeight.bold,
-                          color: Color(0xFF6B5B9A),
+                          color: AppColors.electricBlue,
                         ),
                       ),
                     ],
@@ -363,14 +379,13 @@ class _CartScreenState extends State<CartScreen> {
                     child: ElevatedButton(
                       onPressed: proceedToCheckout,
                       style: ElevatedButton.styleFrom(
-                        backgroundColor: const Color(0xFF6B5B9A),
+                        backgroundColor: AppColors.electricBlue,
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(16),
                         ),
                         elevation: 4,
                       ),
-                      child: const Text(
-                        'Proceed to Checkout',
+                      child: Text(l10n.proceedToCheckout,
                         style: TextStyle(
                           fontSize: 16,
                           fontWeight: FontWeight.bold,

@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
-import 'service_model.dart';
-import 'user_model.dart';
-
+import '../../gen_l10n/app_localizations.dart';
 enum BookingStatus {
   pending,
   confirmed,
@@ -20,7 +18,7 @@ class Booking {
   final BookingStatus status;
   final DateTime createdAt;
   final String? notes;
-  final Service? service;
+  final dynamic service;
   final int quantity;
   final String paymentMethod;
 
@@ -57,20 +55,20 @@ class Booking {
 
   factory Booking.fromJson(Map<String, dynamic> json) {
     return Booking(
-      id: json['id'],
-      userId: json['userId'],
-      serviceId: json['serviceId'],
-      bookingDate: DateTime.parse(json['bookingDate']),
-      bookingTime: DateTime.parse(json['bookingTime']),
-      totalPrice: json['totalPrice'].toDouble(),
+      id: json['id'] as String,
+      userId: json['userId'] as String,
+      serviceId: json['serviceId'] as String,
+      bookingDate: DateTime.parse(json['bookingDate'] as String),
+      bookingTime: DateTime.parse(json['bookingTime'] as String),
+      totalPrice: (json['totalPrice'] as num).toDouble(),
       status: BookingStatus.values.firstWhere(
             (e) => e.name == json['status'],
         orElse: () => BookingStatus.pending,
       ),
-      createdAt: DateTime.parse(json['createdAt']),
-      notes: json['notes'],
-      quantity: json['quantity'] ?? 1,
-      paymentMethod: json['paymentMethod'] ?? 'cash',
+      createdAt: DateTime.parse(json['createdAt'] as String),
+      notes: json['notes'] as String?,
+      quantity: json['quantity'] as int? ?? 1,
+      paymentMethod: json['paymentMethod'] as String? ?? 'cash',
     );
   }
 
@@ -92,16 +90,15 @@ class Booking {
   Color get statusColor {
     switch (status) {
       case BookingStatus.pending:
-        return Colors.orange;
+        return const Color(0xFFF59E0B);
       case BookingStatus.confirmed:
-        return Colors.blue;
+        return const Color(0xFF3B82F6);
       case BookingStatus.inProgress:
-        return Colors.purple;
+        return const Color(0xFF8B5CF6);
       case BookingStatus.completed:
-        return Colors.green;
+        return const Color(0xFF10B981);
       case BookingStatus.cancelled:
-        return Colors.red;
+        return const Color(0xFFEF4444);
     }
   }
 }
-
