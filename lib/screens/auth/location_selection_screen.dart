@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import '../../gen_l10n/app_localizations.dart';
+import '../../utils/validators.dart'; // ✅ ADD THIS IMPORT
 import 'package:customer_app/screens/maps/map_selection_screen.dart';
 import '../../utils/app_colors.dart';
 
@@ -32,7 +34,7 @@ class _LocationSelectionScreenState extends State<LocationSelectionScreen> {
   @override
   void initState() {
     super.initState();
-    _addressType = 'Home'; // Will be localized in build
+    _addressType = 'Home';
   }
 
   @override
@@ -75,14 +77,23 @@ class _LocationSelectionScreenState extends State<LocationSelectionScreen> {
   Future<void> _saveAddress() async {
     if (!_formKey.currentState!.validate()) {
       print('Form validation failed');
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: const Text('Please fix the errors before continuing'),
+          backgroundColor: Colors.red,
+          behavior: SnackBarBehavior.floating,
+          margin: const EdgeInsets.all(16),
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+        ),
+      );
       return;
     }
 
     print('Form validation passed - saving address');
 
     final addressData = {
-      'name': _nameController.text,
-      'email': _emailController.text,
+      'name': _nameController.text.trim(),
+      'email': _emailController.text.trim(),
       'street': _streetController.text,
       'floor': _floorController.text,
       'apartment': _apartmentController.text,
@@ -93,8 +104,6 @@ class _LocationSelectionScreenState extends State<LocationSelectionScreen> {
     };
 
     print('Calling onLocationSelected callback with address data');
-    // This callback will be handled by AuthFlowCoordinator
-    // which will then navigate to dashboard with proper user and onLogout
     widget.onLocationSelected(addressData);
   }
 
@@ -102,12 +111,10 @@ class _LocationSelectionScreenState extends State<LocationSelectionScreen> {
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
 
-    // Initialize _addressType with localized value
     if (_addressType == 'Home') {
       _addressType = l10n.home;
     }
 
-    // Always use light mode
     final isDark = false;
     final backgroundColor = Colors.white;
 
@@ -136,6 +143,7 @@ class _LocationSelectionScreenState extends State<LocationSelectionScreen> {
       body: SingleChildScrollView(
         child: Form(
           key: _formKey,
+          autovalidateMode: AutovalidateMode.onUserInteraction, // ✅ Enable real-time validation
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
@@ -244,7 +252,7 @@ class _LocationSelectionScreenState extends State<LocationSelectionScreen> {
                     ),
                     const SizedBox(height: 20),
 
-                    // Full Name
+                    // Full Name with Validation ✅
                     Text(
                       l10n.fullName,
                       style: TextStyle(
@@ -258,6 +266,10 @@ class _LocationSelectionScreenState extends State<LocationSelectionScreen> {
                       style: TextStyle(
                         color: isDark ? Colors.white : Colors.black87,
                       ),
+                      inputFormatters: [
+                        FilteringTextInputFormatter.allow(RegExp(r'[a-zA-Z\s\-]')),
+                        LengthLimitingTextInputFormatter(50),
+                      ],
                       decoration: InputDecoration(
                         hintText: l10n.enterYourFullName,
                         hintStyle: TextStyle(
@@ -269,18 +281,29 @@ class _LocationSelectionScreenState extends State<LocationSelectionScreen> {
                           borderRadius: BorderRadius.circular(12),
                           borderSide: BorderSide.none,
                         ),
+                        enabledBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(12),
+                          borderSide: BorderSide(color: Colors.grey.shade300),
+                        ),
+                        focusedBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(12),
+                          borderSide: BorderSide(color: AppColors.electricBlue, width: 2),
+                        ),
+                        errorBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(12),
+                          borderSide: BorderSide(color: Colors.red.shade400, width: 2),
+                        ),
+                        focusedErrorBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(12),
+                          borderSide: BorderSide(color: Colors.red.shade400, width: 2),
+                        ),
                         contentPadding: const EdgeInsets.all(16),
                       ),
-                      validator: (value) {
-                        if (value == null || value.isEmpty) {
-                          return l10n.pleaseEnterYourName;
-                        }
-                        return null;
-                      },
+                      validator: (value) => Validators.validateName(value, l10n),
                     ),
                     const SizedBox(height: 16),
 
-                    // Email
+                    // Email with Enhanced Validation ✅
                     Text(
                       l10n.emailAddress,
                       style: TextStyle(
@@ -306,17 +329,25 @@ class _LocationSelectionScreenState extends State<LocationSelectionScreen> {
                           borderRadius: BorderRadius.circular(12),
                           borderSide: BorderSide.none,
                         ),
+                        enabledBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(12),
+                          borderSide: BorderSide(color: Colors.grey.shade300),
+                        ),
+                        focusedBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(12),
+                          borderSide: BorderSide(color: AppColors.electricBlue, width: 2),
+                        ),
+                        errorBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(12),
+                          borderSide: BorderSide(color: Colors.red.shade400, width: 2),
+                        ),
+                        focusedErrorBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(12),
+                          borderSide: BorderSide(color: Colors.red.shade400, width: 2),
+                        ),
                         contentPadding: const EdgeInsets.all(16),
                       ),
-                      validator: (value) {
-                        if (value == null || value.isEmpty) {
-                          return l10n.pleaseEnterYourEmail;
-                        }
-                        if (!value.contains('@')) {
-                          return l10n.pleaseEnterValidEmail;
-                        }
-                        return null;
-                      },
+                      validator: (value) => Validators.validateEmail(value, l10n),
                     ),
                     const SizedBox(height: 24),
 
@@ -545,12 +576,12 @@ class _LocationSelectionScreenState extends State<LocationSelectionScreen> {
                     ),
                     const SizedBox(height: 32),
 
-                    // Save Button (ELECTRIC BLUE)
+                    // Save Button
                     Container(
                       width: double.infinity,
                       height: 56,
                       decoration: BoxDecoration(
-                        color: AppColors.electricBlue, // ✅ ELECTRIC BLUE (no gradient)
+                        color: AppColors.electricBlue,
                         borderRadius: BorderRadius.circular(16),
                         boxShadow: [
                           BoxShadow(

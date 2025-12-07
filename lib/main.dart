@@ -6,7 +6,8 @@ import 'firebase_options.dart';
 import 'gen_l10n/app_localizations.dart';
 import 'screens/auth/language_selection_screen.dart';
 import 'screens/auth/auth_flow_coordinator.dart';
-import 'screens/dashboard/dashboard_screen.dart';  // ✅ Add dashboard import
+import 'screens/dashboard/dashboard_screen.dart';
+import 'screens/splash/splash_screen.dart';
 import 'models/user_model.dart';
 import 'utils/app_colors.dart';
 
@@ -36,8 +37,17 @@ class _CustomerAppState extends State<CustomerApp> {
   Locale _currentLocale = const Locale('en'); // Default to English
   bool _isLanguageSelected = false;
   User? _currentUser;
+  bool _isLoading = true;
+
+  void _handleSplashComplete() {
+    print('Splash screen complete');
+    setState(() {
+      _isLoading = false;
+    });
+  }
 
   void _handleLanguageSelection(Locale locale) {
+    print('Language selected: ${locale.languageCode}');
     setState(() {
       _currentLocale = locale;
       _isLanguageSelected = true;
@@ -45,7 +55,7 @@ class _CustomerAppState extends State<CustomerApp> {
   }
 
   void _handleAuthComplete(User user) {
-    print('🎉 AUTH COMPLETE in main.dart');
+    print('AUTH COMPLETE in main.dart');
     print('User: ${user.name}');
     print('Phone: ${user.phone}');
     print('Address: ${user.address}');
@@ -54,11 +64,11 @@ class _CustomerAppState extends State<CustomerApp> {
       _currentUser = user;
     });
 
-    print('✅ State updated - Dashboard should appear now!');
+    print('State updated - Dashboard should appear now!');
   }
 
   void _handleLogout() {
-    print('👋 LOGOUT - Returning to auth flow');
+    print('LOGOUT - Returning to auth flow');
     setState(() {
       _currentUser = null;
       _isLanguageSelected = false; // Also reset language selection to go back to language screen
@@ -98,11 +108,17 @@ class _CustomerAppState extends State<CustomerApp> {
   }
 
   Widget _buildHome() {
-    print('🏗️ Building home - Current state:');
+    // ✅ STEP 1: Show Splash Screen while loading
+    if (_isLoading) {
+      print('Showing Splash Screen');
+      return SplashScreen(onSplashComplete: _handleSplashComplete);
+    }
+
+    print('Building home - Current state:');
     print('   Language selected: $_isLanguageSelected');
     print('   Current user: ${_currentUser?.name ?? "NULL"}');
 
-    // ✅ If user is logged in, show Dashboard
+    // ✅ STEP 2: If user is logged in, show Dashboard
     if (_currentUser != null) {
       print('   → Showing Dashboard');
       return DashboardScreen(
@@ -111,7 +127,7 @@ class _CustomerAppState extends State<CustomerApp> {
       );
     }
 
-    // If language selected, show Auth Flow
+    // ✅ STEP 3: If language selected, show Auth Flow
     if (_isLanguageSelected) {
       print('   → Showing Auth Flow');
       return AuthFlowCoordinator(
@@ -119,7 +135,7 @@ class _CustomerAppState extends State<CustomerApp> {
       );
     }
 
-    // Otherwise, show Language Selection
+    // ✅ STEP 4: Otherwise, show Language Selection
     print('   → Showing Language Selection');
     return LanguageSelectionScreen(
       onLanguageSelected: _handleLanguageSelection,

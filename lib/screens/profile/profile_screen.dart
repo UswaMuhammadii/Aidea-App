@@ -10,7 +10,7 @@ import '../../utils/app_colors.dart';
 class ProfileScreen extends StatefulWidget {
   final User user;
   final VoidCallback onLogout;
-  final Function(User)? onUserUpdated; // Added callback for user updates
+  final Function(User)? onUserUpdated;
 
   const ProfileScreen({
     super.key,
@@ -80,13 +80,41 @@ class _ProfileScreenState extends State<ProfileScreen> {
     );
   }
 
-  void _navigateToEditProfile() {
-    Navigator.push(
+  // ✅ FIXED: Now properly handles returned user
+  Future<void> _navigateToEditProfile() async {
+    final updatedUser = await Navigator.push<User>(
       context,
       MaterialPageRoute(
         builder: (context) => EditProfileScreen(user: _currentUser),
       ),
     );
+
+    // If user was updated, refresh the UI
+    if (updatedUser != null && mounted) {
+      setState(() {
+        _currentUser = updatedUser;
+      });
+
+      // Notify parent widget (DashboardScreen) if callback exists
+      widget.onUserUpdated?.call(updatedUser);
+
+      // Show success feedback
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Row(
+            children: [
+              const Icon(Icons.check_circle, color: Colors.white),
+              const SizedBox(width: 12),
+              const Text('Profile updated successfully!'),
+            ],
+          ),
+          backgroundColor: Colors.green,
+          behavior: SnackBarBehavior.floating,
+          margin: const EdgeInsets.all(16),
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+        ),
+      );
+    }
   }
 
   void _navigateToAddresses() {
@@ -99,7 +127,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
             setState(() {
               _currentUser = updatedUser;
             });
-            // Propagate the update to parent (DashboardScreen)
             if (widget.onUserUpdated != null) {
               widget.onUserUpdated!(updatedUser);
             }
