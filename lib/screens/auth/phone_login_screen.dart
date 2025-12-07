@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import '../../gen_l10n/app_localizations.dart';
 import '../../utils/app_colors.dart';
+import '../../utils/validators.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import '../../services/firebase_auth_service.dart';
 
@@ -17,18 +18,62 @@ class PhoneLoginScreen extends StatefulWidget {
 class _PhoneLoginScreenState extends State<PhoneLoginScreen> {
   final _phoneController = TextEditingController();
   final _formKey = GlobalKey<FormState>();
+  final _phoneFocusNode = FocusNode();
   bool _isLoading = false;
   String _selectedCountryCode = '+966';
-  bool _showError = false;
+  String? _phoneError;
+  bool _phoneFieldTouched = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _phoneController.addListener(_validatePhoneRealtime);
+    _phoneFocusNode.addListener(_onFocusChange);
+  }
 
   @override
   void dispose() {
+    _phoneController.removeListener(_validatePhoneRealtime);
+    _phoneFocusNode.removeListener(_onFocusChange);
     _phoneController.dispose();
+    _phoneFocusNode.dispose();
     super.dispose();
   }
 
+  void _onFocusChange() {
+    if (!_phoneFocusNode.hasFocus && !_phoneFieldTouched) {
+      setState(() => _phoneFieldTouched = true);
+    }
+  }
+
+  void _validatePhoneRealtime() {
+    if (_phoneFieldTouched) {
+      final l10n = AppLocalizations.of(context)!;
+      setState(() {
+        _phoneError = Validators.validatePhone(
+          _phoneController.text,
+          _selectedCountryCode,
+          l10n,
+        );
+      });
+    }
+  }
+
   Future<void> _handleSubmit() async {
-    if (!_formKey.currentState!.validate()) return;
+    setState(() => _phoneFieldTouched = true);
+
+    if (!_formKey.currentState!.validate()) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(_phoneError ?? 'Please check your phone number'),
+          backgroundColor: Colors.red,
+          behavior: SnackBarBehavior.floating,
+          margin: const EdgeInsets.all(16),
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+        ),
+      );
+      return;
+    }
 
     setState(() => _isLoading = true);
 
@@ -37,11 +82,9 @@ class _PhoneLoginScreenState extends State<PhoneLoginScreen> {
     try {
       final authService = FirebaseAuthService();
 
-      // Firebase verification start karein
       await authService.verifyPhoneNumber(
         phoneNumber: fullPhoneNumber,
         onVerificationCompleted: (PhoneAuthCredential credential) async {
-          // Auto verification (SMS auto read)
           await _handleAutoVerification(credential);
         },
         onVerificationFailed: (FirebaseAuthException e) {
@@ -50,7 +93,6 @@ class _PhoneLoginScreenState extends State<PhoneLoginScreen> {
         },
         onCodeSent: (String verificationId, int? resendToken) {
           setState(() => _isLoading = false);
-          // OTP screen par verificationId pass karein
           widget.onPhoneSubmit(fullPhoneNumber, verificationId);
         },
         onCodeAutoRetrievalTimeout: (String verificationId) {
@@ -68,7 +110,6 @@ class _PhoneLoginScreenState extends State<PhoneLoginScreen> {
     try {
       final userCredential = await FirebaseAuthService().signInWithCredential(credential);
       if (userCredential.user != null) {
-        // Auto verification successful - direct location screen par le jayein
         widget.onPhoneSubmit(_phoneController.text, 'auto_verified');
       }
     } catch (e) {
@@ -80,11 +121,21 @@ class _PhoneLoginScreenState extends State<PhoneLoginScreen> {
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
-        title: const Text('Error'),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+        title: Row(
+          children: [
+            Icon(Icons.error_outline, color: Colors.red.shade400),
+            const SizedBox(width: 8),
+            const Text('Error'),
+          ],
+        ),
         content: Text(message),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(context),
+            style: TextButton.styleFrom(
+              foregroundColor: AppColors.electricBlue,
+            ),
             child: const Text('OK'),
           ),
         ],
@@ -95,7 +146,6 @@ class _PhoneLoginScreenState extends State<PhoneLoginScreen> {
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
-    // Always use light mode
     final isDark = false;
     final backgroundColor = Colors.white;
 
@@ -175,10 +225,8 @@ class _PhoneLoginScreenState extends State<PhoneLoginScreen> {
                               height: 18,
                               decoration: BoxDecoration(
                                 borderRadius: BorderRadius.circular(4),
-                                image: const DecorationImage(
-                                  image: NetworkImage(
-                                    'https://flagcdn.com/w40/sa.png',
-                                  ),
+                                image: DecorationImage(
+                                  image: NetworkImage(_getCountryFlag()),
                                   fit: BoxFit.cover,
                                 ),
                               ),
@@ -198,7 +246,7 @@ class _PhoneLoginScreenState extends State<PhoneLoginScreen> {
                     ),
                     const SizedBox(width: 10),
 
-                    // Phone Number Input with Error Message
+                    // Phone Number Input with Enhanced Validation
                     Expanded(
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
@@ -208,16 +256,19 @@ class _PhoneLoginScreenState extends State<PhoneLoginScreen> {
                             height: 60,
                             decoration: BoxDecoration(
                               border: Border.all(
-                                color: _showError
+                                color: _phoneError != null
                                     ? Colors.red.shade400
-                                    : (isDark ? Colors.grey.shade700 : Colors.grey.shade300),
-                                width: _showError ? 2 : 1,
+                                    : (_phoneFocusNode.hasFocus
+                                    ? AppColors.electricBlue
+                                    : (isDark ? Colors.grey.shade700 : Colors.grey.shade300)),
+                                width: _phoneError != null ? 2 : 1,
                               ),
                               borderRadius: BorderRadius.circular(12),
                             ),
                             child: Center(
                               child: TextFormField(
                                 controller: _phoneController,
+                                focusNode: _phoneFocusNode,
                                 keyboardType: TextInputType.phone,
                                 style: TextStyle(
                                   fontSize: 15,
@@ -227,14 +278,24 @@ class _PhoneLoginScreenState extends State<PhoneLoginScreen> {
                                 textAlignVertical: TextAlignVertical.center,
                                 inputFormatters: [
                                   FilteringTextInputFormatter.digitsOnly,
-                                  LengthLimitingTextInputFormatter(10),
+                                  LengthLimitingTextInputFormatter(_getMaxLength()),
                                 ],
                                 decoration: InputDecoration(
-                                  hintText: '5xxxxxxxxx',
+                                  hintText: _getHintText(),
                                   hintStyle: TextStyle(
                                     color: isDark ? Colors.grey.shade600 : Colors.grey.shade400,
                                     fontSize: 15,
                                   ),
+                                  suffixIcon: _phoneController.text.isNotEmpty
+                                      ? IconButton(
+                                    icon: Icon(
+                                      _phoneError == null ? Icons.check_circle : Icons.error,
+                                      color: _phoneError == null ? Colors.green : Colors.red,
+                                      size: 20,
+                                    ),
+                                    onPressed: () {},
+                                  )
+                                      : null,
                                   border: InputBorder.none,
                                   errorStyle: const TextStyle(height: 0, fontSize: 0),
                                   contentPadding: const EdgeInsets.symmetric(
@@ -243,34 +304,52 @@ class _PhoneLoginScreenState extends State<PhoneLoginScreen> {
                                   ),
                                   isDense: true,
                                 ),
-                                onChanged: (value) {
-                                  setState(() {
-                                    _showError = value.isNotEmpty && value.length < 9;
-                                  });
-                                },
-                                validator: (value) {
-                                  if (value == null || value.isEmpty) {
-                                    return 'error';
-                                  }
-                                  if (value.length < 9) {
-                                    return 'error';
-                                  }
-                                  return null;
-                                },
+                                validator: (value) => Validators.validatePhone(
+                                  value,
+                                  _selectedCountryCode,
+                                  l10n,
+                                ),
                               ),
                             ),
                           ),
                           // Error message below the field
-                          if (_showError)
+                          if (_phoneError != null && _phoneFieldTouched)
                             Padding(
                               padding: const EdgeInsets.only(left: 4, top: 6),
-                              child: Text(
-                                l10n.invalidNumber,
-                                style: TextStyle(
-                                  color: Colors.red.shade400,
-                                  fontSize: 12,
-                                  fontWeight: FontWeight.w500,
-                                ),
+                              child: Row(
+                                children: [
+                                  Icon(Icons.error_outline, size: 14, color: Colors.red.shade400),
+                                  const SizedBox(width: 4),
+                                  Expanded(
+                                    child: Text(
+                                      _phoneError!,
+                                      style: TextStyle(
+                                        color: Colors.red.shade400,
+                                        fontSize: 12,
+                                        fontWeight: FontWeight.w500,
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          // Helper text when valid
+                          if (_phoneError == null && _phoneController.text.isNotEmpty && _phoneFieldTouched)
+                            Padding(
+                              padding: const EdgeInsets.only(left: 4, top: 6),
+                              child: Row(
+                                children: [
+                                  Icon(Icons.check_circle_outline, size: 14, color: Colors.green.shade600),
+                                  const SizedBox(width: 4),
+                                  Text(
+                                    'Valid phone number',
+                                    style: TextStyle(
+                                      color: Colors.green.shade600,
+                                      fontSize: 12,
+                                      fontWeight: FontWeight.w500,
+                                    ),
+                                  ),
+                                ],
                               ),
                             ),
                         ],
@@ -333,6 +412,44 @@ class _PhoneLoginScreenState extends State<PhoneLoginScreen> {
     );
   }
 
+  String _getCountryFlag() {
+    switch (_selectedCountryCode) {
+      case '+966':
+        return 'https://flagcdn.com/w40/sa.png';
+      case '+971':
+        return 'https://flagcdn.com/w40/ae.png';
+      case '+92':
+        return 'https://flagcdn.com/w40/pk.png';
+      default:
+        return 'https://flagcdn.com/w40/sa.png';
+    }
+  }
+
+  int _getMaxLength() {
+    switch (_selectedCountryCode) {
+      case '+966':
+      case '+971':
+        return 9;
+      case '+92':
+        return 10;
+      default:
+        return 15;
+    }
+  }
+
+  String _getHintText() {
+    switch (_selectedCountryCode) {
+      case '+966':
+        return '5xxxxxxxx';
+      case '+971':
+        return '5xxxxxxxx';
+      case '+92':
+        return '3xxxxxxxxx';
+      default:
+        return 'Phone number';
+    }
+  }
+
   void _showCountryCodePicker() {
     final isDark = Theme.of(context).brightness == Brightness.dark;
 
@@ -365,81 +482,44 @@ class _PhoneLoginScreenState extends State<PhoneLoginScreen> {
               ),
             ),
             const SizedBox(height: 20),
-            ListTile(
-              leading: Container(
-                width: 32,
-                height: 24,
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(4),
-                  image: const DecorationImage(
-                    image: NetworkImage('https://flagcdn.com/w40/sa.png'),
-                    fit: BoxFit.cover,
-                  ),
-                ),
-              ),
-              title: Text(
-                'Saudi Arabia',
-                style: TextStyle(
-                  color: isDark ? Colors.white : Colors.black87,
-                ),
-              ),
-              trailing: const Text('+966'),
-              onTap: () {
-                setState(() => _selectedCountryCode = '+966');
-                Navigator.pop(context);
-              },
-            ),
-            ListTile(
-              leading: Container(
-                width: 32,
-                height: 24,
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(4),
-                  image: const DecorationImage(
-                    image: NetworkImage('https://flagcdn.com/w40/ae.png'),
-                    fit: BoxFit.cover,
-                  ),
-                ),
-              ),
-              title: Text(
-                'United Arab Emirates',
-                style: TextStyle(
-                  color: isDark ? Colors.white : Colors.black87,
-                ),
-              ),
-              trailing: const Text('+971'),
-              onTap: () {
-                setState(() => _selectedCountryCode = '+971');
-                Navigator.pop(context);
-              },
-            ),
-            ListTile(
-              leading: Container(
-                width: 32,
-                height: 24,
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(4),
-                  image: const DecorationImage(
-                    image: NetworkImage('https://flagcdn.com/w40/pk.png'),
-                    fit: BoxFit.cover,
-                  ),
-                ),
-              ),
-              title: Text(
-                'Pakistan',
-                style: TextStyle(
-                  color: isDark ? Colors.white : Colors.black87,
-                ),
-              ),
-              trailing: const Text('+92'),
-              onTap: () {
-                setState(() => _selectedCountryCode = '+92');
-                Navigator.pop(context);
-              },
-            ),
+            _buildCountryTile('Saudi Arabia', '+966', 'sa', isDark),
+            _buildCountryTile('United Arab Emirates', '+971', 'ae', isDark),
+            _buildCountryTile('Pakistan', '+92', 'pk', isDark),
           ],
         ),
       ),
+    );
+  }
+
+  Widget _buildCountryTile(String country, String code, String flagCode, bool isDark) {
+    return ListTile(
+      leading: Container(
+        width: 32,
+        height: 24,
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(4),
+          image: DecorationImage(
+            image: NetworkImage('https://flagcdn.com/w40/$flagCode.png'),
+            fit: BoxFit.cover,
+          ),
+        ),
+      ),
+      title: Text(
+        country,
+        style: TextStyle(
+          color: isDark ? Colors.white : Colors.black87,
+        ),
+      ),
+      trailing: Text(code),
+      onTap: () {
+        setState(() {
+          _selectedCountryCode = code;
+          _phoneController.clear();
+          _phoneError = null;
+          _phoneFieldTouched = false;
+        });
+        Navigator.pop(context);
+      },
     );
   }
 }
