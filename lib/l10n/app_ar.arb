@@ -591,6 +591,12 @@
   "carpetCleaning": "تنظيف السجاد",
   "kitchenDeepClean": "تنظيف المطبخ العميق",
   "bathroomSanitization": "تعقيم الحمام",
-  "emergencyContactInitiated": "تم بدء الاتصال في حالات الطوارئ"
+  "emergencyContactInitiated": "تم بدء الاتصال في حالات الطوارئ",
+  "searchLocation": "ابحث عن الموقع...",
+  "selectedLocation": "الموقع المحدد",
+  "confirmLocation": "تأكيد الموقع",
+  "tapOnMapToSelectLocation": "اضغط على الخريطة لتحديد الموقع",
+  "selectLocation": "اختر الموقع",
+  "locationSelected": "تم اختيار الموقع"
 
 }

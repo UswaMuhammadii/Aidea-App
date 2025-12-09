@@ -2657,7 +2657,7 @@ abstract class AppLocalizations {
   /// No description provided for @tapOnMapToSelectLocation.
   ///
   /// In en, this message translates to:
-  /// **'Tap on the map to select your location'**
+  /// **'Tap on map to select location'**
   String get tapOnMapToSelectLocation;
 
   /// No description provided for @tapToChangeLocation.
@@ -3283,6 +3283,18 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Emergency contact initiated'**
   String get emergencyContactInitiated;
+
+  /// No description provided for @searchLocation.
+  ///
+  /// In en, this message translates to:
+  /// **'Search location...'**
+  String get searchLocation;
+
+  /// No description provided for @locationSelected.
+  ///
+  /// In en, this message translates to:
+  /// **'Location Selected'**
+  String get locationSelected;
 }
 
 class _AppLocalizationsDelegate

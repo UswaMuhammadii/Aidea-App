@@ -1322,7 +1322,7 @@ class AppLocalizationsAr extends AppLocalizations {
   String get selectedLocation => 'الموقع المحدد';
 
   @override
-  String get tapOnMapToSelectLocation => 'انقر على الخريطة لتحديد موقعك';
+  String get tapOnMapToSelectLocation => 'اضغط على الخريطة لتحديد الموقع';
 
   @override
   String get tapToChangeLocation => 'انقر لتغيير الموقع';
@@ -1646,4 +1646,10 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get emergencyContactInitiated => 'تم بدء الاتصال في حالات الطوارئ';
+
+  @override
+  String get searchLocation => 'ابحث عن الموقع...';
+
+  @override
+  String get locationSelected => 'تم اختيار الموقع';
 }

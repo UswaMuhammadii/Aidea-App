@@ -1338,8 +1338,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get selectedLocation => 'Selected Location';
 
   @override
-  String get tapOnMapToSelectLocation =>
-      'Tap on the map to select your location';
+  String get tapOnMapToSelectLocation => 'Tap on map to select location';
 
   @override
   String get tapToChangeLocation => 'Tap to change location';
@@ -1667,4 +1666,10 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get emergencyContactInitiated => 'Emergency contact initiated';
+
+  @override
+  String get searchLocation => 'Search location...';
+
+  @override
+  String get locationSelected => 'Location Selected';
 }

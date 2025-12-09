@@ -9,6 +9,7 @@ import '../../models/booking_model.dart';
 import '../../models/cart_model.dart';
 import '../../services/dummy_data_service.dart';
 import '../booking/booking_confirmation_screen.dart';
+import '../maps/map_selection_screen.dart'; // ✅ ADD THIS IMPORT
 import '../../utils/icons_helper.dart';
 import '../../utils/formatting_utils.dart';
 import '../../utils/app_colors.dart';
@@ -40,6 +41,10 @@ class _ServiceCheckoutScreenState extends State<ServiceCheckoutScreen> {
   final List<File> _selectedImages = [];
   final ImagePicker _picker = ImagePicker();
 
+  // ✅ ADD THESE VARIABLES FOR MAP INTEGRATION
+  double? _selectedLatitude;
+  double? _selectedLongitude;
+
   Icon _getIconForServiceItem(Service service) {
     return IconHelper.getServiceIcon(
       category: service.category,
@@ -62,6 +67,44 @@ class _ServiceCheckoutScreenState extends State<ServiceCheckoutScreen> {
     _notesController.dispose();
     _addressController.dispose();
     super.dispose();
+  }
+
+  // ✅ ADD THIS METHOD FOR MAP SELECTION
+  void _openMapSelection() {
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => MapSelectionScreen(
+          initialAddress: _addressController.text.isNotEmpty ? _addressController.text : null,
+          onLocationSelected: (address, lat, lng) {
+            setState(() {
+              _addressController.text = address;
+              _selectedLatitude = lat;
+              _selectedLongitude = lng;
+            });
+
+            final l10n = AppLocalizations.of(context)!;
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(
+                content: Row(
+                  children: [
+                    const Icon(Icons.check_circle, color: Colors.white),
+                    const SizedBox(width: 12),
+                    Expanded(
+                      child: Text('${l10n.selectedLocation}: $address'),
+                    ),
+                  ],
+                ),
+                backgroundColor: Colors.green,
+                behavior: SnackBarBehavior.floating,
+                margin: const EdgeInsets.all(16),
+                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+              ),
+            );
+          },
+        ),
+      ),
+    );
   }
 
   Future<void> _selectDate() async {
@@ -463,7 +506,6 @@ class _ServiceCheckoutScreenState extends State<ServiceCheckoutScreen> {
                 ),
                 child: Column(
                   children: [
-                    // Upload Button
                     InkWell(
                       onTap: _showImageSourceDialog,
                       borderRadius: BorderRadius.circular(16),
@@ -516,7 +558,6 @@ class _ServiceCheckoutScreenState extends State<ServiceCheckoutScreen> {
                         ),
                       ),
                     ),
-                    // Display Selected Images
                     if (_selectedImages.isNotEmpty) ...[
                       Divider(height: 1, color: borderColor),
                       Padding(
@@ -660,7 +701,7 @@ class _ServiceCheckoutScreenState extends State<ServiceCheckoutScreen> {
               ),
               const SizedBox(height: 24),
 
-              // ADDRESS SECTION
+              // ✅ UPDATED ADDRESS SECTION WITH MAP INTEGRATION
               Text(
                 l10n.serviceAddress,
                 style: Theme.of(context).textTheme.titleMedium?.copyWith(
@@ -684,6 +725,8 @@ class _ServiceCheckoutScreenState extends State<ServiceCheckoutScreen> {
                   controller: _addressController,
                   style: TextStyle(color: textColor),
                   maxLines: 2,
+                  readOnly: true, // ✅ Make it read-only since we select from map
+                  onTap: _openMapSelection, // ✅ Open map on tap
                   decoration: InputDecoration(
                     hintText: l10n.enterServiceAddress,
                     hintStyle: TextStyle(
@@ -694,6 +737,14 @@ class _ServiceCheckoutScreenState extends State<ServiceCheckoutScreen> {
                     prefixIcon: Icon(
                       Icons.location_on,
                       color: Theme.of(context).colorScheme.primary,
+                    ),
+                    suffixIcon: IconButton(
+                      icon: Icon(
+                        Icons.map,
+                        color: AppColors.electricBlue,
+                      ),
+                      onPressed: _openMapSelection,
+                      tooltip: 'Select from map',
                     ),
                     border: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(16),
@@ -709,6 +760,28 @@ class _ServiceCheckoutScreenState extends State<ServiceCheckoutScreen> {
                   ),
                 ),
               ),
+              if (_selectedLatitude != null && _selectedLongitude != null)
+                Padding(
+                  padding: const EdgeInsets.only(top: 8, left: 4),
+                  child: Row(
+                    children: [
+                      Icon(
+                        Icons.check_circle,
+                        color: Colors.green,
+                        size: 16,
+                      ),
+                      const SizedBox(width: 6),
+                      Text(
+                        'Location coordinates saved',
+                        style: TextStyle(
+                          fontSize: 12,
+                          color: Colors.green,
+                          fontWeight: FontWeight.w500,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
               const SizedBox(height: 16),
 
               // NOTES SECTION

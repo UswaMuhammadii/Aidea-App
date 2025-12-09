@@ -16,12 +16,13 @@ dependencies:
   path_provider: ^2.0.15
   pdf: ^3.10.4
   share_plus: ^7.0.2
-  google_maps_flutter: ^2.2.3
   geolocator: ^11.0.0
   geocoding: ^2.1.1
   http: ^1.1.0
   firebase_core: ^2.31.0
   firebase_auth: ^4.17.3
+  flutter_map: ^6.1.0
+  latlong2: ^0.9.0
 
 dev_dependencies:
   flutter_test:

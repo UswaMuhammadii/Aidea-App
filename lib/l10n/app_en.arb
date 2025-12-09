@@ -621,5 +621,11 @@
   "carpetCleaning": "Carpet Cleaning",
   "kitchenDeepClean": "Kitchen Deep Clean",
   "bathroomSanitization": "Bathroom Sanitization",
-  "emergencyContactInitiated": "Emergency contact initiated"
+  "emergencyContactInitiated": "Emergency contact initiated",
+  "searchLocation": "Search location...",
+  "selectedLocation": "Selected Location",
+  "confirmLocation": "Confirm Location",
+  "tapOnMapToSelectLocation": "Tap on map to select location",
+  "selectLocation": "Select Location",
+  "locationSelected": "Location Selected"
 }

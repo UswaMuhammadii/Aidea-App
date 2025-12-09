@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_map/flutter_map.dart';
+import 'package:latlong2/latlong.dart';
 import '../../gen_l10n/app_localizations.dart';
-import '../../utils/validators.dart'; // ✅ ADD THIS IMPORT
+import '../../utils/validators.dart';
 import 'package:customer_app/screens/maps/map_selection_screen.dart';
 import '../../utils/app_colors.dart';
 
@@ -31,6 +33,9 @@ class _LocationSelectionScreenState extends State<LocationSelectionScreen> {
   double? _selectedLatitude;
   double? _selectedLongitude;
 
+  // Default to Jeddah center
+  static const LatLng _defaultLocation = LatLng(21.5433, 39.1728);
+
   @override
   void initState() {
     super.initState();
@@ -49,29 +54,21 @@ class _LocationSelectionScreenState extends State<LocationSelectionScreen> {
   }
 
   void _openMapSelection() async {
-    final result = await Navigator.push<Map<String, dynamic>>(
+    Navigator.push(
       context,
       MaterialPageRoute(
         builder: (context) => MapSelectionScreen(
           initialAddress: _streetController.text.isNotEmpty ? _streetController.text : null,
           onLocationSelected: (address, lat, lng) {
-            return {
-              'address': address,
-              'latitude': lat,
-              'longitude': lng,
-            };
+            setState(() {
+              _streetController.text = address;
+              _selectedLatitude = lat;
+              _selectedLongitude = lng;
+            });
           },
         ),
       ),
     );
-
-    if (result != null) {
-      setState(() {
-        _streetController.text = result['address'] ?? '';
-        _selectedLatitude = result['latitude'];
-        _selectedLongitude = result['longitude'];
-      });
-    }
   }
 
   Future<void> _saveAddress() async {
@@ -118,6 +115,12 @@ class _LocationSelectionScreenState extends State<LocationSelectionScreen> {
     final isDark = false;
     final backgroundColor = Colors.white;
 
+    // Determine which location to show on map
+    LatLng displayLocation = _defaultLocation;
+    if (_selectedLatitude != null && _selectedLongitude != null) {
+      displayLocation = LatLng(_selectedLatitude!, _selectedLongitude!);
+    }
+
     return Scaffold(
       backgroundColor: backgroundColor,
       appBar: AppBar(
@@ -143,92 +146,184 @@ class _LocationSelectionScreenState extends State<LocationSelectionScreen> {
       body: SingleChildScrollView(
         child: Form(
           key: _formKey,
-          autovalidateMode: AutovalidateMode.onUserInteraction, // ✅ Enable real-time validation
+          autovalidateMode: AutovalidateMode.onUserInteraction,
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              // Map Preview
+              // ✅ INTERACTIVE MAP PREVIEW
               Container(
                 height: 250,
                 width: double.infinity,
                 child: Stack(
                   children: [
-                    Container(
-                      color: Colors.grey.shade200,
-                      child: InkWell(
-                        onTap: _openMapSelection,
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Icon(
-                              Icons.map,
-                              size: 64,
-                              color: Colors.grey.shade500,
-                            ),
-                            const SizedBox(height: 8),
-                            Text(
-                              _streetController.text.isEmpty
-                                  ? l10n.tapToSelectOnMap
-                                  : l10n.tapToChangeLocation,
-                              style: TextStyle(
-                                color: Colors.grey.shade600,
-                                fontSize: 16,
-                              ),
-                            ),
-                            if (_streetController.text.isNotEmpty) ...[
-                              const SizedBox(height: 8),
-                              Padding(
-                                padding: const EdgeInsets.symmetric(horizontal: 20),
-                                child: Text(
-                                  _streetController.text,
-                                  textAlign: TextAlign.center,
-                                  style: TextStyle(
-                                    color: Colors.grey.shade700,
-                                    fontSize: 14,
-                                    fontWeight: FontWeight.w500,
-                                  ),
-                                  maxLines: 2,
-                                  overflow: TextOverflow.ellipsis,
+                    // Flutter Map Display
+                    FlutterMap(
+                      options: MapOptions(
+                        initialCenter: displayLocation,
+                        initialZoom: _selectedLatitude != null ? 15.0 : 12.0,
+                        interactionOptions: InteractionOptions(
+                          flags: InteractiveFlag.none, // Disable interactions in preview
+                        ),
+                      ),
+                      children: [
+                        TileLayer(
+                          urlTemplate: 'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
+                          userAgentPackageName: 'com.handyman.customer',
+                          maxZoom: 19,
+                          minZoom: 3,
+                        ),
+                        if (_selectedLatitude != null && _selectedLongitude != null)
+                          MarkerLayer(
+                            markers: [
+                              Marker(
+                                point: displayLocation,
+                                width: 40,
+                                height: 40,
+                                child: const Icon(
+                                  Icons.location_on,
+                                  color: Colors.red,
+                                  size: 40,
+                                  shadows: [
+                                    Shadow(
+                                      color: Colors.black26,
+                                      blurRadius: 4,
+                                      offset: Offset(0, 2),
+                                    ),
+                                  ],
                                 ),
                               ),
                             ],
-                          ],
+                          ),
+                      ],
+                    ),
+
+                    // Overlay tap area to open full map
+                    Positioned.fill(
+                      child: Material(
+                        color: Colors.transparent,
+                        child: InkWell(
+                          onTap: _openMapSelection,
+                          child: Container(
+                            color: _selectedLatitude == null
+                                ? Colors.black.withOpacity(0.3)
+                                : Colors.transparent,
+                            child: _selectedLatitude == null
+                                ? Center(
+                              child: Column(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  Container(
+                                    padding: const EdgeInsets.all(16),
+                                    decoration: BoxDecoration(
+                                      color: Colors.white,
+                                      shape: BoxShape.circle,
+                                    ),
+                                    child: Icon(
+                                      Icons.map,
+                                      size: 48,
+                                      color: AppColors.electricBlue,
+                                    ),
+                                  ),
+                                  const SizedBox(height: 12),
+                                  Container(
+                                    padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
+                                    decoration: BoxDecoration(
+                                      color: Colors.white,
+                                      borderRadius: BorderRadius.circular(8),
+                                    ),
+                                    child: Text(
+                                      l10n.tapToSelectOnMap,
+                                      style: TextStyle(
+                                        color: Colors.black87,
+                                        fontSize: 16,
+                                        fontWeight: FontWeight.w600,
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            )
+                                : null,
+                          ),
                         ),
                       ),
                     ),
+
+                    // Edit location button (bottom right)
                     Positioned(
                       bottom: 10,
                       right: 10,
                       child: FloatingActionButton.small(
                         onPressed: _openMapSelection,
-                        backgroundColor: const Color(0xFF3B82F6),
+                        backgroundColor: AppColors.electricBlue,
                         child: const Icon(Icons.edit_location, color: Colors.white),
                       ),
                     ),
+
+                    // Location set indicator (top left)
                     if (_selectedLatitude != null && _selectedLongitude != null)
                       Positioned(
                         top: 10,
                         left: 10,
                         child: Container(
-                          padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
                           decoration: BoxDecoration(
-                            color: Colors.green.withOpacity(0.9),
-                            borderRadius: BorderRadius.circular(8),
+                            color: Colors.green,
+                            borderRadius: BorderRadius.circular(20),
+                            boxShadow: [
+                              BoxShadow(
+                                color: Colors.black.withOpacity(0.2),
+                                blurRadius: 4,
+                                offset: const Offset(0, 2),
+                              ),
+                            ],
                           ),
                           child: Row(
                             mainAxisSize: MainAxisSize.min,
                             children: [
-                              Icon(Icons.check_circle, color: Colors.white, size: 14),
-                              const SizedBox(width: 4),
+                              Icon(Icons.check_circle, color: Colors.white, size: 16),
+                              const SizedBox(width: 6),
                               Text(
                                 'Location Set',
                                 style: TextStyle(
                                   color: Colors.white,
                                   fontSize: 12,
-                                  fontWeight: FontWeight.w500,
+                                  fontWeight: FontWeight.w600,
                                 ),
                               ),
                             ],
+                          ),
+                        ),
+                      ),
+
+                    // Address preview overlay (bottom)
+                    if (_streetController.text.isNotEmpty)
+                      Positioned(
+                        bottom: 0,
+                        left: 0,
+                        right: 0,
+                        child: Container(
+                          padding: const EdgeInsets.all(12),
+                          decoration: BoxDecoration(
+                            gradient: LinearGradient(
+                              begin: Alignment.bottomCenter,
+                              end: Alignment.topCenter,
+                              colors: [
+                                Colors.black.withOpacity(0.7),
+                                Colors.transparent,
+                              ],
+                            ),
+                          ),
+                          child: Text(
+                            _streetController.text,
+                            style: TextStyle(
+                              color: Colors.white,
+                              fontSize: 12,
+                              fontWeight: FontWeight.w500,
+                            ),
+                            maxLines: 2,
+                            overflow: TextOverflow.ellipsis,
+                            textAlign: TextAlign.center,
                           ),
                         ),
                       ),
@@ -252,7 +347,7 @@ class _LocationSelectionScreenState extends State<LocationSelectionScreen> {
                     ),
                     const SizedBox(height: 20),
 
-                    // Full Name with Validation ✅
+                    // Full Name with Validation
                     Text(
                       l10n.fullName,
                       style: TextStyle(
@@ -303,7 +398,7 @@ class _LocationSelectionScreenState extends State<LocationSelectionScreen> {
                     ),
                     const SizedBox(height: 16),
 
-                    // Email with Enhanced Validation ✅
+                    // Email with Enhanced Validation
                     Text(
                       l10n.emailAddress,
                       style: TextStyle(
@@ -379,6 +474,8 @@ class _LocationSelectionScreenState extends State<LocationSelectionScreen> {
                               const SizedBox(height: 8),
                               TextFormField(
                                 controller: _streetController,
+                                readOnly: true,
+                                onTap: _openMapSelection,
                                 style: TextStyle(
                                   color: isDark ? Colors.white : Colors.black87,
                                 ),
@@ -397,7 +494,7 @@ class _LocationSelectionScreenState extends State<LocationSelectionScreen> {
                                   suffixIcon: IconButton(
                                     icon: const Icon(Icons.map_outlined),
                                     onPressed: _openMapSelection,
-                                    color: const Color(0xFF3B82F6),
+                                    color: AppColors.electricBlue,
                                   ),
                                 ),
                                 validator: (value) {
