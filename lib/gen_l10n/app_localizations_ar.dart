@@ -572,6 +572,16 @@ class AppLocalizationsAr extends AppLocalizations {
   String get done => 'تم';
 
   @override
+  String get areYouSureCancel =>
+      'Are you sure you want to cancel this booking?';
+
+  @override
+  String get yesCancel => 'Yes, Cancel';
+
+  @override
+  String get no => 'No';
+
+  @override
   String get vendorProfile => 'ملف البائع';
 
   @override

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:intl/date_symbol_data_local.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_auth/firebase_auth.dart' as firebase_auth;
 import 'firebase_options.dart';
 import 'gen_l10n/app_localizations.dart';
 import 'screens/auth/language_selection_screen.dart';
@@ -10,6 +11,7 @@ import 'screens/dashboard/dashboard_screen.dart';
 import 'screens/splash/splash_screen.dart';
 import 'models/user_model.dart';
 import 'utils/app_colors.dart';
+import 'services/firestore_service.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -39,11 +41,38 @@ class _CustomerAppState extends State<CustomerApp> {
   User? _currentUser;
   bool _isLoading = true;
 
-  void _handleSplashComplete() {
-    print('Splash screen complete');
-    setState(() {
-      _isLoading = false;
-    });
+  void _handleSplashComplete() async {
+    print('Splash screen complete. Checking for persistent login...');
+
+    try {
+      final authUser = firebase_auth.FirebaseAuth.instance.currentUser;
+      if (authUser != null) {
+        print('Found persisted Firebase user: ${authUser.uid}');
+        final firestoreService = FirestoreService();
+        final user = await firestoreService.getUser(authUser.uid);
+
+        if (user != null) {
+          print('User profile fetched successfully: ${user.name}');
+          if (mounted) {
+            setState(() {
+              _currentUser = user;
+            });
+          }
+        } else {
+          print('User profile not found in Firestore.');
+        }
+      } else {
+        print('No persisted user found.');
+      }
+    } catch (e) {
+      print('Error checking persistence: $e');
+    }
+
+    if (mounted) {
+      setState(() {
+        _isLoading = false;
+      });
+    }
   }
 
   void _handleLanguageSelection(Locale locale) {
@@ -67,11 +96,18 @@ class _CustomerAppState extends State<CustomerApp> {
     print('State updated - Dashboard should appear now!');
   }
 
-  void _handleLogout() {
+  void _handleLogout() async {
     print('LOGOUT - Returning to auth flow');
+    try {
+      await firebase_auth.FirebaseAuth.instance.signOut();
+    } catch (e) {
+      print('Error signing out of Firebase: $e');
+    }
+
     setState(() {
       _currentUser = null;
-      _isLanguageSelected = false; // Also reset language selection to go back to language screen
+      _isLanguageSelected =
+          false; // Also reset language selection to go back to language screen
     });
   }
 

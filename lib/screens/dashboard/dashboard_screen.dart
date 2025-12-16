@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
+
 import '../../models/user_model.dart';
 import '../../models/service_model.dart';
 import '../../models/booking_model.dart';
@@ -10,6 +10,7 @@ import '../reviews/review_screen.dart';
 import '../orders/order_details_with_worker_screen.dart';
 import '../orders/order_tracking_screen.dart';
 import '../../services/dummy_data_service.dart';
+import '../../services/firestore_service.dart';
 import '../services/service_listing_screen.dart';
 import '../profile/profile_screen.dart';
 import '../cart/cart_screen.dart';
@@ -19,7 +20,6 @@ import '../../gen_l10n/app_localizations.dart';
 import 'package:customer_app/screens/maps/map_selection_screen.dart';
 import '../../utils/formatting_utils.dart';
 import '../../utils/app_colors.dart'; // ✅ Added AppColors import
-
 
 class DashboardScreen extends StatefulWidget {
   final User user;
@@ -40,20 +40,20 @@ class DashboardScreen extends StatefulWidget {
 class _DashboardScreenState extends State<DashboardScreen> {
   int _selectedIndex = 0;
   List<ServiceCategory> _categories = [];
+  List<Service> _allServices = []; // Added for lookup
   String _selectedAddress = 'Building Sultan Town Lahore Punjab';
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
   int _orderTabIndex = 0;
   static bool _hasShownNotificationPopup = false;
-  late User _currentUser; // Added for address management
+  late User _currentUser;
 
   @override
   void initState() {
     super.initState();
     _selectedIndex = widget.initialTab;
-    _currentUser = widget.user; // Initialize current user
-    _selectedAddress = _getPrimaryAddress(); // Get primary address from user
+    _currentUser = widget.user;
+    _selectedAddress = _getPrimaryAddress();
 
-    // Show notification popup only once per app session
     if (!_hasShownNotificationPopup) {
       WidgetsBinding.instance.addPostFrameCallback((_) {
         Future.delayed(const Duration(milliseconds: 500), () {
@@ -64,6 +64,27 @@ class _DashboardScreenState extends State<DashboardScreen> {
         });
       });
     }
+
+    _loadData(); // Renamed and expanded
+  }
+
+  Future<void> _loadData() async {
+    final firestoreService = FirestoreService();
+    try {
+      final categoriesFuture = firestoreService.getCategories();
+      final servicesFuture = firestoreService.getServices(); // Fetch flat list
+
+      final results = await Future.wait([categoriesFuture, servicesFuture]);
+
+      if (mounted) {
+        setState(() {
+          _categories = results[0] as List<ServiceCategory>;
+          _allServices = results[1] as List<Service>;
+        });
+      }
+    } catch (e) {
+      print('Error loading data: $e');
+    }
   }
 
   // Get primary address from user's saved addresses
@@ -73,7 +94,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
     }
 
     final primaryAddress = _currentUser.savedAddresses.firstWhere(
-          (address) => address.isPrimary,
+      (address) => address.isPrimary,
       orElse: () => _currentUser.savedAddresses.first,
     );
 
@@ -235,7 +256,6 @@ class _DashboardScreenState extends State<DashboardScreen> {
     return globalNotifications.where((n) => n['read'] == false).length;
   }
 
-
   void _changeAddress() {
     _showLocationPicker();
   }
@@ -268,7 +288,8 @@ class _DashboardScreenState extends State<DashboardScreen> {
     );
   }
 
-  Future<void> _saveAddressToProfile(String address, double? lat, double? lng) async {
+  Future<void> _saveAddressToProfile(
+      String address, double? lat, double? lng) async {
     // Create a new SavedAddress
     final newAddress = SavedAddress(
       id: DateTime.now().millisecondsSinceEpoch.toString(),
@@ -277,7 +298,8 @@ class _DashboardScreenState extends State<DashboardScreen> {
       latitude: lat,
       longitude: lng,
       type: 'other',
-      isPrimary: _currentUser.savedAddresses.isEmpty, // First address is primary
+      isPrimary:
+          _currentUser.savedAddresses.isEmpty, // First address is primary
       createdAt: DateTime.now(),
     );
 
@@ -331,7 +353,8 @@ class _DashboardScreenState extends State<DashboardScreen> {
                       color: AppColors.electricBlue.withOpacity(0.1),
                       borderRadius: BorderRadius.circular(8),
                     ),
-                    child: const Icon(Icons.location_on, color: AppColors.electricBlue),
+                    child: const Icon(Icons.location_on,
+                        color: AppColors.electricBlue),
                   ),
                   const SizedBox(width: 12),
                   Expanded(
@@ -345,9 +368,8 @@ class _DashboardScreenState extends State<DashboardScreen> {
                                 color: textColor)),
                         const SizedBox(height: 4),
                         Text(_selectedAddress,
-                            style: TextStyle(
-                                fontSize: 14,
-                                color: subtitleColor)),
+                            style:
+                                TextStyle(fontSize: 14, color: subtitleColor)),
                       ],
                     ),
                   ),
@@ -372,64 +394,18 @@ class _DashboardScreenState extends State<DashboardScreen> {
                           color: AppColors.electricBlue.withOpacity(0.1),
                           borderRadius: BorderRadius.circular(8),
                         ),
-                        child: const Icon(Icons.map, color: AppColors.electricBlue),
+                        child: const Icon(Icons.map,
+                            color: AppColors.electricBlue),
                       ),
-                      title: Text(l10n.selectOnMap, style: TextStyle(fontWeight: FontWeight.bold, color: textColor)),
-                      subtitle: Text(l10n.chooseExactLocationOnMap, style: TextStyle(color: subtitleColor)),
+                      title: Text(l10n.selectOnMap,
+                          style: TextStyle(
+                              fontWeight: FontWeight.bold, color: textColor)),
+                      subtitle: Text(l10n.chooseExactLocationOnMap,
+                          style: TextStyle(color: subtitleColor)),
                       trailing: const Icon(Icons.arrow_forward_ios, size: 16),
                       onTap: () {
                         Navigator.pop(context);
                         _openMapSelection();
-                      },
-                    ),
-                    const Divider(),
-
-                    // Current Location Option
-                    ListTile(
-                      leading: Container(
-                        padding: const EdgeInsets.all(8),
-                        decoration: BoxDecoration(
-                          color: Colors.blue.withOpacity(0.1),
-                          borderRadius: BorderRadius.circular(8),
-                        ),
-                        child: const Icon(Icons.my_location, color: Colors.blue),
-                      ),
-                      title: Text(l10n.useCurrentLocation, style: TextStyle(color: textColor)),
-                      subtitle: Text(l10n.detectYourCurrentLocation, style: TextStyle(color: subtitleColor)),
-                      onTap: () async {
-                        Navigator.pop(context);
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          const SnackBar(
-                            content: Row(
-                              children: [
-                                SizedBox(
-                                  width: 16,
-                                  height: 16,
-                                  child: CircularProgressIndicator(strokeWidth: 2),
-                                ),
-                                SizedBox(width: 12),
-                                Text('Getting current location...'),
-                              ],
-                            ),
-                            backgroundColor: AppColors.electricBlue,
-                          ),
-                        );
-
-                        await Future.delayed(const Duration(seconds: 2));
-
-                        if (mounted) {
-                          ScaffoldMessenger.of(context).hideCurrentSnackBar();
-                          setState(() {
-                            _selectedAddress = 'Current Location - Lahore, Pakistan';
-                          });
-
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            SnackBar(
-                              content: Text('$_selectedAddress ${l10n.hasBeenSaved}'),
-                              backgroundColor: Colors.green,
-                            ),
-                          );
-                        }
                       },
                     ),
                     const Divider(),
@@ -449,10 +425,13 @@ class _DashboardScreenState extends State<DashboardScreen> {
 
                     // Home Address
                     Container(
-                      margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
+                      margin: const EdgeInsets.symmetric(
+                          horizontal: 16, vertical: 4),
                       padding: const EdgeInsets.all(12),
                       decoration: BoxDecoration(
-                        color: isDark ? const Color(0xFF0F172A) : Colors.grey.shade100,
+                        color: isDark
+                            ? const Color(0xFF0F172A)
+                            : Colors.grey.shade100,
                         borderRadius: BorderRadius.circular(12),
                         border: Border.all(
                           color: AppColors.electricBlue.withOpacity(0.3),
@@ -467,7 +446,8 @@ class _DashboardScreenState extends State<DashboardScreen> {
                               color: AppColors.electricBlue.withOpacity(0.1),
                               borderRadius: BorderRadius.circular(6),
                             ),
-                            child: const Icon(Icons.home, color: AppColors.electricBlue, size: 20),
+                            child: const Icon(Icons.home,
+                                color: AppColors.electricBlue, size: 20),
                           ),
                           const SizedBox(width: 12),
                           Expanded(
@@ -475,52 +455,20 @@ class _DashboardScreenState extends State<DashboardScreen> {
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
                                 Text(l10n.home,
-                                    style: TextStyle(fontWeight: FontWeight.bold, fontSize: 14, color: textColor)),
+                                    style: TextStyle(
+                                        fontWeight: FontWeight.bold,
+                                        fontSize: 14,
+                                        color: textColor)),
                                 Text(_selectedAddress,
-                                    style: TextStyle(fontSize: 12, color: subtitleColor),
+                                    style: TextStyle(
+                                        fontSize: 12, color: subtitleColor),
                                     maxLines: 1,
                                     overflow: TextOverflow.ellipsis),
                               ],
                             ),
                           ),
-                          const Icon(Icons.check_circle, color: AppColors.electricBlue, size: 20),
-                        ],
-                      ),
-                    ),
-
-                    // Work Address (example)
-                    Container(
-                      margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-                      padding: const EdgeInsets.all(12),
-                      decoration: BoxDecoration(
-                        color: isDark ? const Color(0xFF0F172A) : Colors.grey.shade100,
-                        borderRadius: BorderRadius.circular(12),
-                      ),
-                      child: Row(
-                        children: [
-                          Container(
-                            padding: const EdgeInsets.all(6),
-                            decoration: BoxDecoration(
-                              color: Colors.orange.withOpacity(0.1),
-                              borderRadius: BorderRadius.circular(6),
-                            ),
-                            child: const Icon(Icons.work, color: Colors.orange, size: 20),
-                          ),
-                          const SizedBox(width: 12),
-                          Expanded(
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Text(l10n.work,
-                                    style: TextStyle(fontWeight: FontWeight.bold, fontSize: 14, color: textColor)),
-                                Text('Office Building, Gulberg, Lahore',
-                                    style: TextStyle(fontSize: 12, color: subtitleColor),
-                                    maxLines: 1,
-                                    overflow: TextOverflow.ellipsis),
-                              ],
-                            ),
-                          ),
-                          Icon(Icons.radio_button_unchecked, color: subtitleColor, size: 20),
+                          const Icon(Icons.check_circle,
+                              color: AppColors.electricBlue, size: 20),
                         ],
                       ),
                     ),
@@ -539,10 +487,14 @@ class _DashboardScreenState extends State<DashboardScreen> {
                   style: ElevatedButton.styleFrom(
                     backgroundColor: AppColors.electricBlue,
                     padding: const EdgeInsets.symmetric(vertical: 16),
-                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                    shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(12)),
                   ),
                   child: Text(l10n.continueText,
-                      style: const TextStyle(color: Colors.white, fontSize: 16, fontWeight: FontWeight.bold)),
+                      style: const TextStyle(
+                          color: Colors.white,
+                          fontSize: 16,
+                          fontWeight: FontWeight.bold)),
                 ),
               ),
             ),
@@ -551,18 +503,19 @@ class _DashboardScreenState extends State<DashboardScreen> {
       ),
     );
   } // ✅ Added closing brace for the method
-  int get cartItemsCount => globalCart.fold(0, (sum, item) => sum + item.quantity);
+
+  int get cartItemsCount =>
+      globalCart.fold(0, (sum, item) => sum + item.quantity);
 
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
 
-    if (_categories.isEmpty) {
-      _categories = DummyDataService.getCategories(l10n);
-    }
+    // Categories loaded via Firestore in initState
 
     final isDark = Theme.of(context).brightness == Brightness.dark;
-    final backgroundColor = isDark ? const Color(0xFF0F172A) : const Color(0xFFF8F9FA);
+    final backgroundColor =
+        isDark ? const Color(0xFF0F172A) : const Color(0xFFF8F9FA);
 
     return Scaffold(
       key: _scaffoldKey,
@@ -583,7 +536,8 @@ class _DashboardScreenState extends State<DashboardScreen> {
                   ProfileScreen(
                     user: _currentUser,
                     onLogout: widget.onLogout,
-                    onUserUpdated: _updateUser, // Added callback for address updates
+                    onUserUpdated:
+                        _updateUser, // Added callback for address updates
                   ),
                 ],
               ),
@@ -625,14 +579,23 @@ class _DashboardScreenState extends State<DashboardScreen> {
                 ),
                 Row(
                   children: [
-                    _buildHeaderIcon(Icons.shopping_cart_outlined, cartItemsCount, () {
-                      Navigator.push(context, MaterialPageRoute(builder: (context) => CartScreen(user: _currentUser)))
+                    _buildHeaderIcon(
+                        Icons.shopping_cart_outlined, cartItemsCount, () {
+                      Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) =>
+                                      CartScreen(user: _currentUser)))
                           .then((_) => setState(() {}));
                     }),
                     const SizedBox(width: 12),
-                    _buildHeaderIcon(Icons.notifications_outlined, _getUnreadNotificationCount(), () {
-                      Navigator.push(context, MaterialPageRoute(builder: (context) => const NotificationsScreen()
-                      ))
+                    _buildHeaderIcon(Icons.notifications_outlined,
+                        _getUnreadNotificationCount(), () {
+                      Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) =>
+                                      const NotificationsScreen()))
                           .then((_) => setState(() {}));
                     }),
                   ],
@@ -713,14 +676,16 @@ class _DashboardScreenState extends State<DashboardScreen> {
             InkWell(
               onTap: _changeAddress,
               child: Container(
-                padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
                 decoration: BoxDecoration(
                   color: Colors.white.withOpacity(0.2),
                   borderRadius: BorderRadius.circular(12),
                 ),
                 child: Row(
                   children: [
-                    const Icon(Icons.location_on, color: Colors.white, size: 18),
+                    const Icon(Icons.location_on,
+                        color: Colors.white, size: 18),
                     const SizedBox(width: 8),
                     Expanded(
                       child: Text(
@@ -733,7 +698,8 @@ class _DashboardScreenState extends State<DashboardScreen> {
                         overflow: TextOverflow.ellipsis,
                       ),
                     ),
-                    const Icon(Icons.keyboard_arrow_down, color: Colors.white, size: 18),
+                    const Icon(Icons.keyboard_arrow_down,
+                        color: Colors.white, size: 18),
                   ],
                 ),
               ),
@@ -770,7 +736,10 @@ class _DashboardScreenState extends State<DashboardScreen> {
                 constraints: const BoxConstraints(minWidth: 18, minHeight: 18),
                 child: Text(
                   count.toString(),
-                  style: const TextStyle(color: Colors.white, fontSize: 10, fontWeight: FontWeight.bold),
+                  style: const TextStyle(
+                      color: Colors.white,
+                      fontSize: 10,
+                      fontWeight: FontWeight.bold),
                   textAlign: TextAlign.center,
                 ),
               ),
@@ -784,7 +753,8 @@ class _DashboardScreenState extends State<DashboardScreen> {
     return Container(
       decoration: BoxDecoration(
         color: isDark ? const Color(0xFF1E293B) : Colors.white,
-        borderRadius: const BorderRadius.only(topLeft: Radius.circular(24), topRight: Radius.circular(24)),
+        borderRadius: const BorderRadius.only(
+            topLeft: Radius.circular(24), topRight: Radius.circular(24)),
         boxShadow: [
           BoxShadow(
             color: Colors.black.withOpacity(isDark ? 0.3 : 0.1),
@@ -800,10 +770,13 @@ class _DashboardScreenState extends State<DashboardScreen> {
             mainAxisAlignment: MainAxisAlignment.spaceAround,
             children: [
               _buildBottomNavItem(Icons.home_rounded, l10n.home, 0, isDark),
-              _buildBottomNavItem(Icons.shopping_bag_rounded, l10n.orders, 1, isDark),
-              _buildBottomNavItem(Icons.receipt_long_rounded, l10n.invoices, 2, isDark),
+              _buildBottomNavItem(
+                  Icons.shopping_bag_rounded, l10n.orders, 1, isDark),
+              _buildBottomNavItem(
+                  Icons.receipt_long_rounded, l10n.invoices, 2, isDark),
               _buildBottomNavItem(Icons.star_rounded, l10n.reviews, 3, isDark),
-              _buildBottomNavItem(Icons.person_rounded, l10n.profile, 4, isDark),
+              _buildBottomNavItem(
+                  Icons.person_rounded, l10n.profile, 4, isDark),
             ],
           ),
         ),
@@ -811,7 +784,8 @@ class _DashboardScreenState extends State<DashboardScreen> {
     );
   }
 
-  Widget _buildBottomNavItem(IconData icon, String label, int index, bool isDark) {
+  Widget _buildBottomNavItem(
+      IconData icon, String label, int index, bool isDark) {
     final isActive = _selectedIndex == index;
     final inactiveColor = isDark ? Colors.grey.shade500 : Colors.grey.shade600;
 
@@ -821,13 +795,17 @@ class _DashboardScreenState extends State<DashboardScreen> {
       child: Container(
         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
         decoration: BoxDecoration(
-          color: isActive ? AppColors.electricBlue.withOpacity(0.1) : Colors.transparent,
+          color: isActive
+              ? AppColors.electricBlue.withOpacity(0.1)
+              : Colors.transparent,
           borderRadius: BorderRadius.circular(16),
         ),
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            Icon(icon, color: isActive ? AppColors.electricBlue : inactiveColor, size: 26),
+            Icon(icon,
+                color: isActive ? AppColors.electricBlue : inactiveColor,
+                size: 26),
             const SizedBox(height: 4),
             Text(
               label,
@@ -855,8 +833,8 @@ class _DashboardScreenState extends State<DashboardScreen> {
                   begin: Alignment.topLeft,
                   end: Alignment.bottomRight,
                   colors: [
-                    Color(0xFF0EA5E9),  // Electric Blue
-                    Color(0xFF14B8A6),  // Teal
+                    Color(0xFF0EA5E9), // Electric Blue
+                    Color(0xFF14B8A6), // Teal
                   ],
                 ),
                 borderRadius: BorderRadius.only(
@@ -868,7 +846,8 @@ class _DashboardScreenState extends State<DashboardScreen> {
                 children: [
                   const SizedBox(height: 16),
                   Container(
-                    margin: const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
+                    margin:
+                        const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
                     padding: const EdgeInsets.all(16),
                     decoration: BoxDecoration(
                       color: Colors.white.withOpacity(0.15),
@@ -931,15 +910,18 @@ class _DashboardScreenState extends State<DashboardScreen> {
                         Navigator.pop(context);
                         setState(() => _selectedIndex = 0);
                       }, null),
-                      _buildDrawerItemWhite(Icons.shopping_bag_rounded, l10n.myOrders, () {
+                      _buildDrawerItemWhite(
+                          Icons.shopping_bag_rounded, l10n.myOrders, () {
                         Navigator.pop(context);
                         setState(() => _selectedIndex = 1);
                       }, null),
-                      _buildDrawerItemWhite(Icons.receipt_long_rounded, l10n.invoices, () {
+                      _buildDrawerItemWhite(
+                          Icons.receipt_long_rounded, l10n.invoices, () {
                         Navigator.pop(context);
                         setState(() => _selectedIndex = 2);
                       }, null),
-                      _buildDrawerItemWhite(Icons.star_rounded, l10n.reviews, () {
+                      _buildDrawerItemWhite(Icons.star_rounded, l10n.reviews,
+                          () {
                         Navigator.pop(context);
                         setState(() => _selectedIndex = 3);
                       }, null),
@@ -948,7 +930,8 @@ class _DashboardScreenState extends State<DashboardScreen> {
                         Navigator.push(
                           context,
                           MaterialPageRoute(
-                            builder: (context) => CartScreen(user: _currentUser),
+                            builder: (context) =>
+                                CartScreen(user: _currentUser),
                           ),
                         ).then((_) => setState(() {}));
                       }, cartItemsCount > 0 ? cartItemsCount.toString() : null),
@@ -985,7 +968,8 @@ class _DashboardScreenState extends State<DashboardScreen> {
     );
   }
 
-  Widget _buildDrawerItemWhite(IconData icon, String title, VoidCallback onTap, String? badge) {
+  Widget _buildDrawerItemWhite(
+      IconData icon, String title, VoidCallback onTap, String? badge) {
     return ListTile(
       leading: Icon(icon, color: AppColors.electricBlue, size: 22),
       title: Row(
@@ -994,44 +978,6 @@ class _DashboardScreenState extends State<DashboardScreen> {
             title,
             style: const TextStyle(
               color: Colors.black87,
-              fontSize: 15,
-              fontWeight: FontWeight.w500,
-            ),
-          ),
-          if (badge != null) ...[
-            const SizedBox(width: 8),
-            Container(
-              padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
-              decoration: BoxDecoration(
-                color: Colors.red,
-                borderRadius: BorderRadius.circular(10),
-              ),
-              child: Text(
-                badge,
-                style: const TextStyle(
-                  color: Colors.white,
-                  fontSize: 11,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-            ),
-          ],
-        ],
-      ),
-      contentPadding: const EdgeInsets.symmetric(horizontal: 24, vertical: 4),
-      onTap: onTap,
-    );
-  }
-
-  Widget _buildDrawerItem(IconData icon, String title, VoidCallback onTap, String? badge) {
-    return ListTile(
-      leading: Icon(icon, color: Colors.white, size: 22),
-      title: Row(
-        children: [
-          Text(
-            title,
-            style: const TextStyle(
-              color: Colors.white,
               fontSize: 15,
               fontWeight: FontWeight.w500,
             ),
@@ -1073,7 +1019,11 @@ class _DashboardScreenState extends State<DashboardScreen> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text(l10n.ourServices, style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold, color: textColor)),
+            Text(l10n.ourServices,
+                style: TextStyle(
+                    fontSize: 22,
+                    fontWeight: FontWeight.bold,
+                    color: textColor)),
             const SizedBox(height: 12),
 
             // Grid Layout for Categories - FIXED OVERFLOW
@@ -1095,7 +1045,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                       context,
                       MaterialPageRoute(
                         builder: (context) => ServiceListingScreen(
-                          categoryName: category.name,
+                          category: category,
                           user: _currentUser,
                         ),
                       ),
@@ -1126,7 +1076,11 @@ class _DashboardScreenState extends State<DashboardScreen> {
                               topRight: Radius.circular(16),
                             ),
                             child: ServiceImageWidget(
-                              imageUrl: DummyDataService.getCategoryImage(category.name),
+                              imageUrl: (category.imageUrl != null &&
+                                      category.imageUrl!.isNotEmpty)
+                                  ? category.imageUrl!
+                                  : DummyDataService.getCategoryImage(
+                                      category.name),
                               width: double.infinity,
                               fit: BoxFit.cover,
                             ),
@@ -1136,23 +1090,28 @@ class _DashboardScreenState extends State<DashboardScreen> {
                         Expanded(
                           flex: 40,
                           child: Padding(
-                            padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
+                            padding: const EdgeInsets.symmetric(
+                                horizontal: 10, vertical: 8),
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
                                 // Top row with icon and arrow
                                 Row(
-                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
                                   children: [
                                     Container(
                                       padding: const EdgeInsets.all(5),
                                       decoration: BoxDecoration(
-                                        color: AppColors.electricBlue.withOpacity(0.1),
+                                        color: AppColors.electricBlue
+                                            .withOpacity(0.1),
                                         borderRadius: BorderRadius.circular(6),
                                       ),
                                       child: Icon(
-                                        IconHelper.getCategoryIcon(category.name).icon,
+                                        IconHelper.getCategoryIcon(
+                                                category.name)
+                                            .icon,
                                         color: AppColors.electricBlue,
                                         size: 14,
                                       ),
@@ -1168,26 +1127,21 @@ class _DashboardScreenState extends State<DashboardScreen> {
                                 // Text section - wrapped in Flexible
                                 Flexible(
                                   child: Column(
-                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
                                     mainAxisSize: MainAxisSize.min,
                                     children: [
                                       Text(
-                                        category.name,
+                                        Localizations.localeOf(context)
+                                                        .languageCode ==
+                                                    'ar' &&
+                                                category.nameArabic.isNotEmpty
+                                            ? category.nameArabic
+                                            : category.name,
                                         style: TextStyle(
                                           fontSize: 13,
                                           fontWeight: FontWeight.bold,
                                           color: textColor,
-                                          height: 1.2,
-                                        ),
-                                        maxLines: 1,
-                                        overflow: TextOverflow.ellipsis,
-                                      ),
-                                      const SizedBox(height: 2),
-                                      Text(
-                                        '${category.services.length} services',
-                                        style: TextStyle(
-                                          fontSize: 10,
-                                          color: subtitleColor,
                                           height: 1.2,
                                         ),
                                         maxLines: 1,
@@ -1214,369 +1168,446 @@ class _DashboardScreenState extends State<DashboardScreen> {
 
   Widget _buildBookingsTab(AppLocalizations l10n) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
-    final backgroundColor = isDark ? const Color(0xFF0F172A) : const Color(0xFFF8F9FA);
+    final backgroundColor =
+        isDark ? const Color(0xFF0F172A) : const Color(0xFFF8F9FA);
     final cardColor = isDark ? const Color(0xFF1E293B) : Colors.white;
     final textColor = isDark ? Colors.white : Colors.black87;
     final subtitleColor = isDark ? Colors.grey.shade400 : Colors.grey.shade600;
-    final shadowOpacity = isDark ? 0.3 : 0.08;
 
-    final bookings = DummyDataService.getUserBookings(_currentUser.id);
-    final activeBookings = bookings.where((b) =>
-    b.status == BookingStatus.pending ||
-        b.status == BookingStatus.confirmed ||
-        b.status == BookingStatus.inProgress
-    ).toList();
-    final previousBookings = bookings.where((b) =>
-    b.status == BookingStatus.completed ||
-        b.status == BookingStatus.cancelled
-    ).toList();
+    final firestoreService = FirestoreService();
 
-    Map<String, List<Booking>> groupBookings(List<Booking> bookingList) {
-      Map<String, List<Booking>> grouped = {};
-      for (var booking in bookingList) {
-        String key = '${booking.bookingDate}_${booking.bookingTime}';
-        if (!grouped.containsKey(key)) grouped[key] = [];
-        grouped[key]!.add(booking);
-      }
-      return grouped;
-    }
+    return StreamBuilder<List<Booking>>(
+      stream: firestoreService.getUserBookings(_currentUser.id),
+      builder: (context, snapshot) {
+        if (snapshot.connectionState == ConnectionState.waiting) {
+          return Center(
+            child: CircularProgressIndicator(
+              color: AppColors.electricBlue,
+            ),
+          );
+        }
 
-    final displayBookings = _orderTabIndex == 0 ? activeBookings : previousBookings;
-    final groupedBookings = groupBookings(displayBookings);
-
-    return Container(
-      color: backgroundColor,
-      child: Column(
-        children: [
-          Container(
-            color: cardColor,
-            child: Row(
+        if (snapshot.hasError) {
+          debugPrint(
+              'Error loading bookings: ${snapshot.error}'); // ✅ Log the error
+          return Center(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                Expanded(child: _buildOrderTab(l10n.active, 0, activeBookings.length, l10n)),
-                Expanded(child: _buildOrderTab(l10n.previous, 1, previousBookings.length, l10n)),
+                const Icon(Icons.error_outline, size: 48, color: Colors.red),
+                const SizedBox(height: 16),
+                Text(
+                  'Error loading bookings',
+                  style: TextStyle(color: textColor),
+                ),
+                // Optional: Show error details in debug mode
+                // Text(snapshot.error.toString(), style: TextStyle(color: Colors.red, fontSize: 10)),
               ],
             ),
-          ),
-          Expanded(
-            child: SingleChildScrollView(
-              padding: const EdgeInsets.all(20),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  if (groupedBookings.isEmpty)
-                    Center(
-                      child: Container(
-                        padding: const EdgeInsets.all(40),
-                        decoration: BoxDecoration(
-                          color: cardColor,
-                          borderRadius: BorderRadius.circular(24),
-                          boxShadow: [BoxShadow(color: Colors.black.withOpacity(0.05), blurRadius: 15, offset: const Offset(0, 5))],
-                        ),
-                        child: Column(
-                          children: [
-                            Container(
-                              padding: const EdgeInsets.all(20),
-                              decoration: BoxDecoration(
-                                color: AppColors.electricBlue.withOpacity(0.1),
-                                shape: BoxShape.circle,
-                              ),
-                              child: Icon(Icons.receipt_long_outlined, size: 64, color: AppColors.electricBlue.withOpacity(0.5)),
-                            ),
-                            const SizedBox(height: 20),
-                            Text(_orderTabIndex == 0 ? l10n.noActiveOrders : l10n.noPreviousOrders, style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: textColor)),
-                            const SizedBox(height: 8),
-                            Text(_orderTabIndex == 0 ? l10n.bookYourFirstServiceToday : l10n.yourCompletedOrdersWillAppearHere, style: TextStyle(fontSize: 14, color: subtitleColor)),
-                            if (_orderTabIndex == 0) ...[
-                              const SizedBox(height: 24),
-                              ElevatedButton(
-                                onPressed: () => setState(() => _selectedIndex = 0),
-                                style: ElevatedButton.styleFrom(
-                                  backgroundColor: AppColors.electricBlue,
-                                  padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 16),
-                                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-                                ),
-                                child: Text(l10n.bookNow, style: TextStyle(color: Colors.white, fontSize: 16, fontWeight: FontWeight.w600)),
-                              ),
-                            ],
-                          ],
-                        ),
-                      ),
-                    )
-                  else
-                    ...groupedBookings.entries.map((entry) {
-                      final bookingGroup = entry.value;
-                      final firstBooking = bookingGroup.first;
-                      final totalPrice = bookingGroup.fold<double>(0.0, (sum, booking) => sum + booking.totalPrice);
+          );
+        }
 
-                      bool hasTechnician = firstBooking.status == BookingStatus.confirmed ||
-                          firstBooking.status == BookingStatus.inProgress;
-                      bool isCompleted = firstBooking.status == BookingStatus.completed ||
-                          firstBooking.status == BookingStatus.cancelled;
+        final bookings = snapshot.data ?? [];
+        final activeBookings = bookings
+            .where((b) =>
+                b.status == BookingStatus.pending ||
+                b.status == BookingStatus.assigned ||
+                b.status == BookingStatus.accepted ||
+                b.status == BookingStatus.inProgress)
+            .toList();
+        final previousBookings = bookings
+            .where((b) =>
+                b.status == BookingStatus.completed ||
+                b.status == BookingStatus.cancelled ||
+                b.status == BookingStatus.postponed)
+            .toList();
 
-                      String getStatusDisplayText() {
-                        if (firstBooking.status == BookingStatus.pending) return 'Booking Done';
-                        if (firstBooking.status == BookingStatus.confirmed) return 'Technician Assigned';
-                        if (firstBooking.status == BookingStatus.inProgress) return 'Work Started';
-                        if (firstBooking.status == BookingStatus.completed) return 'Work Done';
-                        if (firstBooking.status == BookingStatus.cancelled) return l10n.cancelled;
-                        return firstBooking.statusText;
-                      }
+        Map<String, List<Booking>> groupBookings(List<Booking> bookingList) {
+          Map<String, List<Booking>> grouped = {};
+          for (var booking in bookingList) {
+            String key = '${booking.bookingDate}_${booking.bookingTime}';
+            if (!grouped.containsKey(key)) grouped[key] = [];
+            grouped[key]!.add(booking);
+          }
+          return grouped;
+        }
 
-                      return Container(
-                        margin: const EdgeInsets.only(bottom: 16),
-                        decoration: BoxDecoration(
-                          color: cardColor,
-                          borderRadius: BorderRadius.circular(20),
-                          boxShadow: [BoxShadow(color: Colors.black.withOpacity(shadowOpacity), blurRadius: 15, offset: const Offset(0, 5))],
-                        ),
-                        child: Padding(
-                          padding: const EdgeInsets.all(20),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Row(
-                                children: [
-                                  Container(
-                                    padding: const EdgeInsets.all(12),
-                                    decoration: BoxDecoration(
-                                      gradient: LinearGradient(
-                                        colors: [
-                                          firstBooking.statusColor.withOpacity(0.2),
-                                          firstBooking.statusColor.withOpacity(0.1)
-                                        ],
-                                      ),
-                                      borderRadius: BorderRadius.circular(12),
-                                    ),
-                                    child: Icon(
-                                      firstBooking.status == BookingStatus.completed
-                                          ? Icons.check_circle
-                                          : firstBooking.status == BookingStatus.cancelled
-                                          ? Icons.cancel
-                                          : firstBooking.status == BookingStatus.inProgress
-                                          ? Icons.build
-                                          : firstBooking.status == BookingStatus.confirmed
-                                          ? Icons.person_pin
-                                          : Icons.schedule,
-                                      color: firstBooking.statusColor,
-                                      size: 24,
-                                    ),
-                                  ),
-                                  const SizedBox(width: 16),
-                                  Expanded(
-                                    child: Column(
-                                      crossAxisAlignment: CrossAxisAlignment.start,
-                                      children: [
-                                        Text(
-                                          bookingGroup.length > 1 ? '${bookingGroup.length} Services Booked' : firstBooking.service?.name ?? 'Service',
-                                          style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: textColor),
-                                        ),
-                                        const SizedBox(height: 4),
-                                        Container(
-                                          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
-                                          decoration: BoxDecoration(
-                                            color: firstBooking.statusColor.withOpacity(0.1),
-                                            borderRadius: BorderRadius.circular(8),
-                                          ),
-                                          child: Text(
-                                            getStatusDisplayText(),
-                                            style: TextStyle(
-                                                fontSize: 12,
-                                                fontWeight: FontWeight.w600,
-                                                color: firstBooking.statusColor
-                                            ),
-                                          ),
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-                                ],
-                              ),
+        final displayBookings =
+            _orderTabIndex == 0 ? activeBookings : previousBookings;
+        final groupedBookings = groupBookings(displayBookings);
 
-                              if (hasTechnician) ...[
-                                const SizedBox(height: 12),
-                                Container(
-                                  padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-                                  decoration: BoxDecoration(
-                                    color: Colors.blue.withOpacity(0.1),
-                                    borderRadius: BorderRadius.circular(8),
-                                    border: Border.all(color: Colors.blue.withOpacity(0.3)),
-                                  ),
-                                  child: IntrinsicHeight(
-                                    child: Row(
-                                      mainAxisSize: MainAxisSize.min,
-                                      children: [
-                                        CircleAvatar(
-                                          radius: 12,
-                                          backgroundColor: Colors.blue,
-                                          child: Icon(Icons.person, color: Colors.white, size: 14),
-                                        ),
-                                        const SizedBox(width: 8),
-                                        Flexible(
-                                          child: Text(
-                                            'Technician: Sarish Naz',
-                                            style: TextStyle(
-                                              fontSize: 12,
-                                              fontWeight: FontWeight.w600,
-                                              color: Colors.blue,
-                                            ),
-                                            overflow: TextOverflow.ellipsis,
-                                            maxLines: 1,
-                                          ),
-                                        ),
-                                        const SizedBox(width: 4),
-                                        Icon(Icons.verified, color: Colors.blue, size: 14),
-                                      ],
-                                    ),
-                                  ),
-                                ),
-                              ],
-
-                              if (bookingGroup.length > 1) ...[
-                                const SizedBox(height: 16),
-                                Container(
-                                  padding: const EdgeInsets.all(12),
-                                  decoration: BoxDecoration(
-                                    color: isDark ? const Color(0xFF0F172A) : Colors.grey.shade50,
-                                    borderRadius: BorderRadius.circular(12),
-                                  ),
-                                  child: Column(
-                                    crossAxisAlignment: CrossAxisAlignment.start,
-                                    children: [
-                                      Text('Services:', style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold, color: textColor)),
-                                      const SizedBox(height: 8),
-                                      ...bookingGroup.map((booking) => Padding(
-                                        padding: const EdgeInsets.only(bottom: 4),
-                                        child: Row(
-                                          children: [
-                                            Container(
-                                              width: 4,
-                                              height: 4,
-                                              decoration: const BoxDecoration(color: AppColors.electricBlue, shape: BoxShape.circle),
-                                            ),
-                                            const SizedBox(width: 8),
-                                            Expanded(
-                                              child: Text('${booking.service?.name ?? 'Service'} (${booking.quantity}x)', style: TextStyle(fontSize: 12, color: textColor)),
-                                            ),
-                                            Text(FormattingUtils.formatCurrency(booking.totalPrice, l10n, Localizations.localeOf(context)), style: const TextStyle(fontSize: 12, fontWeight: FontWeight.w600, color: AppColors.electricBlue)),
-                                          ],
-                                        ),
-                                      )),
-                                    ],
-                                  ),
-                                ),
-                              ],
-
-                              const SizedBox(height: 16),
-                              Container(
-                                padding: const EdgeInsets.all(16),
-                                decoration: BoxDecoration(
-                                  color: isDark ? const Color(0xFF0F172A) : Colors.grey.shade50,
-                                  borderRadius: BorderRadius.circular(12),
-                                ),
-                                child: Column(
-                                  children: [
-                                    Row(
-                                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                      children: [
-                                        Text('Date & Time', style: TextStyle(fontSize: 12, color: subtitleColor)),
-                                        Text(
-                                          '${DateFormat('MMM d, y').format(firstBooking.bookingDate)} at ${DateFormat('h:mm a').format(firstBooking.bookingTime)}',
-                                          style: TextStyle(fontSize: 12, fontWeight: FontWeight.w600, color: textColor),
-                                        ),
-                                      ],
-                                    ),
-                                    const Divider(height: 20),
-                                    Row(
-                                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                      children: [
-                                        Text(FormattingUtils.formatCurrency(totalPrice, l10n, Localizations.localeOf(context)), style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: AppColors.electricBlue)),
-                                      ],
-                                    ),
-                                  ],
-                                ),
-                              ),
-
-                              if (!isCompleted) ...[
-                                const SizedBox(height: 12),
-                                InkWell(
-                                  onTap: () {
-                                    if (firstBooking.status == BookingStatus.pending) {
-                                      Navigator.push(
-                                        context,
-                                        MaterialPageRoute(
-                                          builder: (context) => OrderTrackingScreen(
-                                            user: _currentUser,
-                                            booking: firstBooking,
-                                          ),
-                                        ),
-                                      ).then((_) => setState(() {}));
-                                    } else if (firstBooking.status == BookingStatus.confirmed ||
-                                        firstBooking.status == BookingStatus.inProgress) {
-                                      Navigator.push(
-                                        context,
-                                        MaterialPageRoute(
-                                          builder: (context) => OrderDetailsWithWorkerScreen(
-                                            user: _currentUser,
-                                            booking: firstBooking,
-                                          ),
-                                        ),
-                                      ).then((_) => setState(() {}));
-                                    }
-                                  },
-                                  child: Container(
-                                    width: double.infinity,
-                                    padding: const EdgeInsets.symmetric(vertical: 12),
-                                    decoration: BoxDecoration(
-                                      color: AppColors.electricBlue.withOpacity(0.1),
-                                      borderRadius: BorderRadius.circular(10),
-                                    ),
-                                    child: Row(
-                                      mainAxisAlignment: MainAxisAlignment.center,
-                                      children: [
-                                        Icon(
-                                          firstBooking.status == BookingStatus.pending
-                                              ? Icons.location_on
-                                              : Icons.person_search,
-                                          color: AppColors.electricBlue,
-                                          size: 18,
-                                        ),
-                                        const SizedBox(width: 8),
-                                        Text(
-                                          firstBooking.status == BookingStatus.pending
-                                              ? l10n.trackOrder
-                                              : l10n.viewTechnicianDetails,
-                                          style: const TextStyle(
-                                            color: AppColors.electricBlue,
-                                            fontSize: 14,
-                                            fontWeight: FontWeight.w600,
-                                          ),
-                                        ),
-                                        const SizedBox(width: 8),
-                                        const Icon(
-                                          Icons.arrow_forward,
-                                          color: AppColors.electricBlue,
-                                          size: 18,
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-                                ),
-                              ],
-                            ],
-                          ),
-                        ),
-                      );
-                    }),
-                ],
+        return Container(
+          color: backgroundColor,
+          child: Column(
+            children: [
+              Container(
+                color: cardColor,
+                child: Row(
+                  children: [
+                    Expanded(
+                        child: _buildOrderTab(
+                            l10n.active, 0, activeBookings.length, l10n)),
+                    Expanded(
+                        child: _buildOrderTab(
+                            l10n.previous, 1, previousBookings.length, l10n)),
+                  ],
+                ),
               ),
-            ),
+              Expanded(
+                child: SingleChildScrollView(
+                  padding: const EdgeInsets.all(20),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      if (groupedBookings.isEmpty)
+                        _buildEmptyState(
+                            l10n, cardColor, textColor, subtitleColor)
+                      else
+                        ...groupedBookings.values.map(
+                            (group) => _buildBookingGroupCard(group, l10n)),
+                    ],
+                  ),
+                ),
+              ),
+            ],
           ),
-        ],
+        );
+      },
+    );
+  }
+
+  Widget _buildEmptyState(AppLocalizations l10n, Color cardColor,
+      Color textColor, Color subtitleColor) {
+    return Center(
+      child: Container(
+        padding: const EdgeInsets.all(40),
+        decoration: BoxDecoration(
+          color: cardColor,
+          borderRadius: BorderRadius.circular(24),
+          boxShadow: [
+            BoxShadow(
+                color: Colors.black.withOpacity(0.05),
+                blurRadius: 15,
+                offset: const Offset(0, 5))
+          ],
+        ),
+        child: Column(
+          children: [
+            Container(
+              padding: const EdgeInsets.all(20),
+              decoration: BoxDecoration(
+                color: AppColors.electricBlue.withOpacity(0.1),
+                shape: BoxShape.circle,
+              ),
+              child: Icon(Icons.receipt_long_outlined,
+                  size: 64, color: AppColors.electricBlue.withOpacity(0.5)),
+            ),
+            const SizedBox(height: 20),
+            Text(
+                _orderTabIndex == 0
+                    ? l10n.noActiveOrders
+                    : l10n.noPreviousOrders,
+                style: TextStyle(
+                    fontSize: 18,
+                    fontWeight: FontWeight.bold,
+                    color: textColor)),
+            const SizedBox(height: 8),
+            Text(
+                _orderTabIndex == 0
+                    ? l10n.bookYourFirstServiceToday
+                    : l10n.yourCompletedOrdersWillAppearHere,
+                style: TextStyle(fontSize: 14, color: subtitleColor),
+                textAlign: TextAlign.center),
+          ],
+        ),
       ),
     );
   }
 
-  Widget _buildOrderTab(String title, int index, int count, AppLocalizations l10n) {
+  Widget _buildBookingGroupCard(
+      List<Booking> bookingGroup, AppLocalizations l10n) {
+    if (bookingGroup.isEmpty) return const SizedBox();
+
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    final cardColor = isDark ? const Color(0xFF1E293B) : Colors.white;
+    final textColor = isDark ? Colors.white : Colors.black87;
+    final subtitleColor = isDark ? Colors.grey.shade400 : Colors.grey.shade600;
+
+    final firstBooking = bookingGroup.first;
+    final totalPrice = bookingGroup.fold(0.0, (sum, b) => sum + b.totalPrice);
+
+    return Container(
+      margin: const EdgeInsets.only(bottom: 16),
+      decoration: BoxDecoration(
+        color: cardColor,
+        borderRadius: BorderRadius.circular(20),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withOpacity(isDark ? 0.3 : 0.05),
+            blurRadius: 15,
+            offset: const Offset(0, 5),
+          ),
+        ],
+      ),
+      child: Material(
+        color: Colors.transparent,
+        child: InkWell(
+          borderRadius: BorderRadius.circular(20),
+          onTap: () {
+            final localizedName = _getLocalizedServiceName(firstBooking, l10n);
+            if (firstBooking.status == BookingStatus.pending ||
+                firstBooking.status == BookingStatus.assigned ||
+                firstBooking.status == BookingStatus.accepted ||
+                firstBooking.status == BookingStatus.inProgress) {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => OrderTrackingScreen(
+                    user: _currentUser,
+                    booking: firstBooking,
+                    localizedServiceName: localizedName,
+                  ),
+                ),
+              ).then((_) => setState(() {}));
+            } else if (firstBooking.status == BookingStatus.completed) {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => OrderDetailsWithWorkerScreen(
+                    user: _currentUser,
+                    booking: firstBooking,
+                    localizedServiceName: localizedName,
+                  ),
+                ),
+              ).then((_) => setState(() {}));
+            }
+          },
+          child: Padding(
+            padding: const EdgeInsets.all(20),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Row(
+                  children: [
+                    Container(
+                      padding: const EdgeInsets.all(12),
+                      decoration: BoxDecoration(
+                        gradient: LinearGradient(
+                          colors: [
+                            firstBooking.statusColor.withOpacity(0.2),
+                            firstBooking.statusColor.withOpacity(0.1)
+                          ],
+                        ),
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                      child: Icon(
+                        _getStatusIcon(firstBooking.status),
+                        color: firstBooking.statusColor,
+                        size: 24,
+                      ),
+                    ),
+                    const SizedBox(width: 16),
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            bookingGroup.length > 1
+                                ? '${bookingGroup.length} ${l10n.servicesBooked}'
+                                : _getLocalizedServiceName(firstBooking, l10n),
+                            style: TextStyle(
+                                fontSize: 16,
+                                fontWeight: FontWeight.bold,
+                                color: textColor),
+                          ),
+                          const SizedBox(height: 4),
+                          Container(
+                            padding: const EdgeInsets.symmetric(
+                                horizontal: 12, vertical: 4),
+                            decoration: BoxDecoration(
+                              color: firstBooking.statusColor.withOpacity(0.1),
+                              borderRadius: BorderRadius.circular(8),
+                            ),
+                            child: Text(
+                              _getStatusText(firstBooking.status, l10n),
+                              style: TextStyle(
+                                  fontSize: 12,
+                                  fontWeight: FontWeight.w600,
+                                  color: firstBooking.statusColor),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
+                if (bookingGroup.length > 1) ...[
+                  const SizedBox(height: 16),
+                  Container(
+                    padding: const EdgeInsets.all(12),
+                    decoration: BoxDecoration(
+                      color: isDark
+                          ? const Color(0xFF0F172A)
+                          : Colors.grey.shade50,
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text('${l10n.services}:',
+                            style: TextStyle(
+                                fontSize: 12,
+                                fontWeight: FontWeight.w600,
+                                color: textColor)),
+                        const SizedBox(height: 8),
+                        ...bookingGroup.map((booking) => Padding(
+                              padding: const EdgeInsets.only(bottom: 4),
+                              child: Row(
+                                children: [
+                                  Container(
+                                    width: 4,
+                                    height: 4,
+                                    decoration: const BoxDecoration(
+                                        color: AppColors.electricBlue,
+                                        shape: BoxShape.circle),
+                                  ),
+                                  const SizedBox(width: 8),
+                                  Expanded(
+                                    child: Text(
+                                        '${_getLocalizedServiceName(booking, l10n)} (${FormattingUtils.formatNumber(booking.quantity, Localizations.localeOf(context))}x)',
+                                        style: TextStyle(
+                                            fontSize: 12, color: textColor)),
+                                  ),
+                                  Text(
+                                      FormattingUtils.formatCurrency(
+                                          booking.totalPrice,
+                                          l10n,
+                                          Localizations.localeOf(context)),
+                                      style: const TextStyle(
+                                          fontSize: 12,
+                                          fontWeight: FontWeight.w600,
+                                          color: AppColors.electricBlue)),
+                                ],
+                              ),
+                            )),
+                      ],
+                    ),
+                  ),
+                ],
+                const SizedBox(height: 16),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text(
+                        '${FormattingUtils.formatDateShort(context, firstBooking.bookingDate)} ${l10n.localeName == 'ar' ? '' : 'at'} ${firstBooking.bookingTime}',
+                        style: TextStyle(color: subtitleColor, fontSize: 13)),
+                    Text(
+                        FormattingUtils.formatCurrency(
+                            totalPrice, l10n, Localizations.localeOf(context)),
+                        style: const TextStyle(
+                            fontWeight: FontWeight.bold,
+                            fontSize: 16,
+                            color: AppColors.electricBlue)),
+                  ],
+                ),
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
+  String _getStatusText(BookingStatus status, AppLocalizations l10n) {
+    switch (status) {
+      case BookingStatus.pending:
+        return l10n.pending;
+      case BookingStatus.assigned:
+        return l10n.technicianAssigned;
+      case BookingStatus.accepted:
+        return l10n.confirmed;
+      case BookingStatus.inProgress:
+        return l10n.inProgress;
+      case BookingStatus.completed:
+        return l10n.completed;
+      case BookingStatus.postponed:
+        return 'Postponed';
+      case BookingStatus.cancelled:
+        return l10n.cancelled;
+    }
+  }
+
+  String _getLocalizedServiceName(Booking booking, AppLocalizations l10n) {
+    // 1. If locale is not Arabic, return English name
+    if (l10n.localeName != 'ar') {
+      return booking.serviceName.isNotEmpty
+          ? booking.serviceName
+          : l10n.service;
+    }
+
+    // 2. If Booking has Arabic name directly, use it
+    if (booking.serviceNameArabic != null &&
+        booking.serviceNameArabic!.isNotEmpty) {
+      return booking.serviceNameArabic!;
+    }
+
+    // 3. Fallback: Lookup in loaded services (More reliable)
+    try {
+      final service = _allServices.firstWhere(
+        (s) => s.id == booking.serviceId,
+        orElse: () => Service(
+            id: '',
+            name: '',
+            description: '',
+            price: 0,
+            category: '',
+            features: []), // Dummy
+      );
+
+      if (service.id.isNotEmpty && service.nameArabic.isNotEmpty) {
+        return service.nameArabic;
+      }
+    } catch (e) {
+      debugPrint('Error looking up localized name in allServices: $e');
+    }
+
+    // 4. Fallback: Lookup in loaded categories (Legacy)
+    try {
+      for (final category in _categories) {
+        for (final service in category.services) {
+          if (service.id == booking.serviceId) {
+            if (service.nameArabic.isNotEmpty) {
+              return service.nameArabic;
+            }
+            break; // Found service but no Arabic name
+          }
+        }
+      }
+    } catch (e) {
+      debugPrint('Error looking up localized name: $e');
+    }
+
+    // 5. Ultimate fallback
+    return booking.serviceName.isNotEmpty ? booking.serviceName : l10n.service;
+  }
+
+  IconData _getStatusIcon(BookingStatus status) {
+    switch (status) {
+      case BookingStatus.completed:
+        return Icons.check_circle;
+      case BookingStatus.cancelled:
+        return Icons.cancel;
+      case BookingStatus.inProgress:
+        return Icons.build;
+      case BookingStatus.accepted:
+        return Icons.person_pin;
+      default:
+        return Icons.schedule;
+    }
+  }
+
+  Widget _buildOrderTab(
+      String title, int index, int count, AppLocalizations l10n) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
     final isActive = _orderTabIndex == index;
     final inactiveColor = isDark ? Colors.grey.shade500 : Colors.grey.shade600;
@@ -1586,7 +1617,10 @@ class _DashboardScreenState extends State<DashboardScreen> {
       child: Container(
         padding: const EdgeInsets.symmetric(vertical: 16),
         decoration: BoxDecoration(
-          border: Border(bottom: BorderSide(color: isActive ? AppColors.electricBlue : Colors.transparent, width: 3)),
+          border: Border(
+              bottom: BorderSide(
+                  color: isActive ? AppColors.electricBlue : Colors.transparent,
+                  width: 3)),
         ),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.center,
@@ -1605,10 +1639,16 @@ class _DashboardScreenState extends State<DashboardScreen> {
               Container(
                 padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
                 decoration: BoxDecoration(
-                  color: isActive ? AppColors.electricBlue : (isDark ? Colors.grey.shade700 : Colors.grey.shade400),
+                  color: isActive
+                      ? AppColors.electricBlue
+                      : (isDark ? Colors.grey.shade700 : Colors.grey.shade400),
                   borderRadius: BorderRadius.circular(10),
                 ),
-                child: Text(count.toString(), style: const TextStyle(color: Colors.white, fontSize: 12, fontWeight: FontWeight.bold)),
+                child: Text(count.toString(),
+                    style: const TextStyle(
+                        color: Colors.white,
+                        fontSize: 12,
+                        fontWeight: FontWeight.bold)),
               ),
             ],
           ],

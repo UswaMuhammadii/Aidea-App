@@ -580,6 +580,16 @@ class AppLocalizationsEn extends AppLocalizations {
   String get done => 'Done';
 
   @override
+  String get areYouSureCancel =>
+      'Are you sure you want to cancel this booking?';
+
+  @override
+  String get yesCancel => 'Yes, Cancel';
+
+  @override
+  String get no => 'No';
+
+  @override
   String get vendorProfile => 'Vendor Profile';
 
   @override

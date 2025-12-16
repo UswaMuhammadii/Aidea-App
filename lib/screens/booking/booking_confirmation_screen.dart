@@ -5,7 +5,9 @@ import '../../models/booking_model.dart';
 import '../dashboard/dashboard_screen.dart';
 import '../../utils/app_colors.dart';
 import '../../gen_l10n/app_localizations.dart';
-import '../../utils/formatting_utils.dart'; // Add this import
+import '../../utils/formatting_utils.dart';
+import 'package:firebase_auth/firebase_auth.dart' as firebase_auth;
+import '../../main.dart';
 
 class BookingConfirmationScreen extends StatelessWidget {
   final List<Booking> bookings;
@@ -27,7 +29,8 @@ class BookingConfirmationScreen extends StatelessWidget {
     final locale = Localizations.localeOf(context); // Add this
 
     final isDark = Theme.of(context).brightness == Brightness.dark;
-    final backgroundColor = isDark ? const Color(0xFF0F172A) : const Color(0xFFF8F9FA);
+    final backgroundColor =
+        isDark ? const Color(0xFF0F172A) : const Color(0xFFF8F9FA);
     final cardColor = isDark ? const Color(0xFF1E293B) : Colors.white;
     final textColor = isDark ? Colors.white : Colors.black87;
     final subtitleColor = isDark ? Colors.grey.shade400 : Colors.grey.shade600;
@@ -79,7 +82,8 @@ class BookingConfirmationScreen extends StatelessWidget {
               const SizedBox(height: 8),
               Text(
                 bookings.length > 1
-                    ? l10n.yourServicesHaveBeenSuccessfullyBooked(bookings.length)
+                    ? l10n
+                        .yourServicesHaveBeenSuccessfullyBooked(bookings.length)
                     : l10n.yourServiceHasBeenSuccessfullyBooked,
                 style: TextStyle(
                   fontSize: 16,
@@ -96,7 +100,8 @@ class BookingConfirmationScreen extends StatelessWidget {
                   color: cardColor,
                   boxShadow: [
                     BoxShadow(
-                      color: Colors.black.withValues(alpha: isDark ? 0.3 : 0.08),
+                      color:
+                          Colors.black.withValues(alpha: isDark ? 0.3 : 0.08),
                       blurRadius: 20,
                       offset: const Offset(0, 10),
                     ),
@@ -112,7 +117,8 @@ class BookingConfirmationScreen extends StatelessWidget {
                           Container(
                             padding: const EdgeInsets.all(8),
                             decoration: BoxDecoration(
-                              color: AppColors.electricBlue.withValues(alpha: 0.1),
+                              color:
+                                  AppColors.electricBlue.withValues(alpha: 0.1),
                               borderRadius: BorderRadius.circular(8),
                             ),
                             child: const Icon(
@@ -136,12 +142,18 @@ class BookingConfirmationScreen extends StatelessWidget {
 
                       // Services List
                       if (bookings.length > 1) ...[
-                        _buildDetailRow(l10n.services, '${bookings.length} ${l10n.servicesBooked.toLowerCase()}', textColor, subtitleColor),
+                        _buildDetailRow(
+                            l10n.services,
+                            '${bookings.length} ${l10n.servicesBooked.toLowerCase()}',
+                            textColor,
+                            subtitleColor),
                         const SizedBox(height: 12),
                         Container(
                           padding: const EdgeInsets.all(12),
                           decoration: BoxDecoration(
-                            color: isDark ? Colors.grey.shade900 : Colors.grey.shade50,
+                            color: isDark
+                                ? Colors.grey.shade900
+                                : Colors.grey.shade50,
                             borderRadius: BorderRadius.circular(12),
                           ),
                           child: Column(
@@ -162,7 +174,13 @@ class BookingConfirmationScreen extends StatelessWidget {
                                     const SizedBox(width: 8),
                                     Expanded(
                                       child: Text(
-                                        '${booking.service?.name ?? l10n.service} (${l10n.quantity}: ${FormattingUtils.formatNumber(booking.quantity, locale)})', // FIXED: Use formatNumber
+                                        (locale.languageCode == 'ar' &&
+                                                booking.serviceNameArabic !=
+                                                    null &&
+                                                booking.serviceNameArabic!
+                                                    .isNotEmpty)
+                                            ? booking.serviceNameArabic!
+                                            : booking.serviceName,
                                         style: TextStyle(
                                           fontSize: 14,
                                           color: textColor,
@@ -170,7 +188,10 @@ class BookingConfirmationScreen extends StatelessWidget {
                                       ),
                                     ),
                                     Text(
-                                      FormattingUtils.formatCurrency(booking.totalPrice, l10n, locale), // FIXED: Use formatCurrency
+                                      FormattingUtils.formatCurrency(
+                                          booking.totalPrice,
+                                          l10n,
+                                          locale), // FIXED: Use formatCurrency
                                       style: const TextStyle(
                                         fontSize: 14,
                                         fontWeight: FontWeight.w600,
@@ -184,14 +205,32 @@ class BookingConfirmationScreen extends StatelessWidget {
                           ),
                         ),
                         const SizedBox(height: 12),
-                      ] else
-                        _buildDetailRow(l10n.service, firstBooking.service?.name ?? l10n.service, textColor, subtitleColor),
+                      ] else ...[
+                        _buildDetailRow(
+                            l10n.service,
+                            (locale.languageCode == 'ar' &&
+                                    firstBooking.serviceNameArabic != null &&
+                                    firstBooking.serviceNameArabic!.isNotEmpty)
+                                ? firstBooking.serviceNameArabic!
+                                : firstBooking.serviceName,
+                            textColor,
+                            subtitleColor),
+                      ],
 
-                      _buildDetailRow(l10n.date, DateFormat('EEEE, MMMM d, y').format(firstBooking.bookingDate), textColor, subtitleColor),
-                      _buildDetailRow(l10n.time, DateFormat('h:mm a').format(firstBooking.bookingTime), textColor, subtitleColor),
-                      if (bookings.length == 1)
-                        _buildDetailRow(l10n.quantity, FormattingUtils.formatNumber(firstBooking.quantity, locale), textColor, subtitleColor), // FIXED: Use formatNumber
-                      Divider(height: 32, color: isDark ? Colors.grey.shade700 : Colors.grey.shade300),
+                      _buildDetailRow(
+                          l10n.date,
+                          DateFormat('EEEE, MMMM d, y')
+                              .format(firstBooking.bookingDate),
+                          textColor,
+                          subtitleColor),
+                      _buildDetailRow(l10n.time, firstBooking.bookingTime,
+                          textColor, subtitleColor),
+
+                      Divider(
+                          height: 32,
+                          color: isDark
+                              ? Colors.grey.shade700
+                              : Colors.grey.shade300),
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
@@ -204,7 +243,8 @@ class BookingConfirmationScreen extends StatelessWidget {
                             ),
                           ),
                           Text(
-                            FormattingUtils.formatCurrency(totalAmount, l10n, locale), // FIXED: Use formatCurrency
+                            FormattingUtils.formatCurrency(totalAmount, l10n,
+                                locale), // FIXED: Use formatCurrency
                             style: const TextStyle(
                               fontSize: 24,
                               fontWeight: FontWeight.bold,
@@ -214,12 +254,14 @@ class BookingConfirmationScreen extends StatelessWidget {
                         ],
                       ),
 
-                      if (firstBooking.notes != null && firstBooking.notes!.isNotEmpty) ...[
+                      if (firstBooking.notes != null &&
+                          firstBooking.notes!.isNotEmpty) ...[
                         const SizedBox(height: 20),
                         Container(
                           padding: const EdgeInsets.all(12),
                           decoration: BoxDecoration(
-                            color: AppColors.electricBlue.withValues(alpha: isDark ? 0.2 : 0.1),
+                            color: AppColors.electricBlue
+                                .withValues(alpha: isDark ? 0.2 : 0.1),
                             borderRadius: BorderRadius.circular(12),
                           ),
                           child: Row(
@@ -254,7 +296,8 @@ class BookingConfirmationScreen extends StatelessWidget {
               Container(
                 padding: const EdgeInsets.all(20),
                 decoration: BoxDecoration(
-                  color: AppColors.electricBlue.withValues(alpha: isDark ? 0.15 : 0.1),
+                  color: AppColors.electricBlue
+                      .withValues(alpha: isDark ? 0.15 : 0.1),
                   borderRadius: BorderRadius.circular(16),
                 ),
                 child: Column(
@@ -279,9 +322,12 @@ class BookingConfirmationScreen extends StatelessWidget {
                       ],
                     ),
                     const SizedBox(height: 12),
-                    _buildInfoItem(l10n.youWillReceiveConfirmationEmailShortly, textColor),
-                    _buildInfoItem(l10n.reminderWillBeSent24HoursBefore, textColor),
-                    _buildInfoItem(l10n.viewYourBookingsInOrdersSection, textColor),
+                    _buildInfoItem(
+                        l10n.youWillReceiveConfirmationEmailShortly, textColor),
+                    _buildInfoItem(
+                        l10n.reminderWillBeSent24HoursBefore, textColor),
+                    _buildInfoItem(
+                        l10n.viewYourBookingsInOrdersSection, textColor),
                   ],
                 ),
               ),
@@ -298,18 +344,29 @@ class BookingConfirmationScreen extends StatelessWidget {
                             builder: (context) => DashboardScreen(
                               user: user,
                               initialTab: 0,
-                              onLogout: () {
-                                Navigator.of(context).pushReplacementNamed('/login');
+                              onLogout: () async {
+                                await firebase_auth.FirebaseAuth.instance
+                                    .signOut();
+                                if (context.mounted) {
+                                  Navigator.of(context).pushAndRemoveUntil(
+                                    MaterialPageRoute(
+                                      builder: (context) => const CustomerApp(),
+                                    ),
+                                    (route) => false,
+                                  );
+                                }
                               },
                             ),
                           ),
-                              (route) => false,
+                          (route) => false,
                         );
                       },
                       style: OutlinedButton.styleFrom(
                         padding: const EdgeInsets.symmetric(vertical: 16),
                         side: BorderSide(
-                          color: isDark ? Colors.grey.shade600 : AppColors.electricBlue,
+                          color: isDark
+                              ? Colors.grey.shade600
+                              : AppColors.electricBlue,
                         ),
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(12),
@@ -320,7 +377,9 @@ class BookingConfirmationScreen extends StatelessWidget {
                         style: TextStyle(
                           fontSize: 16,
                           fontWeight: FontWeight.w600,
-                          color: isDark ? Colors.grey.shade300 : AppColors.electricBlue,
+                          color: isDark
+                              ? Colors.grey.shade300
+                              : AppColors.electricBlue,
                         ),
                       ),
                     ),
@@ -330,12 +389,16 @@ class BookingConfirmationScreen extends StatelessWidget {
                     child: Container(
                       decoration: BoxDecoration(
                         gradient: const LinearGradient(
-                          colors: [AppColors.electricBlue, AppColors.electricBlue],
+                          colors: [
+                            AppColors.electricBlue,
+                            AppColors.electricBlue
+                          ],
                         ),
                         borderRadius: BorderRadius.circular(12),
                         boxShadow: [
                           BoxShadow(
-                            color: AppColors.electricBlue.withValues(alpha: 0.4),
+                            color:
+                                AppColors.electricBlue.withValues(alpha: 0.4),
                             blurRadius: 12,
                             offset: const Offset(0, 6),
                           ),
@@ -350,12 +413,22 @@ class BookingConfirmationScreen extends StatelessWidget {
                                 builder: (context) => DashboardScreen(
                                   user: user,
                                   initialTab: 1,
-                                  onLogout: () {
-                                    Navigator.of(context).pushReplacementNamed('/login');
+                                  onLogout: () async {
+                                    await firebase_auth.FirebaseAuth.instance
+                                        .signOut();
+                                    if (context.mounted) {
+                                      Navigator.of(context).pushAndRemoveUntil(
+                                        MaterialPageRoute(
+                                          builder: (context) =>
+                                              const CustomerApp(),
+                                        ),
+                                        (route) => false,
+                                      );
+                                    }
                                   },
                                 ),
                               ),
-                                  (route) => false,
+                              (route) => false,
                             );
                           },
                           borderRadius: BorderRadius.circular(12),
@@ -384,7 +457,8 @@ class BookingConfirmationScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildDetailRow(String label, String value, Color textColor, Color subtitleColor) {
+  Widget _buildDetailRow(
+      String label, String value, Color textColor, Color subtitleColor) {
     return Padding(
       padding: const EdgeInsets.only(bottom: 12),
       child: Row(

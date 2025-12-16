@@ -7,6 +7,7 @@ class User {
   final String address;
   final DateTime createdAt;
   final List<SavedAddress> savedAddresses;
+  final String languagePreference;
 
   User({
     required this.id,
@@ -16,31 +17,51 @@ class User {
     this.address = 'Building Sultan Town Lahore Punjab',
     required this.createdAt,
     this.savedAddresses = const [],
+    this.languagePreference = 'english',
   });
+
+  // Admin Panel Compatibility
+  bool get prefersArabic => languagePreference == 'arabic';
+  DateTime get registeredAt => createdAt;
 
   Map<String, dynamic> toJson() {
     return {
       'id': id,
-      'email': email,
       'name': name,
+      // Admin Panel Compatibility Aliases
+      'fullName': name,
+      'userName': name,
+      'displayName': name,
       'phone': phone,
-      'address': address,
+      'email': email,
+      'registeredAt':
+          createdAt.toIso8601String(), // Map to Admin's registeredAt
+      'languagePreference': languagePreference,
+      'address': address, // Added as per request
+      // Local only or extra fields
+      'savedAddresses':
+          savedAddresses.map((address) => address.toJson()).toList(),
       'createdAt': createdAt.toIso8601String(),
-      'savedAddresses': savedAddresses.map((address) => address.toJson()).toList(),
     };
   }
 
   factory User.fromJson(Map<String, dynamic> json) {
     return User(
-      id: json['id'],
-      email: json['email'],
-      name: json['name'],
-      phone: json['phone'],
+      id: json['id'] ?? '',
+      email: json['email'] ?? '',
+      name: json['name'] ?? '',
+      phone: json['phone'] ?? '',
       address: json['address'] ?? 'Building Sultan Town Lahore Punjab',
-      createdAt: DateTime.parse(json['createdAt']),
+      createdAt: json['registeredAt'] != null
+          ? DateTime.parse(json['registeredAt'])
+          : (json['createdAt'] != null
+              ? DateTime.parse(json['createdAt'])
+              : DateTime.now()),
       savedAddresses: (json['savedAddresses'] as List<dynamic>?)
-          ?.map((addressJson) => SavedAddress.fromJson(addressJson))
-          .toList() ?? [],
+              ?.map((addressJson) => SavedAddress.fromJson(addressJson))
+              .toList() ??
+          [],
+      languagePreference: json['languagePreference'] ?? 'english',
     );
   }
 
@@ -52,6 +73,7 @@ class User {
     String? address,
     DateTime? createdAt,
     List<SavedAddress>? savedAddresses,
+    String? languagePreference,
   }) {
     return User(
       id: id ?? this.id,
@@ -61,6 +83,7 @@ class User {
       address: address ?? this.address,
       createdAt: createdAt ?? this.createdAt,
       savedAddresses: savedAddresses ?? this.savedAddresses,
+      languagePreference: languagePreference ?? this.languagePreference,
     );
   }
 }

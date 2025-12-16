@@ -2,6 +2,7 @@ import '../models/user_model.dart';
 import '../models/service_model.dart';
 import '../models/booking_model.dart';
 import '../../gen_l10n/app_localizations.dart';
+import 'package:intl/intl.dart';
 
 class DummyDataService {
   static List<Service> _services = [];
@@ -41,7 +42,11 @@ class DummyDataService {
         price: 89.00,
         category: l10n.acServices,
         subcategory: l10n.splitAc,
-        features: [l10n.deepCleaning, l10n.indoorUnitCleaning, l10n.outdoorUnitCleaning],
+        features: [
+          l10n.deepCleaning,
+          l10n.indoorUnitCleaning,
+          l10n.outdoorUnitCleaning
+        ],
       ),
       Service(
         id: '2',
@@ -50,7 +55,11 @@ class DummyDataService {
         price: 128.00,
         category: l10n.acServices,
         subcategory: l10n.splitAc,
-        features: [l10n.leakDetection, l10n.professionalRepair, l10n.qualityParts],
+        features: [
+          l10n.leakDetection,
+          l10n.professionalRepair,
+          l10n.qualityParts
+        ],
       ),
       Service(
         id: '3',
@@ -59,7 +68,11 @@ class DummyDataService {
         price: 170.00,
         category: l10n.acServices,
         subcategory: l10n.splitAc,
-        features: [l10n.completeCleaning, l10n.gasRefill, l10n.performanceCheck],
+        features: [
+          l10n.completeCleaning,
+          l10n.gasRefill,
+          l10n.performanceCheck
+        ],
       ),
       Service(
         id: '4',
@@ -68,7 +81,11 @@ class DummyDataService {
         price: 244.00,
         category: l10n.acServices,
         subcategory: l10n.splitAc,
-        features: [l10n.professionalInstallation, l10n.warrantyIncluded, l10n.testing],
+        features: [
+          l10n.professionalInstallation,
+          l10n.warrantyIncluded,
+          l10n.testing
+        ],
       ),
       Service(
         id: '5',
@@ -77,7 +94,11 @@ class DummyDataService {
         price: 244.00,
         category: l10n.acServices,
         subcategory: l10n.splitAc,
-        features: [l10n.indoorService, l10n.professionalTools, l10n.safeHandling],
+        features: [
+          l10n.indoorService,
+          l10n.professionalTools,
+          l10n.safeHandling
+        ],
       ),
       Service(
         id: '6',
@@ -86,7 +107,11 @@ class DummyDataService {
         price: 361.00,
         category: l10n.acServices,
         subcategory: l10n.splitAc,
-        features: [l10n.outdoorService, l10n.safetyEquipment, l10n.expertTechnicians],
+        features: [
+          l10n.outdoorService,
+          l10n.safetyEquipment,
+          l10n.expertTechnicians
+        ],
       ),
       Service(
         id: '7',
@@ -95,7 +120,11 @@ class DummyDataService {
         price: 146.00,
         category: l10n.acServices,
         subcategory: l10n.splitAc,
-        features: [l10n.electronicRepair, l10n.expertService, l10n.qualityParts],
+        features: [
+          l10n.electronicRepair,
+          l10n.expertService,
+          l10n.qualityParts
+        ],
       ),
       Service(
         id: '8',
@@ -104,7 +133,11 @@ class DummyDataService {
         price: 156.00,
         category: l10n.acServices,
         subcategory: l10n.splitAc,
-        features: [l10n.fanReplacement, l10n.professionalService, l10n.testingIncluded],
+        features: [
+          l10n.fanReplacement,
+          l10n.professionalService,
+          l10n.testingIncluded
+        ],
       ),
       Service(
         id: '9',
@@ -113,7 +146,11 @@ class DummyDataService {
         price: 146.00,
         category: l10n.acServices,
         subcategory: l10n.splitAc,
-        features: [l10n.motorReplacement, l10n.qualityParts, l10n.expertService],
+        features: [
+          l10n.motorReplacement,
+          l10n.qualityParts,
+          l10n.expertService
+        ],
       ),
 
       // AC Services - Window AC (Services 10-16)
@@ -124,7 +161,11 @@ class DummyDataService {
         price: 55.00,
         category: l10n.acServices,
         subcategory: l10n.windowAc,
-        features: [l10n.deepCleaning, l10n.filterCleaning, l10n.performanceCheck],
+        features: [
+          l10n.deepCleaning,
+          l10n.filterCleaning,
+          l10n.performanceCheck
+        ],
       ),
       Service(
         id: '11',
@@ -151,7 +192,11 @@ class DummyDataService {
         price: 78.00,
         category: l10n.acServices,
         subcategory: l10n.windowAc,
-        features: [l10n.professionalInstallation, l10n.testing, l10n.cleanFinish],
+        features: [
+          l10n.professionalInstallation,
+          l10n.testing,
+          l10n.cleanFinish
+        ],
       ),
       Service(
         id: '14',
@@ -160,7 +205,11 @@ class DummyDataService {
         price: 87.00,
         category: l10n.acServices,
         subcategory: l10n.windowAc,
-        features: [l10n.safeHandling, l10n.professionalTools, l10n.quickService],
+        features: [
+          l10n.safeHandling,
+          l10n.professionalTools,
+          l10n.quickService
+        ],
       ),
       Service(
         id: '15',
@@ -178,7 +227,11 @@ class DummyDataService {
         price: 113.00,
         category: l10n.acServices,
         subcategory: l10n.windowAc,
-        features: [l10n.motorReplacement, l10n.qualityParts, l10n.testingIncluded],
+        features: [
+          l10n.motorReplacement,
+          l10n.qualityParts,
+          l10n.testingIncluded
+        ],
       ),
 
       // AC Services - Central AC (Services 17-25)
@@ -189,7 +242,11 @@ class DummyDataService {
         price: 403.00,
         category: l10n.acServices,
         subcategory: l10n.centralAc,
-        features: [l10n.professionalInstallation, l10n.completeSetup, l10n.testing],
+        features: [
+          l10n.professionalInstallation,
+          l10n.completeSetup,
+          l10n.testing
+        ],
       ),
       Service(
         id: '18',
@@ -198,7 +255,11 @@ class DummyDataService {
         price: 173.00,
         category: l10n.acServices,
         subcategory: l10n.centralAc,
-        features: [l10n.boardReplacement, l10n.expertService, l10n.qualityParts],
+        features: [
+          l10n.boardReplacement,
+          l10n.expertService,
+          l10n.qualityParts
+        ],
       ),
       Service(
         id: '19',
@@ -216,7 +277,11 @@ class DummyDataService {
         price: 782.00,
         category: l10n.acServices,
         subcategory: l10n.centralAc,
-        features: [l10n.completeInstallation, l10n.professionalSetup, l10n.warrantyIncluded],
+        features: [
+          l10n.completeInstallation,
+          l10n.professionalSetup,
+          l10n.warrantyIncluded
+        ],
       ),
       Service(
         id: '21',
@@ -225,7 +290,11 @@ class DummyDataService {
         price: 230.00,
         category: l10n.acServices,
         subcategory: l10n.centralAc,
-        features: [l10n.crystalReplacement, l10n.expertService, l10n.qualityParts],
+        features: [
+          l10n.crystalReplacement,
+          l10n.expertService,
+          l10n.qualityParts
+        ],
       ),
       Service(
         id: '22',
@@ -234,7 +303,11 @@ class DummyDataService {
         price: 184.00,
         category: l10n.acServices,
         subcategory: l10n.centralAc,
-        features: [l10n.motorReplacement, l10n.professionalService, l10n.testing],
+        features: [
+          l10n.motorReplacement,
+          l10n.professionalService,
+          l10n.testing
+        ],
       ),
       Service(
         id: '23',
@@ -243,7 +316,11 @@ class DummyDataService {
         price: 207.00,
         category: l10n.acServices,
         subcategory: l10n.centralAc,
-        features: [l10n.compressorReplacement, l10n.expertTechnicians, l10n.qualityParts],
+        features: [
+          l10n.compressorReplacement,
+          l10n.expertTechnicians,
+          l10n.qualityParts
+        ],
       ),
       Service(
         id: '24',
@@ -252,7 +329,11 @@ class DummyDataService {
         price: 104.00,
         category: l10n.acServices,
         subcategory: l10n.centralAc,
-        features: [l10n.componentReplacement, l10n.professionalService, l10n.testing],
+        features: [
+          l10n.componentReplacement,
+          l10n.professionalService,
+          l10n.testing
+        ],
       ),
       Service(
         id: '25',
@@ -261,7 +342,11 @@ class DummyDataService {
         price: 115.00,
         category: l10n.acServices,
         subcategory: l10n.centralAc,
-        features: [l10n.contactorReplacement, l10n.expertService, l10n.qualityParts],
+        features: [
+          l10n.contactorReplacement,
+          l10n.expertService,
+          l10n.qualityParts
+        ],
       ),
 
       // Home Appliances - Washing Machine - Automatic (Services 26-34)
@@ -283,7 +368,11 @@ class DummyDataService {
         category: l10n.homeAppliances,
         subcategory: l10n.washingMachine,
         subSubcategory: l10n.automatic,
-        features: [l10n.dryerRepair, l10n.professionalService, l10n.testingIncluded],
+        features: [
+          l10n.dryerRepair,
+          l10n.professionalService,
+          l10n.testingIncluded
+        ],
       ),
       Service(
         id: '28',
@@ -293,7 +382,11 @@ class DummyDataService {
         category: l10n.homeAppliances,
         subcategory: l10n.washingMachine,
         subSubcategory: l10n.automatic,
-        features: [l10n.completeDisassembly, l10n.professionalService, l10n.reassembly],
+        features: [
+          l10n.completeDisassembly,
+          l10n.professionalService,
+          l10n.reassembly
+        ],
       ),
       Service(
         id: '29',
@@ -313,7 +406,11 @@ class DummyDataService {
         category: l10n.homeAppliances,
         subcategory: l10n.washingMachine,
         subSubcategory: l10n.automatic,
-        features: [l10n.balanceBarReplacement, l10n.vibrationReduction, l10n.testing],
+        features: [
+          l10n.balanceBarReplacement,
+          l10n.vibrationReduction,
+          l10n.testing
+        ],
       ),
       Service(
         id: '31',
@@ -333,7 +430,11 @@ class DummyDataService {
         category: l10n.homeAppliances,
         subcategory: l10n.washingMachine,
         subSubcategory: l10n.automatic,
-        features: [l10n.inletValveService, l10n.waterFlowOptimization, l10n.testing],
+        features: [
+          l10n.inletValveService,
+          l10n.waterFlowOptimization,
+          l10n.testing
+        ],
       ),
       Service(
         id: '33',
@@ -343,7 +444,11 @@ class DummyDataService {
         category: l10n.homeAppliances,
         subcategory: l10n.washingMachine,
         subSubcategory: l10n.automatic,
-        features: [l10n.electricalDiagnosis, l10n.wiringRepair, l10n.safetyCheck],
+        features: [
+          l10n.electricalDiagnosis,
+          l10n.wiringRepair,
+          l10n.safetyCheck
+        ],
       ),
       Service(
         id: '34',
@@ -396,7 +501,11 @@ class DummyDataService {
         price: 196.00,
         category: l10n.homeAppliances,
         subcategory: l10n.refrigerator,
-        features: [l10n.compressorReplacement, l10n.professionalService, l10n.gasRefill],
+        features: [
+          l10n.compressorReplacement,
+          l10n.professionalService,
+          l10n.gasRefill
+        ],
       ),
       Service(
         id: '39',
@@ -531,7 +640,11 @@ class DummyDataService {
         price: 334.00,
         category: l10n.homeAppliances,
         subcategory: l10n.refrigerator,
-        features: [l10n.leakRepair, 'Indian gas refill', l10n.professionalService],
+        features: [
+          l10n.leakRepair,
+          'Indian gas refill',
+          l10n.professionalService
+        ],
       ),
 
       // Home Appliances - Oven (Services 54-58)
@@ -560,7 +673,11 @@ class DummyDataService {
         price: 184.00,
         category: l10n.homeAppliances,
         subcategory: l10n.oven,
-        features: [l10n.deepCleaning, 'Interior & exterior', l10n.professionalService],
+        features: [
+          l10n.deepCleaning,
+          'Interior & exterior',
+          l10n.professionalService
+        ],
       ),
       Service(
         id: '57',
@@ -594,8 +711,13 @@ class DummyDataService {
       // AC Services
       'AC Services': 'ac_services',
       'ac services': 'ac_services',
+      'AC Repair': 'ac_services', // Added
+      'ac repair': 'ac_services', // Added
+      'AC Service': 'ac_services', // Added
+      'ac service': 'ac_services', // Added
       'خدمات مكيفات الهواء': 'ac_services',
       'خدمات التكييف': 'ac_services',
+      'تصليح مكيفات': 'ac_services', // Added common Arabic term
 
       // Home Appliances
       'Home Appliances': 'home_appliances',
@@ -612,6 +734,8 @@ class DummyDataService {
       // Electric
       'Electric': 'electric',
       'electric': 'electric',
+      'Electrical': 'electric', // Added
+      'electrical': 'electric', // Added
       'الكهرباء': 'electric',
     };
 
@@ -645,14 +769,23 @@ class DummyDataService {
         icon: '❄️',
         services: services.where((s) => s.category == l10n.acServices).toList(),
         subcategories: [l10n.splitAc, l10n.windowAc, l10n.centralAc],
+        imageUrl: 'assets/images/ac_service.png',
       ),
       ServiceCategory(
         id: '2',
         name: l10n.homeAppliances,
         description: l10n.homeAppliancesDescription,
         icon: '🏠',
-        services: services.where((s) => s.category == l10n.homeAppliances).toList(),
-        subcategories: [l10n.washingMachine, l10n.refrigerator, l10n.oven, l10n.stove, l10n.dishwasher],
+        services:
+            services.where((s) => s.category == l10n.homeAppliances).toList(),
+        subcategories: [
+          l10n.washingMachine,
+          l10n.refrigerator,
+          l10n.oven,
+          l10n.stove,
+          l10n.dishwasher
+        ],
+        imageUrl: 'assets/images/home_appliances.png',
       ),
       ServiceCategory(
         id: '3',
@@ -660,7 +793,13 @@ class DummyDataService {
         description: l10n.plumbingDescription,
         icon: '🔧',
         services: [],
-        subcategories: [l10n.pipeRepair, l10n.drainCleaning, l10n.waterHeater, l10n.faucetInstallation],
+        subcategories: [
+          l10n.pipeRepair,
+          l10n.drainCleaning,
+          l10n.waterHeater,
+          l10n.faucetInstallation
+        ],
+        imageUrl: 'assets/images/plumbing.png',
       ),
       ServiceCategory(
         id: '4',
@@ -668,21 +807,29 @@ class DummyDataService {
         description: l10n.electricDescription,
         icon: '⚡',
         services: [],
-        subcategories: [l10n.wiring, l10n.switchSocket, l10n.circuitBreaker, l10n.lightingInstallation],
+        subcategories: [
+          l10n.wiring,
+          l10n.switchSocket,
+          l10n.circuitBreaker,
+          l10n.lightingInstallation
+        ],
       ),
     ];
   }
 
-  static List<String> getSubcategories(String categoryName, AppLocalizations l10n) {
+  static List<String> getSubcategories(
+      String categoryName, AppLocalizations l10n) {
     try {
       // Get all categories
       final categories = getCategories(l10n);
 
       // Find category by direct name comparison first
       var category = categories.firstWhere(
-            (c) => c.name == categoryName,
+        (c) => c.name == categoryName,
         orElse: () => categories.firstWhere(
-              (c) => _normalizeCategoryName(c.name) == _normalizeCategoryName(categoryName),
+          (c) =>
+              _normalizeCategoryName(c.name) ==
+              _normalizeCategoryName(categoryName),
         ),
       );
 
@@ -694,36 +841,64 @@ class DummyDataService {
     }
   }
 
-  static List<String> _getFallbackSubcategories(String categoryName, AppLocalizations l10n) {
+  static List<String> _getFallbackSubcategories(
+      String categoryName, AppLocalizations l10n) {
     final normalized = _normalizeCategoryName(categoryName);
 
     if (normalized.contains('ac') || normalized.contains('تكييف')) {
       return [l10n.splitAc, l10n.windowAc, l10n.centralAc];
-    } else if (normalized.contains('home') || normalized.contains('appliance') || normalized.contains('منزلية')) {
-      return [l10n.washingMachine, l10n.refrigerator, l10n.oven, l10n.stove, l10n.dishwasher];
+    } else if (normalized.contains('home') ||
+        normalized.contains('appliance') ||
+        normalized.contains('منزلية')) {
+      return [
+        l10n.washingMachine,
+        l10n.refrigerator,
+        l10n.oven,
+        l10n.stove,
+        l10n.dishwasher
+      ];
     } else if (normalized.contains('plumb') || normalized.contains('سباك')) {
-      return [l10n.pipeRepair, l10n.drainCleaning, l10n.waterHeater, l10n.faucetInstallation];
+      return [
+        l10n.pipeRepair,
+        l10n.drainCleaning,
+        l10n.waterHeater,
+        l10n.faucetInstallation
+      ];
     } else if (normalized.contains('electric') || normalized.contains('كهرب')) {
-      return [l10n.wiring, l10n.switchSocket, l10n.circuitBreaker, l10n.lightingInstallation];
+      return [
+        l10n.wiring,
+        l10n.switchSocket,
+        l10n.circuitBreaker,
+        l10n.lightingInstallation
+      ];
     }
 
     return [];
   }
 
   static List<String> getWashingMachineTypes(AppLocalizations l10n) {
-    return [l10n.automatic, l10n.regular, l10n.semiAutomatic, l10n.topLoad, l10n.frontLoad];
+    return [
+      l10n.automatic,
+      l10n.regular,
+      l10n.semiAutomatic,
+      l10n.topLoad,
+      l10n.frontLoad
+    ];
   }
 
-  static List<Service> getWashingMachineServices(String type, AppLocalizations l10n) {
+  static List<Service> getWashingMachineServices(
+      String type, AppLocalizations l10n) {
     final services = _getServices(l10n);
-    return services.where((s) =>
-    s.category == l10n.homeAppliances &&
-        s.subcategory == l10n.washingMachine &&
-        s.subSubcategory == type
-    ).toList();
+    return services
+        .where((s) =>
+            s.category == l10n.homeAppliances &&
+            s.subcategory == l10n.washingMachine &&
+            s.subSubcategory == type)
+        .toList();
   }
 
-  static List<Service> getServicesBySubcategory(String categoryName, String subcategory, AppLocalizations l10n) {
+  static List<Service> getServicesBySubcategory(
+      String categoryName, String subcategory, AppLocalizations l10n) {
     final services = _getServices(l10n);
 
     // Find services by direct comparison
@@ -762,14 +937,19 @@ class DummyDataService {
       userId: userId,
       serviceId: serviceId,
       bookingDate: bookingDate,
-      bookingTime: bookingTime,
-      totalPrice: totalPrice,
+      bookingTime: DateFormat('h:mm a').format(bookingTime),
+      customerName: 'Test User',
+      serviceName: service?.name ?? 'Unknown Service',
+      address: '123 Main St, Lahore',
+      basePrice: totalPrice,
+      commission: 0,
+      vat: 0,
+      customerLanguage: l10n.localeName,
       status: BookingStatus.pending,
       createdAt: DateTime.now(),
-      notes: notes,
-      service: service,
-      quantity: quantity,
-      paymentMethod: paymentMethod,
+      updatedAt: DateTime.now(),
+      paymentMethod:
+          paymentMethod == 'cash' ? PaymentMethod.cash : PaymentMethod.online,
     );
 
     _bookings.add(booking);
@@ -791,20 +971,24 @@ class DummyDataService {
   }
 
   static void addDummyCompletedBookings(String userId, AppLocalizations l10n) {
-    final services = _getServices(l10n);
-
     _bookings.add(Booking(
       id: '${DateTime.now().millisecondsSinceEpoch - 100000}',
       userId: userId,
       serviceId: '2',
       bookingDate: DateTime.now().subtract(const Duration(days: 5)),
-      bookingTime: DateTime.now().subtract(const Duration(days: 5)),
-      totalPrice: 128.00,
+      bookingTime: DateFormat('h:mm a')
+          .format(DateTime.now().subtract(const Duration(days: 5))),
+      customerName: 'Test User',
+      serviceName: 'Repairing Leaks',
+      address: '123 Main St, Lahore',
+      basePrice: 120.0,
+      commission: 0,
+      vat: 0,
+      customerLanguage: l10n.localeName,
       status: BookingStatus.completed,
       createdAt: DateTime.now().subtract(const Duration(days: 6)),
-      service: services.firstWhere((s) => s.id == '2'),
-      quantity: 1,
-      paymentMethod: 'cash',
+      updatedAt: DateTime.now(),
+      paymentMethod: PaymentMethod.cash,
     ));
 
     _bookings.add(Booking(
@@ -812,13 +996,19 @@ class DummyDataService {
       userId: userId,
       serviceId: '26',
       bookingDate: DateTime.now().subtract(const Duration(days: 12)),
-      bookingTime: DateTime.now().subtract(const Duration(days: 12)),
-      totalPrice: 150.00,
+      bookingTime: DateFormat('h:mm a')
+          .format(DateTime.now().subtract(const Duration(days: 12))),
+      customerName: 'Test User',
+      serviceName: 'General Cleaning',
+      address: '123 Main St, Lahore',
+      basePrice: 85.0,
+      commission: 00,
+      vat: 0,
+      customerLanguage: l10n.localeName,
       status: BookingStatus.completed,
       createdAt: DateTime.now().subtract(const Duration(days: 13)),
-      service: services.firstWhere((s) => s.id == '26'),
-      quantity: 1,
-      paymentMethod: 'card',
+      updatedAt: DateTime.now(),
+      paymentMethod: PaymentMethod.online,
     ));
 
     _bookings.add(Booking(
@@ -826,13 +1016,19 @@ class DummyDataService {
       userId: userId,
       serviceId: '38',
       bookingDate: DateTime.now().subtract(const Duration(days: 20)),
-      bookingTime: DateTime.now().subtract(const Duration(days: 20)),
-      totalPrice: 196.00,
-      status: BookingStatus.completed,
+      bookingTime: DateFormat('h:mm a')
+          .format(DateTime.now().subtract(const Duration(days: 20))),
+      customerName: 'Test User',
+      serviceName: 'Install New AC',
+      address: '123 Main St, Lahore',
+      basePrice: 240.0,
+      commission: 0,
+      vat: 0,
+      customerLanguage: l10n.localeName,
+      status: BookingStatus.accepted,
       createdAt: DateTime.now().subtract(const Duration(days: 21)),
-      service: services.firstWhere((s) => s.id == '38'),
-      quantity: 1,
-      paymentMethod: 'cash',
+      updatedAt: DateTime.now(),
+      paymentMethod: PaymentMethod.online,
     ));
   }
 }

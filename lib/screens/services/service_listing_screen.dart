@@ -2,9 +2,11 @@ import 'package:flutter/material.dart';
 import '../../models/user_model.dart';
 import '../../models/service_model.dart';
 import '../../models/cart_model.dart';
+
+import '../../services/firestore_service.dart';
 import '../../services/dummy_data_service.dart';
 import 'service_checkout_screen.dart';
-import 'service_detail_screen.dart';
+
 import '../cart/cart_screen.dart';
 import '../../utils/icons_helper.dart';
 import '../../gen_l10n/app_localizations.dart';
@@ -12,12 +14,12 @@ import '../../utils/formatting_utils.dart';
 import '../../utils/app_colors.dart';
 
 class ServiceListingScreen extends StatefulWidget {
-  final String categoryName;
+  final ServiceCategory category;
   final User user;
 
   const ServiceListingScreen({
     super.key,
-    required this.categoryName,
+    required this.category,
     required this.user,
   });
 
@@ -25,7 +27,8 @@ class ServiceListingScreen extends StatefulWidget {
   State<ServiceListingScreen> createState() => _ServiceListingScreenState();
 }
 
-class _ServiceListingScreenState extends State<ServiceListingScreen> with TickerProviderStateMixin {
+class _ServiceListingScreenState extends State<ServiceListingScreen>
+    with TickerProviderStateMixin {
   List<String> _subcategories = [];
   String? _selectedSubcategory;
   List<String>? _subSubcategories;
@@ -39,7 +42,7 @@ class _ServiceListingScreenState extends State<ServiceListingScreen> with Ticker
   late AnimationController _animationController;
   late Animation<double> _fadeAnimation;
   late Animation<Offset> _slideAnimation;
-  bool _isDataLoaded = false;
+  // bool _isDataLoaded = false; // Removed as part of dynamic loading refactor
 
   @override
   void initState() {
@@ -67,35 +70,21 @@ class _ServiceListingScreenState extends State<ServiceListingScreen> with Ticker
     ));
 
     _animationController.forward();
+
+    // Fetch all services immediately to populate subcategories
+    _fetchServices();
   }
+
+  // Not used anymore as we fetch services dynamically
+  // void _loadSubcategories() ...
 
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
-    if (!_isDataLoaded) {
-      _loadSubcategories();
-    }
+    // No need to call loadSubcategories here anymore
   }
 
-  void _loadSubcategories() {
-    final l10n = AppLocalizations.of(context);
-    if (l10n != null) {
-      setState(() {
-        _subcategories = DummyDataService.getSubcategories(widget.categoryName, l10n);
-        _isDataLoaded = true;
-      });
-    }
-  }
-
-  @override
-  void dispose() {
-    _searchController.dispose();
-    _scrollController.dispose();
-    _animationController.dispose();
-    super.dispose();
-  }
-
-  Icon _getIconForSubcategory(String subcategory) {
+  Widget _getIconForSubcategory(String subcategory) {
     return IconHelper.getServiceIcon(
       subcategory: subcategory,
       color: Colors.white,
@@ -103,14 +92,41 @@ class _ServiceListingScreenState extends State<ServiceListingScreen> with Ticker
     );
   }
 
-  Icon _getIconForServiceItem(Service service) {
-    return IconHelper.getServiceIcon(
-      category: service.category,
-      subcategory: service.subcategory,
-      subSubcategory: service.subSubcategory,
-      serviceName: service.name,
-      color: Colors.white,
-      size: 28,
+  Widget _getIconForServiceItem(Service service) {
+    // If we have an image URL, try to show it
+    if (service.imageUrl != null && service.imageUrl!.isNotEmpty) {
+      return ClipRRect(
+        borderRadius: BorderRadius.circular(12),
+        child: Image.network(
+          service.imageUrl!,
+          fit: BoxFit.cover,
+          errorBuilder: (context, error, stackTrace) {
+            // Fallback to icon on error
+            return Center(
+              child: IconHelper.getServiceIcon(
+                category: service.category,
+                subcategory: service.subcategory,
+                subSubcategory: service.subSubcategory,
+                serviceName: service.name,
+                color: Colors.white,
+                size: 28,
+              ),
+            );
+          },
+        ),
+      );
+    }
+
+    // Default icon behavior
+    return Center(
+      child: IconHelper.getServiceIcon(
+        category: service.category,
+        subcategory: service.subcategory,
+        subSubcategory: service.subSubcategory,
+        serviceName: service.name,
+        color: Colors.white,
+        size: 28,
+      ),
     );
   }
 
@@ -123,21 +139,71 @@ class _ServiceListingScreenState extends State<ServiceListingScreen> with Ticker
 
       if (subcategory == l10n.washingMachine) {
         _subSubcategories = DummyDataService.getWashingMachineTypes(l10n);
-        _services = [];
+        // Filter locally fetched services? Or keep using Dummy for subSub for now?
+        // Assuming washing machine logic is custom for now.
         _filteredServices = [];
       } else {
         _subSubcategories = null;
         _selectedSubSubcategory = null;
-        _services = DummyDataService.getServicesBySubcategory(
-          widget.categoryName,
-          subcategory,
-          l10n,
-        );
-        _filteredServices = List.from(_services);
+        _filterServicesBySubcategory(subcategory);
       }
 
       _selectedServiceId = null;
       _selectedQuantity = 1;
+    });
+  }
+
+  Future<void> _fetchServices() async {
+    // Fetch ALL services for this category
+    final firestoreService = FirestoreService();
+    final services =
+        await firestoreService.getServicesByCategory(widget.category.id);
+
+    if (!mounted) return;
+
+    final l10n = AppLocalizations.of(context);
+    final isArabic = l10n?.localeName == 'ar';
+
+    // Dynamically extract unique subcategories
+    final Set<String> uniqueSubcategories = {};
+    for (var service in services) {
+      final sub = isArabic
+          ? (service.subcategoryArabic ?? service.subcategory)
+          : service.subcategory;
+      if (sub != null && sub.isNotEmpty) {
+        uniqueSubcategories.add(sub);
+      }
+    }
+
+    setState(() {
+      _services = services;
+      // If no services found, maybe fallback to category subcategories (if any)
+      if (uniqueSubcategories.isEmpty) {
+        if (isArabic) {
+          _subcategories = widget.category.subcategoriesArabic.isNotEmpty
+              ? widget.category.subcategoriesArabic
+              : (widget.category.subcategories ?? []);
+        } else {
+          _subcategories = widget.category.subcategories ?? [];
+        }
+      } else {
+        _subcategories = uniqueSubcategories.toList();
+      }
+      // _isDataLoaded = true;
+    });
+  }
+
+  // Filter the ALREADY FETCHED list
+  void _filterServicesBySubcategory(String subcategory) {
+    final l10n = AppLocalizations.of(context);
+    final isArabic = l10n?.localeName == 'ar';
+
+    setState(() {
+      _filteredServices = _services.where((s) {
+        final sub =
+            isArabic ? (s.subcategoryArabic ?? s.subcategory) : s.subcategory;
+        return sub == subcategory;
+      }).toList();
     });
   }
 
@@ -168,7 +234,8 @@ class _ServiceListingScreenState extends State<ServiceListingScreen> with Ticker
   }
 
   void _addToCart(Service service, AppLocalizations l10n) {
-    final existingIndex = globalCart.indexWhere((item) => item.service.id == service.id);
+    final existingIndex =
+        globalCart.indexWhere((item) => item.service.id == service.id);
 
     if (existingIndex != -1) {
       globalCart[existingIndex].quantity += _selectedQuantity;
@@ -216,7 +283,7 @@ class _ServiceListingScreenState extends State<ServiceListingScreen> with Ticker
       } else if (_selectedSubcategory != null) {
         _selectedSubcategory = null;
         _subSubcategories = null;
-        _services = [];
+        // _services = []; // Fix: Don't clear master list of services
         _filteredServices = [];
         _searchController.clear();
       } else {
@@ -225,7 +292,8 @@ class _ServiceListingScreenState extends State<ServiceListingScreen> with Ticker
     });
   }
 
-  int get _cartItemCount => globalCart.fold(0, (sum, item) => sum + item.quantity);
+  int get _cartItemCount =>
+      globalCart.fold(0, (sum, item) => sum + item.quantity);
 
   @override
   Widget build(BuildContext context) {
@@ -250,13 +318,19 @@ class _ServiceListingScreenState extends State<ServiceListingScreen> with Ticker
         backgroundColor: Theme.of(context).colorScheme.surface,
         appBar: AppBar(
           title: Text(
-            _selectedSubSubcategory ?? _selectedSubcategory ?? widget.categoryName,
+            _selectedSubSubcategory ??
+                _selectedSubcategory ??
+                (Localizations.localeOf(context).languageCode == 'ar' &&
+                        widget.category.nameArabic.isNotEmpty
+                    ? widget.category.nameArabic
+                    : widget.category.name),
             style: TextStyle(color: Theme.of(context).colorScheme.onSurface),
           ),
           centerTitle: true,
           elevation: 0,
           backgroundColor: Theme.of(context).colorScheme.surface,
-          iconTheme: IconThemeData(color: Theme.of(context).colorScheme.onSurface),
+          iconTheme:
+              IconThemeData(color: Theme.of(context).colorScheme.onSurface),
           leading: IconButton(
             icon: const Icon(Icons.arrow_back),
             onPressed: _goBack,
@@ -269,7 +343,8 @@ class _ServiceListingScreenState extends State<ServiceListingScreen> with Ticker
                   onPressed: () {
                     Navigator.push(
                       context,
-                      MaterialPageRoute(builder: (_) => CartScreen(user: widget.user)),
+                      MaterialPageRoute(
+                          builder: (_) => CartScreen(user: widget.user)),
                     ).then((_) => setState(() {}));
                   },
                 ),
@@ -309,8 +384,8 @@ class _ServiceListingScreenState extends State<ServiceListingScreen> with Ticker
           child: _selectedSubcategory == null
               ? _buildSubcategoryView(l10n)
               : (_subSubcategories != null && _selectedSubSubcategory == null)
-              ? _buildSubSubcategoryView(l10n)
-              : _buildServicesView(l10n, locale),
+                  ? _buildSubSubcategoryView(l10n)
+                  : _buildServicesView(l10n, locale),
         ),
       ),
     );
@@ -371,19 +446,29 @@ class _ServiceListingScreenState extends State<ServiceListingScreen> with Ticker
                             children: [
                               Text(
                                 subcategory,
-                                style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                                  fontWeight: FontWeight.w700,
-                                  color: Theme.of(context).colorScheme.onSurface,
-                                ),
+                                style: Theme.of(context)
+                                    .textTheme
+                                    .titleMedium
+                                    ?.copyWith(
+                                      fontWeight: FontWeight.w700,
+                                      color: Theme.of(context)
+                                          .colorScheme
+                                          .onSurface,
+                                    ),
                               ),
                               const SizedBox(height: 4),
                               Text(
                                 subcategory == l10n.washingMachine
                                     ? l10n.chooseMachineType
                                     : l10n.viewAllServices,
-                                style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                                  color: Theme.of(context).colorScheme.onSurfaceVariant,
-                                ),
+                                style: Theme.of(context)
+                                    .textTheme
+                                    .bodyMedium
+                                    ?.copyWith(
+                                      color: Theme.of(context)
+                                          .colorScheme
+                                          .onSurfaceVariant,
+                                    ),
                               ),
                             ],
                           ),
@@ -452,7 +537,8 @@ class _ServiceListingScreenState extends State<ServiceListingScreen> with Ticker
                             gradient: AppColors.primaryGradient,
                             borderRadius: BorderRadius.circular(16),
                           ),
-                          child: const Icon(Icons.local_laundry_service, color: Colors.white, size: 32),
+                          child: const Icon(Icons.local_laundry_service,
+                              color: Colors.white, size: 32),
                         ),
                         const SizedBox(width: 16),
                         Expanded(
@@ -461,17 +547,27 @@ class _ServiceListingScreenState extends State<ServiceListingScreen> with Ticker
                             children: [
                               Text(
                                 '$type ${l10n.washingMachine}',
-                                style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                                  fontWeight: FontWeight.w700,
-                                  color: Theme.of(context).colorScheme.onSurface,
-                                ),
+                                style: Theme.of(context)
+                                    .textTheme
+                                    .titleMedium
+                                    ?.copyWith(
+                                      fontWeight: FontWeight.w700,
+                                      color: Theme.of(context)
+                                          .colorScheme
+                                          .onSurface,
+                                    ),
                               ),
                               const SizedBox(height: 4),
                               Text(
                                 l10n.viewServicesForMachines(type),
-                                style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                                  color: Theme.of(context).colorScheme.onSurfaceVariant,
-                                ),
+                                style: Theme.of(context)
+                                    .textTheme
+                                    .bodyMedium
+                                    ?.copyWith(
+                                      color: Theme.of(context)
+                                          .colorScheme
+                                          .onSurfaceVariant,
+                                    ),
                               ),
                             ],
                           ),
@@ -523,7 +619,8 @@ class _ServiceListingScreenState extends State<ServiceListingScreen> with Ticker
               style: TextStyle(color: Theme.of(context).colorScheme.onSurface),
               decoration: InputDecoration(
                 hintText: l10n.searchServices,
-                hintStyle: TextStyle(color: Theme.of(context).colorScheme.onSurfaceVariant),
+                hintStyle: TextStyle(
+                    color: Theme.of(context).colorScheme.onSurfaceVariant),
                 prefixIcon: Container(
                   margin: const EdgeInsets.all(8),
                   padding: const EdgeInsets.all(8),
@@ -531,16 +628,19 @@ class _ServiceListingScreenState extends State<ServiceListingScreen> with Ticker
                     gradient: AppColors.primaryGradient,
                     borderRadius: BorderRadius.circular(10),
                   ),
-                  child: const Icon(Icons.search, color: Colors.white, size: 20),
+                  child:
+                      const Icon(Icons.search, color: Colors.white, size: 20),
                 ),
                 suffixIcon: _searchController.text.isNotEmpty
                     ? IconButton(
-                  icon: Icon(Icons.clear, color: Theme.of(context).colorScheme.onSurfaceVariant),
-                  onPressed: () {
-                    _searchController.clear();
-                    _filterServices('');
-                  },
-                )
+                        icon: Icon(Icons.clear,
+                            color:
+                                Theme.of(context).colorScheme.onSurfaceVariant),
+                        onPressed: () {
+                          _searchController.clear();
+                          _filterServices('');
+                        },
+                      )
                     : null,
                 border: InputBorder.none,
                 contentPadding: const EdgeInsets.symmetric(
@@ -554,245 +654,265 @@ class _ServiceListingScreenState extends State<ServiceListingScreen> with Ticker
         Expanded(
           child: _filteredServices.isEmpty
               ? Center(
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Icon(
-                  Icons.search_off,
-                  size: 64,
-                  color: Theme.of(context).colorScheme.onSurfaceVariant.withOpacity(0.5),
-                ),
-                const SizedBox(height: 16),
-                Text(
-                  l10n.noServicesFound,
-                  style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                    color: Theme.of(context).colorScheme.onSurface,
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Icon(
+                        Icons.search_off,
+                        size: 64,
+                        color: Theme.of(context)
+                            .colorScheme
+                            .onSurfaceVariant
+                            .withOpacity(0.5),
+                      ),
+                      const SizedBox(height: 16),
+                      Text(
+                        l10n.noServicesFound,
+                        style: Theme.of(context)
+                            .textTheme
+                            .titleMedium
+                            ?.copyWith(
+                              color: Theme.of(context).colorScheme.onSurface,
+                            ),
+                      ),
+                      const SizedBox(height: 8),
+                      Text(
+                        l10n.tryAdjustingYourSearchTerms,
+                        style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                              color: Theme.of(context)
+                                  .colorScheme
+                                  .onSurfaceVariant,
+                            ),
+                      ),
+                    ],
                   ),
-                ),
-                const SizedBox(height: 8),
-                Text(
-                  l10n.tryAdjustingYourSearchTerms,
-                  style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                    color: Theme.of(context).colorScheme.onSurfaceVariant,
-                  ),
-                ),
-              ],
-            ),
-          )
+                )
               : FadeTransition(
-            opacity: _fadeAnimation,
-            child: SlideTransition(
-              position: _slideAnimation,
-              child: ListView.builder(
-                controller: _scrollController,
-                padding: const EdgeInsets.symmetric(horizontal: 16),
-                itemCount: _filteredServices.length,
-                itemBuilder: (context, index) {
-                  final service = _filteredServices[index];
-                  final isSelected = _selectedServiceId == service.id;
+                  opacity: _fadeAnimation,
+                  child: SlideTransition(
+                    position: _slideAnimation,
+                    child: ListView.builder(
+                      controller: _scrollController,
+                      padding: const EdgeInsets.symmetric(horizontal: 16),
+                      itemCount: _filteredServices.length,
+                      itemBuilder: (context, index) {
+                        final service = _filteredServices[index];
+                        final isSelected = _selectedServiceId == service.id;
 
-                  return AnimatedContainer(
-                    duration: const Duration(milliseconds: 300),
-                    margin: const EdgeInsets.only(bottom: 16),
-                    decoration: BoxDecoration(
-                      color: Theme.of(context).colorScheme.surface,
-                      borderRadius: BorderRadius.circular(20),
-                      boxShadow: [
-                        BoxShadow(
-                          color: isSelected
-                              ? AppColors.deepPurple.withOpacity(0.3)
-                              : Colors.black.withOpacity(0.05),
-                          blurRadius: isSelected ? 20 : 15,
-                          offset: const Offset(0, 5),
-                        ),
-                      ],
-                      border: isSelected
-                          ? Border.all(
-                        color: AppColors.deepPurple,
-                        width: 2,
-                      )
-                          : null,
-                    ),
-                    child: Material(
-                      color: Colors.transparent,
-                      child: InkWell(
-                        borderRadius: BorderRadius.circular(20),
-                        onTap: () {
-                          setState(() {
-                            _selectedServiceId = isSelected ? null : service.id;
-                            _selectedQuantity = 1;
-                          });
+                        return AnimatedContainer(
+                          duration: const Duration(milliseconds: 300),
+                          margin: const EdgeInsets.only(bottom: 16),
+                          decoration: BoxDecoration(
+                            color: Theme.of(context).colorScheme.surface,
+                            borderRadius: BorderRadius.circular(20),
+                            boxShadow: [
+                              BoxShadow(
+                                color: isSelected
+                                    ? AppColors.deepPurple.withOpacity(0.3)
+                                    : Colors.black.withOpacity(0.05),
+                                blurRadius: isSelected ? 20 : 15,
+                                offset: const Offset(0, 5),
+                              ),
+                            ],
+                            border: isSelected
+                                ? Border.all(
+                                    color: AppColors.deepPurple,
+                                    width: 2,
+                                  )
+                                : null,
+                          ),
+                          child: Material(
+                            color: Colors.transparent,
+                            child: InkWell(
+                              borderRadius: BorderRadius.circular(20),
+                              onTap: () {
+                                setState(() {
+                                  _selectedServiceId =
+                                      isSelected ? null : service.id;
+                                  _selectedQuantity = 1;
+                                });
 
-                          if (!isSelected && _scrollController.hasClients) {
-                            Future.delayed(const Duration(milliseconds: 100), () {
-                              _scrollController.animateTo(
-                                _scrollController.position.pixels + 100,
-                                duration: const Duration(milliseconds: 300),
-                                curve: Curves.easeOut,
-                              );
-                            });
-                          }
-                        },
-                        child: Padding(
-                          padding: const EdgeInsets.all(16),
-                          child: Row(
-                            children: [
-                              Container(
-                                width: 70,
-                                height: 70,
-                                decoration: BoxDecoration(
-                                  gradient: AppColors.primaryGradient,
-                                  borderRadius: BorderRadius.circular(16),
-                                ),
-                                child: _getIconForServiceItem(service),
-                              ),
-                              const SizedBox(width: 16),
-                              Expanded(
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Text(
-                                      service.name,
-                                      style: Theme.of(context).textTheme.titleSmall?.copyWith(
-                                        fontWeight: FontWeight.w700,
-                                        color: Theme.of(context).colorScheme.onSurface,
-                                      ),
-                                      maxLines: 2,
-                                      overflow: TextOverflow.ellipsis,
-                                    ),
-                                    const SizedBox(height: 4),
-                                    Text(
-                                      service.description,
-                                      style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                                        color: Theme.of(context).colorScheme.onSurfaceVariant,
-                                      ),
-                                      maxLines: 2,
-                                      overflow: TextOverflow.ellipsis,
-                                    ),
-                                    const SizedBox(height: 8),
-                                    Container(
-                                      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-                                      decoration: BoxDecoration(
-                                        gradient: AppColors.accentGradient,
-                                        borderRadius: BorderRadius.circular(8),
-                                      ),
-                                      child: Text(
-                                        FormattingUtils.formatCurrency(service.price, l10n, locale),
-                                        style: const TextStyle(
-                                          color: Colors.white,
-                                          fontWeight: FontWeight.w700,
-                                          fontSize: 13,
-                                        ),
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              ),
-                              const SizedBox(width: 12),
-                              if (isSelected)
-                                Container(
-                                  decoration: BoxDecoration(
-                                    gradient: AppColors.primaryGradient,
-                                    borderRadius: BorderRadius.circular(12),
-                                  ),
-                                  child: Row(
-                                    mainAxisSize: MainAxisSize.min,
-                                    children: [
-                                      IconButton(
-                                        icon: const Icon(Icons.remove, color: Colors.white, size: 18),
-                                        padding: const EdgeInsets.all(8),
-                                        constraints: const BoxConstraints(),
-                                        onPressed: () {
-                                          if (_selectedQuantity > 1) {
-                                            setState(() {
-                                              _selectedQuantity--;
-                                            });
-                                          }
-                                        },
-                                      ),
-                                      Container(
-                                        padding: const EdgeInsets.symmetric(horizontal: 12),
-                                        child: Text(
-                                          FormattingUtils.formatNumber(_selectedQuantity, locale),
-                                          style: const TextStyle(
-                                            color: Colors.white,
-                                            fontWeight: FontWeight.w700,
-                                            fontSize: 16,
-                                          ),
-                                        ),
-                                      ),
-                                      IconButton(
-                                        icon: const Icon(Icons.add, color: Colors.white, size: 18),
-                                        padding: const EdgeInsets.all(8),
-                                        constraints: const BoxConstraints(),
-                                        onPressed: () {
-                                          setState(() {
-                                            _selectedQuantity++;
-                                          });
-                                        },
-                                      ),
-                                    ],
-                                  ),
-                                )
-                              else
-                                Column(
-                                  mainAxisSize: MainAxisSize.min,
+                                if (!isSelected &&
+                                    _scrollController.hasClients) {
+                                  Future.delayed(
+                                      const Duration(milliseconds: 100), () {
+                                    _scrollController.animateTo(
+                                      _scrollController.position.pixels + 100,
+                                      duration:
+                                          const Duration(milliseconds: 300),
+                                      curve: Curves.easeOut,
+                                    );
+                                  });
+                                }
+                              },
+                              child: Padding(
+                                padding: const EdgeInsets.all(16),
+                                child: Row(
                                   children: [
                                     Container(
+                                      width: 70,
+                                      height: 70,
                                       decoration: BoxDecoration(
                                         gradient: AppColors.primaryGradient,
-                                        borderRadius: BorderRadius.circular(10),
+                                        borderRadius: BorderRadius.circular(16),
                                       ),
-                                      child: IconButton(
-                                        onPressed: () => _addToCart(service, l10n),
-                                        icon: const Icon(
-                                          Icons.add_shopping_cart,
-                                          color: Colors.white,
-                                          size: 20,
-                                        ),
-                                        padding: const EdgeInsets.all(8),
-                                        constraints: const BoxConstraints(),
-                                      ),
+                                      child: _getIconForServiceItem(service),
                                     ),
-                                    const SizedBox(height: 8),
-                                    Container(
-                                      decoration: BoxDecoration(
-                                        color: Theme.of(context).colorScheme.surfaceContainerHighest,
-                                        borderRadius: BorderRadius.circular(10),
-                                      ),
-                                      child: IconButton(
-                                        onPressed: () {
-                                          Navigator.push(
-                                            context,
-                                            MaterialPageRoute(
-                                              builder: (_) => ServiceDetailScreen(
-                                                service: service,
-                                                user: widget.user,
+                                    const SizedBox(width: 16),
+                                    Expanded(
+                                      child: Column(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        children: [
+                                          Text(
+                                            Localizations.localeOf(context)
+                                                            .languageCode ==
+                                                        'ar' &&
+                                                    service
+                                                        .nameArabic.isNotEmpty
+                                                ? service.nameArabic
+                                                : service.name,
+                                            style: Theme.of(context)
+                                                .textTheme
+                                                .titleSmall
+                                                ?.copyWith(
+                                                  fontWeight: FontWeight.w700,
+                                                  color: Theme.of(context)
+                                                      .colorScheme
+                                                      .onSurface,
+                                                ),
+                                            maxLines: 2,
+                                            overflow: TextOverflow.ellipsis,
+                                          ),
+                                          const SizedBox(height: 4),
+                                          Text(
+                                            service.description,
+                                            style: Theme.of(context)
+                                                .textTheme
+                                                .bodySmall
+                                                ?.copyWith(
+                                                  color: Theme.of(context)
+                                                      .colorScheme
+                                                      .onSurfaceVariant,
+                                                ),
+                                            maxLines: 2,
+                                            overflow: TextOverflow.ellipsis,
+                                          ),
+                                          const SizedBox(height: 8),
+                                          Container(
+                                            padding: const EdgeInsets.symmetric(
+                                                horizontal: 12, vertical: 6),
+                                            decoration: BoxDecoration(
+                                              gradient:
+                                                  AppColors.accentGradient,
+                                              borderRadius:
+                                                  BorderRadius.circular(8),
+                                            ),
+                                            child: Text(
+                                              FormattingUtils.formatCurrency(
+                                                  service.price, l10n, locale),
+                                              style: const TextStyle(
+                                                color: Colors.white,
+                                                fontWeight: FontWeight.w700,
+                                                fontSize: 13,
                                               ),
                                             ),
-                                          );
-                                        },
-                                        icon: Icon(
-                                          Icons.visibility,
-                                          color: Theme.of(context).colorScheme.onSurface,
-                                          size: 20,
-                                        ),
-                                        padding: const EdgeInsets.all(8),
-                                        constraints: const BoxConstraints(),
+                                          ),
+                                        ],
                                       ),
                                     ),
+                                    const SizedBox(width: 12),
+                                    if (isSelected)
+                                      Container(
+                                        decoration: BoxDecoration(
+                                          gradient: AppColors.primaryGradient,
+                                          borderRadius:
+                                              BorderRadius.circular(12),
+                                        ),
+                                        child: Row(
+                                          mainAxisSize: MainAxisSize.min,
+                                          children: [
+                                            IconButton(
+                                              icon: const Icon(Icons.remove,
+                                                  color: Colors.white,
+                                                  size: 18),
+                                              padding: const EdgeInsets.all(8),
+                                              constraints:
+                                                  const BoxConstraints(),
+                                              onPressed: () {
+                                                if (_selectedQuantity > 1) {
+                                                  setState(() {
+                                                    _selectedQuantity--;
+                                                  });
+                                                }
+                                              },
+                                            ),
+                                            Container(
+                                              padding:
+                                                  const EdgeInsets.symmetric(
+                                                      horizontal: 12),
+                                              child: Text(
+                                                FormattingUtils.formatNumber(
+                                                    _selectedQuantity, locale),
+                                                style: const TextStyle(
+                                                  color: Colors.white,
+                                                  fontWeight: FontWeight.w700,
+                                                  fontSize: 16,
+                                                ),
+                                              ),
+                                            ),
+                                            IconButton(
+                                              icon: const Icon(Icons.add,
+                                                  color: Colors.white,
+                                                  size: 18),
+                                              padding: const EdgeInsets.all(8),
+                                              constraints:
+                                                  const BoxConstraints(),
+                                              onPressed: () {
+                                                setState(() {
+                                                  _selectedQuantity++;
+                                                });
+                                              },
+                                            ),
+                                          ],
+                                        ),
+                                      )
+                                    else
+                                      Column(
+                                        mainAxisSize: MainAxisSize.min,
+                                        children: [
+                                          Container(
+                                            decoration: BoxDecoration(
+                                              gradient:
+                                                  AppColors.primaryGradient,
+                                              borderRadius:
+                                                  BorderRadius.circular(10),
+                                            ),
+                                            child: IconButton(
+                                              onPressed: () =>
+                                                  _addToCart(service, l10n),
+                                              icon: const Icon(
+                                                Icons.add_shopping_cart,
+                                                color: Colors.white,
+                                                size: 20,
+                                              ),
+                                              padding: const EdgeInsets.all(8),
+                                              constraints:
+                                                  const BoxConstraints(),
+                                            ),
+                                          ),
+                                        ],
+                                      ),
                                   ],
                                 ),
-                            ],
+                              ),
+                            ),
                           ),
-                        ),
-                      ),
+                        );
+                      },
                     ),
-                  );
-                },
-              ),
-            ),
-          ),
+                  ),
+                ),
         ),
         if (_selectedServiceId != null)
           AnimatedContainer(
@@ -806,7 +926,8 @@ class _ServiceListingScreenState extends State<ServiceListingScreen> with Ticker
                 borderRadius: BorderRadius.circular(16),
                 boxShadow: [
                   BoxShadow(
-                    color: AppColors.electricBlue.withOpacity(0.4), // ✅ Electric blue shadow
+                    color: AppColors.electricBlue
+                        .withOpacity(0.4), // ✅ Electric blue shadow
                     blurRadius: 20,
                     offset: const Offset(0, 10),
                   ),
@@ -817,7 +938,7 @@ class _ServiceListingScreenState extends State<ServiceListingScreen> with Ticker
                 child: InkWell(
                   onTap: () {
                     final selectedService = _services.firstWhere(
-                          (s) => s.id == _selectedServiceId,
+                      (s) => s.id == _selectedServiceId,
                     );
                     Navigator.push(
                       context,
@@ -841,7 +962,8 @@ class _ServiceListingScreenState extends State<ServiceListingScreen> with Ticker
                           shape: BoxShape.circle,
                         ),
                         child: Text(
-                          FormattingUtils.formatNumber(_selectedQuantity, locale),
+                          FormattingUtils.formatNumber(
+                              _selectedQuantity, locale),
                           style: const TextStyle(
                             color: AppColors.deepPurple,
                             fontWeight: FontWeight.w700,

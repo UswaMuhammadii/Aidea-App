@@ -1,0 +1,264 @@
+Analyzing Aidea_App...                                          
+
+   info - Don't invoke 'print' in production code - lib\main.dart:43:5 - avoid_print
+   info - Don't invoke 'print' in production code - lib\main.dart:50:5 - avoid_print
+   info - Don't invoke 'print' in production code - lib\main.dart:58:5 - avoid_print
+   info - Don't invoke 'print' in production code - lib\main.dart:59:5 - avoid_print
+   info - Don't invoke 'print' in production code - lib\main.dart:60:5 - avoid_print
+   info - Don't invoke 'print' in production code - lib\main.dart:61:5 - avoid_print
+   info - Don't invoke 'print' in production code - lib\main.dart:67:5 - avoid_print
+   info - Don't invoke 'print' in production code - lib\main.dart:71:5 - avoid_print
+   info - Don't invoke 'print' in production code - lib\main.dart:113:7 - avoid_print
+   info - Don't invoke 'print' in production code - lib\main.dart:117:5 - avoid_print
+   info - Don't invoke 'print' in production code - lib\main.dart:118:5 - avoid_print
+   info - Don't invoke 'print' in production code - lib\main.dart:119:5 - avoid_print
+   info - Don't invoke 'print' in production code - lib\main.dart:123:7 - avoid_print
+   info - Don't invoke 'print' in production code - lib\main.dart:132:7 - avoid_print
+   info - Don't invoke 'print' in production code - lib\main.dart:139:5 - avoid_print
+warning - Unused import: '../../gen_l10n/app_localizations.dart' - lib\models\cart_model.dart:2:8 - unused_import
+   info - Don't invoke 'print' in production code - lib\screens\auth\auth_flow_coordinator.dart:38:7 - avoid_print
+   info - Don't invoke 'print' in production code - lib\screens\auth\auth_flow_coordinator.dart:43:5 - avoid_print
+   info - Don't invoke 'print' in production code - lib\screens\auth\auth_flow_coordinator.dart:44:5 - avoid_print
+   info - Don't invoke 'print' in production code - lib\screens\auth\auth_flow_coordinator.dart:45:5 - avoid_print
+   info - Don't invoke 'print' in production code - lib\screens\auth\auth_flow_coordinator.dart:46:5 - avoid_print
+   info - Don't invoke 'print' in production code - lib\screens\auth\auth_flow_coordinator.dart:55:5 - avoid_print
+   info - Don't invoke 'print' in production code - lib\screens\auth\auth_flow_coordinator.dart:56:5 - avoid_print
+   info - Don't invoke 'print' in production code - lib\screens\auth\auth_flow_coordinator.dart:60:5 - avoid_print
+   info - Don't invoke 'print' in production code - lib\screens\auth\auth_flow_coordinator.dart:61:5 - avoid_print
+   info - Don't invoke 'print' in production code - lib\screens\auth\auth_flow_coordinator.dart:66:7 - avoid_print
+   info - Don't invoke 'print' in production code - lib\screens\auth\auth_flow_coordinator.dart:77:5 - avoid_print
+   info - Don't invoke 'print' in production code - lib\screens\auth\auth_flow_coordinator.dart:78:5 - avoid_print
+warning - The value of the local variable 'l10n' isn't used - lib\screens\auth\auth_flow_coordinator.dart:125:11 - unused_local_variable
+warning - The value of the local variable 'l10n' isn't used - lib\screens\auth\language_selection_screen.dart:15:11 - unused_local_variable
+   info - 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss - lib\screens\auth\language_selection_screen.dart:115:41 - deprecated_member_use
+   info - 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss - lib\screens\auth\language_selection_screen.dart:141:33 - deprecated_member_use
+   info - Don't invoke 'print' in production code - lib\screens\auth\location_selection_screen.dart:76:7 - avoid_print
+   info - Don't invoke 'print' in production code - lib\screens\auth\location_selection_screen.dart:89:5 - avoid_print
+   info - Don't invoke 'print' in production code - lib\screens\auth\location_selection_screen.dart:103:5 - avoid_print
+   info - Use 'const' for final variables initialized to a constant value - lib\screens\auth\location_selection_screen.dart:115:5 - prefer_const_declarations
+   info - Use 'const' for final variables initialized to a constant value - lib\screens\auth\location_selection_screen.dart:116:5 - prefer_const_declarations
+warning - Dead code - lib\screens\auth\location_selection_screen.dart:132:29 - dead_code
+warning - Dead code - lib\screens\auth\location_selection_screen.dart:139:29 - dead_code
+   info - Use a 'SizedBox' to add whitespace to a layout - lib\screens\auth\location_selection_screen.dart:154:15 - sized_box_for_whitespace
+   info - Use 'const' with the constructor to improve performance - lib\screens\auth\location_selection_screen.dart:164:45 - prefer_const_constructors
+   info - 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss - lib\screens\auth\location_selection_screen.dart:208:48 - deprecated_member_use
+   info - Use 'const' with the constructor to improve performance - lib\screens\auth\location_selection_screen.dart:217:49 - prefer_const_constructors
+   info - Use 'const' with the constructor to improve performance - lib\screens\auth\location_selection_screen.dart:221:44 - prefer_const_constructors
+   info - Use 'const' with the constructor to improve performance - lib\screens\auth\location_selection_screen.dart:236:46 - prefer_const_constructors
+   info - 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss - lib\screens\auth\location_selection_screen.dart:275:53 - deprecated_member_use
+   info - Use 'const' with the constructor to improve performance - lib\screens\auth\location_selection_screen.dart:281:34 - prefer_const_constructors
+   info - Use 'const' literals as arguments to constructors of '@immutable' classes - lib\screens\auth\location_selection_screen.dart:283:39 - prefer_const_literals_to_create_immutables
+   info - Use 'const' with the constructor to improve performance - lib\screens\auth\location_selection_screen.dart:284:31 - prefer_const_constructors
+   info - Use 'const' with the constructor to improve performance - lib\screens\auth\location_selection_screen.dart:286:31 - prefer_const_constructors
+   info - Use 'const' with the constructor to improve performance - lib\screens\auth\location_selection_screen.dart:288:40 - prefer_const_constructors
+   info - 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss - lib\screens\auth\location_selection_screen.dart:312:46 - deprecated_member_use
+   info - Use 'const' with the constructor to improve performance - lib\screens\auth\location_selection_screen.dart:319:36 - prefer_const_constructors
+warning - Dead code - lib\screens\auth\location_selection_screen.dart:345:41 - dead_code
+warning - Dead code - lib\screens\auth\location_selection_screen.dart:355:41 - dead_code
+warning - Dead code - lib\screens\auth\location_selection_screen.dart:362:41 - dead_code
+warning - Dead code - lib\screens\auth\location_selection_screen.dart:371:43 - dead_code
+warning - Dead code - lib\screens\auth\location_selection_screen.dart:374:45 - dead_code
+   info - Use 'const' with the constructor to improve performance - lib\screens\auth\location_selection_screen.dart:385:39 - prefer_const_constructors
+warning - Dead code - lib\screens\auth\location_selection_screen.dart:406:41 - dead_code
+warning - Dead code - lib\screens\auth\location_selection_screen.dart:413:41 - dead_code
+warning - Dead code - lib\screens\auth\location_selection_screen.dart:419:43 - dead_code
+warning - Dead code - lib\screens\auth\location_selection_screen.dart:422:45 - dead_code
+   info - Use 'const' with the constructor to improve performance - lib\screens\auth\location_selection_screen.dart:433:39 - prefer_const_constructors
+warning - Dead code - lib\screens\auth\location_selection_screen.dart:455:41 - dead_code
+warning - Dead code - lib\screens\auth\location_selection_screen.dart:471:51 - dead_code
+warning - Dead code - lib\screens\auth\location_selection_screen.dart:480:51 - dead_code
+warning - Dead code - lib\screens\auth\location_selection_screen.dart:488:55 - dead_code
+warning - Dead code - lib\screens\auth\location_selection_screen.dart:517:41 - dead_code
+warning - Dead code - lib\screens\auth\location_selection_screen.dart:534:51 - dead_code
+warning - Dead code - lib\screens\auth\location_selection_screen.dart:541:51 - dead_code
+warning - Dead code - lib\screens\auth\location_selection_screen.dart:550:41 - dead_code
+warning - Dead code - lib\screens\auth\location_selection_screen.dart:571:51 - dead_code
+warning - Dead code - lib\screens\auth\location_selection_screen.dart:578:51 - dead_code
+warning - Dead code - lib\screens\auth\location_selection_screen.dart:587:41 - dead_code
+warning - Dead code - lib\screens\auth\location_selection_screen.dart:608:41 - dead_code
+warning - Dead code - lib\screens\auth\location_selection_screen.dart:616:41 - dead_code
+warning - Dead code - lib\screens\auth\location_selection_screen.dart:624:45 - dead_code
+warning - Dead code - lib\screens\auth\location_selection_screen.dart:642:45 - dead_code
+   info - 'activeColor' is deprecated and shouldn't be used. Use activeThumbColor instead. This feature was deprecated after v3.31.0-2.0.pre - lib\screens\auth\location_selection_screen.dart:650:27 - deprecated_member_use
+warning - Dead code - lib\screens\auth\location_selection_screen.dart:661:41 - dead_code
+   info - 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss - lib\screens\auth\location_selection_screen.dart:685:59 - deprecated_member_use
+   info - 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss - lib\screens\auth\location_selection_screen.dart:734:52 - deprecated_member_use
+   info - Don't invoke 'print' in production code - lib\screens\auth\otp_verification_screen.dart:48:5 - avoid_print
+   info - Don't invoke 'print' in production code - lib\screens\auth\otp_verification_screen.dart:49:5 - avoid_print
+   info - Don't invoke 'print' in production code - lib\screens\auth\otp_verification_screen.dart:50:5 - avoid_print
+   info - Don't invoke 'print' in production code - lib\screens\auth\otp_verification_screen.dart:51:5 - avoid_print
+   info - Don't invoke 'print' in production code - lib\screens\auth\otp_verification_screen.dart:52:5 - avoid_print
+   info - Don't invoke 'print' in production code - lib\screens\auth\otp_verification_screen.dart:92:5 - avoid_print
+   info - Don't invoke 'print' in production code - lib\screens\auth\otp_verification_screen.dart:93:5 - avoid_print
+   info - Don't invoke 'print' in production code - lib\screens\auth\otp_verification_screen.dart:94:5 - avoid_print
+   info - Don't invoke 'print' in production code - lib\screens\auth\otp_verification_screen.dart:95:5 - avoid_print
+   info - Don't invoke 'print' in production code - lib\screens\auth\otp_verification_screen.dart:96:5 - avoid_print
+   info - Don't invoke 'print' in production code - lib\screens\auth\otp_verification_screen.dart:112:7 - avoid_print
+   info - Don't invoke 'print' in production code - lib\screens\auth\otp_verification_screen.dart:119:7 - avoid_print
+   info - Don't invoke 'print' in production code - lib\screens\auth\otp_verification_screen.dart:125:7 - avoid_print
+   info - Don't invoke 'print' in production code - lib\screens\auth\otp_verification_screen.dart:128:7 - avoid_print
+   info - Don't invoke 'print' in production code - lib\screens\auth\otp_verification_screen.dart:129:7 - avoid_print
+   info - Don't invoke 'print' in production code - lib\screens\auth\otp_verification_screen.dart:149:7 - avoid_print
+   info - Don't invoke 'print' in production code - lib\screens\auth\otp_verification_screen.dart:183:7 - avoid_print
+   info - Don't invoke 'print' in production code - lib\screens\auth\otp_verification_screen.dart:195:5 - avoid_print
+   info - Don't invoke 'print' in production code - lib\screens\auth\otp_verification_screen.dart:202:11 - avoid_print
+   info - Don't invoke 'print' in production code - lib\screens\auth\otp_verification_screen.dart:206:11 - avoid_print
+   info - Don't invoke 'print' in production code - lib\screens\auth\otp_verification_screen.dart:211:11 - avoid_print
+   info - Don't invoke 'print' in production code - lib\screens\auth\otp_verification_screen.dart:228:11 - avoid_print
+   info - Don't invoke 'print' in production code - lib\screens\auth\otp_verification_screen.dart:233:7 - avoid_print
+   info - Don't invoke 'print' in production code - lib\screens\auth\otp_verification_screen.dart:249:7 - avoid_print
+   info - Use 'const' for final variables initialized to a constant value - lib\screens\auth\otp_verification_screen.dart:273:5 - prefer_const_declarations
+   info - Use 'const' for final variables initialized to a constant value - lib\screens\auth\otp_verification_screen.dart:274:5 - prefer_const_declarations
+warning - Dead code - lib\screens\auth\otp_verification_screen.dart:284:29 - dead_code
+warning - Dead code - lib\screens\auth\otp_verification_screen.dart:303:35 - dead_code
+warning - Dead code - lib\screens\auth\otp_verification_screen.dart:312:35 - dead_code
+warning - Dead code - lib\screens\auth\otp_verification_screen.dart:351:41 - dead_code
+warning - Dead code - lib\screens\auth\otp_verification_screen.dart:365:41 - dead_code
+warning - Dead code - lib\screens\auth\otp_verification_screen.dart:401:39 - dead_code
+warning - Dead code - lib\screens\auth\otp_verification_screen.dart:418:41 - dead_code
+warning - Dead code - lib\screens\auth\otp_verification_screen.dart:427:41 - dead_code
+   info - 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss - lib\screens\auth\otp_verification_screen.dart:444:53 - deprecated_member_use
+   info - Don't invoke 'print' in production code - lib\screens\auth\phone_login_screen.dart:100:11 - avoid_print
+   info - Use 'const' for final variables initialized to a constant value - lib\screens\auth\phone_login_screen.dart:149:5 - prefer_const_declarations
+   info - Use 'const' for final variables initialized to a constant value - lib\screens\auth\phone_login_screen.dart:150:5 - prefer_const_declarations
+warning - Dead code - lib\screens\auth\phone_login_screen.dart:160:29 - dead_code
+warning - Dead code - lib\screens\auth\phone_login_screen.dart:184:43 - dead_code
+warning - Dead code - lib\screens\auth\phone_login_screen.dart:198:37 - dead_code
+warning - Dead code - lib\screens\auth\phone_login_screen.dart:213:43 - dead_code
+warning - Dead code - lib\screens\auth\phone_login_screen.dart:240:49 - dead_code
+warning - Dead code - lib\screens\auth\phone_login_screen.dart:263:49 - dead_code
+warning - Dead code - lib\screens\auth\phone_login_screen.dart:275:51 - dead_code
+warning - Dead code - lib\screens\auth\phone_login_screen.dart:286:53 - dead_code
+   info - 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss - lib\screens\auth\phone_login_screen.dart:371:55 - deprecated_member_use
+   info - Use 'const' with the constructor to improve performance - lib\screens\booking\booking_confirmation_screen.dart:74:24 - prefer_const_constructors
+warning - The value of the local variable 'l10n' isn't used - lib\screens\booking\booking_confirmation_screen.dart:506:11 - unused_local_variable
+   info - Use 'const' with the constructor to improve performance - lib\screens\cart\cart_screen.dart:177:24 - prefer_const_constructors
+   info - Use 'const' with the constructor to improve performance - lib\screens\cart\cart_screen.dart:389:32 - prefer_const_constructors
+   info - Don't invoke 'print' in production code - lib\screens\dashboard\dashboard_screen.dart:81:7 - avoid_print
+   info - 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss - lib\screens\dashboard\dashboard_screen.dart:210:60 - deprecated_member_use
+   info - Don't invoke 'print' in production code - lib\screens\dashboard\dashboard_screen.dart:308:5 - avoid_print
+   info - 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss - lib\screens\dashboard\dashboard_screen.dart:348:53 - deprecated_member_use
+   info - 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss - lib\screens\dashboard\dashboard_screen.dart:389:57 - deprecated_member_use
+   info - 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss - lib\screens\dashboard\dashboard_screen.dart:413:46 - deprecated_member_use
+   info - Don't use 'BuildContext's across async gaps, guarded by an unrelated 'mounted' check - lib\screens\dashboard\dashboard_screen.dart:446:48 - use_build_context_synchronously
+   info - Don't use 'BuildContext's across async gaps, guarded by an unrelated 'mounted' check - lib\screens\dashboard\dashboard_screen.dart:452:48 - use_build_context_synchronously
+   info - 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss - lib\screens\dashboard\dashboard_screen.dart:488:57 - deprecated_member_use
+   info - 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss - lib\screens\dashboard\dashboard_screen.dart:497:61 - deprecated_member_use
+   info - 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss - lib\screens\dashboard\dashboard_screen.dart:543:52 - deprecated_member_use
+   info - 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss - lib\screens\dashboard\dashboard_screen.dart:659:41 - deprecated_member_use
+   info - 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss - lib\screens\dashboard\dashboard_screen.dart:713:45 - deprecated_member_use
+   info - 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss - lib\screens\dashboard\dashboard_screen.dart:779:39 - deprecated_member_use
+   info - 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss - lib\screens\dashboard\dashboard_screen.dart:818:35 - deprecated_member_use
+   info - 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss - lib\screens\dashboard\dashboard_screen.dart:857:33 - deprecated_member_use
+   info - 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss - lib\screens\dashboard\dashboard_screen.dart:896:40 - deprecated_member_use
+   info - 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss - lib\screens\dashboard\dashboard_screen.dart:950:43 - deprecated_member_use
+   info - Don't invoke 'print' in production code - lib\screens\dashboard\dashboard_screen.dart:1052:21 - avoid_print
+   info - Don't invoke 'print' in production code - lib\screens\dashboard\dashboard_screen.dart:1054:21 - avoid_print
+   info - Don't invoke 'print' in production code - lib\screens\dashboard\dashboard_screen.dart:1056:21 - avoid_print
+   info - 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss - lib\screens\dashboard\dashboard_screen.dart:1158:47 - deprecated_member_use
+   info - 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss - lib\screens\dashboard\dashboard_screen.dart:1202:46 - deprecated_member_use
+   info - Use 'const' with the constructor to improve performance - lib\screens\dashboard\dashboard_screen.dart:1213:37 - prefer_const_constructors
+   info - Use 'const' with the constructor to improve performance - lib\screens\dashboard\dashboard_screen.dart:1283:18 - prefer_const_constructors
+   info - Use 'const' with the constructor to improve performance - lib\screens\dashboard\dashboard_screen.dart:1284:20 - prefer_const_constructors
+   info - 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss - lib\screens\dashboard\dashboard_screen.dart:1385:37 - deprecated_member_use
+   info - 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss - lib\screens\dashboard\dashboard_screen.dart:1395:47 - deprecated_member_use
+   info - 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss - lib\screens\dashboard\dashboard_screen.dart:1399:59 - deprecated_member_use
+   info - 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss - lib\screens\dashboard\dashboard_screen.dart:1442:33 - deprecated_member_use
+   info - 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss - lib\screens\dashboard\dashboard_screen.dart:1490:54 - deprecated_member_use
+   info - 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss - lib\screens\dashboard\dashboard_screen.dart:1491:54 - deprecated_member_use
+   info - 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss - lib\screens\dashboard\dashboard_screen.dart:1523:63 - deprecated_member_use
+   info - Use 'const' with the constructor to improve performance - lib\screens\invoices\invoice_screen.dart:104:36 - prefer_const_constructors
+   info - Use 'const' with the constructor to improve performance - lib\screens\invoices\invoice_screen.dart:141:36 - prefer_const_constructors
+   info - Use 'const' with the constructor to improve performance - lib\screens\invoices\invoice_screen.dart:183:34 - prefer_const_constructors
+   info - Use 'const' with the constructor to improve performance - lib\screens\invoices\invoice_screen.dart:203:34 - prefer_const_constructors
+   info - Use 'const' with the constructor to improve performance - lib\screens\invoices\invoice_screen.dart:224:34 - prefer_const_constructors
+   info - The type of the right operand ('String') isn't a subtype or a supertype of the left operand ('PaymentMethod?') - lib\screens\invoices\invoice_screen.dart:231:49 - unrelated_type_equality_checks
+   info - Use 'const' with the constructor to improve performance - lib\screens\invoices\invoice_screen.dart:589:48 - prefer_const_constructors
+   info - 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss - lib\screens\maps\map_selection_screen.dart:321:45 - deprecated_member_use
+   info - 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss - lib\screens\maps\map_selection_screen.dart:375:47 - deprecated_member_use
+   info - 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss - lib\screens\maps\map_selection_screen.dart:445:41 - deprecated_member_use
+   info - 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss - lib\screens\maps\map_selection_screen.dart:461:59 - deprecated_member_use
+   info - 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss - lib\screens\maps\map_selection_screen.dart:515:59 - deprecated_member_use
+   info - 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss - lib\screens\maps\map_selection_screen.dart:550:35 - deprecated_member_use
+   info - Don't invoke 'print' in production code - lib\screens\maps\map_services.dart:50:7 - avoid_print
+   info - Don't invoke 'print' in production code - lib\screens\maps\map_services.dart:87:7 - avoid_print
+   info - Don't invoke 'print' in production code - lib\screens\maps\map_services.dart:130:7 - avoid_print
+   info - Don't invoke 'print' in production code - lib\screens\maps\map_services.dart:164:7 - avoid_print
+   info - Don't invoke 'print' in production code - lib\screens\maps\map_services.dart:216:7 - avoid_print
+   info - Use 'const' with the constructor to improve performance - lib\screens\orders\order_details_with_worker_screen.dart:665:40 - prefer_const_constructors
+   info - Use 'const' with the constructor to improve performance - lib\screens\orders\order_details_with_worker_screen.dart:758:32 - prefer_const_constructors
+   info - Use 'const' with the constructor to improve performance - lib\screens\orders\order_tracking_screen.dart:175:32 - prefer_const_constructors
+   info - Use 'const' with the constructor to improve performance - lib\screens\orders\order_tracking_screen.dart:353:40 - prefer_const_constructors
+warning - The value of the local variable 'locale' isn't used - lib\screens\orders\order_tracking_screen.dart:666:11 - unused_local_variable
+   info - Use 'const' with the constructor to improve performance - lib\screens\orders\order_tracking_screen.dart:863:40 - prefer_const_constructors
+warning - Unused import: '../../utils/app_colors.dart' - lib\screens\orders\vendor_profile_screen.dart:2:8 - unused_import
+warning - Unused import: '../../utils/app_colors.dart' - lib\screens\profile\addresses_screen.dart:5:8 - unused_import
+   info - 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss - lib\screens\profile\addresses_screen.dart:270:50 - deprecated_member_use
+   info - 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss - lib\screens\profile\addresses_screen.dart:335:33 - deprecated_member_use
+   info - 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss - lib\screens\profile\addresses_screen.dart:349:50 - deprecated_member_use
+   info - 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss - lib\screens\profile\addresses_screen.dart:455:40 - deprecated_member_use
+   info - 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss - lib\screens\profile\addresses_screen.dart:502:47 - deprecated_member_use
+   info - Don't invoke 'print' in production code - lib\screens\profile\edit_profile_screen.dart:118:7 - avoid_print
+   info - Don't invoke 'print' in production code - lib\screens\profile\edit_profile_screen.dart:146:5 - avoid_print
+   info - Don't invoke 'print' in production code - lib\screens\profile\edit_profile_screen.dart:147:5 - avoid_print
+   info - Don't invoke 'print' in production code - lib\screens\profile\edit_profile_screen.dart:148:5 - avoid_print
+   info - Don't invoke 'print' in production code - lib\screens\profile\edit_profile_screen.dart:149:5 - avoid_print
+   info - 'onPopInvoked' is deprecated and shouldn't be used. Use onPopInvokedWithResult instead. This feature was deprecated after v3.22.0-12.0.pre - lib\screens\profile\edit_profile_screen.dart:251:7 - deprecated_member_use
+   info - Don't use 'BuildContext's across async gaps, guarded by an unrelated 'mounted' check - lib\screens\profile\edit_profile_screen.dart:255:26 - use_build_context_synchronously
+   info - 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss - lib\screens\profile\edit_profile_screen.dart:275:42 - deprecated_member_use
+   info - 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss - lib\screens\profile\edit_profile_screen.dart:310:61 - deprecated_member_use
+   info - 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss - lib\screens\profile\edit_profile_screen.dart:438:55 - deprecated_member_use
+   info - 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss - lib\screens\profile\edit_profile_screen.dart:519:37 - deprecated_member_use
+   info - 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss - lib\screens\profile\edit_profile_screen.dart:538:49 - deprecated_member_use
+   info - Use 'const' with the constructor to improve performance - lib\screens\profile\profile_screen.dart:104:20 - prefer_const_constructors
+   info - Use 'const' literals as arguments to constructors of '@immutable' classes - lib\screens\profile\profile_screen.dart:105:23 - prefer_const_literals_to_create_immutables
+   info - 'background' is deprecated and shouldn't be used. Use surface instead. This feature was deprecated after v3.18.0-0.1.pre - lib\screens\profile\profile_screen.dart:162:54 - deprecated_member_use
+warning - The declaration '_buildInfoTile' isn't referenced - lib\screens\profile\profile_screen.dart:432:10 - unused_element
+   info - 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss - lib\screens\reviews\review_screen.dart:413:47 - deprecated_member_use
+   info - Use 'const' with the constructor to improve performance - lib\screens\reviews\review_screen.dart:416:22 - prefer_const_constructors
+   info - 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss - lib\screens\reviews\review_screen.dart:456:37 - deprecated_member_use
+   info - 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss - lib\screens\reviews\review_screen.dart:567:47 - deprecated_member_use
+   info - Use 'const' with the constructor to improve performance - lib\screens\reviews\review_screen.dart:570:22 - prefer_const_constructors
+   info - 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss - lib\screens\reviews\review_screen.dart:610:37 - deprecated_member_use
+warning - The value of the local variable 'l10n' isn't used - lib\screens\services\service_checkout_screen.dart:115:11 - unused_local_variable
+   info - Don't invoke 'print' in production code - lib\screens\services\service_checkout_screen.dart:367:7 - avoid_print
+   info - 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss - lib\screens\services\service_checkout_screen.dart:427:43 - deprecated_member_use
+   info - 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss - lib\screens\services\service_checkout_screen.dart:560:43 - deprecated_member_use
+   info - 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss - lib\screens\services\service_checkout_screen.dart:581:38 - deprecated_member_use
+   info - 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss - lib\screens\services\service_checkout_screen.dart:701:43 - deprecated_member_use
+   info - 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss - lib\screens\services\service_checkout_screen.dart:742:43 - deprecated_member_use
+   info - 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss - lib\screens\services\service_checkout_screen.dart:782:43 - deprecated_member_use
+   info - Use 'const' with the constructor to improve performance - lib\screens\services\service_checkout_screen.dart:808:29 - prefer_const_constructors
+   info - Use 'const' with the constructor to improve performance - lib\screens\services\service_checkout_screen.dart:830:17 - prefer_const_constructors
+   info - Use 'const' with the constructor to improve performance - lib\screens\services\service_checkout_screen.dart:832:26 - prefer_const_constructors
+   info - Use 'const' literals as arguments to constructors of '@immutable' classes - lib\screens\services\service_checkout_screen.dart:833:31 - prefer_const_literals_to_create_immutables
+   info - Use 'const' with the constructor to improve performance - lib\screens\services\service_checkout_screen.dart:834:23 - prefer_const_constructors
+   info - Use 'const' with the constructor to improve performance - lib\screens\services\service_checkout_screen.dart:840:23 - prefer_const_constructors
+   info - Use 'const' with the constructor to improve performance - lib\screens\services\service_checkout_screen.dart:842:32 - prefer_const_constructors
+   info - 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss - lib\screens\services\service_checkout_screen.dart:867:43 - deprecated_member_use
+   info - 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss - lib\screens\services\service_checkout_screen.dart:906:46 - deprecated_member_use
+   info - 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss - lib\screens\services\service_checkout_screen.dart:909:43 - deprecated_member_use
+   info - 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss - lib\screens\services\service_checkout_screen.dart:1070:53 - deprecated_member_use
+   info - Don't use 'BuildContext's across async gaps - lib\screens\services\service_listing_screen.dart:157:38 - use_build_context_synchronously
+   info - 'onPopInvoked' is deprecated and shouldn't be used. Use onPopInvokedWithResult instead. This feature was deprecated after v3.22.0-12.0.pre - lib\screens\services\service_listing_screen.dart:272:7 - deprecated_member_use
+   info - 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss - lib\screens\services\service_listing_screen.dart:378:41 - deprecated_member_use
+   info - 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss - lib\screens\services\service_listing_screen.dart:478:41 - deprecated_member_use
+   info - 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss - lib\screens\services\service_listing_screen.dart:570:39 - deprecated_member_use
+   info - 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss - lib\screens\services\service_listing_screen.dart:626:30 - deprecated_member_use
+   info - 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss - lib\screens\services\service_listing_screen.dart:671:60 - deprecated_member_use
+   info - 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss - lib\screens\services\service_listing_screen.dart:672:52 - deprecated_member_use
+   info - 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss - lib\screens\services\service_listing_screen.dart:918:26 - deprecated_member_use
+   info - 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss - lib\screens\splash\splash_screen.dart:103:45 - deprecated_member_use
+   info - 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss - lib\screens\splash\splash_screen.dart:123:50 - deprecated_member_use
+   info - 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss - lib\screens\splash\splash_screen.dart:155:57 - deprecated_member_use
+   info - 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss - lib\screens\splash\splash_screen.dart:160:62 - deprecated_member_use
+   info - 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss - lib\screens\splash\splash_screen.dart:198:59 - deprecated_member_use
+   info - 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss - lib\screens\splash\splash_screen.dart:211:55 - deprecated_member_use
+   info - 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss - lib\screens\splash\splash_screen.dart:233:59 - deprecated_member_use
+   info - 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss - lib\screens\splash\splash_screen.dart:259:49 - deprecated_member_use
+   info - 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss - lib\screens\splash\splash_screen.dart:285:49 - deprecated_member_use
+   info - 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss - lib\screens\splash\splash_screen.dart:293:49 - deprecated_member_use
+   info - The 'if' statement could be replaced by a null-aware assignment - lib\services\dummy_data_service.dart:747:5 - prefer_conditional_assignment
+   info - Don't invoke 'print' in production code - lib\services\dummy_data_service.dart:828:7 - avoid_print
+  error - The name 'MyApp' isn't a class - test\widget_test.dart:16:35 - creation_with_non_type
+

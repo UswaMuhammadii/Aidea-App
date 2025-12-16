@@ -25,11 +25,11 @@ class OTPVerificationScreen extends StatefulWidget {
 class _OTPVerificationScreenState extends State<OTPVerificationScreen> {
   final List<TextEditingController> _controllers = List.generate(
     6,
-        (index) => TextEditingController(),
+    (index) => TextEditingController(),
   );
   final List<FocusNode> _focusNodes = List.generate(
     6,
-        (index) => FocusNode(),
+    (index) => FocusNode(),
   );
 
   bool _isLoading = false;
@@ -86,7 +86,20 @@ class _OTPVerificationScreenState extends State<OTPVerificationScreen> {
   }
 
   Future<void> _verifyOTP() async {
-    String otp = _controllers.map((c) => c.text).join();
+    // Normalize digits (convert Arabic indic to Western Arabic)
+    String otp = _controllers
+        .map((c) => c.text)
+        .join()
+        .replaceAll('٠', '0')
+        .replaceAll('١', '1')
+        .replaceAll('٢', '2')
+        .replaceAll('٣', '3')
+        .replaceAll('٤', '4')
+        .replaceAll('٥', '5')
+        .replaceAll('٦', '6')
+        .replaceAll('٧', '7')
+        .replaceAll('٨', '8')
+        .replaceAll('٩', '9');
 
     // DEBUG: Print OTP details
     print('=== Starting OTP Verification ===');
@@ -123,7 +136,8 @@ class _OTPVerificationScreenState extends State<OTPVerificationScreen> {
       );
 
       print('Signing in with credential...');
-      final userCredential = await FirebaseAuth.instance.signInWithCredential(credential);
+      final userCredential =
+          await FirebaseAuth.instance.signInWithCredential(credential);
 
       print('SUCCESS! User ID: ${userCredential.user?.uid}');
       print('Phone: ${userCredential.user?.phoneNumber}');
@@ -134,7 +148,8 @@ class _OTPVerificationScreenState extends State<OTPVerificationScreen> {
         // Show success message
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(
-            content: Text('Phone verified successfully! / تم التحقق من الهاتف بنجاح'),
+            content: Text(
+                'Phone verified successfully! / تم التحقق من الهاتف بنجاح'),
             backgroundColor: Colors.green,
             duration: Duration(seconds: 1),
           ),
@@ -144,7 +159,6 @@ class _OTPVerificationScreenState extends State<OTPVerificationScreen> {
         await Future.delayed(const Duration(milliseconds: 500));
         widget.onVerificationSuccess(userCredential.user!);
       }
-
     } on FirebaseAuthException catch (e) {
       print('FirebaseAuthException: ${e.code} - ${e.message}');
 
@@ -154,7 +168,8 @@ class _OTPVerificationScreenState extends State<OTPVerificationScreen> {
         String errorMessage;
         switch (e.code) {
           case 'invalid-verification-code':
-            errorMessage = 'Invalid OTP code. Please check and try again.\n\nFor test number +923194242479, use code: 124576';
+            errorMessage =
+                'Invalid OTP code. Please check and try again.\n\nFor test number +923194242479, use code: 124576';
             break;
           case 'session-expired':
             errorMessage = 'OTP expired. Please request a new code.';
@@ -163,7 +178,8 @@ class _OTPVerificationScreenState extends State<OTPVerificationScreen> {
             errorMessage = 'Session invalid. Please go back and try again.';
             break;
           case 'credential-already-in-use':
-            errorMessage = 'This phone number is already registered. Proceeding...';
+            errorMessage =
+                'This phone number is already registered. Proceeding...';
             // This is actually success - phone already verified
             // Get current user and proceed
             final currentUser = FirebaseAuth.instance.currentUser;
@@ -173,12 +189,12 @@ class _OTPVerificationScreenState extends State<OTPVerificationScreen> {
             }
             return;
           default:
-            errorMessage = 'Verification failed: ${e.message}\n\nError code: ${e.code}';
+            errorMessage =
+                'Verification failed: ${e.message}\n\nError code: ${e.code}';
         }
 
         _showErrorDialog(errorMessage);
       }
-
     } catch (e) {
       print('Unexpected error: $e');
 
@@ -205,7 +221,8 @@ class _OTPVerificationScreenState extends State<OTPVerificationScreen> {
         onVerificationFailed: (FirebaseAuthException e) {
           print('Verification failed: ${e.code} - ${e.message}');
           setState(() => _isLoading = false);
-          _showErrorDialog(e.message ?? 'Verification failed. Please try again.');
+          _showErrorDialog(
+              e.message ?? 'Verification failed. Please try again.');
         },
         onCodeSent: (String verificationId, int? resendToken) {
           print('New code sent. VerificationId: $verificationId');
@@ -239,7 +256,8 @@ class _OTPVerificationScreenState extends State<OTPVerificationScreen> {
   Future<void> _handleAutoVerification(PhoneAuthCredential credential) async {
     try {
       setState(() => _isLoading = true);
-      final userCredential = await FirebaseAuth.instance.signInWithCredential(credential);
+      final userCredential =
+          await FirebaseAuth.instance.signInWithCredential(credential);
 
       if (mounted && userCredential.user != null) {
         setState(() => _isLoading = false);
@@ -338,55 +356,61 @@ class _OTPVerificationScreenState extends State<OTPVerificationScreen> {
               const SizedBox(height: 40),
 
               // OTP Input Boxes - 6 boxes
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: List.generate(6, (index) {
-                  return Container(
-                    width: 50,
-                    height: 60,
-                    decoration: BoxDecoration(
-                      border: Border.all(
-                        color: _controllers[index].text.isNotEmpty
-                            ? AppColors.electricBlue
-                            : (isDark ? Colors.grey.shade700 : Colors.grey.shade300),
-                        width: 2,
+              Directionality(
+                textDirection: TextDirection.ltr,
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: List.generate(6, (index) {
+                    return Container(
+                      width: 50,
+                      height: 60,
+                      decoration: BoxDecoration(
+                        border: Border.all(
+                          color: _controllers[index].text.isNotEmpty
+                              ? AppColors.electricBlue
+                              : (isDark
+                                  ? Colors.grey.shade700
+                                  : Colors.grey.shade300),
+                          width: 2,
+                        ),
+                        borderRadius: BorderRadius.circular(12),
                       ),
-                      borderRadius: BorderRadius.circular(12),
-                    ),
-                    child: TextField(
-                      controller: _controllers[index],
-                      focusNode: _focusNodes[index],
-                      textAlign: TextAlign.center,
-                      keyboardType: TextInputType.number,
-                      maxLength: 1,
-                      style: TextStyle(
-                        fontSize: 20,
-                        fontWeight: FontWeight.bold,
-                        color: isDark ? Colors.white : Colors.black87,
-                      ),
-                      inputFormatters: [
-                        FilteringTextInputFormatter.digitsOnly,
-                      ],
-                      decoration: const InputDecoration(
-                        border: InputBorder.none,
-                        counterText: '',
-                      ),
-                      onChanged: (value) {
-                        if (value.isNotEmpty && index < 5) {
-                          _focusNodes[index + 1].requestFocus();
-                        } else if (value.isEmpty && index > 0) {
-                          _focusNodes[index - 1].requestFocus();
-                        }
+                      child: TextField(
+                        controller: _controllers[index],
+                        focusNode: _focusNodes[index],
+                        textAlign: TextAlign.center,
+                        keyboardType: TextInputType.number,
+                        maxLength: 1,
+                        style: TextStyle(
+                          fontSize: 20,
+                          fontWeight: FontWeight.bold,
+                          color: isDark ? Colors.white : Colors.black87,
+                        ),
+                        inputFormatters: [
+                          FilteringTextInputFormatter.allow(
+                              RegExp(r'[0-9٠-٩]')), // Allow Arabic digits
+                        ],
+                        decoration: const InputDecoration(
+                          border: InputBorder.none,
+                          counterText: '',
+                        ),
+                        onChanged: (value) {
+                          if (value.isNotEmpty && index < 5) {
+                            _focusNodes[index + 1].requestFocus();
+                          } else if (value.isEmpty && index > 0) {
+                            _focusNodes[index - 1].requestFocus();
+                          }
 
-                        // Auto-verify when all 6 digits entered
-                        if (index == 5 && value.isNotEmpty) {
-                          FocusScope.of(context).unfocus(); // Hide keyboard
-                          _verifyOTP();
-                        }
-                      },
-                    ),
-                  );
-                }),
+                          // Auto-verify when all 6 digits entered
+                          if (index == 5 && value.isNotEmpty) {
+                            FocusScope.of(context).unfocus(); // Hide keyboard
+                            _verifyOTP();
+                          }
+                        },
+                      ),
+                    );
+                  }),
+                ),
               ),
               const SizedBox(height: 24),
 
@@ -398,7 +422,8 @@ class _OTPVerificationScreenState extends State<OTPVerificationScreen> {
                     l10n.didntReceiveCode,
                     style: TextStyle(
                       fontSize: 14,
-                      color: isDark ? Colors.grey.shade400 : Colors.grey.shade600,
+                      color:
+                          isDark ? Colors.grey.shade400 : Colors.grey.shade600,
                     ),
                   ),
                   TextButton(
@@ -415,7 +440,9 @@ class _OTPVerificationScreenState extends State<OTPVerificationScreen> {
                         fontWeight: FontWeight.bold,
                         color: _canResend
                             ? AppColors.electricBlue
-                            : (isDark ? Colors.grey.shade600 : Colors.grey.shade400),
+                            : (isDark
+                                ? Colors.grey.shade600
+                                : Colors.grey.shade400),
                       ),
                     ),
                   ),
@@ -424,7 +451,9 @@ class _OTPVerificationScreenState extends State<OTPVerificationScreen> {
                       '  ${_formatTime(_remainingSeconds)}',
                       style: TextStyle(
                         fontSize: 14,
-                        color: isDark ? Colors.grey.shade400 : Colors.grey.shade600,
+                        color: isDark
+                            ? Colors.grey.shade400
+                            : Colors.grey.shade600,
                       ),
                     ),
                 ],
@@ -455,24 +484,24 @@ class _OTPVerificationScreenState extends State<OTPVerificationScreen> {
                     child: Center(
                       child: _isLoading
                           ? const SizedBox(
-                        height: 24,
-                        width: 24,
-                        child: CircularProgressIndicator(
-                          strokeWidth: 2.5,
-                          valueColor: AlwaysStoppedAnimation<Color>(
-                            Colors.white,
-                          ),
-                        ),
-                      )
+                              height: 24,
+                              width: 24,
+                              child: CircularProgressIndicator(
+                                strokeWidth: 2.5,
+                                valueColor: AlwaysStoppedAnimation<Color>(
+                                  Colors.white,
+                                ),
+                              ),
+                            )
                           : const Text(
-                        'Verify / تحقق',
-                        style: TextStyle(
-                          color: Colors.white,
-                          fontSize: 18,
-                          fontWeight: FontWeight.bold,
-                          letterSpacing: 0.5,
-                        ),
-                      ),
+                              'Verify / تحقق',
+                              style: TextStyle(
+                                color: Colors.white,
+                                fontSize: 18,
+                                fontWeight: FontWeight.bold,
+                                letterSpacing: 0.5,
+                              ),
+                            ),
                     ),
                   ),
                 ),

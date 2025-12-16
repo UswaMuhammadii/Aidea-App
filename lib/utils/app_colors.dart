@@ -4,13 +4,13 @@ import 'package:flutter/material.dart';
 
 class AppColors {
   // Primary Colors - Electric Blue as main theme
-  static const electricBlue = Color(0xFF3B82F6);  // Main primary color
-  static const deepPurple = Color(0xFF7C3AED);    // Accent color
+  static const electricBlue = Color(0xFF3B82F6); // Main primary color
+  static const deepPurple = Color(0xFF7C3AED); // Accent color
   static const brightTeal = Color(0xFF14B8A6);
 
   // Gradient Definitions
   static const primaryGradient = LinearGradient(
-    colors: [electricBlue, brightTeal],  // Blue to Teal
+    colors: [electricBlue, brightTeal], // Blue to Teal
     begin: Alignment.topLeft,
     end: Alignment.bottomRight,
   );
@@ -32,10 +32,9 @@ class AppColors {
     begin: Alignment.topLeft,
     end: Alignment.bottomRight,
     colors: [
-      Color(0xFF7C3AED),
-      Color(0xFF6366F1),
-      Color(0xFF3B82F6),
-      Color(0xFF14B8A6),
+      Color(0xFF3B82F6), // Electric Blue
+      Color(0xFF0EA5E9), // Sky Blue
+      Color(0xFF14B8A6), // Teal
     ],
   );
 
@@ -43,11 +42,9 @@ class AppColors {
     begin: Alignment.topCenter,
     end: Alignment.bottomCenter,
     colors: [
-      Color(0xFF9F7AEA),
-      Color(0xFF8B5CF6),
-      Color(0xFF7C3AED),
-      Color(0xFF6366F1),
+      Color(0xFF3B82F6),
       Color(0xFF60A5FA),
+      Color(0xFF93C5FD),
     ],
   );
 

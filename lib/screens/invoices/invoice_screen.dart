@@ -7,7 +7,8 @@ import 'package:pdf/widgets.dart' as pw;
 import 'package:share_plus/share_plus.dart';
 import '../../models/user_model.dart';
 import '../../models/booking_model.dart';
-import '../../services/dummy_data_service.dart';
+import 'dart:async'; // Added
+import '../../services/firestore_service.dart'; // Added
 import '../../utils/app_colors.dart';
 import '../../gen_l10n/app_localizations.dart';
 
@@ -23,30 +24,39 @@ class InvoiceScreen extends StatefulWidget {
 class _InvoiceScreenState extends State<InvoiceScreen> {
   List<Booking> _completedBookings = [];
   bool _isLoading = true;
+  final FirestoreService _firestoreService = FirestoreService();
+  StreamSubscription? _bookingsSubscription;
 
   @override
   void initState() {
     super.initState();
-    _loadInvoices();
+    _setupStream();
   }
 
-  void _loadInvoices() {
-    setState(() {
-      _isLoading = true;
-    });
+  @override
+  void dispose() {
+    _bookingsSubscription?.cancel();
+    super.dispose();
+  }
 
-    // Get only completed bookings for invoices
-    final allBookings = DummyDataService.getUserBookings(widget.user.id);
-    _completedBookings = allBookings
-        .where((booking) => booking.status == BookingStatus.completed)
-        .toList();
+  void _setupStream() {
+    setState(() => _isLoading = true);
 
-    setState(() {
-      _isLoading = false;
+    _bookingsSubscription =
+        _firestoreService.getUserBookings(widget.user.id).listen((bookings) {
+      if (mounted) {
+        setState(() {
+          // Filter: Invoice Generated (regardless of status, e.g. In Progress)
+          _completedBookings =
+              bookings.where((b) => b.invoiceGenerated == true).toList();
+          _isLoading = false;
+        });
+      }
     });
   }
 
-  Future<void> _generateAndSharePdf(Booking booking, AppLocalizations l10n) async {
+  Future<void> _generateAndSharePdf(
+      Booking booking, AppLocalizations l10n) async {
     try {
       final pdf = pw.Document();
 
@@ -206,7 +216,8 @@ class _InvoiceScreenState extends State<InvoiceScreen> {
                         ),
                         pw.SizedBox(height: 3),
                         pw.Text(
-                          DateFormat('MMM dd, yyyy').format(booking.bookingDate),
+                          DateFormat('MMM dd, yyyy')
+                              .format(booking.bookingDate),
                           style: pw.TextStyle(
                             fontSize: 14,
                             fontWeight: pw.FontWeight.bold,
@@ -294,7 +305,9 @@ class _InvoiceScreenState extends State<InvoiceScreen> {
                       children: [
                         pw.Padding(
                           padding: const pw.EdgeInsets.all(10),
-                          child: pw.Text(booking.service?.name ?? 'Service'),
+                          child: pw.Text(booking.serviceName.isNotEmpty
+                              ? booking.serviceName
+                              : 'Service'),
                         ),
                         pw.Padding(
                           padding: const pw.EdgeInsets.all(10),
@@ -408,7 +421,8 @@ class _InvoiceScreenState extends State<InvoiceScreen> {
                 pw.Center(
                   child: pw.Text(
                     'For any queries, contact us at support@handyman.com',
-                    style: const pw.TextStyle(fontSize: 10, color: PdfColors.grey600),
+                    style: const pw.TextStyle(
+                        fontSize: 10, color: PdfColors.grey600),
                   ),
                 ),
               ],
@@ -425,7 +439,8 @@ class _InvoiceScreenState extends State<InvoiceScreen> {
         await Share.shareXFiles(
           [XFile(file.path)],
           subject: 'Invoice #${booking.id.substring(0, 8).toUpperCase()}',
-          text: 'Invoice for ${booking.service?.name ?? "Service"}',
+          text:
+              'Invoice for ${booking.serviceName.isNotEmpty ? booking.serviceName : "Service"}',
         );
       }
     } catch (e) {
@@ -445,7 +460,8 @@ class _InvoiceScreenState extends State<InvoiceScreen> {
     final l10n = AppLocalizations.of(context)!;
 
     final isDark = Theme.of(context).brightness == Brightness.dark;
-    final backgroundColor = isDark ? const Color(0xFF0F172A) : const Color(0xFFF8F9FA);
+    final backgroundColor =
+        isDark ? const Color(0xFF0F172A) : const Color(0xFFF8F9FA);
     final cardColor = isDark ? const Color(0xFF1E293B) : Colors.white;
     final textColor = isDark ? Colors.white : Colors.black87;
     final subtitleColor = isDark ? Colors.grey.shade400 : Colors.grey.shade600;
@@ -461,226 +477,240 @@ class _InvoiceScreenState extends State<InvoiceScreen> {
       body: _isLoading
           ? const Center(child: CircularProgressIndicator())
           : _completedBookings.isEmpty
-          ? Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Container(
-              padding: const EdgeInsets.all(24),
-              decoration: BoxDecoration(
-                color: AppColors.electricBlue.withValues(alpha: 0.1),
-                shape: BoxShape.circle,
-              ),
-              child: const Icon(
-                Icons.receipt_long,
-                size: 80,
-                color: AppColors.electricBlue,
-              ),
-            ),
-            const SizedBox(height: 24),
-            Text(
-              l10n.noInvoicesYet,
-              style: TextStyle(
-                fontSize: 24,
-                fontWeight: FontWeight.bold,
-                color: textColor,
-              ),
-            ),
-            const SizedBox(height: 8),
-            Text(
-              l10n.completeServiceToGenerateInvoices,
-              style: TextStyle(
-                fontSize: 16,
-                color: subtitleColor,
-              ),
-            ),
-          ],
-        ),
-      )
-          : ListView.builder(
-        padding: const EdgeInsets.all(16),
-        itemCount: _completedBookings.length,
-        itemBuilder: (context, index) {
-          final booking = _completedBookings[index];
-          return Container(
-            margin: const EdgeInsets.only(bottom: 16),
-            decoration: BoxDecoration(
-              color: cardColor,
-              borderRadius: BorderRadius.circular(16),
-              boxShadow: [
-                BoxShadow(
-                  color: Colors.black.withValues(alpha: isDark ? 0.3 : 0.08),
-                  blurRadius: 15,
-                  offset: const Offset(0, 5),
-                ),
-              ],
-            ),
-            child: Material(
-              color: Colors.transparent,
-              child: InkWell(
-                borderRadius: BorderRadius.circular(16),
-                onTap: () => _generateAndSharePdf(booking, l10n),
-                child: Padding(
-                  padding: const EdgeInsets.all(20),
+              ? Center(
                   child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
+                    mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      // Header Row
-                      Row(
-                        children: [
-                          Container(
-                            padding: const EdgeInsets.all(12),
-                            decoration: BoxDecoration(
-                              color: AppColors.electricBlue,
-                              borderRadius: BorderRadius.circular(12),
-                            ),
-                            child: const Icon(
-                              Icons.receipt_long,
-                              color: Colors.white,
-                              size: 24,
-                            ),
-                          ),
-                          const SizedBox(width: 16),
-                          Expanded(
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Text(
-                                  'Invoice #${booking.id.substring(0, 8).toUpperCase()}',
-                                  style: TextStyle(
-                                    fontSize: 16,
-                                    fontWeight: FontWeight.bold,
-                                    color: textColor,
-                                  ),
-                                ),
-                                const SizedBox(height: 4),
-                                Text(
-                                  DateFormat('MMM dd, yyyy').format(booking.createdAt),
-                                  style: TextStyle(
-                                    fontSize: 13,
-                                    color: subtitleColor,
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
-                          Container(
-                            padding: const EdgeInsets.symmetric(
-                              horizontal: 12,
-                              vertical: 6,
-                            ),
-                            decoration: BoxDecoration(
-                              color: Colors.green.withValues(alpha: 0.1),
-                              borderRadius: BorderRadius.circular(8),
-                            ),
-                            child: Text(l10n.paid,
-                              style: TextStyle(
-                                fontSize: 12,
-                                fontWeight: FontWeight.bold,
-                                color: Colors.green,
-                              ),
-                            ),
-                          ),
-                        ],
-                      ),
-                      const SizedBox(height: 16),
-                      Divider(color: isDark ? Colors.grey.shade700 : Colors.grey.shade300),
-                      const SizedBox(height: 16),
-
-                      // Service and Amount Row with improved alignment
-                      Row(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          // Service Info
-                          Expanded(
-                            flex: 2,
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Text(
-                                  'Service',
-                                  style: TextStyle(
-                                    fontSize: 12,
-                                    color: subtitleColor,
-                                    fontWeight: FontWeight.w500,
-                                  ),
-                                ),
-                                const SizedBox(height: 6),
-                                Text(
-                                  booking.service?.name ?? 'Service',
-                                  style: TextStyle(
-                                    fontSize: 15,
-                                    fontWeight: FontWeight.w600,
-                                    color: textColor,
-                                    height: 1.3,
-                                  ),
-                                  maxLines: 2,
-                                  overflow: TextOverflow.ellipsis,
-                                ),
-                              ],
-                            ),
-                          ),
-                          const SizedBox(width: 20),
-
-                          // Amount Info
-                          Column(
-                            crossAxisAlignment: CrossAxisAlignment.end,
-                            children: [
-                              Text(
-                                'Amount',
-                                style: TextStyle(
-                                  fontSize: 12,
-                                  color: subtitleColor,
-                                  fontWeight: FontWeight.w500,
-                                ),
-                              ),
-                              const SizedBox(height: 6),
-                              Text(
-                                'SAR ${booking.totalPrice.toStringAsFixed(0)}',
-                                style: const TextStyle(
-                                  fontSize: 20,
-                                  fontWeight: FontWeight.bold,
-                                  color: AppColors.electricBlue,
-                                ),
-                              ),
-                            ],
-                          ),
-                        ],
-                      ),
-                      const SizedBox(height: 20),
-
-                      // Download Button
                       Container(
-                        width: double.infinity,
-                        padding: const EdgeInsets.symmetric(vertical: 14),
+                        padding: const EdgeInsets.all(24),
                         decoration: BoxDecoration(
-                          color: AppColors.electricBlue,
-                          borderRadius: BorderRadius.circular(12),
+                          color: AppColors.electricBlue.withValues(alpha: 0.1),
+                          shape: BoxShape.circle,
                         ),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            const Icon(Icons.download, color: Colors.white, size: 20),
-                            const SizedBox(width: 10),
-                            Text(
-                              l10n.downloadShareInvoice,
-                              style: const TextStyle(
-                                color: Colors.white,
-                                fontWeight: FontWeight.w600,
-                                fontSize: 15,
-                              ),
-                            ),
-                          ],
+                        child: const Icon(
+                          Icons.receipt_long,
+                          size: 80,
+                          color: AppColors.electricBlue,
+                        ),
+                      ),
+                      const SizedBox(height: 24),
+                      Text(
+                        l10n.noInvoicesYet,
+                        style: TextStyle(
+                          fontSize: 24,
+                          fontWeight: FontWeight.bold,
+                          color: textColor,
+                        ),
+                      ),
+                      const SizedBox(height: 8),
+                      Text(
+                        l10n.completeServiceToGenerateInvoices,
+                        style: TextStyle(
+                          fontSize: 16,
+                          color: subtitleColor,
                         ),
                       ),
                     ],
                   ),
+                )
+              : ListView.builder(
+                  padding: const EdgeInsets.all(16),
+                  itemCount: _completedBookings.length,
+                  itemBuilder: (context, index) {
+                    final booking = _completedBookings[index];
+                    return Container(
+                      margin: const EdgeInsets.only(bottom: 16),
+                      decoration: BoxDecoration(
+                        color: cardColor,
+                        borderRadius: BorderRadius.circular(16),
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colors.black
+                                .withValues(alpha: isDark ? 0.3 : 0.08),
+                            blurRadius: 15,
+                            offset: const Offset(0, 5),
+                          ),
+                        ],
+                      ),
+                      child: Material(
+                        color: Colors.transparent,
+                        child: InkWell(
+                          borderRadius: BorderRadius.circular(16),
+                          onTap: () => _generateAndSharePdf(booking, l10n),
+                          child: Padding(
+                            padding: const EdgeInsets.all(20),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                // Header Row
+                                Row(
+                                  children: [
+                                    Container(
+                                      padding: const EdgeInsets.all(12),
+                                      decoration: BoxDecoration(
+                                        color: AppColors.electricBlue,
+                                        borderRadius: BorderRadius.circular(12),
+                                      ),
+                                      child: const Icon(
+                                        Icons.receipt_long,
+                                        color: Colors.white,
+                                        size: 24,
+                                      ),
+                                    ),
+                                    const SizedBox(width: 16),
+                                    Expanded(
+                                      child: Column(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        children: [
+                                          Text(
+                                            'Invoice #${booking.id.substring(0, 8).toUpperCase()}',
+                                            style: TextStyle(
+                                              fontSize: 16,
+                                              fontWeight: FontWeight.bold,
+                                              color: textColor,
+                                            ),
+                                          ),
+                                          const SizedBox(height: 4),
+                                          Text(
+                                            DateFormat('MMM dd, yyyy')
+                                                .format(booking.createdAt),
+                                            style: TextStyle(
+                                              fontSize: 13,
+                                              color: subtitleColor,
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                    Container(
+                                      padding: const EdgeInsets.symmetric(
+                                        horizontal: 12,
+                                        vertical: 6,
+                                      ),
+                                      decoration: BoxDecoration(
+                                        color:
+                                            Colors.green.withValues(alpha: 0.1),
+                                        borderRadius: BorderRadius.circular(8),
+                                      ),
+                                      child: Text(
+                                        l10n.paid,
+                                        style: TextStyle(
+                                          fontSize: 12,
+                                          fontWeight: FontWeight.bold,
+                                          color: Colors.green,
+                                        ),
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                                const SizedBox(height: 16),
+                                Divider(
+                                    color: isDark
+                                        ? Colors.grey.shade700
+                                        : Colors.grey.shade300),
+                                const SizedBox(height: 16),
+
+                                // Service and Amount Row with improved alignment
+                                Row(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    // Service Info
+                                    Expanded(
+                                      flex: 2,
+                                      child: Column(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        children: [
+                                          Text(
+                                            'Service',
+                                            style: TextStyle(
+                                              fontSize: 12,
+                                              color: subtitleColor,
+                                              fontWeight: FontWeight.w500,
+                                            ),
+                                          ),
+                                          const SizedBox(height: 6),
+                                          Text(
+                                            booking.serviceName.isNotEmpty
+                                                ? booking.serviceName
+                                                : 'Service',
+                                            style: TextStyle(
+                                              fontSize: 15,
+                                              fontWeight: FontWeight.w600,
+                                              color: textColor,
+                                              height: 1.3,
+                                            ),
+                                            maxLines: 2,
+                                            overflow: TextOverflow.ellipsis,
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                    const SizedBox(width: 20),
+
+                                    // Amount Info
+                                    Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.end,
+                                      children: [
+                                        Text(
+                                          'Amount',
+                                          style: TextStyle(
+                                            fontSize: 12,
+                                            color: subtitleColor,
+                                            fontWeight: FontWeight.w500,
+                                          ),
+                                        ),
+                                        const SizedBox(height: 6),
+                                        Text(
+                                          'SAR ${booking.totalPrice.toStringAsFixed(0)}',
+                                          style: const TextStyle(
+                                            fontSize: 20,
+                                            fontWeight: FontWeight.bold,
+                                            color: AppColors.electricBlue,
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ],
+                                ),
+                                const SizedBox(height: 20),
+
+                                // Download Button
+                                Container(
+                                  width: double.infinity,
+                                  padding:
+                                      const EdgeInsets.symmetric(vertical: 14),
+                                  decoration: BoxDecoration(
+                                    color: AppColors.electricBlue,
+                                    borderRadius: BorderRadius.circular(12),
+                                  ),
+                                  child: Row(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: [
+                                      const Icon(Icons.download,
+                                          color: Colors.white, size: 20),
+                                      const SizedBox(width: 10),
+                                      Text(
+                                        l10n.downloadShareInvoice,
+                                        style: const TextStyle(
+                                          color: Colors.white,
+                                          fontWeight: FontWeight.w600,
+                                          fontSize: 15,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                      ),
+                    );
+                  },
                 ),
-              ),
-            ),
-          );
-        },
-      ),
     );
   }
 }

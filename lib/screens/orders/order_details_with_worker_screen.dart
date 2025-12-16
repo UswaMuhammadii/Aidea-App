@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
+
 import '../../models/user_model.dart';
 import '../../models/booking_model.dart';
 import 'vendor_profile_screen.dart';
@@ -11,18 +11,22 @@ import '../../utils/formatting_utils.dart';
 class OrderDetailsWithWorkerScreen extends StatefulWidget {
   final User user;
   final Booking booking;
+  final String? localizedServiceName; // Added
 
   const OrderDetailsWithWorkerScreen({
     Key? key,
     required this.user,
     required this.booking,
+    this.localizedServiceName,
   }) : super(key: key);
 
   @override
-  State<OrderDetailsWithWorkerScreen> createState() => _OrderDetailsWithWorkerScreenState();
+  State<OrderDetailsWithWorkerScreen> createState() =>
+      _OrderDetailsWithWorkerScreenState();
 }
 
-class _OrderDetailsWithWorkerScreenState extends State<OrderDetailsWithWorkerScreen> {
+class _OrderDetailsWithWorkerScreenState
+    extends State<OrderDetailsWithWorkerScreen> {
   // Dummy worker data
   final String workerName = "Sarish Naz";
   final String workerPhone = "+92 300 1234567";
@@ -35,42 +39,46 @@ class _OrderDetailsWithWorkerScreenState extends State<OrderDetailsWithWorkerScr
     final l10n = AppLocalizations.of(context)!;
     final locale = Localizations.localeOf(context);
 
+    // Check if cancellation is allowed (only when status is pending)
+    final bool canCancel = widget.booking.status == BookingStatus.pending;
+
     // Move previousServices list INSIDE build method where l10n is available
     final List<Map<String, dynamic>> previousServices = [
       {
         'icon': Icons.clean_hands,
-        'title': l10n.deepHouseCleaning, // FIXED: use l10n object, not string
+        'title': l10n.deepHouseCleaning,
         'count': 156,
         'color': AppColors.electricBlue,
       },
       {
         'icon': Icons.weekend,
-        'title': l10n.sofaCleaning, // FIXED
+        'title': l10n.sofaCleaning,
         'count': 98,
         'color': AppColors.electricBlue,
       },
       {
         'icon': Icons.local_laundry_service,
-        'title': l10n.carpetCleaning, // FIXED
+        'title': l10n.carpetCleaning,
         'count': 87,
         'color': AppColors.brightTeal,
       },
       {
         'icon': Icons.countertops,
-        'title': l10n.kitchenDeepClean, // FIXED
+        'title': l10n.kitchenDeepClean,
         'count': 63,
         'color': const Color(0xFFF59E0B),
       },
       {
         'icon': Icons.shower,
-        'title': l10n.bathroomSanitization, // FIXED
+        'title': l10n.bathroomSanitization,
         'count': 28,
         'color': AppColors.success,
       },
     ];
 
     final isDark = Theme.of(context).brightness == Brightness.dark;
-    final backgroundColor = isDark ? const Color(0xFF0F172A) : const Color(0xFFF8F9FA);
+    final backgroundColor =
+        isDark ? const Color(0xFF0F172A) : const Color(0xFFF8F9FA);
     final cardColor = isDark ? const Color(0xFF1E293B) : Colors.white;
     final textColor = isDark ? Colors.white : Colors.black87;
     final subtitleColor = isDark ? Colors.grey.shade400 : Colors.grey.shade600;
@@ -84,14 +92,17 @@ class _OrderDetailsWithWorkerScreenState extends State<OrderDetailsWithWorkerScr
         elevation: 0,
         actions: [
           TextButton.icon(
-            onPressed: () {
-              _showCancelDialog(context, l10n);
-            },
-            icon: Icon(Icons.cancel_outlined, color: Colors.red.shade600, size: 20),
+            onPressed: canCancel
+                ? () {
+                    _showCancelDialog(context, l10n);
+                  }
+                : null,
+            icon: Icon(Icons.cancel_outlined,
+                color: canCancel ? Colors.red.shade600 : Colors.grey, size: 20),
             label: Text(
               l10n.cancelBooking,
               style: TextStyle(
-                color: Colors.red.shade600,
+                color: canCancel ? Colors.red.shade600 : Colors.grey,
                 fontWeight: FontWeight.w600,
                 fontSize: 14,
               ),
@@ -110,7 +121,10 @@ class _OrderDetailsWithWorkerScreenState extends State<OrderDetailsWithWorkerScr
                 children: [
                   // Service Title
                   Text(
-                    widget.booking.service?.name ?? 'Service',
+                    widget.localizedServiceName ??
+                        (widget.booking.serviceName.isNotEmpty
+                            ? widget.booking.serviceName
+                            : l10n.service),
                     style: const TextStyle(
                       fontSize: 20,
                       fontWeight: FontWeight.bold,
@@ -119,12 +133,12 @@ class _OrderDetailsWithWorkerScreenState extends State<OrderDetailsWithWorkerScr
                   ),
                   const SizedBox(height: 4),
                   Text(
-                    DateFormat('h:mm a, d-MMM-y').format(widget.booking.bookingTime),
+                    '${widget.booking.bookingTime}, ${FormattingUtils.formatDateShort(context, widget.booking.bookingDate)}',
                     style: TextStyle(fontSize: 14, color: subtitleColor),
                   ),
                   const SizedBox(height: 4),
                   Text(
-                    'Order #${widget.booking.id.substring(0, widget.booking.id.length > 15 ? 15 : widget.booking.id.length).toUpperCase()}',
+                    '${l10n.orderNumber} ${widget.booking.id.substring(0, widget.booking.id.length > 15 ? 15 : widget.booking.id.length).toUpperCase()}',
                     style: const TextStyle(
                       fontSize: 14,
                       fontWeight: FontWeight.w600,
@@ -135,7 +149,7 @@ class _OrderDetailsWithWorkerScreenState extends State<OrderDetailsWithWorkerScr
 
                   // Address
                   Text(
-                    l10n.address, // FIXED: use l10n
+                    l10n.serviceLocation,
                     style: TextStyle(
                       fontSize: 14,
                       fontWeight: FontWeight.w600,
@@ -163,7 +177,8 @@ class _OrderDetailsWithWorkerScreenState extends State<OrderDetailsWithWorkerScr
                         onTap: () {
                           ScaffoldMessenger.of(context).showSnackBar(
                             SnackBar(
-                              content: Text(l10n.emergencyContactInitiated), // FIXED: use l10n
+                              content: Text(l10n
+                                  .emergencyContactInitiated), // FIXED: use l10n
                               backgroundColor: Colors.red,
                             ),
                           );
@@ -173,7 +188,8 @@ class _OrderDetailsWithWorkerScreenState extends State<OrderDetailsWithWorkerScr
                           padding: const EdgeInsets.all(16),
                           child: Row(
                             children: [
-                              const Icon(Icons.warning, color: Colors.red, size: 32),
+                              const Icon(Icons.warning,
+                                  color: Colors.red, size: 32),
                               const SizedBox(width: 12),
                               Text(
                                 l10n.facedAnyEmergency,
@@ -199,7 +215,8 @@ class _OrderDetailsWithWorkerScreenState extends State<OrderDetailsWithWorkerScr
                       borderRadius: BorderRadius.circular(16),
                       boxShadow: [
                         BoxShadow(
-                          color: Colors.black.withValues(alpha: isDark ? 0.3 : 0.08),
+                          color: Colors.black
+                              .withValues(alpha: isDark ? 0.3 : 0.08),
                           blurRadius: 15,
                           offset: const Offset(0, 5),
                         ),
@@ -214,8 +231,10 @@ class _OrderDetailsWithWorkerScreenState extends State<OrderDetailsWithWorkerScr
                             children: [
                               CircleAvatar(
                                 radius: 30,
-                                backgroundColor: AppColors.electricBlue.withValues(alpha: 0.1),
-                                child: const Icon(Icons.person, size: 35, color: AppColors.electricBlue),
+                                backgroundColor: AppColors.electricBlue
+                                    .withValues(alpha: 0.1),
+                                child: const Icon(Icons.person,
+                                    size: 35, color: AppColors.electricBlue),
                               ),
                               const SizedBox(width: 12),
                               Expanded(
@@ -247,7 +266,8 @@ class _OrderDetailsWithWorkerScreenState extends State<OrderDetailsWithWorkerScr
                                   color: Colors.blue.shade100,
                                   shape: BoxShape.circle,
                                 ),
-                                child: const Icon(Icons.verified, color: AppColors.electricBlue, size: 20),
+                                child: const Icon(Icons.verified,
+                                    color: AppColors.electricBlue, size: 20),
                               ),
                             ],
                           ),
@@ -260,7 +280,8 @@ class _OrderDetailsWithWorkerScreenState extends State<OrderDetailsWithWorkerScr
                             children: [
                               _buildStatItem(
                                 Icons.check_circle,
-                                FormattingUtils.formatNumber(totalOrders, locale),
+                                FormattingUtils.formatNumber(
+                                    totalOrders, locale),
                                 l10n.ordersDone,
                                 textColor,
                                 subtitleColor,
@@ -293,7 +314,8 @@ class _OrderDetailsWithWorkerScreenState extends State<OrderDetailsWithWorkerScr
                                     Navigator.push(
                                       context,
                                       MaterialPageRoute(
-                                        builder: (context) => VendorProfileScreen(
+                                        builder: (context) =>
+                                            VendorProfileScreen(
                                           workerName: workerName,
                                           totalOrders: totalOrders,
                                           workingPeriod: workingPeriod,
@@ -306,7 +328,8 @@ class _OrderDetailsWithWorkerScreenState extends State<OrderDetailsWithWorkerScr
                                   style: OutlinedButton.styleFrom(
                                     foregroundColor: Colors.blue,
                                     side: const BorderSide(color: Colors.blue),
-                                    padding: const EdgeInsets.symmetric(vertical: 12),
+                                    padding: const EdgeInsets.symmetric(
+                                        vertical: 12),
                                   ),
                                 ),
                               ),
@@ -329,7 +352,8 @@ class _OrderDetailsWithWorkerScreenState extends State<OrderDetailsWithWorkerScr
                                   style: ElevatedButton.styleFrom(
                                     backgroundColor: Colors.blue,
                                     foregroundColor: Colors.white,
-                                    padding: const EdgeInsets.symmetric(vertical: 12),
+                                    padding: const EdgeInsets.symmetric(
+                                        vertical: 12),
                                   ),
                                 ),
                               ),
@@ -368,7 +392,8 @@ class _OrderDetailsWithWorkerScreenState extends State<OrderDetailsWithWorkerScr
                       borderRadius: BorderRadius.circular(16),
                       boxShadow: [
                         BoxShadow(
-                          color: Colors.black.withValues(alpha: isDark ? 0.3 : 0.08),
+                          color: Colors.black
+                              .withValues(alpha: isDark ? 0.3 : 0.08),
                           blurRadius: 15,
                           offset: const Offset(0, 5),
                         ),
@@ -380,16 +405,20 @@ class _OrderDetailsWithWorkerScreenState extends State<OrderDetailsWithWorkerScr
                       itemCount: previousServices.length,
                       separatorBuilder: (context, index) => Divider(
                         height: 1,
-                        color: isDark ? Colors.grey.shade700 : Colors.grey.shade200,
+                        color: isDark
+                            ? Colors.grey.shade700
+                            : Colors.grey.shade200,
                       ),
                       itemBuilder: (context, index) {
                         final service = previousServices[index];
                         return ListTile(
-                          contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                          contentPadding: const EdgeInsets.symmetric(
+                              horizontal: 16, vertical: 8),
                           leading: Container(
                             padding: const EdgeInsets.all(10),
                             decoration: BoxDecoration(
-                              color: (service['color'] as Color).withValues(alpha: 0.1),
+                              color: (service['color'] as Color)
+                                  .withValues(alpha: 0.1),
                               borderRadius: BorderRadius.circular(10),
                             ),
                             child: Icon(
@@ -407,9 +436,11 @@ class _OrderDetailsWithWorkerScreenState extends State<OrderDetailsWithWorkerScr
                             ),
                           ),
                           trailing: Container(
-                            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                            padding: const EdgeInsets.symmetric(
+                                horizontal: 12, vertical: 6),
                             decoration: BoxDecoration(
-                              color: (service['color'] as Color).withValues(alpha: 0.1),
+                              color: (service['color'] as Color)
+                                  .withValues(alpha: 0.1),
                               borderRadius: BorderRadius.circular(20),
                             ),
                             child: Text(
@@ -528,18 +559,26 @@ class _OrderDetailsWithWorkerScreenState extends State<OrderDetailsWithWorkerScr
                                 decoration: BoxDecoration(
                                   color: isSelected
                                       ? Colors.red.shade50
-                                      : (isDark ? const Color(0xFF0F172A) : Colors.grey.shade100),
+                                      : (isDark
+                                          ? const Color(0xFF0F172A)
+                                          : Colors.grey.shade100),
                                   borderRadius: BorderRadius.circular(12),
                                   border: Border.all(
-                                    color: isSelected ? Colors.red.shade300 : Colors.transparent,
+                                    color: isSelected
+                                        ? Colors.red.shade300
+                                        : Colors.transparent,
                                     width: 2,
                                   ),
                                 ),
                                 child: Row(
                                   children: [
                                     Icon(
-                                      isSelected ? Icons.radio_button_checked : Icons.radio_button_unchecked,
-                                      color: isSelected ? Colors.red.shade700 : subtitleColor,
+                                      isSelected
+                                          ? Icons.radio_button_checked
+                                          : Icons.radio_button_unchecked,
+                                      color: isSelected
+                                          ? Colors.red.shade700
+                                          : subtitleColor,
                                       size: 20,
                                     ),
                                     const SizedBox(width: 12),
@@ -548,8 +587,12 @@ class _OrderDetailsWithWorkerScreenState extends State<OrderDetailsWithWorkerScr
                                         reason,
                                         style: TextStyle(
                                           fontSize: 14,
-                                          fontWeight: isSelected ? FontWeight.w600 : FontWeight.normal,
-                                          color: isSelected ? Colors.red.shade700 : textColor,
+                                          fontWeight: isSelected
+                                              ? FontWeight.w600
+                                              : FontWeight.normal,
+                                          color: isSelected
+                                              ? Colors.red.shade700
+                                              : textColor,
                                         ),
                                       ),
                                     ),
@@ -571,7 +614,8 @@ class _OrderDetailsWithWorkerScreenState extends State<OrderDetailsWithWorkerScr
                       ),
                       child: Row(
                         children: [
-                          Icon(Icons.warning_amber_rounded, color: Colors.orange.shade700, size: 20),
+                          Icon(Icons.warning_amber_rounded,
+                              color: Colors.orange.shade700, size: 20),
                           const SizedBox(width: 8),
                           Expanded(
                             child: Text(
@@ -593,11 +637,18 @@ class _OrderDetailsWithWorkerScreenState extends State<OrderDetailsWithWorkerScr
                           child: OutlinedButton(
                             onPressed: () => Navigator.pop(context),
                             style: OutlinedButton.styleFrom(
-                              side: BorderSide(color: isDark ? Colors.grey.shade600 : Colors.grey.shade300),
+                              side: BorderSide(
+                                  color: isDark
+                                      ? Colors.grey.shade600
+                                      : Colors.grey.shade300),
                               padding: const EdgeInsets.symmetric(vertical: 14),
-                              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                              shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(12)),
                             ),
-                            child: Text(l10n.keepBooking, style: TextStyle(color: textColor, fontWeight: FontWeight.w600)),
+                            child: Text(l10n.keepBooking,
+                                style: TextStyle(
+                                    color: textColor,
+                                    fontWeight: FontWeight.w600)),
                           ),
                         ),
                         const SizedBox(width: 12),
@@ -606,17 +657,20 @@ class _OrderDetailsWithWorkerScreenState extends State<OrderDetailsWithWorkerScr
                             onPressed: selectedReason == null
                                 ? null
                                 : () {
-                              Navigator.pop(context);
-                              _confirmCancellation(context, selectedReason!, l10n);
-                            },
+                                    Navigator.pop(context);
+                                    _confirmCancellation(
+                                        context, selectedReason!, l10n);
+                                  },
                             style: ElevatedButton.styleFrom(
                               backgroundColor: Colors.red.shade600,
                               foregroundColor: Colors.white,
                               padding: const EdgeInsets.symmetric(vertical: 14),
-                              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                              shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(12)),
                               disabledBackgroundColor: Colors.grey.shade300,
                             ),
-                            child: Text(l10n.cancelBooking, style: TextStyle(fontWeight: FontWeight.w600)),
+                            child: Text(l10n.cancelBooking,
+                                style: TextStyle(fontWeight: FontWeight.w600)),
                           ),
                         ),
                       ],
@@ -631,7 +685,8 @@ class _OrderDetailsWithWorkerScreenState extends State<OrderDetailsWithWorkerScr
     );
   }
 
-  void _confirmCancellation(BuildContext context, String reason, AppLocalizations l10n) {
+  void _confirmCancellation(
+      BuildContext context, String reason, AppLocalizations l10n) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
     final dialogBg = isDark ? const Color(0xFF1E293B) : Colors.white;
     final textColor = isDark ? Colors.white : Colors.black87;
@@ -640,7 +695,8 @@ class _OrderDetailsWithWorkerScreenState extends State<OrderDetailsWithWorkerScr
       context: context,
       builder: (BuildContext context) {
         return Dialog(
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+          shape:
+              RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
           backgroundColor: dialogBg,
           child: Padding(
             padding: const EdgeInsets.all(24),
@@ -653,28 +709,41 @@ class _OrderDetailsWithWorkerScreenState extends State<OrderDetailsWithWorkerScr
                     color: Colors.green.shade100,
                     shape: BoxShape.circle,
                   ),
-                  child: Icon(Icons.check_circle, color: Colors.green.shade700, size: 48),
+                  child: Icon(Icons.check_circle,
+                      color: Colors.green.shade700, size: 48),
                 ),
                 const SizedBox(height: 20),
-                Text(l10n.bookingCancelled, style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: textColor)),
+                Text(l10n.bookingCancelled,
+                    style: TextStyle(
+                        fontSize: 20,
+                        fontWeight: FontWeight.bold,
+                        color: textColor)),
                 const SizedBox(height: 12),
                 Text(
                   'Your booking has been cancelled successfully.',
                   textAlign: TextAlign.center,
-                  style: TextStyle(fontSize: 14, color: isDark ? Colors.grey.shade400 : Colors.grey.shade600),
+                  style: TextStyle(
+                      fontSize: 14,
+                      color:
+                          isDark ? Colors.grey.shade400 : Colors.grey.shade600),
                 ),
                 const SizedBox(height: 8),
                 Container(
                   padding: const EdgeInsets.all(12),
                   decoration: BoxDecoration(
-                    color: isDark ? const Color(0xFF0F172A) : Colors.grey.shade100,
+                    color:
+                        isDark ? const Color(0xFF0F172A) : Colors.grey.shade100,
                     borderRadius: BorderRadius.circular(10),
                   ),
                   child: Row(
                     children: [
-                      Icon(Icons.info_outline, size: 16, color: Colors.blue.shade700),
+                      Icon(Icons.info_outline,
+                          size: 16, color: Colors.blue.shade700),
                       const SizedBox(width: 8),
-                      Expanded(child: Text('Reason: $reason', style: TextStyle(fontSize: 12, color: textColor))),
+                      Expanded(
+                          child: Text('Reason: $reason',
+                              style:
+                                  TextStyle(fontSize: 12, color: textColor))),
                     ],
                   ),
                 ),
@@ -690,9 +759,12 @@ class _OrderDetailsWithWorkerScreenState extends State<OrderDetailsWithWorkerScr
                       backgroundColor: Colors.blue,
                       foregroundColor: Colors.white,
                       padding: const EdgeInsets.symmetric(vertical: 14),
-                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                      shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(12)),
                     ),
-                    child: Text(l10n.done, style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600)),
+                    child: Text(l10n.done,
+                        style: TextStyle(
+                            fontSize: 16, fontWeight: FontWeight.w600)),
                   ),
                 ),
               ],
@@ -704,12 +776,12 @@ class _OrderDetailsWithWorkerScreenState extends State<OrderDetailsWithWorkerScr
   }
 
   Widget _buildStatItem(
-      IconData icon,
-      String value,
-      String label,
-      Color textColor,
-      Color subtitleColor,
-      ) {
+    IconData icon,
+    String value,
+    String label,
+    Color textColor,
+    Color subtitleColor,
+  ) {
     return Column(
       children: [
         Icon(icon, color: AppColors.electricBlue, size: 24),

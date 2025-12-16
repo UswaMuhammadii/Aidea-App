@@ -66,11 +66,11 @@ class _AddressesScreenState extends State<AddressesScreen> {
   }
 
   void _handleLocationSelected(
-      String address,
-      double? latitude,
-      double? longitude,
-      SavedAddress? existingAddress,
-      ) {
+    String address,
+    double? latitude,
+    double? longitude,
+    SavedAddress? existingAddress,
+  ) {
     setState(() {
       if (existingAddress != null) {
         // Update existing address
@@ -207,7 +207,8 @@ class _AddressesScreenState extends State<AddressesScreen> {
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
     final isDark = Theme.of(context).brightness == Brightness.dark;
-    final backgroundColor = isDark ? const Color(0xFF0F172A) : const Color(0xFFF8F9FA);
+    final backgroundColor =
+        isDark ? const Color(0xFF0F172A) : const Color(0xFFF8F9FA);
     final cardColor = isDark ? const Color(0xFF1E293B) : Colors.white;
     final textColor = isDark ? Colors.white : Colors.black87;
     final subtitleColor = isDark ? Colors.grey.shade400 : Colors.grey.shade600;
@@ -252,13 +253,13 @@ class _AddressesScreenState extends State<AddressesScreen> {
               )
             else
               ..._addresses.map((address) => _buildAddressCard(
-                address,
-                isDark,
-                cardColor,
-                textColor,
-                subtitleColor,
-                l10n,
-              )),
+                    address,
+                    isDark,
+                    cardColor,
+                    textColor,
+                    subtitleColor,
+                    l10n,
+                  )),
 
             const SizedBox(height: 16),
 
@@ -267,7 +268,7 @@ class _AddressesScreenState extends State<AddressesScreen> {
               width: double.infinity,
               decoration: BoxDecoration(
                 border: Border.all(
-                  color: const Color(0xFF6B5B9A).withOpacity(0.3),
+                  color: AppColors.electricBlue.withOpacity(0.3),
                   width: 2,
                 ),
                 borderRadius: BorderRadius.circular(16),
@@ -284,13 +285,13 @@ class _AddressesScreenState extends State<AddressesScreen> {
                       children: [
                         const Icon(
                           Icons.add_location_alt,
-                          color: Color(0xFF6B5B9A),
+                          color: AppColors.electricBlue,
                         ),
                         const SizedBox(width: 12),
                         Text(
                           l10n.addNewAddress,
                           style: const TextStyle(
-                            color: Color(0xFF6B5B9A),
+                            color: AppColors.electricBlue,
                             fontSize: 16,
                             fontWeight: FontWeight.bold,
                           ),
@@ -308,17 +309,18 @@ class _AddressesScreenState extends State<AddressesScreen> {
   }
 
   Widget _buildAddressCard(
-      SavedAddress address,
-      bool isDark,
-      Color cardColor,
-      Color textColor,
-      Color subtitleColor,
-      AppLocalizations l10n,
-      ) {
+    SavedAddress address,
+    bool isDark,
+    Color cardColor,
+    Color textColor,
+    Color subtitleColor,
+    AppLocalizations l10n,
+  ) {
     final isEditing = _editingAddressId == address.id;
 
     if (!_titleControllers.containsKey(address.id)) {
-      _titleControllers[address.id] = TextEditingController(text: address.title);
+      _titleControllers[address.id] =
+          TextEditingController(text: address.title);
     }
 
     return Container(
@@ -328,7 +330,7 @@ class _AddressesScreenState extends State<AddressesScreen> {
         color: cardColor,
         borderRadius: BorderRadius.circular(20),
         border: address.isPrimary
-            ? Border.all(color: const Color(0xFF6B5B9A), width: 2)
+            ? Border.all(color: AppColors.electricBlue, width: 2)
             : null,
         boxShadow: [
           BoxShadow(
@@ -346,12 +348,12 @@ class _AddressesScreenState extends State<AddressesScreen> {
               Container(
                 padding: const EdgeInsets.all(12),
                 decoration: BoxDecoration(
-                  color: const Color(0xFF7C3AED).withOpacity(0.1),
+                  color: AppColors.electricBlue.withOpacity(0.1),
                   borderRadius: BorderRadius.circular(12),
                 ),
                 child: Icon(
                   _getAddressIcon(address.type),
-                  color: const Color(0xFF6B5B9A),
+                  color: AppColors.electricBlue,
                   size: 24,
                 ),
               ),
@@ -361,34 +363,34 @@ class _AddressesScreenState extends State<AddressesScreen> {
               Expanded(
                 child: isEditing
                     ? TextField(
-                  controller: _titleControllers[address.id],
-                  style: TextStyle(
-                    fontSize: 18,
-                    fontWeight: FontWeight.bold,
-                    color: textColor,
-                  ),
-                  decoration: InputDecoration(
-                    isDense: true,
-                    contentPadding: const EdgeInsets.symmetric(
-                      horizontal: 8,
-                      vertical: 4,
-                    ),
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(8),
-                    ),
-                  ),
-                  onSubmitted: (value) {
-                    _updateAddressTitle(address.id, value);
-                  },
-                )
+                        controller: _titleControllers[address.id],
+                        style: TextStyle(
+                          fontSize: 18,
+                          fontWeight: FontWeight.bold,
+                          color: textColor,
+                        ),
+                        decoration: InputDecoration(
+                          isDense: true,
+                          contentPadding: const EdgeInsets.symmetric(
+                            horizontal: 8,
+                            vertical: 4,
+                          ),
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(8),
+                          ),
+                        ),
+                        onSubmitted: (value) {
+                          _updateAddressTitle(address.id, value);
+                        },
+                      )
                     : Text(
-                  address.title,
-                  style: TextStyle(
-                    fontSize: 18,
-                    fontWeight: FontWeight.bold,
-                    color: textColor,
-                  ),
-                ),
+                        address.title,
+                        style: TextStyle(
+                          fontSize: 18,
+                          fontWeight: FontWeight.bold,
+                          color: textColor,
+                        ),
+                      ),
               ),
 
               // Edit title button
@@ -396,7 +398,7 @@ class _AddressesScreenState extends State<AddressesScreen> {
                 icon: Icon(
                   isEditing ? Icons.check : Icons.edit,
                   size: 20,
-                  color: const Color(0xFF6B5B9A),
+                  color: AppColors.electricBlue,
                 ),
                 onPressed: () {
                   if (isEditing) {
@@ -470,8 +472,8 @@ class _AddressesScreenState extends State<AddressesScreen> {
                     icon: const Icon(Icons.star_outline, size: 18),
                     label: const Text('Set Primary'),
                     style: OutlinedButton.styleFrom(
-                      foregroundColor: const Color(0xFF6B5B9A),
-                      side: const BorderSide(color: Color(0xFF6B5B9A)),
+                      foregroundColor: AppColors.electricBlue,
+                      side: const BorderSide(color: AppColors.electricBlue),
                     ),
                   ),
                 ),

@@ -61,7 +61,8 @@ class _CartScreenState extends State<CartScreen> {
     final locale = Localizations.localeOf(context); // Add locale
 
     final isDark = Theme.of(context).brightness == Brightness.dark;
-    final backgroundColor = isDark ? const Color(0xFF0F172A) : const Color(0xFFF8F9FA);
+    final backgroundColor =
+        isDark ? const Color(0xFF0F172A) : const Color(0xFFF8F9FA);
     final cardColor = isDark ? const Color(0xFF1E293B) : Colors.white;
     final textColor = isDark ? Colors.white : Colors.black87;
     final subtitleColor = isDark ? Colors.grey.shade400 : Colors.grey.shade600;
@@ -124,7 +125,8 @@ class _CartScreenState extends State<CartScreen> {
       appBar: AppBar(
         title: Text(globalCart.isEmpty
             ? l10n.cart
-            : l10n.cartWithCount.replaceAll('\$COUNT\$', globalCart.length.toString())),
+            : l10n.cartWithCount
+                .replaceAll('\$COUNT\$', globalCart.length.toString())),
         backgroundColor: cardColor,
         foregroundColor: textColor,
         elevation: 0,
@@ -138,8 +140,10 @@ class _CartScreenState extends State<CartScreen> {
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(20),
                     ),
-                    backgroundColor: isDark ? const Color(0xFF1E293B) : Colors.white,
-                    title: Text('Clear Cart', style: TextStyle(color: textColor)),
+                    backgroundColor:
+                        isDark ? const Color(0xFF1E293B) : Colors.white,
+                    title:
+                        Text('Clear Cart', style: TextStyle(color: textColor)),
                     content: Text(
                       l10n.areYouSureYouWantToRemoveAllItems,
                       style: TextStyle(color: subtitleColor),
@@ -147,7 +151,8 @@ class _CartScreenState extends State<CartScreen> {
                     actions: [
                       TextButton(
                         onPressed: () => Navigator.pop(context),
-                        child: Text(l10n.cancel, style: TextStyle(color: subtitleColor)),
+                        child: Text(l10n.cancel,
+                            style: TextStyle(color: subtitleColor)),
                       ),
                       Container(
                         decoration: BoxDecoration(
@@ -173,7 +178,8 @@ class _CartScreenState extends State<CartScreen> {
                   ),
                 );
               },
-              child: Text(l10n.clearAll,
+              child: Text(
+                l10n.clearAll,
                 style: TextStyle(color: Colors.red),
               ),
             ),
@@ -194,7 +200,8 @@ class _CartScreenState extends State<CartScreen> {
                     borderRadius: BorderRadius.circular(20),
                     boxShadow: [
                       BoxShadow(
-                        color: Colors.black.withValues(alpha: isDark ? 0.3 : 0.08),
+                        color:
+                            Colors.black.withValues(alpha: isDark ? 0.3 : 0.08),
                         blurRadius: 15,
                         offset: const Offset(0, 5),
                       ),
@@ -232,7 +239,11 @@ class _CartScreenState extends State<CartScreen> {
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               Text(
-                                item.service.name,
+                                Localizations.localeOf(context).languageCode ==
+                                            'ar' &&
+                                        item.service.nameArabic.isNotEmpty
+                                    ? item.service.nameArabic
+                                    : item.service.name,
                                 style: TextStyle(
                                   fontSize: 15,
                                   fontWeight: FontWeight.bold,
@@ -255,7 +266,8 @@ class _CartScreenState extends State<CartScreen> {
                               ),
                               const SizedBox(height: 6),
                               Text(
-                                FormattingUtils.formatCurrency(item.service.price, l10n, locale),
+                                FormattingUtils.formatCurrency(
+                                    item.service.price, l10n, locale),
                                 style: const TextStyle(
                                   fontSize: 13,
                                   fontWeight: FontWeight.bold,
@@ -272,7 +284,10 @@ class _CartScreenState extends State<CartScreen> {
                             Container(
                               decoration: BoxDecoration(
                                 gradient: const LinearGradient(
-                                  colors: [AppColors.electricBlue, AppColors.electricBlue],
+                                  colors: [
+                                    AppColors.electricBlue,
+                                    AppColors.electricBlue
+                                  ],
                                 ),
                                 borderRadius: BorderRadius.circular(10),
                               ),
@@ -280,10 +295,13 @@ class _CartScreenState extends State<CartScreen> {
                                 mainAxisSize: MainAxisSize.min,
                                 children: [
                                   IconButton(
-                                    onPressed: () => updateQuantity(item.id, item.quantity - 1),
-                                    icon: const Icon(Icons.remove, color: Colors.white, size: 16),
+                                    onPressed: () => updateQuantity(
+                                        item.id, item.quantity - 1),
+                                    icon: const Icon(Icons.remove,
+                                        color: Colors.white, size: 16),
                                     padding: const EdgeInsets.all(6),
-                                    constraints: const BoxConstraints(minWidth: 32, minHeight: 32),
+                                    constraints: const BoxConstraints(
+                                        minWidth: 32, minHeight: 32),
                                   ),
                                   Container(
                                     width: 30,
@@ -294,7 +312,8 @@ class _CartScreenState extends State<CartScreen> {
                                     ),
                                     child: Center(
                                       child: Text(
-                                        FormattingUtils.formatNumber(item.quantity, locale), // ← UPDATED
+                                        FormattingUtils.formatNumber(
+                                            item.quantity, locale), // ← UPDATED
                                         style: const TextStyle(
                                           color: AppColors.electricBlue,
                                           fontWeight: FontWeight.bold,
@@ -304,17 +323,21 @@ class _CartScreenState extends State<CartScreen> {
                                     ),
                                   ),
                                   IconButton(
-                                    onPressed: () => updateQuantity(item.id, item.quantity + 1),
-                                    icon: const Icon(Icons.add, color: Colors.white, size: 16),
+                                    onPressed: () => updateQuantity(
+                                        item.id, item.quantity + 1),
+                                    icon: const Icon(Icons.add,
+                                        color: Colors.white, size: 16),
                                     padding: const EdgeInsets.all(6),
-                                    constraints: const BoxConstraints(minWidth: 32, minHeight: 32),
+                                    constraints: const BoxConstraints(
+                                        minWidth: 32, minHeight: 32),
                                   ),
                                 ],
                               ),
                             ),
                             const SizedBox(height: 6),
                             Text(
-                              FormattingUtils.formatCurrency(item.totalPrice, l10n, locale),
+                              FormattingUtils.formatCurrency(
+                                  item.totalPrice, l10n, locale),
                               style: const TextStyle(
                                 fontWeight: FontWeight.bold,
                                 color: AppColors.electricBlue,
@@ -325,7 +348,8 @@ class _CartScreenState extends State<CartScreen> {
                         ),
                         IconButton(
                           onPressed: () => removeItem(item.id),
-                          icon: const Icon(Icons.delete_outline, color: Colors.red, size: 22),
+                          icon: const Icon(Icons.delete_outline,
+                              color: Colors.red, size: 22),
                           padding: const EdgeInsets.all(6),
                           constraints: const BoxConstraints(),
                         ),
@@ -363,7 +387,8 @@ class _CartScreenState extends State<CartScreen> {
                         ),
                       ),
                       Text(
-                        FormattingUtils.formatCurrency(totalPrice, l10n, locale),
+                        FormattingUtils.formatCurrency(
+                            totalPrice, l10n, locale),
                         style: const TextStyle(
                           fontSize: 24,
                           fontWeight: FontWeight.bold,
@@ -385,7 +410,8 @@ class _CartScreenState extends State<CartScreen> {
                         ),
                         elevation: 4,
                       ),
-                      child: Text(l10n.proceedToCheckout,
+                      child: Text(
+                        l10n.proceedToCheckout,
                         style: TextStyle(
                           fontSize: 16,
                           fontWeight: FontWeight.bold,

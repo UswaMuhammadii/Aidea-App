@@ -6,7 +6,6 @@ import '../notifications/notification_screen.dart';
 import '../../gen_l10n/app_localizations.dart';
 import '../../utils/app_colors.dart';
 
-
 class ProfileScreen extends StatefulWidget {
   final User user;
   final VoidCallback onLogout;
@@ -44,14 +43,16 @@ class _ProfileScreenState extends State<ProfileScreen> {
         ),
         content: Text(
           l10n.areYouSureYouWantToLogout,
-          style: TextStyle(color: Theme.of(context).colorScheme.onSurfaceVariant),
+          style:
+              TextStyle(color: Theme.of(context).colorScheme.onSurfaceVariant),
         ),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(context),
             child: Text(
               l10n.cancel,
-              style: TextStyle(color: Theme.of(context).colorScheme.onSurfaceVariant),
+              style: TextStyle(
+                  color: Theme.of(context).colorScheme.onSurfaceVariant),
             ),
           ),
           Container(
@@ -68,10 +69,13 @@ class _ProfileScreenState extends State<ProfileScreen> {
               },
               style: TextButton.styleFrom(
                 backgroundColor: Colors.transparent,
-                padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
               ),
-              child: Text(l10n.logout,
-                style: const TextStyle(color: Colors.white, fontWeight: FontWeight.w600),
+              child: Text(
+                l10n.logout,
+                style: const TextStyle(
+                    color: Colors.white, fontWeight: FontWeight.w600),
               ),
             ),
           ),
@@ -111,7 +115,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
           backgroundColor: Colors.green,
           behavior: SnackBarBehavior.floating,
           margin: const EdgeInsets.all(16),
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+          shape:
+              RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
         ),
       );
     }
@@ -142,7 +147,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
     }
 
     final primaryAddress = _currentUser.savedAddresses.firstWhere(
-          (address) => address.isPrimary,
+      (address) => address.isPrimary,
       orElse: () => _currentUser.savedAddresses.first,
     );
 
@@ -157,9 +162,11 @@ class _ProfileScreenState extends State<ProfileScreen> {
     final textColor = isDark ? Colors.white : Colors.black87;
     final subtitleColor = isDark ? Colors.white70 : Colors.grey.shade600;
     final cardColor = isDark ? const Color(0xFF1E293B) : Colors.white;
+    final backgroundColor =
+        isDark ? const Color(0xFF0F172A) : const Color(0xFFF8F9FA);
 
     return Scaffold(
-      backgroundColor: Theme.of(context).colorScheme.background,
+      backgroundColor: backgroundColor,
       body: SingleChildScrollView(
         child: Column(
           children: [
@@ -186,7 +193,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          Text(l10n.profile,
+                          Text(
+                            l10n.profile,
                             style: const TextStyle(
                               color: Colors.white,
                               fontSize: 28,
@@ -200,7 +208,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
                             ),
                             child: IconButton(
                               onPressed: () => _logout(l10n),
-                              icon: const Icon(Icons.logout, color: Colors.white),
+                              icon:
+                                  const Icon(Icons.logout, color: Colors.white),
                             ),
                           ),
                         ],
@@ -339,7 +348,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
                             Navigator.push(
                               context,
                               MaterialPageRoute(
-                                builder: (context) => const NotificationsScreen(),
+                                builder: (context) =>
+                                    const NotificationsScreen(),
                               ),
                             );
                           },
@@ -356,38 +366,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
                               ? '${_currentUser.savedAddresses.length}'
                               : null,
                           onTap: _navigateToAddresses,
-                        ),
-                        const Divider(height: 1, indent: 72),
-                        _buildSettingsTile(
-                          icon: Icons.payment_outlined,
-                          title: l10n.paymentMethods,
-                          subtitle: l10n.managePaymentOptions,
-                          iconColor: Colors.green,
-                          textColor: textColor,
-                          subtitleColor: subtitleColor,
-                          onTap: () {
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              const SnackBar(
-                                content: Text('Payment methods coming soon!'),
-                              ),
-                            );
-                          },
-                        ),
-                        const Divider(height: 1, indent: 72),
-                        _buildSettingsTile(
-                          icon: Icons.help_outline,
-                          title: l10n.helpAndSupport,
-                          subtitle: l10n.getHelpAndContactUs,
-                          iconColor: Colors.blue,
-                          textColor: textColor,
-                          subtitleColor: subtitleColor,
-                          onTap: () {
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              const SnackBar(
-                                content: Text('Help & support coming soon!'),
-                              ),
-                            );
-                          },
                         ),
                         const Divider(height: 1, indent: 72),
                         _buildSettingsTile(

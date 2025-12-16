@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart' as firebase_auth;
 import '../../models/user_model.dart';
-import '../../services/dummy_data_service.dart';
+import '../../services/firestore_service.dart';
 import '../../services/firebase_auth_service.dart';
 import 'phone_login_screen.dart';
 import 'otp_verification_screen.dart';
@@ -26,6 +26,7 @@ class _AuthFlowCoordinatorState extends State<AuthFlowCoordinator> {
   String _verificationId = '';
   Map<String, String> _locationData = {};
   final FirebaseAuthService _authService = FirebaseAuthService();
+  final FirestoreService _firestoreService = FirestoreService();
   firebase_auth.User? _firebaseUser;
 
   @override
@@ -55,9 +56,17 @@ class _AuthFlowCoordinatorState extends State<AuthFlowCoordinator> {
     print('============================');
   }
 
-  void _handleOTPVerification(firebase_auth.User firebaseUser) {
+  Future<void> _handleOTPVerification(firebase_auth.User firebaseUser) async {
     print('=== OTP Verification Handler ===');
     print('Firebase User: ${firebaseUser.uid}');
+
+    // Check if user exists in Firestore
+    final existingUser = await _firestoreService.getUser(firebaseUser.uid);
+    if (existingUser != null) {
+      print('User found in Firestore: ${existingUser.name}');
+      widget.onAuthComplete(existingUser);
+      return;
+    }
 
     setState(() {
       _firebaseUser = firebaseUser;
@@ -76,16 +85,21 @@ class _AuthFlowCoordinatorState extends State<AuthFlowCoordinator> {
     _completeAuth();
   }
 
-  void _completeAuth() {
+  Future<void> _completeAuth() async {
+    final l10n = AppLocalizations.of(context)!;
     // Create user with collected data and Firebase UID
     final user = User(
-      id: _firebaseUser?.uid ?? DateTime.now().millisecondsSinceEpoch.toString(),
+      id: _firebaseUser?.uid ??
+          DateTime.now().millisecondsSinceEpoch.toString(),
       email: _locationData['email'] ?? '$_phoneNumber@example.com',
       name: _locationData['name'] ?? _phoneNumber.replaceAll('+', ''),
       phone: _phoneNumber,
       address: _buildCompleteAddress(),
       createdAt: DateTime.now(),
+      languagePreference: l10n.localeName,
     );
+
+    await _firestoreService.saveUser(user);
 
     widget.onAuthComplete(user);
   }
@@ -123,13 +137,14 @@ class _AuthFlowCoordinatorState extends State<AuthFlowCoordinator> {
           // ✅ FIX: Add key with verificationId to force rebuild when it changes
           if (_verificationId.isNotEmpty)
             OTPVerificationScreen(
-              key: ValueKey(_verificationId), // This forces rebuild with new verificationId
+              key: ValueKey(
+                  _verificationId), // This forces rebuild with new verificationId
               phoneNumber: _phoneNumber,
               verificationId: _verificationId,
               onVerificationSuccess: _handleOTPVerification,
             )
           else
-          // Placeholder while waiting for verificationId
+            // Placeholder while waiting for verificationId
             const Center(child: CircularProgressIndicator()),
 
           // Step 2: Location Selection

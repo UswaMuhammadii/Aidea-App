@@ -1,5 +1,8 @@
 {
   "ar": [
+    "areYouSureCancel",
+    "yesCancel",
+    "no",
     "yourCompletedOrderWillAppearHere",
     "completeinstallation"
   ]
