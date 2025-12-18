@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'dart:io';
 import '../../models/user_model.dart';
 import 'edit_profile_screen.dart';
 import 'addresses_screen.dart';
@@ -224,16 +225,21 @@ class _ProfileScreenState extends State<ProfileScreen> {
                         child: CircleAvatar(
                           radius: 50,
                           backgroundColor: Colors.white,
-                          child: Text(
-                            _currentUser.name.isNotEmpty
-                                ? _currentUser.name[0].toUpperCase()
-                                : 'U',
-                            style: const TextStyle(
-                              fontSize: 36,
-                              fontWeight: FontWeight.bold,
-                              color: AppColors.deepPurple,
-                            ),
-                          ),
+                          backgroundImage: _currentUser.profileImage != null
+                              ? FileImage(File(_currentUser.profileImage!))
+                              : null,
+                          child: _currentUser.profileImage == null
+                              ? Text(
+                                  _currentUser.name.isNotEmpty
+                                      ? _currentUser.name[0].toUpperCase()
+                                      : 'U',
+                                  style: const TextStyle(
+                                    fontSize: 36,
+                                    fontWeight: FontWeight.bold,
+                                    color: AppColors.deepPurple,
+                                  ),
+                                )
+                              : null,
                         ),
                       ),
                       const SizedBox(height: 16),

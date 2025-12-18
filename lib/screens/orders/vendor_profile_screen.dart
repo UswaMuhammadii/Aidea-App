@@ -1,14 +1,17 @@
 import 'package:flutter/material.dart';
 import '../../utils/app_colors.dart';
 import '../../gen_l10n/app_localizations.dart';
+import '../../models/worker_model.dart';
 
 class VendorProfileScreen extends StatelessWidget {
+  final Worker? worker;
   final String workerName;
   final int totalOrders;
   final String workingPeriod;
 
   const VendorProfileScreen({
     Key? key,
+    this.worker,
     required this.workerName,
     required this.totalOrders,
     required this.workingPeriod,
@@ -56,13 +59,18 @@ class VendorProfileScreen extends StatelessWidget {
                   CircleAvatar(
                     radius: 60,
                     backgroundColor: Colors.grey.shade300,
-                    child: const Icon(Icons.person, size: 60, color: Colors.grey),
+                    backgroundImage: worker?.profileImageUrl != null
+                        ? NetworkImage(worker!.profileImageUrl!)
+                        : null,
+                    child: worker?.profileImageUrl == null
+                        ? const Icon(Icons.person, size: 60, color: Colors.grey)
+                        : null,
                   ),
                   const SizedBox(height: 16),
 
                   // Worker Name
                   Text(
-                    workerName,
+                    worker?.name ?? workerName,
                     style: const TextStyle(
                       fontSize: 24,
                       fontWeight: FontWeight.bold,
@@ -89,12 +97,14 @@ class VendorProfileScreen extends StatelessWidget {
                       children: [
                         _buildStatCard(
                           Icons.check_circle,
-                          '$totalOrders',
+                          '${worker?.totalOrders ?? totalOrders}',
                           l10n.orderDone,
                         ),
                         _buildStatCard(
                           Icons.access_time,
-                          workingPeriod,
+                          worker?.experience.isNotEmpty == true
+                              ? worker!.experience
+                              : workingPeriod,
                           l10n.timePeriod,
                         ),
                       ],
@@ -108,22 +118,32 @@ class VendorProfileScreen extends StatelessWidget {
                     children: [
                       Row(
                         children: [
-                          const Icon(Icons.check_circle, color: Colors.blue, size: 20),
+                          Icon(Icons.check_circle,
+                              color: worker?.isVerified == true
+                                  ? Colors.blue
+                                  : Colors.grey,
+                              size: 20),
                           const SizedBox(width: 4),
                           Text(
                             l10n.profileVerified,
-                            style: const TextStyle(color: Colors.blue, fontSize: 13),
+                            style: TextStyle(
+                                color: worker?.isVerified == true
+                                    ? Colors.blue
+                                    : Colors.grey,
+                                fontSize: 13),
                           ),
                         ],
                       ),
                       const SizedBox(width: 24),
                       Row(
                         children: [
-                          const Icon(Icons.check_circle, color: Colors.blue, size: 20),
+                          const Icon(Icons.check_circle,
+                              color: Colors.blue, size: 20),
                           const SizedBox(width: 4),
                           Text(
                             l10n.policeVerified,
-                            style: const TextStyle(color: Colors.blue, fontSize: 13),
+                            style: const TextStyle(
+                                color: Colors.blue, fontSize: 13),
                           ),
                         ],
                       ),

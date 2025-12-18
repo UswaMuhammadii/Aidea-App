@@ -1,9 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:image_picker/image_picker.dart';
+import 'dart:io';
 import '../../models/user_model.dart';
 import '../../gen_l10n/app_localizations.dart';
 import '../../utils/app_colors.dart';
 import '../../utils/validators.dart';
+import '../../services/firestore_service.dart';
 
 class EditProfileScreen extends StatefulWidget {
   final User user;
@@ -19,6 +22,9 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
   late TextEditingController _nameController;
   late TextEditingController _emailController;
   late TextEditingController _phoneController;
+
+  File? _selectedImage;
+  final ImagePicker _picker = ImagePicker();
 
   final _nameFocusNode = FocusNode();
   final _emailFocusNode = FocusNode();
@@ -122,11 +128,65 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
   void _checkForChanges() {
     final hasChanges = _nameController.text != widget.user.name ||
         _emailController.text != widget.user.email ||
+        _selectedImage != null ||
         _phoneController.text != widget.user.phone;
 
     if (hasChanges != _hasChanges) {
       setState(() => _hasChanges = hasChanges);
     }
+  }
+
+  Future<void> _pickImage(ImageSource source) async {
+    try {
+      final XFile? image = await _picker.pickImage(source: source);
+      if (image != null) {
+        setState(() {
+          _selectedImage = File(image.path);
+          _checkForChanges();
+        });
+      }
+    } catch (e) {
+      debugPrint('Error picking image: $e');
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('Failed to pick image: $e'),
+            backgroundColor: Colors.red,
+          ),
+        );
+      }
+    }
+  }
+
+  void _showImageSourceModal() {
+    showModalBottomSheet(
+      context: context,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+      ),
+      builder: (context) => SafeArea(
+        child: Wrap(
+          children: [
+            ListTile(
+              leading: const Icon(Icons.camera_alt),
+              title: const Text('Camera'),
+              onTap: () {
+                Navigator.pop(context);
+                _pickImage(ImageSource.camera);
+              },
+            ),
+            ListTile(
+              leading: const Icon(Icons.photo_library),
+              title: const Text('Gallery'),
+              onTap: () {
+                Navigator.pop(context);
+                _pickImage(ImageSource.gallery);
+              },
+            ),
+          ],
+        ),
+      ),
+    );
   }
 
   Future<void> _saveProfile(AppLocalizations l10n) async {
@@ -177,9 +237,6 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
 
     setState(() => _isLoading = true);
 
-    // Simulate API call
-    await Future.delayed(const Duration(seconds: 1));
-
     // Create updated user object
     final updatedUser = User(
       id: widget.user.id,
@@ -188,7 +245,24 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
       phone: _phoneController.text.trim(),
       address: widget.user.address,
       createdAt: widget.user.createdAt,
+      profileImage: _selectedImage?.path ?? widget.user.profileImage,
     );
+
+    try {
+      await FirestoreService().saveUser(updatedUser);
+    } catch (e) {
+      debugPrint('Error saving profile: $e');
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('Failed to save profile: $e'),
+            backgroundColor: Colors.red,
+          ),
+        );
+      }
+      setState(() => _isLoading = false);
+      return;
+    }
 
     setState(() => _isLoading = false);
 
@@ -316,32 +390,43 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                         child: CircleAvatar(
                           radius: 60,
                           backgroundColor: cardColor,
-                          child: Text(
-                            _nameController.text.isNotEmpty
-                                ? _nameController.text[0].toUpperCase()
-                                : 'U',
-                            style: const TextStyle(
-                              fontSize: 48,
-                              fontWeight: FontWeight.bold,
-                              color: Color(0xFF6B5B9A),
-                            ),
-                          ),
+                          backgroundImage: _selectedImage != null
+                              ? FileImage(_selectedImage!)
+                              : (widget.user.profileImage != null
+                                  ? FileImage(File(widget.user.profileImage!))
+                                  : null) as ImageProvider?,
+                          child: (_selectedImage == null &&
+                                  widget.user.profileImage == null)
+                              ? Text(
+                                  _nameController.text.isNotEmpty
+                                      ? _nameController.text[0].toUpperCase()
+                                      : 'U',
+                                  style: const TextStyle(
+                                    fontSize: 48,
+                                    fontWeight: FontWeight.bold,
+                                    color: Color(0xFF6B5B9A),
+                                  ),
+                                )
+                              : null,
                         ),
                       ),
                       Positioned(
                         bottom: 0,
                         right: 0,
-                        child: Container(
-                          padding: const EdgeInsets.all(8),
-                          decoration: BoxDecoration(
-                            color: AppColors.electricBlue,
-                            shape: BoxShape.circle,
-                            border: Border.all(color: cardColor, width: 3),
-                          ),
-                          child: const Icon(
-                            Icons.camera_alt,
-                            color: Colors.white,
-                            size: 20,
+                        child: GestureDetector(
+                          onTap: _showImageSourceModal,
+                          child: Container(
+                            padding: const EdgeInsets.all(8),
+                            decoration: BoxDecoration(
+                              color: AppColors.electricBlue,
+                              shape: BoxShape.circle,
+                              border: Border.all(color: cardColor, width: 3),
+                            ),
+                            child: const Icon(
+                              Icons.camera_alt,
+                              color: Colors.white,
+                              size: 20,
+                            ),
                           ),
                         ),
                       ),

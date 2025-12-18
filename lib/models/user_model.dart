@@ -7,6 +7,7 @@ class User {
   final String address;
   final DateTime createdAt;
   final List<SavedAddress> savedAddresses;
+  final String? profileImage;
   final String languagePreference;
 
   User({
@@ -17,6 +18,7 @@ class User {
     this.address = 'Building Sultan Town Lahore Punjab',
     required this.createdAt,
     this.savedAddresses = const [],
+    this.profileImage,
     this.languagePreference = 'english',
   });
 
@@ -38,6 +40,7 @@ class User {
           createdAt.toIso8601String(), // Map to Admin's registeredAt
       'languagePreference': languagePreference,
       'address': address, // Added as per request
+      'profileImage': profileImage,
       // Local only or extra fields
       'savedAddresses':
           savedAddresses.map((address) => address.toJson()).toList(),
@@ -52,6 +55,7 @@ class User {
       name: json['name'] ?? '',
       phone: json['phone'] ?? '',
       address: json['address'] ?? 'Building Sultan Town Lahore Punjab',
+      profileImage: json['profileImage'],
       createdAt: json['registeredAt'] != null
           ? DateTime.parse(json['registeredAt'])
           : (json['createdAt'] != null
@@ -73,6 +77,7 @@ class User {
     String? address,
     DateTime? createdAt,
     List<SavedAddress>? savedAddresses,
+    String? profileImage,
     String? languagePreference,
   }) {
     return User(
@@ -83,6 +88,7 @@ class User {
       address: address ?? this.address,
       createdAt: createdAt ?? this.createdAt,
       savedAddresses: savedAddresses ?? this.savedAddresses,
+      profileImage: profileImage ?? this.profileImage,
       languagePreference: languagePreference ?? this.languagePreference,
     );
   }

@@ -3,6 +3,7 @@ import '../models/user_model.dart';
 import '../models/service_model.dart';
 import '../models/booking_model.dart';
 import '../models/review_model.dart';
+import '../models/worker_model.dart';
 
 class FirestoreService {
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
@@ -124,6 +125,19 @@ class FirestoreService {
           .map((doc) => Review.fromJson(doc.data() as Map<String, dynamic>))
           .toList();
     });
+  }
+
+  // --- Worker Operations ---
+  Future<Worker?> getWorker(String workerId) async {
+    try {
+      final doc = await _firestore.collection('workers').doc(workerId).get();
+      if (doc.exists) {
+        return Worker.fromJson(doc.data() as Map<String, dynamic>);
+      }
+    } catch (e) {
+      print('Error fetching worker: $e');
+    }
+    return null;
   }
 
   // Check if a booking has a review

@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 
 import '../../models/user_model.dart';
 import '../../models/booking_model.dart';
+import '../../models/worker_model.dart';
+import '../../services/firestore_service.dart';
 import 'vendor_profile_screen.dart';
 import 'chat_screen.dart';
 import '../../utils/app_colors.dart';
@@ -27,12 +29,37 @@ class OrderDetailsWithWorkerScreen extends StatefulWidget {
 
 class _OrderDetailsWithWorkerScreenState
     extends State<OrderDetailsWithWorkerScreen> {
-  // Dummy worker data
-  final String workerName = "Sarish Naz";
-  final String workerPhone = "+92 300 1234567";
-  final int totalOrders = 432;
-  final String workingPeriod = "2 years";
-  final String workerImage = "";
+  // Worker Data
+  Worker? _fetchedWorker;
+  bool _isLoadingWorker = false;
+  final FirestoreService _firestoreService = FirestoreService();
+
+  @override
+  void initState() {
+    super.initState();
+    _fetchWorker();
+  }
+
+  Future<void> _fetchWorker() async {
+    if (widget.booking.workerId != null) {
+      setState(() => _isLoadingWorker = true);
+      try {
+        final worker =
+            await _firestoreService.getWorker(widget.booking.workerId!);
+        if (mounted) {
+          setState(() {
+            _fetchedWorker = worker;
+          });
+        }
+      } catch (e) {
+        debugPrint("Error fetching worker: $e");
+      } finally {
+        if (mounted) {
+          setState(() => _isLoadingWorker = false);
+        }
+      }
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -233,8 +260,15 @@ class _OrderDetailsWithWorkerScreenState
                                 radius: 30,
                                 backgroundColor: AppColors.electricBlue
                                     .withValues(alpha: 0.1),
-                                child: const Icon(Icons.person,
-                                    size: 35, color: AppColors.electricBlue),
+                                backgroundImage:
+                                    _fetchedWorker?.profileImageUrl != null
+                                        ? NetworkImage(
+                                            _fetchedWorker!.profileImageUrl!)
+                                        : null,
+                                child: _fetchedWorker?.profileImageUrl == null
+                                    ? const Icon(Icons.person,
+                                        size: 35, color: AppColors.electricBlue)
+                                    : null,
                               ),
                               const SizedBox(width: 12),
                               Expanded(
@@ -242,7 +276,9 @@ class _OrderDetailsWithWorkerScreenState
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
                                     Text(
-                                      workerName,
+                                      _fetchedWorker?.name ??
+                                          widget.booking.workerName ??
+                                          "Assigned Worker",
                                       style: TextStyle(
                                         fontSize: 18,
                                         fontWeight: FontWeight.bold,
@@ -251,7 +287,7 @@ class _OrderDetailsWithWorkerScreenState
                                     ),
                                     const SizedBox(height: 2),
                                     Text(
-                                      l10n.professionalTechnician, // FIXED: use l10n object
+                                      l10n.professionalTechnician,
                                       style: TextStyle(
                                         fontSize: 13,
                                         color: subtitleColor,
@@ -260,46 +296,52 @@ class _OrderDetailsWithWorkerScreenState
                                   ],
                                 ),
                               ),
-                              Container(
-                                padding: const EdgeInsets.all(8),
-                                decoration: BoxDecoration(
-                                  color: Colors.blue.shade100,
-                                  shape: BoxShape.circle,
+                              if (_fetchedWorker?.isVerified == true)
+                                Container(
+                                  padding: const EdgeInsets.all(8),
+                                  decoration: BoxDecoration(
+                                    color: Colors.blue.shade100,
+                                    shape: BoxShape.circle,
+                                  ),
+                                  child: const Icon(Icons.verified,
+                                      color: AppColors.electricBlue, size: 20),
                                 ),
-                                child: const Icon(Icons.verified,
-                                    color: AppColors.electricBlue, size: 20),
-                              ),
                             ],
                           ),
 
                           const SizedBox(height: 16),
 
                           // Stats Row - Only Orders and Time Period
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceAround,
-                            children: [
-                              _buildStatItem(
-                                Icons.check_circle,
-                                FormattingUtils.formatNumber(
-                                    totalOrders, locale),
-                                l10n.ordersDone,
-                                textColor,
-                                subtitleColor,
-                              ),
-                              Container(
-                                height: 40,
-                                width: 1,
-                                color: Colors.grey.shade300,
-                              ),
-                              _buildStatItem(
-                                Icons.access_time,
-                                workingPeriod,
-                                l10n.experience,
-                                textColor,
-                                subtitleColor,
-                              ),
-                            ],
-                          ),
+                          if (_isLoadingWorker)
+                            const Center(child: CircularProgressIndicator())
+                          else if (_fetchedWorker != null)
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceAround,
+                              children: [
+                                _buildStatItem(
+                                  Icons.check_circle,
+                                  FormattingUtils.formatNumber(
+                                      _fetchedWorker!.totalOrders, locale),
+                                  l10n.ordersDone,
+                                  textColor,
+                                  subtitleColor,
+                                ),
+                                Container(
+                                  height: 40,
+                                  width: 1,
+                                  color: Colors.grey.shade300,
+                                ),
+                                _buildStatItem(
+                                  Icons.access_time,
+                                  _fetchedWorker!.experience.isNotEmpty
+                                      ? _fetchedWorker!.experience
+                                      : "N/A",
+                                  l10n.experience,
+                                  textColor,
+                                  subtitleColor,
+                                ),
+                              ],
+                            ),
 
                           const SizedBox(height: 16),
                           const Divider(),
@@ -316,9 +358,16 @@ class _OrderDetailsWithWorkerScreenState
                                       MaterialPageRoute(
                                         builder: (context) =>
                                             VendorProfileScreen(
-                                          workerName: workerName,
-                                          totalOrders: totalOrders,
-                                          workingPeriod: workingPeriod,
+                                          worker: _fetchedWorker,
+                                          // Fallbacks if worker fetch failed but we have some info
+                                          workerName: _fetchedWorker?.name ??
+                                              widget.booking.workerName ??
+                                              "Worker",
+                                          totalOrders:
+                                              _fetchedWorker?.totalOrders ?? 0,
+                                          workingPeriod:
+                                              _fetchedWorker?.experience ??
+                                                  "N/A",
                                         ),
                                       ),
                                     );
@@ -341,7 +390,9 @@ class _OrderDetailsWithWorkerScreenState
                                       context,
                                       MaterialPageRoute(
                                         builder: (context) => ChatScreen(
-                                          workerName: workerName,
+                                          workerName: _fetchedWorker?.name ??
+                                              widget.booking.workerName ??
+                                              "Worker",
                                           user: widget.user,
                                         ),
                                       ),
@@ -377,7 +428,9 @@ class _OrderDetailsWithWorkerScreenState
                   ),
                   const SizedBox(height: 4),
                   Text(
-                    l10n.previouslyCompletedServicesBy(workerName),
+                    l10n.previouslyCompletedServicesBy(_fetchedWorker?.name ??
+                        widget.booking.workerName ??
+                        "Worker"),
                     style: TextStyle(
                       fontSize: 13,
                       color: subtitleColor,
