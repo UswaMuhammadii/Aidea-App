@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart' show rootBundle;
 import 'package:intl/intl.dart';
 import 'dart:io';
 import 'package:path_provider/path_provider.dart';
@@ -52,13 +53,24 @@ class _InvoiceScreenState extends State<InvoiceScreen> {
           _isLoading = false;
         });
       }
+    }, onError: (e) {
+      debugPrint('Error fetching invoices: $e');
+      if (mounted) {
+        setState(() => _isLoading = false);
+      }
     });
   }
 
   Future<void> _generateAndSharePdf(
       Booking booking, AppLocalizations l10n) async {
     try {
-      final pdf = pw.Document();
+      final fontData = await rootBundle.load("assets/fonts/Cairo-Regular.ttf");
+      final ttf = pw.Font.ttf(fontData);
+      final pdf = pw.Document(
+        theme: pw.ThemeData.withFont(
+          base: ttf,
+        ),
+      );
 
       pdf.addPage(
         pw.Page(
@@ -128,14 +140,6 @@ class _InvoiceScreenState extends State<InvoiceScreen> {
                             'Home Services',
                             style: const pw.TextStyle(fontSize: 12),
                           ),
-                          pw.Text(
-                            'Building Sultan Town',
-                            style: const pw.TextStyle(fontSize: 11),
-                          ),
-                          pw.Text(
-                            'Lahore, Punjab, Pakistan',
-                            style: const pw.TextStyle(fontSize: 11),
-                          ),
                         ],
                       ),
                     ),
@@ -170,8 +174,13 @@ class _InvoiceScreenState extends State<InvoiceScreen> {
                             style: const pw.TextStyle(fontSize: 11),
                           ),
                           pw.Text(
-                            widget.user.address,
+                            // Normalize Urdu chars not supported by Cairo-Regular
+                            booking.address
+                                .replaceAll('\u0679', '\u062A') // Tte -> Te
+                                .replaceAll('\u0688', '\u062F') // Ddal -> Dal
+                                .replaceAll('\u0691', '\u0631'), // Rra -> Ra
                             style: const pw.TextStyle(fontSize: 11),
+                            textDirection: pw.TextDirection.rtl,
                           ),
                         ],
                       ),
@@ -245,6 +254,16 @@ class _InvoiceScreenState extends State<InvoiceScreen> {
                             fontWeight: pw.FontWeight.bold,
                           ),
                         ),
+                        if (booking.paymentMethod != 'cash') ...[
+                          pw.SizedBox(height: 4),
+                          pw.Text(
+                            'STC Pay: 0535616095',
+                            style: pw.TextStyle(
+                              fontSize: 12,
+                              color: PdfColors.grey700,
+                            ),
+                          ),
+                        ],
                       ],
                     ),
                   ],

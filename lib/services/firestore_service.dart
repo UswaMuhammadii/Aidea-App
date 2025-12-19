@@ -110,6 +110,15 @@ class FirestoreService {
     await _bookingsRef.doc(bookingId).update(updates);
   }
 
+  Future<int> getWorkerCompletedBookingsCount(String workerId) async {
+    final snapshot = await _bookingsRef
+        .where('workerId', isEqualTo: workerId)
+        .where('status', isEqualTo: 'completed')
+        .count()
+        .get();
+    return snapshot.count ?? 0;
+  }
+
   // --- Review Operations ---
   Future<void> submitReview(Review review) async {
     await _reviewsRef.doc(review.id).set(review.toJson());
@@ -118,12 +127,41 @@ class FirestoreService {
   Stream<List<Review>> getUserReviews(String userId) {
     return _reviewsRef
         .where('userId', isEqualTo: userId)
-        .orderBy('createdAt', descending: true)
         .snapshots()
         .map((snapshot) {
-      return snapshot.docs
+      final reviews = snapshot.docs
           .map((doc) => Review.fromJson(doc.data() as Map<String, dynamic>))
           .toList();
+      // Client-side sorting
+      reviews.sort((a, b) => b.createdAt.compareTo(a.createdAt));
+      return reviews;
+    });
+  }
+
+  // --- Chat Operations ---
+  Stream<List<Map<String, dynamic>>> getChatMessages(String bookingId) {
+    return _firestore
+        .collection('chats')
+        .doc(bookingId)
+        .collection('messages')
+        .orderBy('timestamp', descending: false)
+        .snapshots()
+        .map((snapshot) {
+      return snapshot.docs.map((doc) => doc.data()).toList();
+    });
+  }
+
+  Future<void> sendMessage(
+      String bookingId, String text, String senderId) async {
+    await _firestore
+        .collection('chats')
+        .doc(bookingId)
+        .collection('messages')
+        .add({
+      'text': text,
+      'senderId': senderId,
+      'timestamp': FieldValue.serverTimestamp(),
+      'type': 'text',
     });
   }
 

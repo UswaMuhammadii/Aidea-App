@@ -495,7 +495,9 @@ class _ReviewScreenState extends State<ReviewScreen>
                           ),
                           const SizedBox(height: 4),
                           Text(
-                            'Completed on ${DateFormat('MMM dd, yyyy').format(booking.bookingDate)}',
+                            booking.completedDate != null
+                                ? 'Completed on ${DateFormat('MMM dd, yyyy').format(booking.completedDate!)}'
+                                : 'Booked for ${DateFormat('MMM dd, yyyy').format(booking.bookingDate)}',
                             style: TextStyle(
                               fontSize: 13,
                               color: subtitleColor,

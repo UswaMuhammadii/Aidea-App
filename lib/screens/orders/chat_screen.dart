@@ -1,15 +1,21 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import '../../models/user_model.dart';
+import '../../services/firestore_service.dart';
 import '../../utils/app_colors.dart';
 import '../../gen_l10n/app_localizations.dart';
 
 class ChatScreen extends StatefulWidget {
   final String workerName;
+  final String workerId;
+  final String bookingId;
   final User user;
 
   const ChatScreen({
     Key? key,
     required this.workerName,
+    required this.workerId,
+    required this.bookingId,
     required this.user,
   }) : super(key: key);
 
@@ -20,51 +26,28 @@ class ChatScreen extends StatefulWidget {
 class _ChatScreenState extends State<ChatScreen> {
   final TextEditingController _messageController = TextEditingController();
   final ScrollController _scrollController = ScrollController();
-  late List<ChatMessage> _messages;
-  bool _initialMessageAdded = false;
+  final FirestoreService _firestoreService = FirestoreService();
 
   @override
   void initState() {
     super.initState();
-    _messages = [];
   }
 
   void _sendMessage() {
     if (_messageController.text.trim().isEmpty) return;
 
-    setState(() {
-      _messages.add(
-        ChatMessage(
-          text: _messageController.text.trim(),
-          isMe: true,
-          time: DateTime.now(),
-        ),
+    final text = _messageController.text.trim();
+    _messageController.clear();
+
+    _firestoreService
+        .sendMessage(widget.bookingId, text, widget.user.id)
+        .catchError((e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Error sending message: $e')),
       );
     });
 
-    _messageController.clear();
     _scrollToBottom();
-
-    // Simulate technician response
-    _simulateTechnicianResponse();
-  }
-
-  void _simulateTechnicianResponse() {
-    Future.delayed(const Duration(seconds: 2), () {
-      if (mounted) {
-        final l10n = AppLocalizations.of(context)!;
-        setState(() {
-          _messages.add(
-            ChatMessage(
-              text: l10n.okayNotedThankYou,
-              isMe: false,
-              time: DateTime.now(),
-            ),
-          );
-        });
-        _scrollToBottom();
-      }
-    });
   }
 
   void _scrollToBottom() {
@@ -82,27 +65,9 @@ class _ChatScreenState extends State<ChatScreen> {
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
-
-    // Add initial welcome message
-    if (!_initialMessageAdded && _messages.isEmpty) {
-      WidgetsBinding.instance.addPostFrameCallback((_) {
-        if (mounted) {
-          setState(() {
-            _messages.add(
-              ChatMessage(
-                text: l10n.helloArrivingSoon,
-                isMe: false,
-                time: DateTime.now().subtract(const Duration(minutes: 5)),
-              ),
-            );
-            _initialMessageAdded = true;
-          });
-        }
-      });
-    }
-
     final isDark = Theme.of(context).brightness == Brightness.dark;
-    final backgroundColor = isDark ? const Color(0xFF0F172A) : const Color(0xFFF8F9FA);
+    final backgroundColor =
+        isDark ? const Color(0xFF0F172A) : const Color(0xFFF8F9FA);
     final cardColor = isDark ? const Color(0xFF1E293B) : Colors.white;
     final textColor = isDark ? Colors.white : Colors.black87;
 
@@ -168,41 +133,66 @@ class _ChatScreenState extends State<ChatScreen> {
         children: [
           // Chat Messages
           Expanded(
-            child: _messages.isEmpty
-                ? Center(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Icon(
-                    Icons.chat_bubble_outline,
-                    size: 64,
-                    color: Colors.grey.shade400,
-                  ),
-                  const SizedBox(height: 16),
-                  Text(
-                    l10n.noMessagesYet,
-                    style: TextStyle(
-                      fontSize: 16,
-                      color: Colors.grey.shade600,
+            child: StreamBuilder<List<Map<String, dynamic>>>(
+              stream: _firestoreService.getChatMessages(widget.bookingId),
+              builder: (context, snapshot) {
+                if (snapshot.hasError) {
+                  return Center(child: Text('Error: ${snapshot.error}'));
+                }
+
+                if (snapshot.connectionState == ConnectionState.waiting) {
+                  return const Center(child: CircularProgressIndicator());
+                }
+
+                final messages = snapshot.data ?? [];
+
+                if (messages.isEmpty) {
+                  return Center(
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Icon(
+                          Icons.chat_bubble_outline,
+                          size: 64,
+                          color: Colors.grey.shade400,
+                        ),
+                        const SizedBox(height: 16),
+                        Text(
+                          l10n.noMessagesYet,
+                          style: TextStyle(
+                            fontSize: 16,
+                            color: Colors.grey.shade600,
+                          ),
+                        ),
+                        const SizedBox(height: 8),
+                        Text(
+                          'Start a conversation with ${widget.workerName}',
+                          style: TextStyle(
+                            fontSize: 13,
+                            color: Colors.grey.shade500,
+                          ),
+                        ),
+                      ],
                     ),
-                  ),
-                  const SizedBox(height: 8),
-                  Text(
-                    'Start a conversation with ${widget.workerName}',
-                    style: TextStyle(
-                      fontSize: 13,
-                      color: Colors.grey.shade500,
-                    ),
-                  ),
-                ],
-              ),
-            )
-                : ListView.builder(
-              controller: _scrollController,
-              padding: const EdgeInsets.all(16),
-              itemCount: _messages.length,
-              itemBuilder: (context, index) {
-                return _buildMessageBubble(_messages[index], isDark, l10n);
+                  );
+                }
+
+                return ListView.builder(
+                  controller: _scrollController,
+                  padding: const EdgeInsets.all(16),
+                  itemCount: messages.length,
+                  itemBuilder: (context, index) {
+                    final data = messages[index];
+                    final isMe = data['senderId'] == widget.user.id;
+                    DateTime time = DateTime.now();
+                    if (data['timestamp'] is Timestamp) {
+                      time = (data['timestamp'] as Timestamp).toDate();
+                    }
+
+                    return _buildMessageBubble(
+                        data['text'] ?? '', isMe, time, isDark, l10n);
+                  },
+                );
               },
             ),
           ),
@@ -226,7 +216,9 @@ class _ChatScreenState extends State<ChatScreen> {
                   Expanded(
                     child: Container(
                       decoration: BoxDecoration(
-                        color: isDark ? const Color(0xFF0F172A) : Colors.grey.shade100,
+                        color: isDark
+                            ? const Color(0xFF0F172A)
+                            : Colors.grey.shade100,
                         borderRadius: BorderRadius.circular(24),
                       ),
                       child: TextField(
@@ -251,7 +243,10 @@ class _ChatScreenState extends State<ChatScreen> {
                   Container(
                     decoration: BoxDecoration(
                       gradient: const LinearGradient(
-                        colors: [AppColors.electricBlue, AppColors.electricBlue],
+                        colors: [
+                          AppColors.electricBlue,
+                          AppColors.electricBlue
+                        ],
                       ),
                       shape: BoxShape.circle,
                       boxShadow: [
@@ -276,9 +271,10 @@ class _ChatScreenState extends State<ChatScreen> {
     );
   }
 
-  Widget _buildMessageBubble(ChatMessage message, bool isDark, AppLocalizations l10n) {
+  Widget _buildMessageBubble(String text, bool isMe, DateTime time, bool isDark,
+      AppLocalizations l10n) {
     return Align(
-      alignment: message.isMe ? Alignment.centerRight : Alignment.centerLeft,
+      alignment: isMe ? Alignment.centerRight : Alignment.centerLeft,
       child: Container(
         margin: const EdgeInsets.only(bottom: 12),
         constraints: BoxConstraints(
@@ -286,26 +282,29 @@ class _ChatScreenState extends State<ChatScreen> {
         ),
         child: Column(
           crossAxisAlignment:
-          message.isMe ? CrossAxisAlignment.end : CrossAxisAlignment.start,
+              isMe ? CrossAxisAlignment.end : CrossAxisAlignment.start,
           children: [
             Container(
               padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
               decoration: BoxDecoration(
-                gradient: message.isMe
+                gradient: isMe
                     ? const LinearGradient(
-                  colors: [AppColors.electricBlue, AppColors.electricBlue],
-                )
+                        colors: [
+                          AppColors.electricBlue,
+                          AppColors.electricBlue
+                        ],
+                      )
                     : null,
-                color: message.isMe
+                color: isMe
                     ? null
                     : isDark
-                    ? const Color(0xFF1E293B)
-                    : Colors.grey.shade200,
+                        ? const Color(0xFF1E293B)
+                        : Colors.grey.shade200,
                 borderRadius: BorderRadius.only(
                   topLeft: const Radius.circular(16),
                   topRight: const Radius.circular(16),
-                  bottomLeft: Radius.circular(message.isMe ? 16 : 4),
-                  bottomRight: Radius.circular(message.isMe ? 4 : 16),
+                  bottomLeft: Radius.circular(isMe ? 16 : 4),
+                  bottomRight: Radius.circular(isMe ? 4 : 16),
                 ),
                 boxShadow: [
                   BoxShadow(
@@ -316,13 +315,13 @@ class _ChatScreenState extends State<ChatScreen> {
                 ],
               ),
               child: Text(
-                message.text,
+                text,
                 style: TextStyle(
-                  color: message.isMe
+                  color: isMe
                       ? Colors.white
                       : isDark
-                      ? Colors.white
-                      : Colors.black87,
+                          ? Colors.white
+                          : Colors.black87,
                   fontSize: 14,
                   height: 1.4,
                 ),
@@ -332,7 +331,7 @@ class _ChatScreenState extends State<ChatScreen> {
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 8),
               child: Text(
-                _formatTime(message.time, l10n),
+                _formatTime(time, l10n),
                 style: TextStyle(
                   fontSize: 11,
                   color: Colors.grey.shade500,
@@ -366,16 +365,4 @@ class _ChatScreenState extends State<ChatScreen> {
     _scrollController.dispose();
     super.dispose();
   }
-}
-
-class ChatMessage {
-  final String text;
-  final bool isMe;
-  final DateTime time;
-
-  ChatMessage({
-    required this.text,
-    required this.isMe,
-    required this.time,
-  });
 }

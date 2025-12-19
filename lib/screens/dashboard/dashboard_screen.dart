@@ -7,7 +7,7 @@ import '../invoices/invoice_screen.dart';
 import '../notifications/notification_screen.dart';
 import '../../models/cart_model.dart';
 import '../reviews/review_screen.dart';
-import '../orders/order_details_with_worker_screen.dart';
+
 import '../orders/order_tracking_screen.dart';
 import '../../services/dummy_data_service.dart';
 import '../../services/firestore_service.dart';
@@ -1373,7 +1373,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
               Navigator.push(
                 context,
                 MaterialPageRoute(
-                  builder: (context) => OrderDetailsWithWorkerScreen(
+                  builder: (context) => OrderTrackingScreen(
                     user: _currentUser,
                     booking: firstBooking,
                     localizedServiceName: localizedName,

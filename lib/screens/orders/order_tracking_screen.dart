@@ -556,8 +556,9 @@ class _OrderTrackingScreenState extends State<OrderTrackingScreen> {
                                         crossAxisAlignment:
                                             CrossAxisAlignment.start,
                                         children: [
-                                          const Text(
-                                            'Sarish Naz',
+                                          Text(
+                                            widget.booking.workerName ??
+                                                'Assigned Worker',
                                             style: TextStyle(
                                               fontSize: 16,
                                               fontWeight: FontWeight.bold,

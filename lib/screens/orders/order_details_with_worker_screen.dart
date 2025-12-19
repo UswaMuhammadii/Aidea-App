@@ -58,7 +58,6 @@ class _OrderDetailsWithWorkerScreenState
           setState(() => _isLoadingWorker = false);
         }
       }
-    }
   }
 
   @override
@@ -68,40 +67,6 @@ class _OrderDetailsWithWorkerScreenState
 
     // Check if cancellation is allowed (only when status is pending)
     final bool canCancel = widget.booking.status == BookingStatus.pending;
-
-    // Move previousServices list INSIDE build method where l10n is available
-    final List<Map<String, dynamic>> previousServices = [
-      {
-        'icon': Icons.clean_hands,
-        'title': l10n.deepHouseCleaning,
-        'count': 156,
-        'color': AppColors.electricBlue,
-      },
-      {
-        'icon': Icons.weekend,
-        'title': l10n.sofaCleaning,
-        'count': 98,
-        'color': AppColors.electricBlue,
-      },
-      {
-        'icon': Icons.local_laundry_service,
-        'title': l10n.carpetCleaning,
-        'count': 87,
-        'color': AppColors.brightTeal,
-      },
-      {
-        'icon': Icons.countertops,
-        'title': l10n.kitchenDeepClean,
-        'count': 63,
-        'color': const Color(0xFFF59E0B),
-      },
-      {
-        'icon': Icons.shower,
-        'title': l10n.bathroomSanitization,
-        'count': 28,
-        'color': AppColors.success,
-      },
-    ];
 
     final isDark = Theme.of(context).brightness == Brightness.dark;
     final backgroundColor =
@@ -393,6 +358,8 @@ class _OrderDetailsWithWorkerScreenState
                                           workerName: _fetchedWorker?.name ??
                                               widget.booking.workerName ??
                                               "Worker",
+                                          workerId: widget.booking.workerId ?? '',
+                                          bookingId: widget.booking.id,
                                           user: widget.user,
                                         ),
                                       ),
@@ -417,98 +384,7 @@ class _OrderDetailsWithWorkerScreenState
 
                   const SizedBox(height: 24),
 
-                  // Services Expertise Section
-                  Text(
-                    l10n.serviceExpertise,
-                    style: TextStyle(
-                      fontSize: 18,
-                      fontWeight: FontWeight.bold,
-                      color: textColor,
-                    ),
-                  ),
-                  const SizedBox(height: 4),
-                  Text(
-                    l10n.previouslyCompletedServicesBy(_fetchedWorker?.name ??
-                        widget.booking.workerName ??
-                        "Worker"),
-                    style: TextStyle(
-                      fontSize: 13,
-                      color: subtitleColor,
-                    ),
-                  ),
-                  const SizedBox(height: 16),
-
-                  // Services List
-                  Container(
-                    decoration: BoxDecoration(
-                      color: cardColor,
-                      borderRadius: BorderRadius.circular(16),
-                      boxShadow: [
-                        BoxShadow(
-                          color: Colors.black
-                              .withValues(alpha: isDark ? 0.3 : 0.08),
-                          blurRadius: 15,
-                          offset: const Offset(0, 5),
-                        ),
-                      ],
-                    ),
-                    child: ListView.separated(
-                      shrinkWrap: true,
-                      physics: const NeverScrollableScrollPhysics(),
-                      itemCount: previousServices.length,
-                      separatorBuilder: (context, index) => Divider(
-                        height: 1,
-                        color: isDark
-                            ? Colors.grey.shade700
-                            : Colors.grey.shade200,
-                      ),
-                      itemBuilder: (context, index) {
-                        final service = previousServices[index];
-                        return ListTile(
-                          contentPadding: const EdgeInsets.symmetric(
-                              horizontal: 16, vertical: 8),
-                          leading: Container(
-                            padding: const EdgeInsets.all(10),
-                            decoration: BoxDecoration(
-                              color: (service['color'] as Color)
-                                  .withValues(alpha: 0.1),
-                              borderRadius: BorderRadius.circular(10),
-                            ),
-                            child: Icon(
-                              service['icon'] as IconData,
-                              color: service['color'] as Color,
-                              size: 24,
-                            ),
-                          ),
-                          title: Text(
-                            service['title'] as String,
-                            style: TextStyle(
-                              fontSize: 15,
-                              fontWeight: FontWeight.w600,
-                              color: textColor,
-                            ),
-                          ),
-                          trailing: Container(
-                            padding: const EdgeInsets.symmetric(
-                                horizontal: 12, vertical: 6),
-                            decoration: BoxDecoration(
-                              color: (service['color'] as Color)
-                                  .withValues(alpha: 0.1),
-                              borderRadius: BorderRadius.circular(20),
-                            ),
-                            child: Text(
-                              '${service['count']} done',
-                              style: TextStyle(
-                                fontSize: 12,
-                                fontWeight: FontWeight.w600,
-                                color: service['color'] as Color,
-                              ),
-                            ),
-                          ),
-                        );
-                      },
-                    ),
-                  ),
+                  // Services Expertise Section removed (dummy data)
 
                   const SizedBox(height: 24),
                 ],
@@ -828,13 +704,8 @@ class _OrderDetailsWithWorkerScreenState
     );
   }
 
-  Widget _buildStatItem(
-    IconData icon,
-    String value,
-    String label,
-    Color textColor,
-    Color subtitleColor,
-  ) {
+  Widget _buildStatItem(IconData icon, String value, String label, Color textColor,
+      Color subtitleColor) {
     return Column(
       children: [
         Icon(icon, color: AppColors.electricBlue, size: 24),

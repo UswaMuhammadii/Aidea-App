@@ -200,7 +200,8 @@ class Booking {
               orElse: () => PaymentMethod.cash,
             )
           : null,
-      invoiceGenerated: json['invoiceGenerated'] ?? false,
+      invoiceGenerated: json['invoiceGenerated'] == true ||
+          json['invoiceGenerated'].toString().toLowerCase() == 'true',
       customerLanguage: json['customerLanguage'] ?? 'english',
       createdAt: DateTime.tryParse(json['createdAt'] ?? '') ?? DateTime.now(),
       updatedAt: DateTime.tryParse(json['updatedAt'] ?? '') ?? DateTime.now(),
