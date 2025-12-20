@@ -593,7 +593,7 @@ class _InvoiceScreenState extends State<InvoiceScreen> {
                                           const SizedBox(height: 4),
                                           Text(
                                             DateFormat('MMM dd, yyyy')
-                                                .format(booking.createdAt),
+                                                .format(booking.bookingDate),
                                             style: TextStyle(
                                               fontSize: 13,
                                               color: subtitleColor,
