@@ -1,20 +1,22 @@
 import 'package:flutter/material.dart';
-import '../../utils/app_colors.dart';
+
 import '../../gen_l10n/app_localizations.dart';
-import '../../models/worker_model.dart';
+import '../../models/user_model.dart';
 
 class VendorProfileScreen extends StatelessWidget {
-  final Worker? worker;
+  final User? user;
   final String workerName;
   final int totalOrders;
   final String workingPeriod;
+  final bool isVerified; // Added param
 
   const VendorProfileScreen({
     Key? key,
-    this.worker,
+    this.user,
     required this.workerName,
     required this.totalOrders,
     required this.workingPeriod,
+    this.isVerified = false,
   }) : super(key: key);
 
   @override
@@ -22,7 +24,8 @@ class VendorProfileScreen extends StatelessWidget {
     final l10n = AppLocalizations.of(context)!;
 
     final isDark = Theme.of(context).brightness == Brightness.dark;
-    final backgroundColor = isDark ? const Color(0xFF0F172A) : const Color(0xFFF8F9FA);
+    final backgroundColor =
+        isDark ? const Color(0xFF0F172A) : const Color(0xFFF8F9FA);
     final cardColor = isDark ? const Color(0xFF1E293B) : Colors.white;
     final textColor = isDark ? Colors.white : Colors.black87;
 
@@ -59,10 +62,10 @@ class VendorProfileScreen extends StatelessWidget {
                   CircleAvatar(
                     radius: 60,
                     backgroundColor: Colors.grey.shade300,
-                    backgroundImage: worker?.profileImageUrl != null
-                        ? NetworkImage(worker!.profileImageUrl!)
+                    backgroundImage: user?.profileImage != null
+                        ? NetworkImage(user!.profileImage!)
                         : null,
-                    child: worker?.profileImageUrl == null
+                    child: user?.profileImage == null
                         ? const Icon(Icons.person, size: 60, color: Colors.grey)
                         : null,
                   ),
@@ -70,7 +73,7 @@ class VendorProfileScreen extends StatelessWidget {
 
                   // Worker Name
                   Text(
-                    worker?.name ?? workerName,
+                    user?.name ?? workerName,
                     style: const TextStyle(
                       fontSize: 24,
                       fontWeight: FontWeight.bold,
@@ -97,14 +100,12 @@ class VendorProfileScreen extends StatelessWidget {
                       children: [
                         _buildStatCard(
                           Icons.check_circle,
-                          '${worker?.totalOrders ?? totalOrders}',
+                          '$totalOrders',
                           l10n.orderDone,
                         ),
                         _buildStatCard(
                           Icons.access_time,
-                          worker?.experience.isNotEmpty == true
-                              ? worker!.experience
-                              : workingPeriod,
+                          workingPeriod,
                           l10n.timePeriod,
                         ),
                       ],
@@ -119,17 +120,13 @@ class VendorProfileScreen extends StatelessWidget {
                       Row(
                         children: [
                           Icon(Icons.check_circle,
-                              color: worker?.isVerified == true
-                                  ? Colors.blue
-                                  : Colors.grey,
+                              color: isVerified ? Colors.blue : Colors.grey,
                               size: 20),
                           const SizedBox(width: 4),
                           Text(
                             l10n.profileVerified,
                             style: TextStyle(
-                                color: worker?.isVerified == true
-                                    ? Colors.blue
-                                    : Colors.grey,
+                                color: isVerified ? Colors.blue : Colors.grey,
                                 fontSize: 13),
                           ),
                         ],
@@ -179,7 +176,8 @@ class VendorProfileScreen extends StatelessWidget {
                         borderRadius: BorderRadius.circular(12),
                         boxShadow: [
                           BoxShadow(
-                            color: Colors.black.withValues(alpha: isDark ? 0.3 : 0.05),
+                            color: Colors.black
+                                .withValues(alpha: isDark ? 0.3 : 0.05),
                             blurRadius: 10,
                             offset: const Offset(0, 3),
                           ),

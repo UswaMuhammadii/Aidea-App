@@ -187,7 +187,7 @@ class _SplashScreenState extends State<SplashScreen>
                           child: Column(
                             children: [
                               Text(
-                                'HandyMan',
+                                'HANDYMAN',
                                 style: TextStyle(
                                   fontSize: 42,
                                   fontWeight: FontWeight.w900,
@@ -307,11 +307,9 @@ class _SplashScreenState extends State<SplashScreen>
 
   Widget _buildLogo() {
     return Image.asset(
-      'assets/images/logo.png',  // Same path as your dashboard
-      width: 80,
-      height: 80,
-      // Remove color property if your logo already has the right color
-      // color: Colors.white, // Uncomment if you want white logo on blue background
+      'assets/images/logo.png',
+      width: 250, // Increased size further as requested
+      height: 250,
       errorBuilder: (context, error, stackTrace) {
         // Fallback if logo file is not found
         return const Icon(

@@ -1,0 +1,6 @@
+Analyzing order_details_with_worker_screen.dart...              
+
+  error - Target of URI doesn't exist: '../../models/worker_model.dart' - lib\screens\orders\order_details_with_worker_screen.dart:5:8 - uri_does_not_exist
+   info - Use 'const' with the constructor to improve performance - lib\screens\orders\order_details_with_worker_screen.dart:605:40 - prefer_const_constructors
+   info - Use 'const' with the constructor to improve performance - lib\screens\orders\order_details_with_worker_screen.dart:698:32 - prefer_const_constructors
+

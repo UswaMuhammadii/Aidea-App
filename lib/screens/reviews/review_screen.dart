@@ -68,6 +68,13 @@ class _ReviewScreenState extends State<ReviewScreen>
           _completedBookings = bookings
               .where((b) => b.status == BookingStatus.completed)
               .toList();
+
+          // Sort by completedDate descending (newest completed first)
+          _completedBookings.sort((a, b) {
+            final dateA = a.completedDate ?? a.bookingDate;
+            final dateB = b.completedDate ?? b.bookingDate;
+            return dateB.compareTo(dateA);
+          });
           _updateUnratedBookings();
           _isLoading = false;
         });

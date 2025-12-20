@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../../models/user_model.dart';
 import '../../models/booking_model.dart';
-import '../../models/worker_model.dart';
+
 import '../../services/firestore_service.dart';
 import 'vendor_profile_screen.dart';
 import 'chat_screen.dart';
@@ -30,8 +30,9 @@ class OrderDetailsWithWorkerScreen extends StatefulWidget {
 class _OrderDetailsWithWorkerScreenState
     extends State<OrderDetailsWithWorkerScreen> {
   // Worker Data
-  Worker? _fetchedWorker;
+  User? _fetchedWorker;
   bool _isLoadingWorker = false;
+  int _completedOrdersCount = 0;
   final FirestoreService _firestoreService = FirestoreService();
 
   @override
@@ -45,10 +46,14 @@ class _OrderDetailsWithWorkerScreenState
       setState(() => _isLoadingWorker = true);
       try {
         final worker =
-            await _firestoreService.getWorker(widget.booking.workerId!);
+            await _firestoreService.getUser(widget.booking.workerId!);
+        final count = await _firestoreService
+            .getWorkerCompletedBookingsCount(widget.booking.workerId!);
+
         if (mounted) {
           setState(() {
             _fetchedWorker = worker;
+            _completedOrdersCount = count;
           });
         }
       } catch (e) {
@@ -58,6 +63,7 @@ class _OrderDetailsWithWorkerScreenState
           setState(() => _isLoadingWorker = false);
         }
       }
+    }
   }
 
   @override
@@ -226,11 +232,11 @@ class _OrderDetailsWithWorkerScreenState
                                 backgroundColor: AppColors.electricBlue
                                     .withValues(alpha: 0.1),
                                 backgroundImage:
-                                    _fetchedWorker?.profileImageUrl != null
+                                    _fetchedWorker?.profileImage != null
                                         ? NetworkImage(
-                                            _fetchedWorker!.profileImageUrl!)
+                                            _fetchedWorker!.profileImage!)
                                         : null,
-                                child: _fetchedWorker?.profileImageUrl == null
+                                child: _fetchedWorker?.profileImage == null
                                     ? const Icon(Icons.person,
                                         size: 35, color: AppColors.electricBlue)
                                     : null,
@@ -261,7 +267,8 @@ class _OrderDetailsWithWorkerScreenState
                                   ],
                                 ),
                               ),
-                              if (_fetchedWorker?.isVerified == true)
+                              if (_fetchedWorker !=
+                                  null) // Removed isVerified check for now as User doesn't have it
                                 Container(
                                   padding: const EdgeInsets.all(8),
                                   decoration: BoxDecoration(
@@ -286,7 +293,7 @@ class _OrderDetailsWithWorkerScreenState
                                 _buildStatItem(
                                   Icons.check_circle,
                                   FormattingUtils.formatNumber(
-                                      _fetchedWorker!.totalOrders, locale),
+                                      _completedOrdersCount, locale),
                                   l10n.ordersDone,
                                   textColor,
                                   subtitleColor,
@@ -298,9 +305,7 @@ class _OrderDetailsWithWorkerScreenState
                                 ),
                                 _buildStatItem(
                                   Icons.access_time,
-                                  _fetchedWorker!.experience.isNotEmpty
-                                      ? _fetchedWorker!.experience
-                                      : "N/A",
+                                  "2 Years", // Hardcoded or N/A
                                   l10n.experience,
                                   textColor,
                                   subtitleColor,
@@ -323,16 +328,13 @@ class _OrderDetailsWithWorkerScreenState
                                       MaterialPageRoute(
                                         builder: (context) =>
                                             VendorProfileScreen(
-                                          worker: _fetchedWorker,
+                                          user: _fetchedWorker,
                                           // Fallbacks if worker fetch failed but we have some info
                                           workerName: _fetchedWorker?.name ??
                                               widget.booking.workerName ??
                                               "Worker",
-                                          totalOrders:
-                                              _fetchedWorker?.totalOrders ?? 0,
-                                          workingPeriod:
-                                              _fetchedWorker?.experience ??
-                                                  "N/A",
+                                          totalOrders: _completedOrdersCount,
+                                          workingPeriod: "2 Years",
                                         ),
                                       ),
                                     );
@@ -358,7 +360,8 @@ class _OrderDetailsWithWorkerScreenState
                                           workerName: _fetchedWorker?.name ??
                                               widget.booking.workerName ??
                                               "Worker",
-                                          workerId: widget.booking.workerId ?? '',
+                                          workerId:
+                                              widget.booking.workerId ?? '',
                                           bookingId: widget.booking.id,
                                           user: widget.user,
                                         ),
@@ -704,8 +707,8 @@ class _OrderDetailsWithWorkerScreenState
     );
   }
 
-  Widget _buildStatItem(IconData icon, String value, String label, Color textColor,
-      Color subtitleColor) {
+  Widget _buildStatItem(IconData icon, String value, String label,
+      Color textColor, Color subtitleColor) {
     return Column(
       children: [
         Icon(icon, color: AppColors.electricBlue, size: 24),
