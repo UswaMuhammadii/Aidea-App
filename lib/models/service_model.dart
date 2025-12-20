@@ -81,9 +81,8 @@ class Service {
     // finalPrice => totalPrice + commissionAmount;
 
     // We'll use finalPrice as the 'price' for the customer
-    double commAmt = base * (comm / 100);
-    double vatAmt = base * (vt / 100);
-    double finalPrice = base + vatAmt + commAmt;
+    // MODIFIED: Use base price directly as the display price, ignoring VAT/Commission additions for display
+    double finalPrice = base;
 
     return Service(
       id: json['id'] as String? ?? '',

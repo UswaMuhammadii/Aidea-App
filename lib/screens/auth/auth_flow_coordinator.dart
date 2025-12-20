@@ -150,6 +150,11 @@ class _AuthFlowCoordinatorState extends State<AuthFlowCoordinator> {
           // Step 2: Location Selection
           LocationSelectionScreen(
             onLocationSelected: _handleLocationSelected,
+            onBack: () {
+              setState(() {
+                _currentStep = 1; // Go back to OTP verification
+              });
+            },
           ),
         ],
       ),
