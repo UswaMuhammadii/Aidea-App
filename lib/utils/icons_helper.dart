@@ -14,13 +14,6 @@ class IconHelper {
     double size = 28,
   }) {
     // Return consistent "House + Wrench" icon with Dashboard Header Gradient
-    // Return consistent "House + Wrench" icon with Teal+Electric Blue Gradient on the icon itself
-    // Return "House + Wrench" icon with Gradient Background + Green Tick
-    // "ticked portion ko bhi include karo" + Image provided (Rounded Square + Green Tick)
-    // Return "House + Wrench" icon + Green Tick (Container handled by parent)
-    // "ticked portion ko bhi include karo" + "outer blue rounded square included"
-    // Return "House + Wrench" icon without Tick
-    // "tick hata do"
     return Stack(
       alignment: Alignment.center,
       children: [

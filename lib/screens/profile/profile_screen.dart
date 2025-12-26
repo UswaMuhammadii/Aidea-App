@@ -11,12 +11,14 @@ class ProfileScreen extends StatefulWidget {
   final User user;
   final VoidCallback onLogout;
   final Function(User)? onUserUpdated;
+  final Function(Locale)? onLanguageChanged;
 
   const ProfileScreen({
     super.key,
     required this.user,
     required this.onLogout,
     this.onUserUpdated,
+    this.onLanguageChanged,
   });
 
   @override
@@ -362,6 +364,17 @@ class _ProfileScreenState extends State<ProfileScreen> {
                         ),
                         const Divider(height: 1, indent: 72),
                         _buildSettingsTile(
+                          icon: Icons.language,
+                          title: l10n.language,
+                          subtitle:
+                              l10n.localeName == 'ar' ? 'العربية' : 'English',
+                          iconColor: Colors.blue,
+                          textColor: textColor,
+                          subtitleColor: subtitleColor,
+                          onTap: () => _showLanguageBottomSheet(context),
+                        ),
+                        const Divider(height: 1, indent: 72),
+                        _buildSettingsTile(
                           icon: Icons.location_on_outlined,
                           title: l10n.savedAddresses,
                           subtitle: _getPrimaryAddressOrDefault(),
@@ -512,6 +525,109 @@ class _ProfileScreenState extends State<ProfileScreen> {
       ),
       trailing: Icon(Icons.arrow_forward_ios, size: 16, color: subtitleColor),
       onTap: onTap,
+    );
+  }
+
+  void _showLanguageBottomSheet(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    final backgroundColor = isDark ? const Color(0xFF1E293B) : Colors.white;
+    final textColor = isDark ? Colors.white : Colors.black87;
+
+    showModalBottomSheet(
+      context: context,
+      backgroundColor: Colors.transparent,
+      builder: (context) => Container(
+        padding: const EdgeInsets.all(24),
+        decoration: BoxDecoration(
+          color: backgroundColor,
+          borderRadius: const BorderRadius.vertical(top: Radius.circular(20)),
+        ),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              l10n.selectLanguage,
+              style: TextStyle(
+                fontSize: 20,
+                fontWeight: FontWeight.bold,
+                color: textColor,
+              ),
+            ),
+            const SizedBox(height: 20),
+            _buildLanguageOption(
+              context,
+              'English',
+              const Locale('en'),
+              l10n.localeName == 'en',
+            ),
+            const SizedBox(height: 12),
+            _buildLanguageOption(
+              context,
+              'العربية',
+              const Locale('ar'),
+              l10n.localeName == 'ar',
+            ),
+            const SizedBox(height: 20),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildLanguageOption(
+      BuildContext context, String title, Locale locale, bool isSelected) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+
+    return Material(
+      color: Colors.transparent,
+      child: InkWell(
+        onTap: () {
+          print('Language option tapped: ${locale.languageCode}');
+          Navigator.pop(context);
+          if (widget.onLanguageChanged != null) {
+            print('Calling onLanguageChanged callback');
+            widget.onLanguageChanged!(locale);
+          } else {
+            print('onLanguageChanged callback is null');
+          }
+        },
+        borderRadius: BorderRadius.circular(12),
+        child: Container(
+          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
+          decoration: BoxDecoration(
+            color: isSelected
+                ? AppColors.electricBlue.withOpacity(0.1)
+                : (isDark ? Colors.black12 : Colors.grey.shade50),
+            borderRadius: BorderRadius.circular(12),
+            border: Border.all(
+              color: isSelected ? AppColors.electricBlue : Colors.transparent,
+              width: 2,
+            ),
+          ),
+          child: Row(
+            children: [
+              Text(
+                title,
+                style: TextStyle(
+                  fontSize: 16,
+                  fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
+                  color: isSelected
+                      ? AppColors.electricBlue
+                      : (isDark ? Colors.white : Colors.black87),
+                ),
+              ),
+              const Spacer(),
+              if (isSelected)
+                const Icon(
+                  Icons.check_circle,
+                  color: AppColors.electricBlue,
+                ),
+            ],
+          ),
+        ),
+      ),
     );
   }
 }

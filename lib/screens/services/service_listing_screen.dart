@@ -597,402 +597,418 @@ class _ServiceListingScreenState extends State<ServiceListingScreen>
   }
 
   Widget _buildServicesView(AppLocalizations l10n, Locale locale) {
-    return Column(
-      children: [
-        Container(
-          padding: const EdgeInsets.all(16),
-          child: Container(
-            decoration: BoxDecoration(
-              color: Theme.of(context).colorScheme.surface,
-              borderRadius: BorderRadius.circular(16),
-              boxShadow: [
-                BoxShadow(
-                  color: Colors.black.withOpacity(0.05),
-                  blurRadius: 15,
-                  offset: const Offset(0, 5),
-                ),
-              ],
-            ),
-            child: TextField(
-              controller: _searchController,
-              onChanged: _filterServices,
-              style: TextStyle(color: Theme.of(context).colorScheme.onSurface),
-              decoration: InputDecoration(
-                hintText: l10n.searchServices,
-                hintStyle: TextStyle(
-                    color: Theme.of(context).colorScheme.onSurfaceVariant),
-                prefixIcon: Container(
-                  margin: const EdgeInsets.all(8),
-                  padding: const EdgeInsets.all(8),
-                  decoration: BoxDecoration(
-                    gradient: AppColors.primaryGradient,
-                    borderRadius: BorderRadius.circular(10),
-                  ),
-                  child:
-                      const Icon(Icons.search, color: Colors.white, size: 20),
-                ),
-                suffixIcon: _searchController.text.isNotEmpty
-                    ? IconButton(
-                        icon: Icon(Icons.clear,
-                            color:
-                                Theme.of(context).colorScheme.onSurfaceVariant),
-                        onPressed: () {
-                          _searchController.clear();
-                          _filterServices('');
-                        },
-                      )
-                    : null,
-                border: InputBorder.none,
-                contentPadding: const EdgeInsets.symmetric(
-                  horizontal: 16,
-                  vertical: 16,
-                ),
-              ),
-            ),
-          ),
-        ),
-        Expanded(
-          child: _filteredServices.isEmpty
-              ? Center(
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Icon(
-                        Icons.search_off,
-                        size: 64,
-                        color: Theme.of(context)
-                            .colorScheme
-                            .onSurfaceVariant
-                            .withOpacity(0.5),
-                      ),
-                      const SizedBox(height: 16),
-                      Text(
-                        l10n.noServicesFound,
-                        style: Theme.of(context)
-                            .textTheme
-                            .titleMedium
-                            ?.copyWith(
-                              color: Theme.of(context).colorScheme.onSurface,
-                            ),
-                      ),
-                      const SizedBox(height: 8),
-                      Text(
-                        l10n.tryAdjustingYourSearchTerms,
-                        style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                              color: Theme.of(context)
-                                  .colorScheme
-                                  .onSurfaceVariant,
-                            ),
-                      ),
-                    ],
-                  ),
-                )
-              : FadeTransition(
-                  opacity: _fadeAnimation,
-                  child: SlideTransition(
-                    position: _slideAnimation,
-                    child: ListView.builder(
-                      controller: _scrollController,
-                      padding: const EdgeInsets.symmetric(horizontal: 16),
-                      itemCount: _filteredServices.length,
-                      itemBuilder: (context, index) {
-                        final service = _filteredServices[index];
-                        final isSelected = _selectedServiceId == service.id;
-
-                        return AnimatedContainer(
-                          duration: const Duration(milliseconds: 300),
-                          margin: const EdgeInsets.only(bottom: 16),
-                          decoration: BoxDecoration(
-                            color: Theme.of(context).colorScheme.surface,
-                            borderRadius: BorderRadius.circular(20),
-                            boxShadow: [
-                              BoxShadow(
-                                color: isSelected
-                                    ? AppColors.deepPurple.withOpacity(0.3)
-                                    : Colors.black.withOpacity(0.05),
-                                blurRadius: isSelected ? 20 : 15,
-                                offset: const Offset(0, 5),
-                              ),
-                            ],
-                            border: isSelected
-                                ? Border.all(
-                                    color: AppColors.deepPurple,
-                                    width: 2,
-                                  )
-                                : null,
-                          ),
-                          child: Material(
-                            color: Colors.transparent,
-                            child: InkWell(
-                              borderRadius: BorderRadius.circular(20),
-                              onTap: () {
-                                setState(() {
-                                  _selectedServiceId =
-                                      isSelected ? null : service.id;
-                                  _selectedQuantity = 1;
-                                });
-
-                                if (!isSelected &&
-                                    _scrollController.hasClients) {
-                                  Future.delayed(
-                                      const Duration(milliseconds: 100), () {
-                                    _scrollController.animateTo(
-                                      _scrollController.position.pixels + 100,
-                                      duration:
-                                          const Duration(milliseconds: 300),
-                                      curve: Curves.easeOut,
-                                    );
-                                  });
-                                }
-                              },
-                              child: Padding(
-                                padding: const EdgeInsets.all(16),
-                                child: Row(
-                                  children: [
-                                    Container(
-                                      width: 70,
-                                      height: 70,
-                                      decoration: BoxDecoration(
-                                        gradient: AppColors.primaryGradient,
-                                        borderRadius: BorderRadius.circular(16),
-                                      ),
-                                      child: _getIconForServiceItem(service),
-                                    ),
-                                    const SizedBox(width: 16),
-                                    Expanded(
-                                      child: Column(
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.start,
-                                        children: [
-                                          Text(
-                                            Localizations.localeOf(context)
-                                                            .languageCode ==
-                                                        'ar' &&
-                                                    service
-                                                        .nameArabic.isNotEmpty
-                                                ? service.nameArabic
-                                                : service.name,
-                                            style: Theme.of(context)
-                                                .textTheme
-                                                .titleSmall
-                                                ?.copyWith(
-                                                  fontWeight: FontWeight.w700,
-                                                  color: Theme.of(context)
-                                                      .colorScheme
-                                                      .onSurface,
-                                                ),
-                                            maxLines: 2,
-                                            overflow: TextOverflow.ellipsis,
-                                          ),
-                                          const SizedBox(height: 4),
-                                          Text(
-                                            service.description,
-                                            style: Theme.of(context)
-                                                .textTheme
-                                                .bodySmall
-                                                ?.copyWith(
-                                                  color: Theme.of(context)
-                                                      .colorScheme
-                                                      .onSurfaceVariant,
-                                                ),
-                                            maxLines: 2,
-                                            overflow: TextOverflow.ellipsis,
-                                          ),
-                                          const SizedBox(height: 8),
-                                          Container(
-                                            padding: const EdgeInsets.symmetric(
-                                                horizontal: 12, vertical: 6),
-                                            decoration: BoxDecoration(
-                                              gradient:
-                                                  AppColors.accentGradient,
-                                              borderRadius:
-                                                  BorderRadius.circular(8),
-                                            ),
-                                            child: Text(
-                                              FormattingUtils.formatCurrency(
-                                                  service.price, l10n, locale),
-                                              style: const TextStyle(
-                                                color: Colors.white,
-                                                fontWeight: FontWeight.w700,
-                                                fontSize: 13,
-                                              ),
-                                            ),
-                                          ),
-                                        ],
-                                      ),
-                                    ),
-                                    const SizedBox(width: 12),
-                                    if (isSelected)
-                                      Container(
-                                        decoration: BoxDecoration(
-                                          gradient: AppColors.primaryGradient,
-                                          borderRadius:
-                                              BorderRadius.circular(12),
-                                        ),
-                                        child: Row(
-                                          mainAxisSize: MainAxisSize.min,
-                                          children: [
-                                            IconButton(
-                                              icon: const Icon(Icons.remove,
-                                                  color: Colors.white,
-                                                  size: 18),
-                                              padding: const EdgeInsets.all(8),
-                                              constraints:
-                                                  const BoxConstraints(),
-                                              onPressed: () {
-                                                if (_selectedQuantity > 1) {
-                                                  setState(() {
-                                                    _selectedQuantity--;
-                                                  });
-                                                }
-                                              },
-                                            ),
-                                            Container(
-                                              padding:
-                                                  const EdgeInsets.symmetric(
-                                                      horizontal: 12),
-                                              child: Text(
-                                                FormattingUtils.formatNumber(
-                                                    _selectedQuantity, locale),
-                                                style: const TextStyle(
-                                                  color: Colors.white,
-                                                  fontWeight: FontWeight.w700,
-                                                  fontSize: 16,
-                                                ),
-                                              ),
-                                            ),
-                                            IconButton(
-                                              icon: const Icon(Icons.add,
-                                                  color: Colors.white,
-                                                  size: 18),
-                                              padding: const EdgeInsets.all(8),
-                                              constraints:
-                                                  const BoxConstraints(),
-                                              onPressed: () {
-                                                setState(() {
-                                                  _selectedQuantity++;
-                                                });
-                                              },
-                                            ),
-                                          ],
-                                        ),
-                                      )
-                                    else
-                                      Column(
-                                        mainAxisSize: MainAxisSize.min,
-                                        children: [
-                                          Container(
-                                            decoration: BoxDecoration(
-                                              gradient:
-                                                  AppColors.primaryGradient,
-                                              borderRadius:
-                                                  BorderRadius.circular(10),
-                                            ),
-                                            child: IconButton(
-                                              onPressed: () =>
-                                                  _addToCart(service, l10n),
-                                              icon: const Icon(
-                                                Icons.add_shopping_cart,
-                                                color: Colors.white,
-                                                size: 20,
-                                              ),
-                                              padding: const EdgeInsets.all(8),
-                                              constraints:
-                                                  const BoxConstraints(),
-                                            ),
-                                          ),
-                                        ],
-                                      ),
-                                  ],
-                                ),
-                              ),
-                            ),
-                          ),
-                        );
-                      },
-                    ),
-                  ),
-                ),
-        ),
-        if (_selectedServiceId != null)
-          AnimatedContainer(
-            duration: const Duration(milliseconds: 300),
+    return SafeArea(
+      top: false,
+      child: Column(
+        children: [
+          Container(
             padding: const EdgeInsets.all(16),
             child: Container(
-              width: double.infinity,
-              height: 56,
               decoration: BoxDecoration(
-                color: AppColors.electricBlue, // ✅ ELECTRIC BLUE (no gradient)
+                color: Theme.of(context).colorScheme.surface,
                 borderRadius: BorderRadius.circular(16),
                 boxShadow: [
                   BoxShadow(
-                    color: AppColors.electricBlue
-                        .withOpacity(0.4), // ✅ Electric blue shadow
-                    blurRadius: 20,
-                    offset: const Offset(0, 10),
+                    color: Colors.black.withOpacity(0.05),
+                    blurRadius: 15,
+                    offset: const Offset(0, 5),
                   ),
                 ],
               ),
-              child: Material(
-                color: Colors.transparent,
-                child: InkWell(
-                  onTap: () {
-                    final selectedService = _services.firstWhere(
-                      (s) => s.id == _selectedServiceId,
-                    );
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => ServiceCheckoutScreen(
-                          service: selectedService,
-                          user: widget.user,
-                          quantity: _selectedQuantity,
-                        ),
-                      ),
-                    );
-                  },
-                  borderRadius: BorderRadius.circular(16),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Container(
-                        padding: const EdgeInsets.all(6),
-                        decoration: const BoxDecoration(
-                          color: Colors.white,
-                          shape: BoxShape.circle,
-                        ),
-                        child: Text(
-                          FormattingUtils.formatNumber(
-                              _selectedQuantity, locale),
-                          style: const TextStyle(
-                            color: AppColors.deepPurple,
-                            fontWeight: FontWeight.w700,
-                            fontSize: 14,
-                          ),
-                        ),
-                      ),
-                      const SizedBox(width: 12),
-                      Text(
-                        l10n.continueToCheckout,
-                        style: const TextStyle(
-                          color: Colors.white,
-                          fontSize: 16,
-                          fontWeight: FontWeight.w700,
-                        ),
-                      ),
-                      const SizedBox(width: 8),
-                      const Icon(
-                        Icons.arrow_forward,
-                        color: Colors.white,
-                        size: 20,
-                      ),
-                    ],
+              child: TextField(
+                controller: _searchController,
+                onChanged: _filterServices,
+                style:
+                    TextStyle(color: Theme.of(context).colorScheme.onSurface),
+                decoration: InputDecoration(
+                  hintText: l10n.searchServices,
+                  hintStyle: TextStyle(
+                      color: Theme.of(context).colorScheme.onSurfaceVariant),
+                  prefixIcon: Container(
+                    margin: const EdgeInsets.all(8),
+                    padding: const EdgeInsets.all(8),
+                    decoration: BoxDecoration(
+                      gradient: AppColors.primaryGradient,
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                    child:
+                        const Icon(Icons.search, color: Colors.white, size: 20),
+                  ),
+                  suffixIcon: _searchController.text.isNotEmpty
+                      ? IconButton(
+                          icon: Icon(Icons.clear,
+                              color: Theme.of(context)
+                                  .colorScheme
+                                  .onSurfaceVariant),
+                          onPressed: () {
+                            _searchController.clear();
+                            _filterServices('');
+                          },
+                        )
+                      : null,
+                  border: InputBorder.none,
+                  contentPadding: const EdgeInsets.symmetric(
+                    horizontal: 16,
+                    vertical: 16,
                   ),
                 ),
               ),
             ),
           ),
-      ],
-    );
+          Expanded(
+            child: _filteredServices.isEmpty
+                ? Center(
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Icon(
+                          Icons.search_off,
+                          size: 64,
+                          color: Theme.of(context)
+                              .colorScheme
+                              .onSurfaceVariant
+                              .withOpacity(0.5),
+                        ),
+                        const SizedBox(height: 16),
+                        Text(
+                          l10n.noServicesFound,
+                          style: Theme.of(context)
+                              .textTheme
+                              .titleMedium
+                              ?.copyWith(
+                                color: Theme.of(context).colorScheme.onSurface,
+                              ),
+                        ),
+                        const SizedBox(height: 8),
+                        Text(
+                          l10n.tryAdjustingYourSearchTerms,
+                          style:
+                              Theme.of(context).textTheme.bodyMedium?.copyWith(
+                                    color: Theme.of(context)
+                                        .colorScheme
+                                        .onSurfaceVariant,
+                                  ),
+                        ),
+                      ],
+                    ),
+                  )
+                : FadeTransition(
+                    opacity: _fadeAnimation,
+                    child: SlideTransition(
+                      position: _slideAnimation,
+                      child: ListView.builder(
+                        controller: _scrollController,
+                        padding: const EdgeInsets.symmetric(horizontal: 16),
+                        itemCount: _filteredServices.length,
+                        itemBuilder: (context, index) {
+                          final service = _filteredServices[index];
+                          final isSelected = _selectedServiceId == service.id;
+
+                          return AnimatedContainer(
+                            duration: const Duration(milliseconds: 300),
+                            margin: const EdgeInsets.only(bottom: 16),
+                            decoration: BoxDecoration(
+                              color: Theme.of(context).colorScheme.surface,
+                              borderRadius: BorderRadius.circular(20),
+                              boxShadow: [
+                                BoxShadow(
+                                  color: isSelected
+                                      ? AppColors.deepPurple.withOpacity(0.3)
+                                      : Colors.black.withOpacity(0.05),
+                                  blurRadius: isSelected ? 20 : 15,
+                                  offset: const Offset(0, 5),
+                                ),
+                              ],
+                              border: isSelected
+                                  ? Border.all(
+                                      color: AppColors.deepPurple,
+                                      width: 2,
+                                    )
+                                  : null,
+                            ),
+                            child: Material(
+                              color: Colors.transparent,
+                              child: InkWell(
+                                borderRadius: BorderRadius.circular(20),
+                                onTap: () {
+                                  setState(() {
+                                    _selectedServiceId =
+                                        isSelected ? null : service.id;
+                                    _selectedQuantity = 1;
+                                  });
+
+                                  if (!isSelected &&
+                                      _scrollController.hasClients) {
+                                    Future.delayed(
+                                        const Duration(milliseconds: 100), () {
+                                      _scrollController.animateTo(
+                                        _scrollController.position.pixels + 100,
+                                        duration:
+                                            const Duration(milliseconds: 300),
+                                        curve: Curves.easeOut,
+                                      );
+                                    });
+                                  }
+                                },
+                                child: Padding(
+                                  padding: const EdgeInsets.all(16),
+                                  child: Row(
+                                    children: [
+                                      Container(
+                                        width: 70,
+                                        height: 70,
+                                        decoration: BoxDecoration(
+                                          gradient: AppColors.primaryGradient,
+                                          borderRadius:
+                                              BorderRadius.circular(16),
+                                        ),
+                                        child: _getIconForServiceItem(service),
+                                      ),
+                                      const SizedBox(width: 16),
+                                      Expanded(
+                                        child: Column(
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.start,
+                                          children: [
+                                            Text(
+                                              Localizations.localeOf(context)
+                                                              .languageCode ==
+                                                          'ar' &&
+                                                      service
+                                                          .nameArabic.isNotEmpty
+                                                  ? service.nameArabic
+                                                  : service.name,
+                                              style: Theme.of(context)
+                                                  .textTheme
+                                                  .titleSmall
+                                                  ?.copyWith(
+                                                    fontWeight: FontWeight.w700,
+                                                    color: Theme.of(context)
+                                                        .colorScheme
+                                                        .onSurface,
+                                                  ),
+                                              maxLines: 2,
+                                              overflow: TextOverflow.ellipsis,
+                                            ),
+                                            const SizedBox(height: 4),
+                                            Text(
+                                              service.description,
+                                              style: Theme.of(context)
+                                                  .textTheme
+                                                  .bodySmall
+                                                  ?.copyWith(
+                                                    color: Theme.of(context)
+                                                        .colorScheme
+                                                        .onSurfaceVariant,
+                                                  ),
+                                              maxLines: 2,
+                                              overflow: TextOverflow.ellipsis,
+                                            ),
+                                            const SizedBox(height: 8),
+                                            Container(
+                                              padding:
+                                                  const EdgeInsets.symmetric(
+                                                      horizontal: 12,
+                                                      vertical: 6),
+                                              decoration: BoxDecoration(
+                                                gradient:
+                                                    AppColors.accentGradient,
+                                                borderRadius:
+                                                    BorderRadius.circular(8),
+                                              ),
+                                              child: Text(
+                                                FormattingUtils.formatCurrency(
+                                                    service.price,
+                                                    l10n,
+                                                    locale),
+                                                style: const TextStyle(
+                                                  color: Colors.white,
+                                                  fontWeight: FontWeight.w700,
+                                                  fontSize: 13,
+                                                ),
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                      const SizedBox(width: 12),
+                                      if (isSelected)
+                                        Container(
+                                          decoration: BoxDecoration(
+                                            gradient: AppColors.primaryGradient,
+                                            borderRadius:
+                                                BorderRadius.circular(12),
+                                          ),
+                                          child: Row(
+                                            mainAxisSize: MainAxisSize.min,
+                                            children: [
+                                              IconButton(
+                                                icon: const Icon(Icons.remove,
+                                                    color: Colors.white,
+                                                    size: 18),
+                                                padding:
+                                                    const EdgeInsets.all(8),
+                                                constraints:
+                                                    const BoxConstraints(),
+                                                onPressed: () {
+                                                  if (_selectedQuantity > 1) {
+                                                    setState(() {
+                                                      _selectedQuantity--;
+                                                    });
+                                                  }
+                                                },
+                                              ),
+                                              Container(
+                                                padding:
+                                                    const EdgeInsets.symmetric(
+                                                        horizontal: 12),
+                                                child: Text(
+                                                  FormattingUtils.formatNumber(
+                                                      _selectedQuantity,
+                                                      locale),
+                                                  style: const TextStyle(
+                                                    color: Colors.white,
+                                                    fontWeight: FontWeight.w700,
+                                                    fontSize: 16,
+                                                  ),
+                                                ),
+                                              ),
+                                              IconButton(
+                                                icon: const Icon(Icons.add,
+                                                    color: Colors.white,
+                                                    size: 18),
+                                                padding:
+                                                    const EdgeInsets.all(8),
+                                                constraints:
+                                                    const BoxConstraints(),
+                                                onPressed: () {
+                                                  setState(() {
+                                                    _selectedQuantity++;
+                                                  });
+                                                },
+                                              ),
+                                            ],
+                                          ),
+                                        )
+                                      else
+                                        Column(
+                                          mainAxisSize: MainAxisSize.min,
+                                          children: [
+                                            Container(
+                                              decoration: BoxDecoration(
+                                                gradient:
+                                                    AppColors.primaryGradient,
+                                                borderRadius:
+                                                    BorderRadius.circular(10),
+                                              ),
+                                              child: IconButton(
+                                                onPressed: () =>
+                                                    _addToCart(service, l10n),
+                                                icon: const Icon(
+                                                  Icons.add_shopping_cart,
+                                                  color: Colors.white,
+                                                  size: 20,
+                                                ),
+                                                padding:
+                                                    const EdgeInsets.all(8),
+                                                constraints:
+                                                    const BoxConstraints(),
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                    ],
+                                  ),
+                                ),
+                              ),
+                            ),
+                          );
+                        },
+                      ),
+                    ),
+                  ),
+          ),
+          if (_selectedServiceId != null)
+            AnimatedContainer(
+              duration: const Duration(milliseconds: 300),
+              padding: const EdgeInsets.all(16),
+              child: Container(
+                width: double.infinity,
+                height: 56,
+                decoration: BoxDecoration(
+                  color:
+                      AppColors.electricBlue, // ✅ ELECTRIC BLUE (no gradient)
+                  borderRadius: BorderRadius.circular(16),
+                  boxShadow: [
+                    BoxShadow(
+                      color: AppColors.electricBlue
+                          .withOpacity(0.4), // ✅ Electric blue shadow
+                      blurRadius: 20,
+                      offset: const Offset(0, 10),
+                    ),
+                  ],
+                ),
+                child: Material(
+                  color: Colors.transparent,
+                  child: InkWell(
+                    onTap: () {
+                      final selectedService = _services.firstWhere(
+                        (s) => s.id == _selectedServiceId,
+                      );
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => ServiceCheckoutScreen(
+                            service: selectedService,
+                            user: widget.user,
+                            quantity: _selectedQuantity,
+                          ),
+                        ),
+                      );
+                    },
+                    borderRadius: BorderRadius.circular(16),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Container(
+                          padding: const EdgeInsets.all(6),
+                          decoration: const BoxDecoration(
+                            color: Colors.white,
+                            shape: BoxShape.circle,
+                          ),
+                          child: Text(
+                            FormattingUtils.formatNumber(
+                                _selectedQuantity, locale),
+                            style: const TextStyle(
+                              color: AppColors.deepPurple,
+                              fontWeight: FontWeight.w700,
+                              fontSize: 14,
+                            ),
+                          ),
+                        ),
+                        const SizedBox(width: 12),
+                        Text(
+                          l10n.continueToCheckout,
+                          style: const TextStyle(
+                            color: Colors.white,
+                            fontSize: 16,
+                            fontWeight: FontWeight.w700,
+                          ),
+                        ),
+                        const SizedBox(width: 8),
+                        const Icon(
+                          Icons.arrow_forward,
+                          color: Colors.white,
+                          size: 20,
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+              ),
+            ),
+        ],
+      ), // Close Column
+    ); // Close SafeArea
   }
 }

@@ -3,6 +3,8 @@ import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:intl/date_symbol_data_local.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_auth/firebase_auth.dart' as firebase_auth;
+import 'package:shared_preferences/shared_preferences.dart';
+
 import 'firebase_options.dart';
 import 'gen_l10n/app_localizations.dart';
 import 'screens/auth/language_selection_screen.dart';
@@ -41,6 +43,12 @@ class _CustomerAppState extends State<CustomerApp> {
   User? _currentUser;
   bool _isLoading = true;
 
+  @override
+  void initState() {
+    super.initState();
+    _loadSavedLanguage();
+  }
+
   void _handleSplashComplete() async {
     print('Splash screen complete. Checking for persistent login...');
 
@@ -75,12 +83,28 @@ class _CustomerAppState extends State<CustomerApp> {
     }
   }
 
-  void _handleLanguageSelection(Locale locale) {
+  Future<void> _loadSavedLanguage() async {
+    final prefs = await SharedPreferences.getInstance();
+    final savedLanguageCode = prefs.getString('selected_language_code');
+    if (savedLanguageCode != null) {
+      if (mounted) {
+        setState(() {
+          _currentLocale = Locale(savedLanguageCode);
+          _isLanguageSelected = true;
+        });
+      }
+    }
+  }
+
+  void _handleLanguageSelection(Locale locale) async {
     print('Language selected: ${locale.languageCode}');
     setState(() {
       _currentLocale = locale;
       _isLanguageSelected = true;
     });
+
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setString('selected_language_code', locale.languageCode);
   }
 
   void _handleAuthComplete(User user) {
@@ -160,6 +184,7 @@ class _CustomerAppState extends State<CustomerApp> {
       return DashboardScreen(
         user: _currentUser!,
         onLogout: _handleLogout,
+        onLanguageChanged: _handleLanguageSelection,
       );
     }
 

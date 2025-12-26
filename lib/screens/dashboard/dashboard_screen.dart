@@ -24,12 +24,14 @@ import '../../utils/app_colors.dart'; // ✅ Added AppColors import
 class DashboardScreen extends StatefulWidget {
   final User user;
   final VoidCallback onLogout;
+  final Function(Locale)? onLanguageChanged;
   final int initialTab;
 
   const DashboardScreen({
     super.key,
     required this.user,
     required this.onLogout,
+    this.onLanguageChanged,
     this.initialTab = 0,
   });
 
@@ -538,6 +540,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                     onLogout: widget.onLogout,
                     onUserUpdated:
                         _updateUser, // Added callback for address updates
+                    onLanguageChanged: widget.onLanguageChanged,
                   ),
                 ],
               ),

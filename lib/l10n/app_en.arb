@@ -630,5 +630,7 @@
   "confirmLocation": "Confirm Location",
   "tapOnMapToSelectLocation": "Tap on map to select location",
   "selectLocation": "Select Location",
-  "locationSelected": "Location Selected"
+  "locationSelected": "Location Selected",
+  "language": "Language",
+  "selectLanguage": "Select Language"
 }

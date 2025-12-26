@@ -756,7 +756,7 @@ class DummyDataService {
     }
 
     // Return image path or default
-    return imagePathMap[categoryId] ?? 'assets/images/ac_service.png';
+    return imagePathMap[categoryId] ?? 'assets/images/default.png';
   }
 
   static List<ServiceCategory> getCategories(AppLocalizations l10n) {

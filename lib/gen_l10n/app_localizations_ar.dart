@@ -1662,4 +1662,10 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get locationSelected => 'تم اختيار الموقع';
+
+  @override
+  String get language => 'اللغة';
+
+  @override
+  String get selectLanguage => 'اختر اللغة';
 }

@@ -597,6 +597,7 @@
   "confirmLocation": "تأكيد الموقع",
   "tapOnMapToSelectLocation": "اضغط على الخريطة لتحديد الموقع",
   "selectLocation": "اختر الموقع",
-  "locationSelected": "تم اختيار الموقع"
-
+  "locationSelected": "تم اختيار الموقع",
+  "language": "اللغة",
+  "selectLanguage": "اختر اللغة"
 }

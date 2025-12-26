@@ -45,27 +45,29 @@ class ServiceImageWidget extends StatelessWidget {
   }
 
   Widget _buildFallback(bool isDark) {
-    return Container(
+    return Image.asset(
+      'assets/images/default.png',
       width: width,
       height: height,
-      decoration: BoxDecoration(
-        gradient: LinearGradient(
-          colors: isDark
-              ? [
-            Colors.grey.shade800,
-            Colors.grey.shade700,
-          ]
-              : [
-            Colors.grey.shade200,
-            Colors.grey.shade300,
-          ],
-        ),
-      ),
-      child: Icon(
-        Icons.image,
-        size: 60,
-        color: isDark ? Colors.grey.shade500 : Colors.grey.shade400,
-      ),
+      fit: BoxFit.cover,
+      errorBuilder: (context, error, stackTrace) {
+        return Container(
+          width: width,
+          height: height,
+          decoration: BoxDecoration(
+            gradient: LinearGradient(
+              colors: isDark
+                  ? [Colors.grey.shade800, Colors.grey.shade700]
+                  : [Colors.grey.shade200, Colors.grey.shade300],
+            ),
+          ),
+          child: Icon(
+            Icons.image,
+            size: 60,
+            color: isDark ? Colors.grey.shade500 : Colors.grey.shade400,
+          ),
+        );
+      },
     );
   }
 }
