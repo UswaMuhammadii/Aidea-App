@@ -23,7 +23,7 @@ import 'services/notification_service.dart';
 @pragma('vm:entry-point')
 Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
   await Firebase.initializeApp();
-  print("Handling a background message: ${message.messageId}");
+  debugPrint("Handling a background message: ${message.messageId}");
 }
 
 void main() async {
@@ -106,30 +106,30 @@ class _CustomerAppState extends State<CustomerApp> {
   }
 
   void _handleSplashComplete() async {
-    print('Splash screen complete. Checking for persistent login...');
+    debugPrint('Splash screen complete. Checking for persistent login...');
 
     try {
       final authUser = firebase_auth.FirebaseAuth.instance.currentUser;
       if (authUser != null) {
-        print('Found persisted Firebase user: ${authUser.uid}');
+        debugPrint('Found persisted Firebase user: ${authUser.uid}');
         final firestoreService = FirestoreService();
         final user = await firestoreService.getUser(authUser.uid);
 
         if (user != null) {
-          print('User profile fetched successfully: ${user.name}');
+          debugPrint('User profile fetched successfully: ${user.name}');
           if (mounted) {
             setState(() {
               _currentUser = user;
             });
           }
         } else {
-          print('User profile not found in Firestore.');
+          debugPrint('User profile not found in Firestore.');
         }
       } else {
-        print('No persisted user found.');
+        debugPrint('No persisted user found.');
       }
     } catch (e) {
-      print('Error checking persistence: $e');
+      debugPrint('Error checking persistence: $e');
     }
 
     if (mounted) {
@@ -156,7 +156,7 @@ class _CustomerAppState extends State<CustomerApp> {
   }
 
   void _handleLanguageSelection(Locale locale) async {
-    print('Language selected: ${locale.languageCode}');
+    debugPrint('Language selected: ${locale.languageCode}');
     setState(() {
       _currentLocale = locale;
       _isLanguageSelected = true;
@@ -167,24 +167,24 @@ class _CustomerAppState extends State<CustomerApp> {
   }
 
   void _handleAuthComplete(User user) {
-    print('AUTH COMPLETE in main.dart');
-    print('User: ${user.name}');
-    print('Phone: ${user.phone}');
-    print('Address: ${user.address}');
+    debugPrint('AUTH COMPLETE in main.dart');
+    debugPrint('User: ${user.name}');
+    debugPrint('Phone: ${user.phone}');
+    debugPrint('Address: ${user.address}');
 
     setState(() {
       _currentUser = user;
     });
 
-    print('State updated - Dashboard should appear now!');
+    debugPrint('State updated - Dashboard should appear now!');
   }
 
   void _handleLogout() async {
-    print('LOGOUT - Returning to auth flow');
+    debugPrint('LOGOUT - Returning to auth flow');
     try {
       await firebase_auth.FirebaseAuth.instance.signOut();
     } catch (e) {
-      print('Error signing out of Firebase: $e');
+      debugPrint('Error signing out of Firebase: $e');
     }
 
     setState(() {
@@ -241,17 +241,17 @@ class _CustomerAppState extends State<CustomerApp> {
   Widget _buildHome() {
     // ✅ STEP 1: Show Splash Screen while loading
     if (_isLoading) {
-      print('Showing Splash Screen');
+      debugPrint('Showing Splash Screen');
       return SplashScreen(onSplashComplete: _handleSplashComplete);
     }
 
-    print('Building home - Current state:');
-    print('   Language selected: $_isLanguageSelected');
-    print('   Current user: ${_currentUser?.name ?? "NULL"}');
+    debugPrint('Building home - Current state:');
+    debugPrint('   Language selected: $_isLanguageSelected');
+    debugPrint('   Current user: ${_currentUser?.name ?? "NULL"}');
 
     // ✅ STEP 2: If user is logged in, show Dashboard
     if (_currentUser != null) {
-      print('   → Showing Dashboard');
+      debugPrint('   → Showing Dashboard');
       return DashboardScreen(
         user: _currentUser!,
         onLogout: _handleLogout,
@@ -261,11 +261,11 @@ class _CustomerAppState extends State<CustomerApp> {
 
     // ✅ STEP 3: If language selected, show Auth Flow
     if (_isLanguageSelected) {
-      print('   → Showing Auth Flow');
+      debugPrint('   → Showing Auth Flow');
       return AuthFlowCoordinator(
         onAuthComplete: _handleAuthComplete,
         onBack: () {
-          print('Returning to Language Selection');
+          debugPrint('Returning to Language Selection');
           setState(() {
             _isLanguageSelected = false;
             _currentLocale =
@@ -276,7 +276,7 @@ class _CustomerAppState extends State<CustomerApp> {
     }
 
     // ✅ STEP 4: Otherwise, show Language Selection
-    print('   → Showing Language Selection');
+    debugPrint('   → Showing Language Selection');
     return LanguageSelectionScreen(
       onLanguageSelected: _handleLanguageSelection,
     );

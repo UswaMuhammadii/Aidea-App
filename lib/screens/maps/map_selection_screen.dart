@@ -10,7 +10,8 @@ import '../../utils/app_colors.dart';
 
 class MapSelectionScreen extends StatefulWidget {
   final String? initialAddress;
-  final Function(String address, double? latitude, double? longitude) onLocationSelected;
+  final Function(String address, double? latitude, double? longitude)
+      onLocationSelected;
 
   const MapSelectionScreen({
     super.key,
@@ -56,7 +57,8 @@ class _MapSelectionScreenState extends State<MapSelectionScreen> {
     if (position != null) {
       _selectedLocation = LatLng(position.latitude, position.longitude);
       await _getAddressFromLatLng(_selectedLocation);
-    } else if (widget.initialAddress != null && widget.initialAddress!.isNotEmpty) {
+    } else if (widget.initialAddress != null &&
+        widget.initialAddress!.isNotEmpty) {
       // Use initial address if provided
       _selectedAddress = widget.initialAddress!;
       await _searchLocation(widget.initialAddress!);
@@ -93,7 +95,7 @@ class _MapSelectionScreenState extends State<MapSelectionScreen> {
     try {
       bool serviceEnabled = await Geolocator.isLocationServiceEnabled();
       if (!serviceEnabled) {
-        _showError('Location services are disabled. Please enable them.');
+        _showError(AppLocalizations.of(context)!.locationServicesDisabled);
         return;
       }
 
@@ -101,13 +103,14 @@ class _MapSelectionScreenState extends State<MapSelectionScreen> {
       if (permission == LocationPermission.denied) {
         permission = await Geolocator.requestPermission();
         if (permission == LocationPermission.denied) {
-          _showError('Location permissions are denied');
+          _showError(AppLocalizations.of(context)!.locationPermissionDenied);
           return;
         }
       }
 
       if (permission == LocationPermission.deniedForever) {
-        _showError('Location permissions are permanently denied');
+        _showError(
+            AppLocalizations.of(context)!.locationPermissionPermanentlyDenied);
         return;
       }
 
@@ -123,9 +126,8 @@ class _MapSelectionScreenState extends State<MapSelectionScreen> {
 
       _mapController.move(newLocation, 15.0);
       await _getAddressFromLatLng(newLocation);
-
     } catch (e) {
-      _showError('Failed to get current location: $e');
+      _showError('${AppLocalizations.of(context)!.genericError}: $e');
     }
   }
 
@@ -148,18 +150,21 @@ class _MapSelectionScreenState extends State<MapSelectionScreen> {
       if (response.statusCode == 200) {
         final data = json.decode(response.body);
         setState(() {
-          _selectedAddress = data['display_name'] ?? 'Unknown location';
+          _selectedAddress = data['display_name'] ??
+              AppLocalizations.of(context)!.unknownLocation;
           _isLoadingAddress = false;
         });
       } else {
         setState(() {
-          _selectedAddress = '${location.latitude.toStringAsFixed(6)}, ${location.longitude.toStringAsFixed(6)}';
+          _selectedAddress =
+              '${location.latitude.toStringAsFixed(6)}, ${location.longitude.toStringAsFixed(6)}';
           _isLoadingAddress = false;
         });
       }
     } catch (e) {
       setState(() {
-        _selectedAddress = '${location.latitude.toStringAsFixed(6)}, ${location.longitude.toStringAsFixed(6)}';
+        _selectedAddress =
+            '${location.latitude.toStringAsFixed(6)}, ${location.longitude.toStringAsFixed(6)}';
         _isLoadingAddress = false;
       });
     }
@@ -193,11 +198,13 @@ class _MapSelectionScreenState extends State<MapSelectionScreen> {
       if (response.statusCode == 200) {
         final List<dynamic> data = json.decode(response.body);
         setState(() {
-          _searchResults = data.map((item) => {
-            'name': item['display_name'] as String,
-            'lat': double.parse(item['lat'] as String),
-            'lon': double.parse(item['lon'] as String),
-          }).toList();
+          _searchResults = data
+              .map((item) => {
+                    'name': item['display_name'] as String,
+                    'lat': double.parse(item['lat'] as String),
+                    'lon': double.parse(item['lon'] as String),
+                  })
+              .toList();
           _isSearching = false;
         });
       } else {
@@ -211,7 +218,7 @@ class _MapSelectionScreenState extends State<MapSelectionScreen> {
         _searchResults = [];
         _isSearching = false;
       });
-      _showError('Search failed: $e');
+      _showError(AppLocalizations.of(context)!.searchFailed(e));
     }
   }
 
@@ -279,7 +286,6 @@ class _MapSelectionScreenState extends State<MapSelectionScreen> {
                 maxZoom: 19,
                 minZoom: 3,
               ),
-
               MarkerLayer(
                 markers: [
                   Marker(
@@ -303,7 +309,6 @@ class _MapSelectionScreenState extends State<MapSelectionScreen> {
               ),
             ],
           ),
-
 
           // Search Bar
           Positioned(
@@ -336,7 +341,8 @@ class _MapSelectionScreenState extends State<MapSelectionScreen> {
                           decoration: InputDecoration(
                             hintText: l10n.searchLocation,
                             border: InputBorder.none,
-                            contentPadding: const EdgeInsets.symmetric(vertical: 15),
+                            contentPadding:
+                                const EdgeInsets.symmetric(vertical: 15),
                           ),
                           onChanged: (value) {
                             if (value.length > 2) {
@@ -356,8 +362,10 @@ class _MapSelectionScreenState extends State<MapSelectionScreen> {
                           },
                         ),
                       IconButton(
-                        icon: const Icon(Icons.search, color: AppColors.electricBlue),
-                        onPressed: () => _searchLocation(_searchController.text),
+                        icon: const Icon(Icons.search,
+                            color: AppColors.electricBlue),
+                        onPressed: () =>
+                            _searchLocation(_searchController.text),
                       ),
                     ],
                   ),
@@ -382,11 +390,13 @@ class _MapSelectionScreenState extends State<MapSelectionScreen> {
                       shrinkWrap: true,
                       padding: const EdgeInsets.symmetric(vertical: 8),
                       itemCount: _searchResults.length,
-                      separatorBuilder: (context, index) => const Divider(height: 1),
+                      separatorBuilder: (context, index) =>
+                          const Divider(height: 1),
                       itemBuilder: (context, index) {
                         final result = _searchResults[index];
                         return ListTile(
-                          leading: const Icon(Icons.location_on, color: AppColors.electricBlue),
+                          leading: const Icon(Icons.location_on,
+                              color: AppColors.electricBlue),
                           title: Text(
                             result['name'],
                             style: const TextStyle(fontSize: 14),
@@ -423,7 +433,8 @@ class _MapSelectionScreenState extends State<MapSelectionScreen> {
               onPressed: _getCurrentLocation,
               backgroundColor: Colors.white,
               mini: true,
-              child: const Icon(Icons.my_location, color: AppColors.electricBlue),
+              child:
+                  const Icon(Icons.my_location, color: AppColors.electricBlue),
             ),
           ),
 
@@ -476,28 +487,33 @@ class _MapSelectionScreenState extends State<MapSelectionScreen> {
                                 l10n.selectedLocation,
                                 style: TextStyle(
                                   fontSize: 12,
-                                  color: isDark ? Colors.grey.shade400 : Colors.grey.shade600,
+                                  color: isDark
+                                      ? Colors.grey.shade400
+                                      : Colors.grey.shade600,
                                 ),
                               ),
                               const SizedBox(height: 4),
                               _isLoadingAddress
                                   ? const SizedBox(
-                                height: 16,
-                                width: 16,
-                                child: CircularProgressIndicator(strokeWidth: 2),
-                              )
+                                      height: 16,
+                                      width: 16,
+                                      child: CircularProgressIndicator(
+                                          strokeWidth: 2),
+                                    )
                                   : Text(
-                                _selectedAddress.isNotEmpty
-                                    ? _selectedAddress
-                                    : l10n.tapOnMapToSelectLocation,
-                                style: TextStyle(
-                                  fontSize: 14,
-                                  fontWeight: FontWeight.w600,
-                                  color: isDark ? Colors.white : Colors.black87,
-                                ),
-                                maxLines: 2,
-                                overflow: TextOverflow.ellipsis,
-                              ),
+                                      _selectedAddress.isNotEmpty
+                                          ? _selectedAddress
+                                          : l10n.tapOnMapToSelectLocation,
+                                      style: TextStyle(
+                                        fontSize: 14,
+                                        fontWeight: FontWeight.w600,
+                                        color: isDark
+                                            ? Colors.white
+                                            : Colors.black87,
+                                      ),
+                                      maxLines: 2,
+                                      overflow: TextOverflow.ellipsis,
+                                    ),
                             ],
                           ),
                         ),
@@ -563,7 +579,7 @@ class _MapSelectionScreenState extends State<MapSelectionScreen> {
                       ),
                       const SizedBox(height: 16),
                       Text(
-                        'Loading map...',
+                        l10n.loadingMap,
                         style: TextStyle(
                           color: isDark ? Colors.white : Colors.black87,
                           fontSize: 16,

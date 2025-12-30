@@ -39,7 +39,7 @@ class _OrderTrackingScreenState extends State<OrderTrackingScreen> {
   }
 
   Future<void> _fetchWorker(String? workerId) async {
-    print("DEBUG: _fetchWorker called. WorkerID: $workerId");
+    debugPrint("DEBUG: _fetchWorker called. WorkerID: $workerId");
     if (workerId != null) {
       try {
         final worker = await _firestoreService.getWorker(workerId);
@@ -315,7 +315,7 @@ class _OrderTrackingScreenState extends State<OrderTrackingScreen> {
         if (snapshot.hasError) {
           return Scaffold(
             appBar: AppBar(title: Text(l10n.orderDetails)),
-            body: Center(child: Text('Error: ${snapshot.error}')),
+            body: Center(child: Text('${l10n.errorTitle}: ${snapshot.error}')),
           );
         }
 
@@ -600,7 +600,7 @@ class _OrderTrackingScreenState extends State<OrderTrackingScreen> {
                                         children: [
                                           Text(
                                             widget.booking.workerName ??
-                                                'Assigned Worker',
+                                                l10n.assignedWorker,
                                             style: TextStyle(
                                               fontSize: 16,
                                               fontWeight: FontWeight.bold,

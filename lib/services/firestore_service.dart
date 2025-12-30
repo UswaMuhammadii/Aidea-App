@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/foundation.dart';
 import '../models/user_model.dart';
 import '../models/service_model.dart';
 import '../models/booking_model.dart';
@@ -250,7 +251,7 @@ class FirestoreService {
         'updatedAt': DateTime.now().toIso8601String(),
       });
     } catch (e) {
-      print('Error updating FCM token: $e');
+      debugPrint('Error updating FCM token: $e');
     }
   }
 }

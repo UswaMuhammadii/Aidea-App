@@ -119,9 +119,11 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
     if (_phoneFieldTouched) {
       final l10n = AppLocalizations.of(context)!;
       setState(() {
-        _phoneError = Validators.validatePhone(_phoneController.text, '+966', l10n);
+        _phoneError =
+            Validators.validatePhone(_phoneController.text, '+966', l10n);
       });
-      print('Phone validation: ${_phoneController.text} -> Error: $_phoneError');
+      debugPrint(
+          'Phone validation: ${_phoneController.text} -> Error: $_phoneError');
     }
   }
 
@@ -159,6 +161,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
   }
 
   void _showImageSourceModal() {
+    final l10n = AppLocalizations.of(context)!;
     showModalBottomSheet(
       context: context,
       shape: const RoundedRectangleBorder(
@@ -169,7 +172,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
           children: [
             ListTile(
               leading: const Icon(Icons.camera_alt),
-              title: const Text('Camera'),
+              title: Text(l10n.camera),
               onTap: () {
                 Navigator.pop(context);
                 _pickImage(ImageSource.camera);
@@ -177,7 +180,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
             ),
             ListTile(
               leading: const Icon(Icons.photo_library),
-              title: const Text('Gallery'),
+              title: Text(l10n.gallery),
               onTap: () {
                 Navigator.pop(context);
                 _pickImage(ImageSource.gallery);
@@ -201,21 +204,24 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
     final isValid = _formKey.currentState!.validate();
 
     // Also check our real-time validation states
-    final hasErrors = _nameError != null || _emailError != null || _phoneError != null;
+    final hasErrors =
+        _nameError != null || _emailError != null || _phoneError != null;
 
-    print('Form valid: $isValid');
-    print('Name error: $_nameError');
-    print('Email error: $_emailError');
-    print('Phone error: $_phoneError');
+    debugPrint('Form valid: $isValid');
+    debugPrint('Name error: $_nameError');
+    debugPrint('Email error: $_emailError');
+    debugPrint('Phone error: $_phoneError');
 
     if (!isValid || hasErrors) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-          content: Text('Please fix the errors: ${_nameError ?? _emailError ?? _phoneError ?? "Unknown error"}'),
+          content: Text(l10n.fixErrors(
+              _nameError ?? _emailError ?? _phoneError ?? l10n.genericError)),
           backgroundColor: Colors.red,
           behavior: SnackBarBehavior.floating,
           margin: const EdgeInsets.all(16),
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+          shape:
+              RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
           duration: const Duration(seconds: 3),
         ),
       );
@@ -225,11 +231,12 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
     if (!_hasChanges) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-          content: const Text('No changes to save'),
+          content: Text(l10n.noChangesToSave),
           backgroundColor: Colors.orange,
           behavior: SnackBarBehavior.floating,
           margin: const EdgeInsets.all(16),
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+          shape:
+              RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
         ),
       );
       return;
@@ -279,7 +286,8 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
           backgroundColor: Colors.green,
           behavior: SnackBarBehavior.floating,
           margin: const EdgeInsets.all(16),
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+          shape:
+              RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
         ),
       );
       // Return the updated user
@@ -289,26 +297,29 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
 
   Future<bool> _onWillPop() async {
     if (!_hasChanges) return true;
+    final l10n = AppLocalizations.of(context)!;
 
     return await showDialog(
-      context: context,
-      builder: (context) => AlertDialog(
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
-        title: const Text('Discard Changes?'),
-        content: const Text('You have unsaved changes. Are you sure you want to leave?'),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(context, false),
-            child: const Text('Cancel'),
+          context: context,
+          builder: (context) => AlertDialog(
+            shape:
+                RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+            title: Text(l10n.discardChangesTitle),
+            content: Text(l10n.discardChangesContent),
+            actions: [
+              TextButton(
+                onPressed: () => Navigator.pop(context, false),
+                child: Text(l10n.cancel),
+              ),
+              TextButton(
+                onPressed: () => Navigator.pop(context, true),
+                style: TextButton.styleFrom(foregroundColor: Colors.red),
+                child: Text(l10n.discard),
+              ),
+            ],
           ),
-          TextButton(
-            onPressed: () => Navigator.pop(context, true),
-            style: TextButton.styleFrom(foregroundColor: Colors.red),
-            child: const Text('Discard'),
-          ),
-        ],
-      ),
-    ) ?? false;
+        ) ??
+        false;
   }
 
   @override
@@ -316,7 +327,8 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
     final l10n = AppLocalizations.of(context)!;
 
     final isDark = Theme.of(context).brightness == Brightness.dark;
-    final backgroundColor = isDark ? const Color(0xFF0F172A) : const Color(0xFFF8F9FA);
+    final backgroundColor =
+        isDark ? const Color(0xFF0F172A) : const Color(0xFFF8F9FA);
     final cardColor = isDark ? const Color(0xFF1E293B) : Colors.white;
     final textColor = isDark ? Colors.white : Colors.black87;
 
@@ -344,17 +356,18 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
               Padding(
                 padding: const EdgeInsets.only(right: 8),
                 child: Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
                   decoration: BoxDecoration(
                     color: Colors.orange.withOpacity(0.2),
                     borderRadius: BorderRadius.circular(20),
                   ),
-                  child: const Row(
+                  child: Row(
                     children: [
                       Icon(Icons.edit, size: 14, color: Colors.orange),
                       SizedBox(width: 4),
                       Text(
-                        'Unsaved',
+                        l10n.unsaved,
                         style: TextStyle(fontSize: 12, color: Colors.orange),
                       ),
                     ],
@@ -519,47 +532,50 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                     borderRadius: BorderRadius.circular(16),
                     boxShadow: _hasChanges
                         ? [
-                      BoxShadow(
-                        color: AppColors.electricBlue.withOpacity(0.4),
-                        blurRadius: 12,
-                        offset: const Offset(0, 6),
-                      ),
-                    ]
+                            BoxShadow(
+                              color: AppColors.electricBlue.withOpacity(0.4),
+                              blurRadius: 12,
+                              offset: const Offset(0, 6),
+                            ),
+                          ]
                         : null,
                   ),
                   child: Material(
                     color: Colors.transparent,
                     child: InkWell(
-                      onTap: _isLoading || !_hasChanges ? null : () => _saveProfile(l10n),
+                      onTap: _isLoading || !_hasChanges
+                          ? null
+                          : () => _saveProfile(l10n),
                       borderRadius: BorderRadius.circular(16),
                       child: Padding(
                         padding: const EdgeInsets.symmetric(vertical: 18),
                         child: _isLoading
                             ? const Center(
-                          child: SizedBox(
-                            height: 24,
-                            width: 24,
-                            child: CircularProgressIndicator(
-                              strokeWidth: 2,
-                              valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
-                            ),
-                          ),
-                        )
+                                child: SizedBox(
+                                  height: 24,
+                                  width: 24,
+                                  child: CircularProgressIndicator(
+                                    strokeWidth: 2,
+                                    valueColor: AlwaysStoppedAnimation<Color>(
+                                        Colors.white),
+                                  ),
+                                ),
+                              )
                             : Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            const Icon(Icons.save, color: Colors.white),
-                            const SizedBox(width: 8),
-                            Text(
-                              l10n.saveChanges,
-                              style: const TextStyle(
-                                color: Colors.white,
-                                fontSize: 16,
-                                fontWeight: FontWeight.bold,
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  const Icon(Icons.save, color: Colors.white),
+                                  const SizedBox(width: 8),
+                                  Text(
+                                    l10n.saveChanges,
+                                    style: const TextStyle(
+                                      color: Colors.white,
+                                      fontSize: 16,
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                  ),
+                                ],
                               ),
-                            ),
-                          ],
-                        ),
                       ),
                     ),
                   ),
@@ -584,6 +600,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
     String? Function(String?)? validator,
     List<TextInputFormatter>? inputFormatters,
   }) {
+    final l10n = AppLocalizations.of(context)!;
     final isDark = Theme.of(context).brightness == Brightness.dark;
     final cardColor = isDark ? const Color(0xFF1E293B) : Colors.white;
     final textColor = isDark ? Colors.white : Colors.black87;
@@ -591,7 +608,8 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
     final borderColor = isDark ? Colors.grey.shade700 : Colors.grey.shade200;
 
     final bool hasError = showError && error != null;
-    final bool isValid = showError && error == null && controller.text.isNotEmpty;
+    final bool isValid =
+        showError && error == null && controller.text.isNotEmpty;
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -627,10 +645,14 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
               ),
               suffixIcon: controller.text.isNotEmpty
                   ? Icon(
-                isValid ? Icons.check_circle : (hasError ? Icons.error : null),
-                color: isValid ? Colors.green : (hasError ? Colors.red : null),
-                size: 20,
-              )
+                      isValid
+                          ? Icons.check_circle
+                          : (hasError ? Icons.error : null),
+                      color: isValid
+                          ? Colors.green
+                          : (hasError ? Colors.red : null),
+                      size: 20,
+                    )
                   : null,
               filled: true,
               fillColor: cardColor,
@@ -661,7 +683,8 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                 borderSide: const BorderSide(color: Colors.red, width: 2),
               ),
               errorStyle: const TextStyle(height: 0, fontSize: 0),
-              contentPadding: const EdgeInsets.symmetric(horizontal: 20, vertical: 18),
+              contentPadding:
+                  const EdgeInsets.symmetric(horizontal: 20, vertical: 18),
             ),
             validator: validator,
           ),
@@ -680,9 +703,10 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                 const SizedBox(width: 4),
                 Expanded(
                   child: Text(
-                    error ?? 'Looks good!',
+                    error ?? l10n.looksGood,
                     style: TextStyle(
-                      color: isValid ? Colors.green.shade600 : Colors.red.shade400,
+                      color:
+                          isValid ? Colors.green.shade600 : Colors.red.shade400,
                       fontSize: 12,
                       fontWeight: FontWeight.w500,
                     ),

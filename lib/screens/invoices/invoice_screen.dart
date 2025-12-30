@@ -90,7 +90,7 @@ class _InvoiceScreenState extends State<InvoiceScreen> {
                     crossAxisAlignment: pw.CrossAxisAlignment.start,
                     children: [
                       pw.Text(
-                        'INVOICE',
+                        l10n.invoiceTitle,
                         style: pw.TextStyle(
                           color: PdfColors.white,
                           fontSize: 32,
@@ -99,7 +99,7 @@ class _InvoiceScreenState extends State<InvoiceScreen> {
                       ),
                       pw.SizedBox(height: 10),
                       pw.Text(
-                        'Invoice #${booking.id.substring(0, 8).toUpperCase()}',
+                        '${l10n.invoiceNumber}${booking.id.substring(0, 8).toUpperCase()}',
                         style: const pw.TextStyle(
                           color: PdfColors.white,
                           fontSize: 14,
@@ -121,7 +121,7 @@ class _InvoiceScreenState extends State<InvoiceScreen> {
                         crossAxisAlignment: pw.CrossAxisAlignment.start,
                         children: [
                           pw.Text(
-                            'Service Provider',
+                            l10n.serviceProvider,
                             style: pw.TextStyle(
                               fontSize: 10,
                               color: PdfColors.grey700,
@@ -129,7 +129,7 @@ class _InvoiceScreenState extends State<InvoiceScreen> {
                           ),
                           pw.SizedBox(height: 5),
                           pw.Text(
-                            'HandyMan',
+                            l10n.appTitle,
                             style: pw.TextStyle(
                               fontSize: 16,
                               fontWeight: pw.FontWeight.bold,
@@ -137,7 +137,7 @@ class _InvoiceScreenState extends State<InvoiceScreen> {
                           ),
                           pw.SizedBox(height: 8),
                           pw.Text(
-                            'Home Services',
+                            l10n.appSubtitle,
                             style: const pw.TextStyle(fontSize: 12),
                           ),
                         ],
@@ -150,7 +150,7 @@ class _InvoiceScreenState extends State<InvoiceScreen> {
                         crossAxisAlignment: pw.CrossAxisAlignment.start,
                         children: [
                           pw.Text(
-                            'Bill To',
+                            l10n.billTo,
                             style: pw.TextStyle(
                               fontSize: 10,
                               color: PdfColors.grey700,
@@ -197,7 +197,7 @@ class _InvoiceScreenState extends State<InvoiceScreen> {
                       crossAxisAlignment: pw.CrossAxisAlignment.start,
                       children: [
                         pw.Text(
-                          'Invoice Date',
+                          l10n.invoiceDate,
                           style: pw.TextStyle(
                             fontSize: 10,
                             color: PdfColors.grey700,
@@ -217,7 +217,7 @@ class _InvoiceScreenState extends State<InvoiceScreen> {
                       crossAxisAlignment: pw.CrossAxisAlignment.start,
                       children: [
                         pw.Text(
-                          'Service Date',
+                          l10n.serviceDate,
                           style: pw.TextStyle(
                             fontSize: 10,
                             color: PdfColors.grey700,
@@ -238,7 +238,7 @@ class _InvoiceScreenState extends State<InvoiceScreen> {
                       crossAxisAlignment: pw.CrossAxisAlignment.start,
                       children: [
                         pw.Text(
-                          'Payment Method',
+                          l10n.paymentMethod,
                           style: pw.TextStyle(
                             fontSize: 10,
                             color: PdfColors.grey700,
@@ -247,8 +247,8 @@ class _InvoiceScreenState extends State<InvoiceScreen> {
                         pw.SizedBox(height: 3),
                         pw.Text(
                           booking.paymentMethod == 'cash'
-                              ? 'Cash on Service'
-                              : 'Credit/Debit Card',
+                              ? l10n.cashOnService
+                              : l10n.creditDebitCard,
                           style: pw.TextStyle(
                             fontSize: 14,
                             fontWeight: pw.FontWeight.bold,
@@ -257,7 +257,7 @@ class _InvoiceScreenState extends State<InvoiceScreen> {
                         if (booking.paymentMethod != 'cash') ...[
                           pw.SizedBox(height: 4),
                           pw.Text(
-                            'STC Pay: 0535616095',
+                            l10n.stcPayInfo,
                             style: pw.TextStyle(
                               fontSize: 12,
                               color: PdfColors.grey700,
@@ -289,14 +289,14 @@ class _InvoiceScreenState extends State<InvoiceScreen> {
                         pw.Padding(
                           padding: const pw.EdgeInsets.all(10),
                           child: pw.Text(
-                            'Service',
+                            l10n.serviceDefault,
                             style: pw.TextStyle(fontWeight: pw.FontWeight.bold),
                           ),
                         ),
                         pw.Padding(
                           padding: const pw.EdgeInsets.all(10),
                           child: pw.Text(
-                            'Qty',
+                            l10n.qty,
                             style: pw.TextStyle(fontWeight: pw.FontWeight.bold),
                             textAlign: pw.TextAlign.center,
                           ),
@@ -304,7 +304,7 @@ class _InvoiceScreenState extends State<InvoiceScreen> {
                         pw.Padding(
                           padding: const pw.EdgeInsets.all(10),
                           child: pw.Text(
-                            'Price',
+                            l10n.price,
                             style: pw.TextStyle(fontWeight: pw.FontWeight.bold),
                             textAlign: pw.TextAlign.right,
                           ),
@@ -326,7 +326,7 @@ class _InvoiceScreenState extends State<InvoiceScreen> {
                           padding: const pw.EdgeInsets.all(10),
                           child: pw.Text(booking.serviceName.isNotEmpty
                               ? booking.serviceName
-                              : 'Service'),
+                              : l10n.serviceDefault),
                         ),
                         pw.Padding(
                           padding: const pw.EdgeInsets.all(10),
@@ -338,14 +338,14 @@ class _InvoiceScreenState extends State<InvoiceScreen> {
                         pw.Padding(
                           padding: const pw.EdgeInsets.all(10),
                           child: pw.Text(
-                            'SAR ${(booking.totalPrice / booking.quantity).toStringAsFixed(2)}',
+                            '${l10n.currencySar} ${(booking.totalPrice / booking.quantity).toStringAsFixed(2)}',
                             textAlign: pw.TextAlign.right,
                           ),
                         ),
                         pw.Padding(
                           padding: const pw.EdgeInsets.all(10),
                           child: pw.Text(
-                            'SAR ${booking.totalPrice.toStringAsFixed(2)}',
+                            '${l10n.currencySar} ${booking.totalPrice.toStringAsFixed(2)}',
                             textAlign: pw.TextAlign.right,
                             style: pw.TextStyle(fontWeight: pw.FontWeight.bold),
                           ),
@@ -371,7 +371,7 @@ class _InvoiceScreenState extends State<InvoiceScreen> {
                         mainAxisAlignment: pw.MainAxisAlignment.spaceBetween,
                         children: [
                           pw.Text(
-                            'Total Amount:',
+                            l10n.totalAmount,
                             style: pw.TextStyle(
                               color: PdfColors.white,
                               fontSize: 16,
@@ -379,7 +379,7 @@ class _InvoiceScreenState extends State<InvoiceScreen> {
                             ),
                           ),
                           pw.Text(
-                            'SAR ${booking.totalPrice.toStringAsFixed(2)}',
+                            '${l10n.currencySar} ${booking.totalPrice.toStringAsFixed(2)}',
                             style: pw.TextStyle(
                               color: PdfColors.white,
                               fontSize: 20,
@@ -399,7 +399,7 @@ class _InvoiceScreenState extends State<InvoiceScreen> {
                     crossAxisAlignment: pw.CrossAxisAlignment.start,
                     children: [
                       pw.Text(
-                        'Notes:',
+                        l10n.notes,
                         style: pw.TextStyle(
                           fontSize: 12,
                           fontWeight: pw.FontWeight.bold,
@@ -428,7 +428,7 @@ class _InvoiceScreenState extends State<InvoiceScreen> {
                 pw.SizedBox(height: 10),
                 pw.Center(
                   child: pw.Text(
-                    'Thank you for your business!',
+                    l10n.thankYouBusiness,
                     style: pw.TextStyle(
                       fontSize: 12,
                       color: PdfColors.grey700,
@@ -439,7 +439,7 @@ class _InvoiceScreenState extends State<InvoiceScreen> {
                 pw.SizedBox(height: 5),
                 pw.Center(
                   child: pw.Text(
-                    'For any queries, contact us at support@handyman.com',
+                    l10n.contactSupportEmail,
                     style: const pw.TextStyle(
                         fontSize: 10, color: PdfColors.grey600),
                   ),
@@ -457,9 +457,10 @@ class _InvoiceScreenState extends State<InvoiceScreen> {
       if (mounted) {
         await Share.shareXFiles(
           [XFile(file.path)],
-          subject: 'Invoice #${booking.id.substring(0, 8).toUpperCase()}',
+          subject:
+              '${l10n.invoiceNumber}${booking.id.substring(0, 8).toUpperCase()}',
           text:
-              'Invoice for ${booking.serviceName.isNotEmpty ? booking.serviceName : "Service"}',
+              '${l10n.invoiceTitle} ${l10n.bookedFor(booking.serviceName.isNotEmpty ? booking.serviceName : l10n.serviceDefault)}',
         );
       }
     } catch (e) {
@@ -583,7 +584,7 @@ class _InvoiceScreenState extends State<InvoiceScreen> {
                                             CrossAxisAlignment.start,
                                         children: [
                                           Text(
-                                            'Invoice #${booking.id.substring(0, 8).toUpperCase()}',
+                                            '${l10n.invoiceNumber}${booking.id.substring(0, 8).toUpperCase()}',
                                             style: TextStyle(
                                               fontSize: 16,
                                               fontWeight: FontWeight.bold,
@@ -642,7 +643,7 @@ class _InvoiceScreenState extends State<InvoiceScreen> {
                                             CrossAxisAlignment.start,
                                         children: [
                                           Text(
-                                            'Service',
+                                            l10n.serviceDefault,
                                             style: TextStyle(
                                               fontSize: 12,
                                               color: subtitleColor,
@@ -653,7 +654,7 @@ class _InvoiceScreenState extends State<InvoiceScreen> {
                                           Text(
                                             booking.serviceName.isNotEmpty
                                                 ? booking.serviceName
-                                                : 'Service',
+                                                : l10n.serviceDefault,
                                             style: TextStyle(
                                               fontSize: 15,
                                               fontWeight: FontWeight.w600,
@@ -674,7 +675,7 @@ class _InvoiceScreenState extends State<InvoiceScreen> {
                                           CrossAxisAlignment.end,
                                       children: [
                                         Text(
-                                          'Amount',
+                                          l10n.amount,
                                           style: TextStyle(
                                             fontSize: 12,
                                             color: subtitleColor,
@@ -683,7 +684,7 @@ class _InvoiceScreenState extends State<InvoiceScreen> {
                                         ),
                                         const SizedBox(height: 6),
                                         Text(
-                                          'SAR ${booking.totalPrice.toStringAsFixed(0)}',
+                                          '${l10n.currencySar} ${booking.totalPrice.toStringAsFixed(0)}',
                                           style: const TextStyle(
                                             fontSize: 20,
                                             fontWeight: FontWeight.bold,

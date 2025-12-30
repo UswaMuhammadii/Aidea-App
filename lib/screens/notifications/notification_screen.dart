@@ -65,7 +65,7 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
     if (_currentUserId == null) {
       return Scaffold(
         appBar: AppBar(title: Text(l10n.notifications)),
-        body: Center(child: Text("Please login to view notifications")),
+        body: Center(child: Text(l10n.loginToViewNotifications)),
       );
     }
 
@@ -75,7 +75,7 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
         actions: [
           IconButton(
             icon: const Icon(Icons.done_all),
-            tooltip: 'Mark all as read',
+            tooltip: l10n.markAllAsRead,
             onPressed: _markAllAsRead,
           ),
         ],
@@ -101,8 +101,7 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
                   const Icon(Icons.notifications_off_outlined,
                       size: 60, color: Colors.grey),
                   const SizedBox(height: 16),
-                  Text(l10n.noNotificationsYet ??
-                      "No notifications yet"), // Fallback if l10n missing
+                  Text(l10n.noNotificationsYet ?? "No notifications yet"),
                 ],
               ),
             );

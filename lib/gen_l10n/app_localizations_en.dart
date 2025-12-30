@@ -9,7 +9,7 @@ class AppLocalizationsEn extends AppLocalizations {
   AppLocalizationsEn([String locale = 'en']) : super(locale);
 
   @override
-  String get appTitle => 'HANDYMAN';
+  String get appTitle => 'HandyMan';
 
   @override
   String get homeServices => 'Home Services';
@@ -213,7 +213,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get paid => 'PAID';
 
   @override
-  String get downloadShareInvoice => 'Download / Share Invoice';
+  String get downloadShareInvoice => 'Download Invoice';
 
   @override
   String get reviews => 'Reviews';
@@ -232,7 +232,9 @@ class AppLocalizationsEn extends AppLocalizations {
       'Complete services to leave reviews';
 
   @override
-  String get completedOn => 'Completed on';
+  String completedOn(String date) {
+    return 'Completed on $date';
+  }
 
   @override
   String get writeAReview => 'Write a Review';
@@ -446,7 +448,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get quantity => 'Quantity';
 
   @override
-  String get totalAmount => 'Total Amount';
+  String get totalAmount => 'Total Amount:';
 
   @override
   String get whatsNext => 'What\'s Next?';
@@ -1523,7 +1525,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get notificationTitle => 'Notifications';
 
   @override
-  String get markAllAsRead => 'Mark All as Read';
+  String get markAllAsRead => 'Mark all as read';
 
   @override
   String get newNotification => 'New';
@@ -1562,7 +1564,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get serviceCompletedMessage =>
-      'Your electrical repair service has been completed. Rate your experience!';
+      'Service completed! Please check the invoice.';
 
   @override
   String get technicianAssignedNotification => 'Technician Assigned';
@@ -1697,4 +1699,276 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get support => 'Support';
+
+  @override
+  String get errorCreatingBooking =>
+      'Something went wrong while creating your booking. Please try again or check your connection.';
+
+  @override
+  String get errorTitle => 'Error';
+
+  @override
+  String get okAction => 'OK';
+
+  @override
+  String get checkPhoneNumber => 'Please check your phone number';
+
+  @override
+  String get verificationFailed => 'Verification failed. Please try again.';
+
+  @override
+  String get genericError => 'An error occurred. Please try again.';
+
+  @override
+  String get autoVerificationFailed =>
+      'Auto verification failed. Please enter OTP manually.';
+
+  @override
+  String get validPhoneNumber => 'Valid phone number';
+
+  @override
+  String get selectCountryCode => 'Select Country Code';
+
+  @override
+  String get saudiArabia => 'Saudi Arabia';
+
+  @override
+  String get uae => 'United Arab Emirates';
+
+  @override
+  String get pakistan => 'Pakistan';
+
+  @override
+  String get verify => 'Verify';
+
+  @override
+  String get sessionExpired => 'Session expired. Please go back and try again.';
+
+  @override
+  String get phoneVerified => 'Phone verified successfully!';
+
+  @override
+  String get invalidOtp => 'Invalid OTP code. Please check and try again.';
+
+  @override
+  String get otpExpired => 'OTP expired. Please request a new code.';
+
+  @override
+  String get sessionInvalid => 'Session invalid. Please go back and try again.';
+
+  @override
+  String get phoneAlreadyRegistered =>
+      'This phone number is already registered.';
+
+  @override
+  String get failedToResendOtp => 'Failed to resend OTP. Please try again.';
+
+  @override
+  String get testNumberHint => 'Test Number: Use code 124576';
+
+  @override
+  String get clearCartTitle => 'Clear Cart';
+
+  @override
+  String get invoiceGeneratedTitle => 'Invoice Generated';
+
+  @override
+  String invoiceGeneratedBody(String serviceName) {
+    return 'Invoice for $serviceName is now available.';
+  }
+
+  @override
+  String get statusUpdateTitle => 'Status Update';
+
+  @override
+  String serviceStatusUpdateBody(String serviceName, String statusText) {
+    return 'Service $serviceName is now $statusText.';
+  }
+
+  @override
+  String get appSubtitle => 'Home Services';
+
+  @override
+  String get userProfile => 'User Profile';
+
+  @override
+  String get generalSection => 'General';
+
+  @override
+  String get activitySection => 'Activity';
+
+  @override
+  String locationName(int number) {
+    return 'Location $number';
+  }
+
+  @override
+  String get errorLoadingBookings => 'Error loading bookings';
+
+  @override
+  String get currencySar => 'SAR';
+
+  @override
+  String get profileUpdatedSuccess => 'Profile updated successfully!';
+
+  @override
+  String dialerLaunchError(String error) {
+    return 'Could not launch dialer: $error';
+  }
+
+  @override
+  String get customerSupport => 'Customer Support';
+
+  @override
+  String get supportSubtitle => 'We are here to help you!';
+
+  @override
+  String get supportDescription =>
+      'For any queries or assistance, please contact our support team.';
+
+  @override
+  String get callSupport => 'Call Support';
+
+  @override
+  String get developedBy => 'Developed by:';
+
+  @override
+  String get contactSupportTeam => 'Contact our support team';
+
+  @override
+  String get loginToViewNotifications => 'Please login to view notifications';
+
+  @override
+  String get serviceDefault => 'Service';
+
+  @override
+  String bookedFor(String date) {
+    return 'Booked for $date';
+  }
+
+  @override
+  String get invoiceTitle => 'INVOICE';
+
+  @override
+  String get serviceProvider => 'Service Provider';
+
+  @override
+  String get billTo => 'Bill To';
+
+  @override
+  String get invoiceDate => 'Invoice Date';
+
+  @override
+  String get serviceDate => 'Service Date';
+
+  @override
+  String get paymentMethod => 'Payment Method';
+
+  @override
+  String get cashOnService => 'Cash on Service';
+
+  @override
+  String get creditDebitCard => 'Credit/Debit Card';
+
+  @override
+  String get stcPayInfo => 'STC Pay: 0535616095';
+
+  @override
+  String get price => 'Price';
+
+  @override
+  String get notes => 'Notes:';
+
+  @override
+  String get thankYouBusiness => 'Thank you for your business!';
+
+  @override
+  String get contactSupportEmail =>
+      'For any queries, contact us at support@handyman.com';
+
+  @override
+  String get assignedWorker => 'Assigned Worker';
+
+  @override
+  String fixErrors(String error) {
+    return 'Please fix the errors: $error';
+  }
+
+  @override
+  String get noChangesToSave => 'No changes to save';
+
+  @override
+  String get discardChangesTitle => 'Discard Changes?';
+
+  @override
+  String get discardChangesContent =>
+      'You have unsaved changes. Are you sure you want to leave?';
+
+  @override
+  String get discard => 'Discard';
+
+  @override
+  String get unsaved => 'Unsaved';
+
+  @override
+  String get looksGood => 'Looks good!';
+
+  @override
+  String get addressTypeHome => 'Home';
+
+  @override
+  String get addressTypeWork => 'Work';
+
+  @override
+  String get addressTypeOther => 'Other';
+
+  @override
+  String get addressAddedSuccess => 'Address added successfully!';
+
+  @override
+  String get addressDeletedSuccess => 'Address deleted successfully!';
+
+  @override
+  String get primaryAddressUpdated => 'Primary address updated!';
+
+  @override
+  String get deleteAddressTitle => 'Delete Address';
+
+  @override
+  String get deleteAddressContent =>
+      'Are you sure you want to delete this address?';
+
+  @override
+  String get delete => 'Delete';
+
+  @override
+  String get setPrimary => 'Set Primary';
+
+  @override
+  String get edit => 'Edit';
+
+  @override
+  String get noSavedAddresses => 'No saved addresses yet';
+
+  @override
+  String get locationServicesDisabled =>
+      'Location services are disabled. Please enable them.';
+
+  @override
+  String get locationPermissionDenied => 'Location permissions are denied';
+
+  @override
+  String get locationPermissionPermanentlyDenied =>
+      'Location permissions are permanently denied';
+
+  @override
+  String get unknownLocation => 'Unknown location';
+
+  @override
+  String get loadingMap => 'Loading map...';
+
+  @override
+  String searchFailed(Object error) {
+    return 'Search failed: $error';
+  }
 }

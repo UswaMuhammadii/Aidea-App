@@ -101,7 +101,7 @@ abstract class AppLocalizations {
   /// No description provided for @appTitle.
   ///
   /// In en, this message translates to:
-  /// **'HANDYMAN'**
+  /// **'HandyMan'**
   String get appTitle;
 
   /// No description provided for @homeServices.
@@ -503,7 +503,7 @@ abstract class AppLocalizations {
   /// No description provided for @downloadShareInvoice.
   ///
   /// In en, this message translates to:
-  /// **'Download / Share Invoice'**
+  /// **'Download Invoice'**
   String get downloadShareInvoice;
 
   /// No description provided for @reviews.
@@ -539,8 +539,8 @@ abstract class AppLocalizations {
   /// No description provided for @completedOn.
   ///
   /// In en, this message translates to:
-  /// **'Completed on'**
-  String get completedOn;
+  /// **'Completed on {date}'**
+  String completedOn(String date);
 
   /// No description provided for @writeAReview.
   ///
@@ -959,7 +959,7 @@ abstract class AppLocalizations {
   /// No description provided for @totalAmount.
   ///
   /// In en, this message translates to:
-  /// **'Total Amount'**
+  /// **'Total Amount:'**
   String get totalAmount;
 
   /// No description provided for @whatsNext.
@@ -3017,7 +3017,7 @@ abstract class AppLocalizations {
   /// No description provided for @markAllAsRead.
   ///
   /// In en, this message translates to:
-  /// **'Mark All as Read'**
+  /// **'Mark all as read'**
   String get markAllAsRead;
 
   /// No description provided for @newNotification.
@@ -3083,7 +3083,7 @@ abstract class AppLocalizations {
   /// No description provided for @serviceCompletedMessage.
   ///
   /// In en, this message translates to:
-  /// **'Your electrical repair service has been completed. Rate your experience!'**
+  /// **'Service completed! Please check the invoice.'**
   String get serviceCompletedMessage;
 
   /// No description provided for @technicianAssignedNotification.
@@ -3343,6 +3343,504 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Support'**
   String get support;
+
+  /// No description provided for @errorCreatingBooking.
+  ///
+  /// In en, this message translates to:
+  /// **'Something went wrong while creating your booking. Please try again or check your connection.'**
+  String get errorCreatingBooking;
+
+  /// No description provided for @errorTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Error'**
+  String get errorTitle;
+
+  /// No description provided for @okAction.
+  ///
+  /// In en, this message translates to:
+  /// **'OK'**
+  String get okAction;
+
+  /// No description provided for @checkPhoneNumber.
+  ///
+  /// In en, this message translates to:
+  /// **'Please check your phone number'**
+  String get checkPhoneNumber;
+
+  /// No description provided for @verificationFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Verification failed. Please try again.'**
+  String get verificationFailed;
+
+  /// No description provided for @genericError.
+  ///
+  /// In en, this message translates to:
+  /// **'An error occurred. Please try again.'**
+  String get genericError;
+
+  /// No description provided for @autoVerificationFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Auto verification failed. Please enter OTP manually.'**
+  String get autoVerificationFailed;
+
+  /// No description provided for @validPhoneNumber.
+  ///
+  /// In en, this message translates to:
+  /// **'Valid phone number'**
+  String get validPhoneNumber;
+
+  /// No description provided for @selectCountryCode.
+  ///
+  /// In en, this message translates to:
+  /// **'Select Country Code'**
+  String get selectCountryCode;
+
+  /// No description provided for @saudiArabia.
+  ///
+  /// In en, this message translates to:
+  /// **'Saudi Arabia'**
+  String get saudiArabia;
+
+  /// No description provided for @uae.
+  ///
+  /// In en, this message translates to:
+  /// **'United Arab Emirates'**
+  String get uae;
+
+  /// No description provided for @pakistan.
+  ///
+  /// In en, this message translates to:
+  /// **'Pakistan'**
+  String get pakistan;
+
+  /// No description provided for @verify.
+  ///
+  /// In en, this message translates to:
+  /// **'Verify'**
+  String get verify;
+
+  /// No description provided for @sessionExpired.
+  ///
+  /// In en, this message translates to:
+  /// **'Session expired. Please go back and try again.'**
+  String get sessionExpired;
+
+  /// No description provided for @phoneVerified.
+  ///
+  /// In en, this message translates to:
+  /// **'Phone verified successfully!'**
+  String get phoneVerified;
+
+  /// No description provided for @invalidOtp.
+  ///
+  /// In en, this message translates to:
+  /// **'Invalid OTP code. Please check and try again.'**
+  String get invalidOtp;
+
+  /// No description provided for @otpExpired.
+  ///
+  /// In en, this message translates to:
+  /// **'OTP expired. Please request a new code.'**
+  String get otpExpired;
+
+  /// No description provided for @sessionInvalid.
+  ///
+  /// In en, this message translates to:
+  /// **'Session invalid. Please go back and try again.'**
+  String get sessionInvalid;
+
+  /// No description provided for @phoneAlreadyRegistered.
+  ///
+  /// In en, this message translates to:
+  /// **'This phone number is already registered.'**
+  String get phoneAlreadyRegistered;
+
+  /// No description provided for @failedToResendOtp.
+  ///
+  /// In en, this message translates to:
+  /// **'Failed to resend OTP. Please try again.'**
+  String get failedToResendOtp;
+
+  /// No description provided for @testNumberHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Test Number: Use code 124576'**
+  String get testNumberHint;
+
+  /// No description provided for @clearCartTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Clear Cart'**
+  String get clearCartTitle;
+
+  /// No description provided for @invoiceGeneratedTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Invoice Generated'**
+  String get invoiceGeneratedTitle;
+
+  /// No description provided for @invoiceGeneratedBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Invoice for {serviceName} is now available.'**
+  String invoiceGeneratedBody(String serviceName);
+
+  /// No description provided for @statusUpdateTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Status Update'**
+  String get statusUpdateTitle;
+
+  /// No description provided for @serviceStatusUpdateBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Service {serviceName} is now {statusText}.'**
+  String serviceStatusUpdateBody(String serviceName, String statusText);
+
+  /// No description provided for @appSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Home Services'**
+  String get appSubtitle;
+
+  /// No description provided for @userProfile.
+  ///
+  /// In en, this message translates to:
+  /// **'User Profile'**
+  String get userProfile;
+
+  /// No description provided for @generalSection.
+  ///
+  /// In en, this message translates to:
+  /// **'General'**
+  String get generalSection;
+
+  /// No description provided for @activitySection.
+  ///
+  /// In en, this message translates to:
+  /// **'Activity'**
+  String get activitySection;
+
+  /// No description provided for @locationName.
+  ///
+  /// In en, this message translates to:
+  /// **'Location {number}'**
+  String locationName(int number);
+
+  /// No description provided for @errorLoadingBookings.
+  ///
+  /// In en, this message translates to:
+  /// **'Error loading bookings'**
+  String get errorLoadingBookings;
+
+  /// No description provided for @currencySar.
+  ///
+  /// In en, this message translates to:
+  /// **'SAR'**
+  String get currencySar;
+
+  /// No description provided for @profileUpdatedSuccess.
+  ///
+  /// In en, this message translates to:
+  /// **'Profile updated successfully!'**
+  String get profileUpdatedSuccess;
+
+  /// No description provided for @dialerLaunchError.
+  ///
+  /// In en, this message translates to:
+  /// **'Could not launch dialer: {error}'**
+  String dialerLaunchError(String error);
+
+  /// No description provided for @customerSupport.
+  ///
+  /// In en, this message translates to:
+  /// **'Customer Support'**
+  String get customerSupport;
+
+  /// No description provided for @supportSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'We are here to help you!'**
+  String get supportSubtitle;
+
+  /// No description provided for @supportDescription.
+  ///
+  /// In en, this message translates to:
+  /// **'For any queries or assistance, please contact our support team.'**
+  String get supportDescription;
+
+  /// No description provided for @callSupport.
+  ///
+  /// In en, this message translates to:
+  /// **'Call Support'**
+  String get callSupport;
+
+  /// No description provided for @developedBy.
+  ///
+  /// In en, this message translates to:
+  /// **'Developed by:'**
+  String get developedBy;
+
+  /// No description provided for @contactSupportTeam.
+  ///
+  /// In en, this message translates to:
+  /// **'Contact our support team'**
+  String get contactSupportTeam;
+
+  /// No description provided for @loginToViewNotifications.
+  ///
+  /// In en, this message translates to:
+  /// **'Please login to view notifications'**
+  String get loginToViewNotifications;
+
+  /// No description provided for @serviceDefault.
+  ///
+  /// In en, this message translates to:
+  /// **'Service'**
+  String get serviceDefault;
+
+  /// No description provided for @bookedFor.
+  ///
+  /// In en, this message translates to:
+  /// **'Booked for {date}'**
+  String bookedFor(String date);
+
+  /// No description provided for @invoiceTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'INVOICE'**
+  String get invoiceTitle;
+
+  /// No description provided for @serviceProvider.
+  ///
+  /// In en, this message translates to:
+  /// **'Service Provider'**
+  String get serviceProvider;
+
+  /// No description provided for @billTo.
+  ///
+  /// In en, this message translates to:
+  /// **'Bill To'**
+  String get billTo;
+
+  /// No description provided for @invoiceDate.
+  ///
+  /// In en, this message translates to:
+  /// **'Invoice Date'**
+  String get invoiceDate;
+
+  /// No description provided for @serviceDate.
+  ///
+  /// In en, this message translates to:
+  /// **'Service Date'**
+  String get serviceDate;
+
+  /// No description provided for @paymentMethod.
+  ///
+  /// In en, this message translates to:
+  /// **'Payment Method'**
+  String get paymentMethod;
+
+  /// No description provided for @cashOnService.
+  ///
+  /// In en, this message translates to:
+  /// **'Cash on Service'**
+  String get cashOnService;
+
+  /// No description provided for @creditDebitCard.
+  ///
+  /// In en, this message translates to:
+  /// **'Credit/Debit Card'**
+  String get creditDebitCard;
+
+  /// No description provided for @stcPayInfo.
+  ///
+  /// In en, this message translates to:
+  /// **'STC Pay: 0535616095'**
+  String get stcPayInfo;
+
+  /// No description provided for @price.
+  ///
+  /// In en, this message translates to:
+  /// **'Price'**
+  String get price;
+
+  /// No description provided for @notes.
+  ///
+  /// In en, this message translates to:
+  /// **'Notes:'**
+  String get notes;
+
+  /// No description provided for @thankYouBusiness.
+  ///
+  /// In en, this message translates to:
+  /// **'Thank you for your business!'**
+  String get thankYouBusiness;
+
+  /// No description provided for @contactSupportEmail.
+  ///
+  /// In en, this message translates to:
+  /// **'For any queries, contact us at support@handyman.com'**
+  String get contactSupportEmail;
+
+  /// No description provided for @assignedWorker.
+  ///
+  /// In en, this message translates to:
+  /// **'Assigned Worker'**
+  String get assignedWorker;
+
+  /// No description provided for @fixErrors.
+  ///
+  /// In en, this message translates to:
+  /// **'Please fix the errors: {error}'**
+  String fixErrors(String error);
+
+  /// No description provided for @noChangesToSave.
+  ///
+  /// In en, this message translates to:
+  /// **'No changes to save'**
+  String get noChangesToSave;
+
+  /// No description provided for @discardChangesTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Discard Changes?'**
+  String get discardChangesTitle;
+
+  /// No description provided for @discardChangesContent.
+  ///
+  /// In en, this message translates to:
+  /// **'You have unsaved changes. Are you sure you want to leave?'**
+  String get discardChangesContent;
+
+  /// No description provided for @discard.
+  ///
+  /// In en, this message translates to:
+  /// **'Discard'**
+  String get discard;
+
+  /// No description provided for @unsaved.
+  ///
+  /// In en, this message translates to:
+  /// **'Unsaved'**
+  String get unsaved;
+
+  /// No description provided for @looksGood.
+  ///
+  /// In en, this message translates to:
+  /// **'Looks good!'**
+  String get looksGood;
+
+  /// No description provided for @addressTypeHome.
+  ///
+  /// In en, this message translates to:
+  /// **'Home'**
+  String get addressTypeHome;
+
+  /// No description provided for @addressTypeWork.
+  ///
+  /// In en, this message translates to:
+  /// **'Work'**
+  String get addressTypeWork;
+
+  /// No description provided for @addressTypeOther.
+  ///
+  /// In en, this message translates to:
+  /// **'Other'**
+  String get addressTypeOther;
+
+  /// No description provided for @addressAddedSuccess.
+  ///
+  /// In en, this message translates to:
+  /// **'Address added successfully!'**
+  String get addressAddedSuccess;
+
+  /// No description provided for @addressDeletedSuccess.
+  ///
+  /// In en, this message translates to:
+  /// **'Address deleted successfully!'**
+  String get addressDeletedSuccess;
+
+  /// No description provided for @primaryAddressUpdated.
+  ///
+  /// In en, this message translates to:
+  /// **'Primary address updated!'**
+  String get primaryAddressUpdated;
+
+  /// No description provided for @deleteAddressTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete Address'**
+  String get deleteAddressTitle;
+
+  /// No description provided for @deleteAddressContent.
+  ///
+  /// In en, this message translates to:
+  /// **'Are you sure you want to delete this address?'**
+  String get deleteAddressContent;
+
+  /// No description provided for @delete.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete'**
+  String get delete;
+
+  /// No description provided for @setPrimary.
+  ///
+  /// In en, this message translates to:
+  /// **'Set Primary'**
+  String get setPrimary;
+
+  /// No description provided for @edit.
+  ///
+  /// In en, this message translates to:
+  /// **'Edit'**
+  String get edit;
+
+  /// No description provided for @noSavedAddresses.
+  ///
+  /// In en, this message translates to:
+  /// **'No saved addresses yet'**
+  String get noSavedAddresses;
+
+  /// No description provided for @locationServicesDisabled.
+  ///
+  /// In en, this message translates to:
+  /// **'Location services are disabled. Please enable them.'**
+  String get locationServicesDisabled;
+
+  /// No description provided for @locationPermissionDenied.
+  ///
+  /// In en, this message translates to:
+  /// **'Location permissions are denied'**
+  String get locationPermissionDenied;
+
+  /// No description provided for @locationPermissionPermanentlyDenied.
+  ///
+  /// In en, this message translates to:
+  /// **'Location permissions are permanently denied'**
+  String get locationPermissionPermanentlyDenied;
+
+  /// No description provided for @unknownLocation.
+  ///
+  /// In en, this message translates to:
+  /// **'Unknown location'**
+  String get unknownLocation;
+
+  /// No description provided for @loadingMap.
+  ///
+  /// In en, this message translates to:
+  /// **'Loading map...'**
+  String get loadingMap;
+
+  /// No description provided for @searchFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Search failed: {error}'**
+  String searchFailed(Object error);
 }
 
 class _AppLocalizationsDelegate

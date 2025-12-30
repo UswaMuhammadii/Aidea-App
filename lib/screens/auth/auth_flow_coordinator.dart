@@ -37,15 +37,15 @@ class _AuthFlowCoordinatorState extends State<AuthFlowCoordinator> {
     // Check if user is already logged in
     _firebaseUser = _authService.getCurrentUser();
     if (_firebaseUser != null) {
-      print('User already logged in: ${_firebaseUser!.phoneNumber}');
+      debugPrint('User already logged in: ${_firebaseUser!.phoneNumber}');
     }
   }
 
   void _handlePhoneSubmit(String phoneNumber, String verificationId) {
-    print('=== Phone Submit Handler ===');
-    print('Phone: $phoneNumber');
-    print('VerificationId: $verificationId');
-    print('VerificationId length: ${verificationId.length}');
+    debugPrint('=== Phone Submit Handler ===');
+    debugPrint('Phone: $phoneNumber');
+    debugPrint('VerificationId: $verificationId');
+    debugPrint('VerificationId length: ${verificationId.length}');
 
     setState(() {
       _phoneNumber = phoneNumber;
@@ -54,18 +54,18 @@ class _AuthFlowCoordinatorState extends State<AuthFlowCoordinator> {
       _currentStep = 1; // Move to OTP verification
     });
 
-    print('State updated - Moving to OTP screen');
-    print('============================');
+    debugPrint('State updated - Moving to OTP screen');
+    debugPrint('============================');
   }
 
   Future<void> _handleOTPVerification(firebase_auth.User firebaseUser) async {
-    print('=== OTP Verification Handler ===');
-    print('Firebase User: ${firebaseUser.uid}');
+    debugPrint('=== OTP Verification Handler ===');
+    debugPrint('Firebase User: ${firebaseUser.uid}');
 
     // Check if user exists in Firestore
     final existingUser = await _firestoreService.getUser(firebaseUser.uid);
     if (existingUser != null) {
-      print('User found in Firestore: ${existingUser.name}');
+      debugPrint('User found in Firestore: ${existingUser.name}');
       widget.onAuthComplete(existingUser);
       return;
     }
@@ -76,8 +76,8 @@ class _AuthFlowCoordinatorState extends State<AuthFlowCoordinator> {
       _currentStep = 2; // Move to location selection
     });
 
-    print('State updated - Moving to Location screen');
-    print('=================================');
+    debugPrint('State updated - Moving to Location screen');
+    debugPrint('=================================');
   }
 
   void _handleLocationSelected(Map<String, String> locationData) {

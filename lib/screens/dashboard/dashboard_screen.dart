@@ -82,10 +82,10 @@ class _DashboardScreenState extends State<DashboardScreen> {
       String? token = await NotificationService().getFcmToken();
       if (token != null) {
         await FirestoreService().updateUserFcmToken(_currentUser.id, token);
-        print('FCM Token saved to Firestore: $token');
+        debugPrint('FCM Token saved to Firestore: $token');
       }
     } catch (e) {
-      print('Error saving FCM token: $e');
+      debugPrint('Error saving FCM token: $e');
     }
   }
 
@@ -104,6 +104,8 @@ class _DashboardScreenState extends State<DashboardScreen> {
   }
 
   Future<void> _checkNotifications(List<Booking> bookings) async {
+    if (!mounted) return;
+    final l10n = AppLocalizations.of(context)!;
     final firestore = FirestoreService();
     // Logic to generate notifications for status updates and invoices
     for (var booking in bookings) {
@@ -118,8 +120,8 @@ class _DashboardScreenState extends State<DashboardScreen> {
               _currentUser.id,
               NotificationModel(
                 id: notificationId,
-                title: 'Invoice Generated',
-                message: 'Invoice for ${booking.serviceName} is now available.',
+                title: l10n.invoiceGeneratedTitle,
+                message: l10n.invoiceGeneratedBody(booking.serviceName),
                 bookingId: booking.id,
                 type: 'invoice',
                 createdAt: DateTime.now(),
@@ -128,8 +130,8 @@ class _DashboardScreenState extends State<DashboardScreen> {
           // Show Local Notification
           NotificationService().showNotification(
             id: DateTime.now().millisecondsSinceEpoch ~/ 1000,
-            title: 'Invoice Generated',
-            body: 'Invoice for ${booking.serviceName} is now available.',
+            title: l10n.invoiceGeneratedTitle,
+            body: l10n.invoiceGeneratedBody(booking.serviceName),
             payload: booking.id,
           );
         }
@@ -144,13 +146,13 @@ class _DashboardScreenState extends State<DashboardScreen> {
         final exists =
             await firestore.getNotification(_currentUser.id, notificationId);
         if (exists == null) {
-          String title = 'Status Update';
-          String message =
-              'Service ${booking.serviceName} is now ${booking.statusText}.';
+          String title = l10n.statusUpdateTitle;
+          String message = l10n.serviceStatusUpdateBody(
+              booking.serviceName, booking.statusText);
 
           // Customize message based on status if needed
           if (booking.status == BookingStatus.completed) {
-            message = 'Service completed! Please check the invoice.';
+            message = l10n.serviceCompletedMessage;
           }
 
           await firestore.addNotification(
@@ -191,7 +193,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
         });
       }
     } catch (e) {
-      print('Error loading data: $e');
+      debugPrint('Error loading data: $e');
     }
   }
 
@@ -443,7 +445,8 @@ class _DashboardScreenState extends State<DashboardScreen> {
     // Create a new SavedAddress
     final newAddress = SavedAddress(
       id: DateTime.now().millisecondsSinceEpoch.toString(),
-      title: 'Location ${_currentUser.savedAddresses.length + 1}',
+      title: AppLocalizations.of(context)!
+          .locationName(_currentUser.savedAddresses.length + 1),
       fullAddress: address,
       latitude: lat,
       longitude: lng,
@@ -460,7 +463,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
     // Update the current user
     _updateUser(updatedUser);
 
-    print('Address saved: $address (Lat: $lat, Lng: $lng)');
+    debugPrint('Address saved: $address (Lat: $lat, Lng: $lng)');
   }
 
   void _showLocationPicker() {
@@ -746,11 +749,11 @@ class _DashboardScreenState extends State<DashboardScreen> {
                   ),
                 ),
                 const SizedBox(width: 12),
-                const Column(
+                Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      'HandyMan',
+                      l10n.appTitle,
                       style: TextStyle(
                         color: Colors.white,
                         fontSize: 22,
@@ -759,7 +762,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                     ),
                     SizedBox(height: 2),
                     Text(
-                      'Home Services',
+                      l10n.appSubtitle,
                       style: TextStyle(
                         color: Colors.white70,
                         fontSize: 12,
@@ -943,14 +946,12 @@ class _DashboardScreenState extends State<DashboardScreen> {
 
   Widget _buildDrawer(AppLocalizations l10n) {
     // English/Arabic mapping for section headers
-    final isAr = l10n.localeName == 'ar';
+    // English/Arabic mapping for section headers
 
     // Helper for Section Headers (English or Arabic based on current locale)
     String getSectionHeader(String key) {
-      if (isAr) {
-        return key == 'General' ? 'عام' : 'النشاط';
-      }
-      return key;
+      if (key == 'General') return l10n.generalSection;
+      return l10n.activitySection;
     }
 
     return Drawer(
@@ -1019,7 +1020,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                 ),
                 // Role or Subtitle (Single Language)
                 Text(
-                  isAr ? 'الملف الشخصي' : 'User Profile',
+                  l10n.userProfile,
                   style: TextStyle(
                     color: Colors.white.withOpacity(0.9),
                     fontSize: 16,
@@ -1395,7 +1396,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                 const Icon(Icons.error_outline, size: 48, color: Colors.red),
                 const SizedBox(height: 16),
                 Text(
-                  'Error loading bookings',
+                  l10n.errorLoadingBookings,
                   style: TextStyle(color: textColor),
                 ),
                 // Optional: Show error details in debug mode
@@ -1729,7 +1730,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
       case BookingStatus.completed:
         return l10n.completed;
       case BookingStatus.postponed:
-        return 'Postponed';
+        return l10n.postponed;
       case BookingStatus.cancelled:
         return l10n.cancelled;
     }

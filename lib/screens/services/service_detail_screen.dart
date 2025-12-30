@@ -111,9 +111,9 @@ class _ServiceDetailScreenState extends State<ServiceDetailScreen>
   String _getCurrencyDisplay(AppLocalizations l10n, double price) {
     final locale = Localizations.localeOf(context);
     if (locale.languageCode == 'ar') {
-      return '${price.toStringAsFixed(0)} ريال';
+      return '${price.toStringAsFixed(0)} ${l10n.currencySar}';
     } else {
-      return 'SAR ${price.toStringAsFixed(0)}';
+      return '${l10n.currencySar} ${price.toStringAsFixed(0)}';
     }
   }
 

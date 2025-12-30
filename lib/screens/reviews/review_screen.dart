@@ -135,7 +135,7 @@ class _ReviewScreenState extends State<ReviewScreen>
                           Text(
                             booking.serviceName.isNotEmpty
                                 ? booking.serviceName
-                                : 'Service',
+                                : l10n.serviceDefault,
                             style: const TextStyle(
                               color: Colors.white70,
                               fontSize: 14,
@@ -274,7 +274,7 @@ class _ReviewScreenState extends State<ReviewScreen>
                                       : '',
                                   serviceName: booking.serviceName.isNotEmpty
                                       ? booking.serviceName
-                                      : 'Service',
+                                      : l10n.serviceDefault,
                                   userId: widget.user.id,
                                   userName: widget.user.name,
                                   workerId: booking.workerId,
@@ -493,7 +493,7 @@ class _ReviewScreenState extends State<ReviewScreen>
                           Text(
                             booking.serviceName.isNotEmpty
                                 ? booking.serviceName
-                                : 'Service',
+                                : l10n.serviceDefault,
                             style: TextStyle(
                               fontSize: 16,
                               fontWeight: FontWeight.bold,
@@ -503,8 +503,10 @@ class _ReviewScreenState extends State<ReviewScreen>
                           const SizedBox(height: 4),
                           Text(
                             booking.completedDate != null
-                                ? 'Completed on ${DateFormat('MMM dd, yyyy').format(booking.completedDate!)}'
-                                : 'Booked for ${DateFormat('MMM dd, yyyy').format(booking.bookingDate)}',
+                                ? l10n.completedOn(DateFormat('MMM dd, yyyy')
+                                    .format(booking.completedDate!))
+                                : l10n.bookedFor(DateFormat('MMM dd, yyyy')
+                                    .format(booking.bookingDate)),
                             style: TextStyle(
                               fontSize: 13,
                               color: subtitleColor,

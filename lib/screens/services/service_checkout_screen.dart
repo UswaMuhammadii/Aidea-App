@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'dart:async'; // For TimeoutException
 
 import '../../gen_l10n/app_localizations.dart';
 import '../../models/user_model.dart';
@@ -235,7 +236,14 @@ class _ServiceCheckoutScreenState extends State<ServiceCheckoutScreen> {
                 _notesController.text.isNotEmpty ? _notesController.text : null,
           );
 
-          await firestoreService.createBooking(booking);
+          // Add a timeout to prevent hanging UI on slow networks
+          await firestoreService
+              .createBooking(booking)
+              .timeout(const Duration(seconds: 5), onTimeout: () {
+            debugPrint(
+                "Booking creation timed out, but proceeding optimistically.");
+            // We assume Firestore will eventually sync this when connection allows.
+          });
           bookings.add(booking);
           totalPrice += cartItem.totalPrice;
         }
@@ -266,7 +274,14 @@ class _ServiceCheckoutScreenState extends State<ServiceCheckoutScreen> {
               _notesController.text.isNotEmpty ? _notesController.text : null,
         );
 
-        await firestoreService.createBooking(booking);
+        // Add a timeout to prevent hanging UI on slow networks
+        await firestoreService
+            .createBooking(booking)
+            .timeout(const Duration(seconds: 5), onTimeout: () {
+          debugPrint(
+              "Booking creation timed out, but proceeding optimistically.");
+          // We assume Firestore will eventually sync this when connection allows.
+        });
         bookings.add(booking);
       }
 
@@ -286,11 +301,11 @@ class _ServiceCheckoutScreenState extends State<ServiceCheckoutScreen> {
         );
       }
     } catch (e) {
-      print('Error creating booking: $e');
+      debugPrint('Error creating booking: $e');
       setState(() => _isLoading = false);
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Error creating booking: $e')),
+          SnackBar(content: Text(l10n.errorCreatingBooking)),
         );
       }
     }

@@ -9,7 +9,7 @@ class AppLocalizationsAr extends AppLocalizations {
   AppLocalizationsAr([String locale = 'ar']) : super(locale);
 
   @override
-  String get appTitle => 'عايدية للتكنولوجيا';
+  String get appTitle => 'هاندي مان';
 
   @override
   String get homeServices => 'خدمات منزلية';
@@ -202,7 +202,7 @@ class AppLocalizationsAr extends AppLocalizations {
   String get invoice => 'فاتورة';
 
   @override
-  String get invoiceNumber => 'فاتورة رقم';
+  String get invoiceNumber => 'رقم الفاتورة #';
 
   @override
   String get amount => 'المبلغ';
@@ -211,7 +211,7 @@ class AppLocalizationsAr extends AppLocalizations {
   String get paid => 'مدفوع';
 
   @override
-  String get downloadShareInvoice => 'تحميل / مشاركة الفاتورة';
+  String get downloadShareInvoice => 'تحميل الفاتورة';
 
   @override
   String get reviews => 'التقييمات';
@@ -229,7 +229,9 @@ class AppLocalizationsAr extends AppLocalizations {
   String get completeServicesToLeaveReviews => 'أكمل الخدمات لترك التقييمات';
 
   @override
-  String get completedOn => 'اكتمل في';
+  String completedOn(String date) {
+    return 'اكتملت في $date';
+  }
 
   @override
   String get writeAReview => 'اكتب تقييماً';
@@ -442,7 +444,7 @@ class AppLocalizationsAr extends AppLocalizations {
   String get quantity => 'الكمية';
 
   @override
-  String get totalAmount => 'المبلغ الإجمالي';
+  String get totalAmount => 'المجموع:';
 
   @override
   String get whatsNext => 'ما التالي؟';
@@ -509,7 +511,7 @@ class AppLocalizationsAr extends AppLocalizations {
   String get simulateCompleteWork => 'محاكاة: إكمال العمل';
 
   @override
-  String get technician => 'فني';
+  String get technician => 'الفني';
 
   @override
   String get ordersDone => 'الطلبات المكتملة';
@@ -597,7 +599,7 @@ class AppLocalizationsAr extends AppLocalizations {
   String get profileVerified => 'تم التحقق من الملف الشخصي';
 
   @override
-  String get policeVerified => 'تم التحقق من قبل الشرطة';
+  String get policeVerified => 'تم التحقق من الشرطة';
 
   @override
   String get servicesProvide => 'الخدمات المقدمة';
@@ -777,7 +779,7 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String previouslyCompletedServicesBy(String name) {
-    return 'الخدمات المكتملة سابقاً بواسطة';
+    return 'الخدمات المكتملة سابقًا بواسطة $name';
   }
 
   @override
@@ -1543,7 +1545,7 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get serviceCompletedMessage =>
-      'اكتملت خدمة الإصلاح الكهربائي. قيّم تجربتك!';
+      'اكتملت الخدمة! يرجى التحقق من الفاتورة.';
 
   @override
   String get technicianAssignedNotification => 'تم تعيين فني';
@@ -1677,4 +1679,277 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get support => 'الدعم';
+
+  @override
+  String get errorCreatingBooking =>
+      'حدث خطأ أثناء إنشاء الحجز. يرجى المحاولة مرة أخرى أو التحقق من الاتصال.';
+
+  @override
+  String get errorTitle => 'خطأ';
+
+  @override
+  String get okAction => 'حسناً';
+
+  @override
+  String get checkPhoneNumber => 'يرجى التحقق من رقم الهاتف';
+
+  @override
+  String get verificationFailed => 'فشل التحقق. يرجى المحاولة مرة أخرى.';
+
+  @override
+  String get genericError => 'حدث خطأ. يرجى المحاولة مرة أخرى.';
+
+  @override
+  String get autoVerificationFailed =>
+      'فشل التحقق التلقائي. الرجاء إدخال الرمز يدوياً.';
+
+  @override
+  String get validPhoneNumber => 'رقم هاتف صالح';
+
+  @override
+  String get selectCountryCode => 'اختر رمز الدولة';
+
+  @override
+  String get saudiArabia => 'المملكة العربية السعودية';
+
+  @override
+  String get uae => 'الإمارات العربية المتحدة';
+
+  @override
+  String get pakistan => 'باكستان';
+
+  @override
+  String get verify => 'تحقق';
+
+  @override
+  String get sessionExpired => 'انتهت الجلسة. يرجى العودة والمحاولة مرة أخرى.';
+
+  @override
+  String get phoneVerified => 'تم التحقق من رقم الجوال بنجاح!';
+
+  @override
+  String get invalidOtp =>
+      'رمز التحقق غير صالح. يرجى التحقق والمحاولة مرة أخرى.';
+
+  @override
+  String get otpExpired => 'انتهت صلاحية الرمز. يرجى طلب رمز جديد.';
+
+  @override
+  String get sessionInvalid =>
+      'الجلسة غير صالحة. يرجى العودة والمحاولة مرة أخرى.';
+
+  @override
+  String get phoneAlreadyRegistered => 'رقم الهاتف هذا مسجل بالفعل.';
+
+  @override
+  String get failedToResendOtp =>
+      'فشل في إعادة إرسال الرمز. يرجى المحاولة مرة أخرى.';
+
+  @override
+  String get testNumberHint => 'رقم اختبار: استخدم الرمز 124576';
+
+  @override
+  String get clearCartTitle => 'مسح السلة';
+
+  @override
+  String get invoiceGeneratedTitle => 'تم إنشاء الفاتورة';
+
+  @override
+  String invoiceGeneratedBody(String serviceName) {
+    return 'الفاتورة لـ $serviceName متوفرة الآن.';
+  }
+
+  @override
+  String get statusUpdateTitle => 'تحديث الحالة';
+
+  @override
+  String serviceStatusUpdateBody(String serviceName, String statusText) {
+    return 'خدمة $serviceName الآن $statusText.';
+  }
+
+  @override
+  String get appSubtitle => 'خدمات منزلية';
+
+  @override
+  String get userProfile => 'الملف الشخصي';
+
+  @override
+  String get generalSection => 'عام';
+
+  @override
+  String get activitySection => 'النشاط';
+
+  @override
+  String locationName(int number) {
+    return 'الموقع $number';
+  }
+
+  @override
+  String get errorLoadingBookings => 'خطأ في تحميل الحجوزات';
+
+  @override
+  String get currencySar => 'ريال';
+
+  @override
+  String get profileUpdatedSuccess => 'تم تحديث الملف الشخصي بنجاح!';
+
+  @override
+  String dialerLaunchError(String error) {
+    return 'تعذر فتح الهاتف: $error';
+  }
+
+  @override
+  String get customerSupport => 'خدمة العملاء';
+
+  @override
+  String get supportSubtitle => 'نحن هنا لمساعدتك!';
+
+  @override
+  String get supportDescription =>
+      'لأي استفسارات أو مساعدة، يرجى التواصل مع فريق الدعم.';
+
+  @override
+  String get callSupport => 'اتصل بالدعم';
+
+  @override
+  String get developedBy => 'تطوير:';
+
+  @override
+  String get contactSupportTeam => 'تواصل مع فريق الدعم';
+
+  @override
+  String get loginToViewNotifications => 'يرجى تسجيل الدخول لعرض الإشعارات';
+
+  @override
+  String get serviceDefault => 'خدمة';
+
+  @override
+  String bookedFor(String date) {
+    return 'محجوز لـ $date';
+  }
+
+  @override
+  String get invoiceTitle => 'فاتورة';
+
+  @override
+  String get serviceProvider => 'مقدم الخدمة';
+
+  @override
+  String get billTo => 'فاتورة إلى';
+
+  @override
+  String get invoiceDate => 'تاريخ الفاتورة';
+
+  @override
+  String get serviceDate => 'تاريخ الخدمة';
+
+  @override
+  String get paymentMethod => 'طريقة الدفع';
+
+  @override
+  String get cashOnService => 'نقدًا عند الخدمة';
+
+  @override
+  String get creditDebitCard => 'بطاقة ائتمان / مدى';
+
+  @override
+  String get stcPayInfo => 'STC Pay: 0535616095';
+
+  @override
+  String get price => 'السعر';
+
+  @override
+  String get notes => 'ملاحظات:';
+
+  @override
+  String get thankYouBusiness => 'شكرا لتعاملك معنا!';
+
+  @override
+  String get contactSupportEmail =>
+      'لأي استفسار، تواصل معنا عبر support@handyman.com';
+
+  @override
+  String get assignedWorker => 'العامل المعين';
+
+  @override
+  String fixErrors(String error) {
+    return 'يرجى تصحيح الأخطاء: $error';
+  }
+
+  @override
+  String get noChangesToSave => 'لا توجد تغييرات للحفظ';
+
+  @override
+  String get discardChangesTitle => 'تجاهل التغييرات؟';
+
+  @override
+  String get discardChangesContent =>
+      'لديك تغييرات غير محفوظة. هل أنت متأكد أنك تريد المغادرة؟';
+
+  @override
+  String get discard => 'تجاهل';
+
+  @override
+  String get unsaved => 'غير محفوظ';
+
+  @override
+  String get looksGood => 'يبدو جيداً!';
+
+  @override
+  String get addressTypeHome => 'المنزل';
+
+  @override
+  String get addressTypeWork => 'العمل';
+
+  @override
+  String get addressTypeOther => 'أخرى';
+
+  @override
+  String get addressAddedSuccess => 'تمت إضافة العنوان بنجاح!';
+
+  @override
+  String get addressDeletedSuccess => 'تم حذف العنوان بنجاح!';
+
+  @override
+  String get primaryAddressUpdated => 'تم تحديث العنوان الرئيسي!';
+
+  @override
+  String get deleteAddressTitle => 'حذف العنوان';
+
+  @override
+  String get deleteAddressContent => 'هل أنت متأكد أنك تريد حذف هذا العنوان؟';
+
+  @override
+  String get delete => 'حذف';
+
+  @override
+  String get setPrimary => 'تعيين كرئيسي';
+
+  @override
+  String get edit => 'تعديل';
+
+  @override
+  String get noSavedAddresses => 'لا توجد عناوين محفوظة بعد';
+
+  @override
+  String get locationServicesDisabled =>
+      'خدمات الموقع غير مفعلة. يرجى تفعيلها.';
+
+  @override
+  String get locationPermissionDenied => 'تم رفض إذن الوصول للموقع';
+
+  @override
+  String get locationPermissionPermanentlyDenied =>
+      'تم رفض إذن الوصول للموقع بشكل دائم';
+
+  @override
+  String get unknownLocation => 'موقع غير معروف';
+
+  @override
+  String get loadingMap => 'جارٍ تحميل الخريطة...';
+
+  @override
+  String searchFailed(Object error) {
+    return 'فشل البحث: $error';
+  }
 }

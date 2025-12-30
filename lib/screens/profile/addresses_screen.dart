@@ -33,7 +33,7 @@ class _AddressesScreenState extends State<AddressesScreen> {
       _addresses.add(
         SavedAddress(
           id: DateTime.now().millisecondsSinceEpoch.toString(),
-          title: 'Home',
+          title: 'Home', // Keep internal ID, display localized in UI
           fullAddress: widget.user.address,
           type: 'home',
           isPrimary: true,
@@ -106,7 +106,7 @@ class _AddressesScreenState extends State<AddressesScreen> {
         content: Text(
           existingAddress != null
               ? l10n.addressUpdatedSuccessfully
-              : 'Address added successfully!',
+              : l10n.addressAddedSuccess,
         ),
         backgroundColor: Colors.green,
       ),
@@ -132,8 +132,8 @@ class _AddressesScreenState extends State<AddressesScreen> {
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
-        title: const Text('Delete Address'),
-        content: const Text('Are you sure you want to delete this address?'),
+        title: Text(l10n.deleteAddressTitle),
+        content: Text(l10n.deleteAddressContent),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(context),
@@ -148,13 +148,13 @@ class _AddressesScreenState extends State<AddressesScreen> {
               Navigator.pop(context);
 
               ScaffoldMessenger.of(context).showSnackBar(
-                const SnackBar(
-                  content: Text('Address deleted successfully!'),
+                SnackBar(
+                  content: Text(l10n.addressDeletedSuccess),
                   backgroundColor: Colors.red,
                 ),
               );
             },
-            child: const Text('Delete', style: TextStyle(color: Colors.red)),
+            child: Text(l10n.delete, style: const TextStyle(color: Colors.red)),
           ),
         ],
       ),
@@ -162,6 +162,7 @@ class _AddressesScreenState extends State<AddressesScreen> {
   }
 
   void _setPrimaryAddress(String addressId) {
+    final l10n = AppLocalizations.of(context)!;
     setState(() {
       // Set all addresses to non-primary
       for (var i = 0; i < _addresses.length; i++) {
@@ -178,8 +179,8 @@ class _AddressesScreenState extends State<AddressesScreen> {
     });
 
     ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(
-        content: Text('Primary address updated!'),
+      SnackBar(
+        content: Text(l10n.primaryAddressUpdated),
         backgroundColor: Colors.green,
       ),
     );
@@ -241,7 +242,7 @@ class _AddressesScreenState extends State<AddressesScreen> {
                       ),
                       const SizedBox(height: 16),
                       Text(
-                        'No saved addresses yet',
+                        l10n.noSavedAddresses,
                         style: TextStyle(
                           fontSize: 16,
                           color: subtitleColor,
@@ -470,7 +471,7 @@ class _AddressesScreenState extends State<AddressesScreen> {
                   child: OutlinedButton.icon(
                     onPressed: () => _setPrimaryAddress(address.id),
                     icon: const Icon(Icons.star_outline, size: 18),
-                    label: const Text('Set Primary'),
+                    label: Text(l10n.setPrimary),
                     style: OutlinedButton.styleFrom(
                       foregroundColor: AppColors.electricBlue,
                       side: const BorderSide(color: AppColors.electricBlue),
@@ -485,7 +486,7 @@ class _AddressesScreenState extends State<AddressesScreen> {
                 child: OutlinedButton.icon(
                   onPressed: () => _openMapSelection(addressToEdit: address),
                   icon: const Icon(Icons.map, size: 18),
-                  label: const Text('Edit'),
+                  label: Text(l10n.edit),
                   style: OutlinedButton.styleFrom(
                     foregroundColor: Colors.blue,
                     side: const BorderSide(color: Colors.blue),

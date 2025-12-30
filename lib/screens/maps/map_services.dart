@@ -3,6 +3,7 @@ import 'package:geolocator/geolocator.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
+import 'package:flutter/foundation.dart';
 
 class MapService {
   // Jeddah city bounds
@@ -47,7 +48,7 @@ class MapService {
 
       return position;
     } catch (e) {
-      print('Error getting location: $e');
+      debugPrint('Error getting location: $e');
       return null;
     }
   }
@@ -62,9 +63,9 @@ class MapService {
 
   /// Get address from coordinates using Nominatim (OpenStreetMap)
   static Future<String> getAddressFromLatLng(
-      double latitude,
-      double longitude,
-      ) async {
+    double latitude,
+    double longitude,
+  ) async {
     try {
       final url = 'https://nominatim.openstreetmap.org/reverse?'
           'format=json&'
@@ -80,11 +81,12 @@ class MapService {
 
       if (response.statusCode == 200) {
         final data = json.decode(response.body);
-        return data['display_name'] ?? '${latitude.toStringAsFixed(6)}, ${longitude.toStringAsFixed(6)}';
+        return data['display_name'] ??
+            '${latitude.toStringAsFixed(6)}, ${longitude.toStringAsFixed(6)}';
       }
       return '${latitude.toStringAsFixed(6)}, ${longitude.toStringAsFixed(6)}';
     } catch (e) {
-      print('Error getting address: $e');
+      debugPrint('Error getting address: $e');
       return '${latitude.toStringAsFixed(6)}, ${longitude.toStringAsFixed(6)}';
     }
   }
@@ -127,15 +129,15 @@ class MapService {
       }
       return null;
     } catch (e) {
-      print('Error getting coordinates: $e');
+      debugPrint('Error getting coordinates: $e');
       return null;
     }
   }
 
   /// Search for locations in Jeddah
   static Future<List<Map<String, dynamic>>> searchLocations(
-      String query,
-      ) async {
+    String query,
+  ) async {
     try {
       final url = 'https://nominatim.openstreetmap.org/search?'
           'q=$query, Jeddah, Saudi Arabia&'
@@ -153,26 +155,26 @@ class MapService {
         final List<dynamic> data = json.decode(response.body);
         return data
             .map((item) => {
-          'name': item['display_name'] as String,
-          'lat': double.parse(item['lat'] as String),
-          'lon': double.parse(item['lon'] as String),
-        })
+                  'name': item['display_name'] as String,
+                  'lat': double.parse(item['lat'] as String),
+                  'lon': double.parse(item['lon'] as String),
+                })
             .toList();
       }
       return [];
     } catch (e) {
-      print('Error searching locations: $e');
+      debugPrint('Error searching locations: $e');
       return [];
     }
   }
 
   /// Calculate distance between two points in kilometers
   static double calculateDistance(
-      double lat1,
-      double lon1,
-      double lat2,
-      double lon2,
-      ) {
+    double lat1,
+    double lon1,
+    double lat2,
+    double lon2,
+  ) {
     const Distance distance = Distance();
     return distance.as(
       LengthUnit.Kilometer,
@@ -183,10 +185,10 @@ class MapService {
 
   /// Get nearby landmarks in Jeddah
   static Future<List<Map<String, dynamic>>> getNearbyLandmarks(
-      double latitude,
-      double longitude, {
-        int radius = 1000, // meters
-      }) async {
+    double latitude,
+    double longitude, {
+    int radius = 1000, // meters
+  }) async {
     try {
       final url = 'https://nominatim.openstreetmap.org/search?'
           'format=json&'
@@ -204,16 +206,16 @@ class MapService {
         final List<dynamic> data = json.decode(response.body);
         return data
             .map((item) => {
-          'name': item['display_name'] as String,
-          'lat': double.parse(item['lat'] as String),
-          'lon': double.parse(item['lon'] as String),
-          'type': item['type'] as String?,
-        })
+                  'name': item['display_name'] as String,
+                  'lat': double.parse(item['lat'] as String),
+                  'lon': double.parse(item['lon'] as String),
+                  'type': item['type'] as String?,
+                })
             .toList();
       }
       return [];
     } catch (e) {
-      print('Error getting landmarks: $e');
+      debugPrint('Error getting landmarks: $e');
       return [];
     }
   }

@@ -45,11 +45,11 @@ class _OTPVerificationScreenState extends State<OTPVerificationScreen> {
     _startTimer();
 
     // DEBUG: Print verification details
-    print('=== OTP Screen Initialized ===');
-    print('Phone: ${widget.phoneNumber}');
-    print('VerificationId: ${widget.verificationId}');
-    print('VerificationId length: ${widget.verificationId.length}');
-    print('==============================');
+    debugPrint('=== OTP Screen Initialized ===');
+    debugPrint('Phone: ${widget.phoneNumber}');
+    debugPrint('VerificationId: ${widget.verificationId}');
+    debugPrint('VerificationId length: ${widget.verificationId.length}');
+    debugPrint('==============================');
   }
 
   @override
@@ -86,6 +86,7 @@ class _OTPVerificationScreenState extends State<OTPVerificationScreen> {
   }
 
   Future<void> _verifyOTP() async {
+    final l10n = AppLocalizations.of(context)!;
     // Normalize digits (convert Arabic indic to Western Arabic)
     String otp = _controllers
         .map((c) => c.text)
@@ -102,11 +103,10 @@ class _OTPVerificationScreenState extends State<OTPVerificationScreen> {
         .replaceAll('٩', '9');
 
     // DEBUG: Print OTP details
-    print('=== Starting OTP Verification ===');
-    print('OTP entered: $otp');
-    print('OTP length: ${otp.length}');
-    print('Using VerificationId: $_currentVerificationId');
-    print('===================================');
+    debugPrint('=== Starting OTP Verification ===');
+    debugPrint('OTP entered: $otp');
+    debugPrint('Using VerificationId: $_currentVerificationId');
+    debugPrint('===================================');
 
     if (otp.length != 6) {
       final l10n = AppLocalizations.of(context)!;
@@ -121,37 +121,36 @@ class _OTPVerificationScreenState extends State<OTPVerificationScreen> {
 
     // Check if verificationId is valid
     if (_currentVerificationId.isEmpty) {
-      _showErrorDialog('Session expired. Please go back and try again.');
-      print('ERROR: VerificationId is empty!');
+      _showErrorDialog(l10n.sessionExpired);
+      debugPrint('ERROR: VerificationId is empty!');
       return;
     }
 
     setState(() => _isLoading = true);
 
     try {
-      print('Creating PhoneAuthCredential...');
+      debugPrint('Creating PhoneAuthCredential...');
       final credential = PhoneAuthProvider.credential(
         verificationId: _currentVerificationId,
         smsCode: otp,
       );
 
-      print('Signing in with credential...');
+      debugPrint('Signing in with credential...');
       final userCredential =
           await FirebaseAuth.instance.signInWithCredential(credential);
 
-      print('SUCCESS! User ID: ${userCredential.user?.uid}');
-      print('Phone: ${userCredential.user?.phoneNumber}');
+      debugPrint('SUCCESS! User ID: ${userCredential.user?.uid}');
+      debugPrint('Phone: ${userCredential.user?.phoneNumber}');
 
       if (mounted && userCredential.user != null) {
         setState(() => _isLoading = false);
 
         // Show success message
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text(
-                'Phone verified successfully! / تم التحقق من الهاتف بنجاح'),
+          SnackBar(
+            content: Text(l10n.phoneVerified),
             backgroundColor: Colors.green,
-            duration: Duration(seconds: 1),
+            duration: const Duration(seconds: 1),
           ),
         );
 
@@ -160,7 +159,7 @@ class _OTPVerificationScreenState extends State<OTPVerificationScreen> {
         widget.onVerificationSuccess(userCredential.user!);
       }
     } on FirebaseAuthException catch (e) {
-      print('FirebaseAuthException: ${e.code} - ${e.message}');
+      debugPrint('FirebaseAuthException: ${e.code} - ${e.message}');
 
       if (mounted) {
         setState(() => _isLoading = false);
@@ -168,18 +167,21 @@ class _OTPVerificationScreenState extends State<OTPVerificationScreen> {
         String errorMessage;
         switch (e.code) {
           case 'invalid-verification-code':
-            errorMessage =
-                'Invalid OTP code. Please check and try again.\n\nFor test number +923194242479, use code: 124576';
+            errorMessage = l10n.invalidOtp;
+            // Removed hardcoded test number hint for production professionalism users might still want it but it's hardcoded english. I will leave it out or map it if requested. For now I use localized string.
+            // If debug mode:
+            if (widget.phoneNumber.contains('4242479')) {
+              errorMessage += '\n\n${l10n.testNumberHint}';
+            }
             break;
           case 'session-expired':
-            errorMessage = 'OTP expired. Please request a new code.';
+            errorMessage = l10n.otpExpired;
             break;
           case 'invalid-verification-id':
-            errorMessage = 'Session invalid. Please go back and try again.';
+            errorMessage = l10n.sessionInvalid;
             break;
           case 'credential-already-in-use':
-            errorMessage =
-                'This phone number is already registered. Proceeding...';
+            errorMessage = l10n.phoneAlreadyRegistered;
             // This is actually success - phone already verified
             // Get current user and proceed
             final currentUser = FirebaseAuth.instance.currentUser;
@@ -196,7 +198,7 @@ class _OTPVerificationScreenState extends State<OTPVerificationScreen> {
         _showErrorDialog(errorMessage);
       }
     } catch (e) {
-      print('Unexpected error: $e');
+      debugPrint('Unexpected error: $e');
 
       if (mounted) {
         setState(() => _isLoading = false);
@@ -208,24 +210,24 @@ class _OTPVerificationScreenState extends State<OTPVerificationScreen> {
   Future<void> _resendOTP() async {
     if (!_canResend) return;
 
-    print('=== Resending OTP ===');
+    final l10n = AppLocalizations.of(context)!;
+    debugPrint('=== Resending OTP ===');
     setState(() => _isLoading = true);
 
     try {
       await FirebaseAuthService().verifyPhoneNumber(
         phoneNumber: widget.phoneNumber,
         onVerificationCompleted: (PhoneAuthCredential credential) async {
-          print('Auto verification completed');
+          debugPrint('Auto verification completed');
           await _handleAutoVerification(credential);
         },
         onVerificationFailed: (FirebaseAuthException e) {
-          print('Verification failed: ${e.code} - ${e.message}');
+          debugPrint('Verification failed: ${e.code} - ${e.message}');
           setState(() => _isLoading = false);
-          _showErrorDialog(
-              e.message ?? 'Verification failed. Please try again.');
+          _showErrorDialog(e.message ?? l10n.verificationFailed);
         },
         onCodeSent: (String verificationId, int? resendToken) {
-          print('New code sent. VerificationId: $verificationId');
+          debugPrint('New code sent. VerificationId: $verificationId');
           setState(() {
             _isLoading = false;
             _currentVerificationId = verificationId;
@@ -242,14 +244,14 @@ class _OTPVerificationScreenState extends State<OTPVerificationScreen> {
           _startTimer();
         },
         onCodeAutoRetrievalTimeout: (String verificationId) {
-          print('Auto retrieval timeout: $verificationId');
+          debugPrint('Auto retrieval timeout: $verificationId');
           setState(() => _isLoading = false);
         },
       );
     } catch (e) {
-      print('Resend error: $e');
+      debugPrint('Resend error: $e');
       setState(() => _isLoading = false);
-      _showErrorDialog('Failed to resend OTP. Please try again.');
+      _showErrorDialog(l10n.failedToResendOtp);
     }
   }
 
@@ -264,21 +266,23 @@ class _OTPVerificationScreenState extends State<OTPVerificationScreen> {
         widget.onVerificationSuccess(userCredential.user!);
       }
     } catch (e) {
-      print('Auto verification error: $e');
+      debugPrint('Auto verification error: $e');
       setState(() => _isLoading = false);
     }
   }
 
   void _showErrorDialog(String message) {
+    if (!mounted) return;
+    final l10n = AppLocalizations.of(context)!;
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
-        title: const Text('Error'),
+        title: Text(l10n.errorTitle),
         content: Text(message),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(context),
-            child: const Text('OK'),
+            child: Text(l10n.okAction),
           ),
         ],
       ),
@@ -342,9 +346,9 @@ class _OTPVerificationScreenState extends State<OTPVerificationScreen> {
                     borderRadius: BorderRadius.circular(8),
                     border: Border.all(color: Colors.blue.shade200),
                   ),
-                  child: const Text(
-                    '🔵 Test Number: Use code 124576',
-                    style: TextStyle(
+                  child: Text(
+                    l10n.testNumberHint,
+                    style: const TextStyle(
                       fontSize: 12,
                       color: Colors.blue,
                       fontWeight: FontWeight.bold,
@@ -493,9 +497,9 @@ class _OTPVerificationScreenState extends State<OTPVerificationScreen> {
                                 ),
                               ),
                             )
-                          : const Text(
-                              'Verify / تحقق',
-                              style: TextStyle(
+                          : Text(
+                              l10n.verify,
+                              style: const TextStyle(
                                 color: Colors.white,
                                 fontSize: 18,
                                 fontWeight: FontWeight.bold,

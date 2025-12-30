@@ -62,12 +62,13 @@ class _PhoneLoginScreenState extends State<PhoneLoginScreen> {
   }
 
   Future<void> _handleSubmit() async {
+    final l10n = AppLocalizations.of(context)!;
     setState(() => _phoneFieldTouched = true);
 
     if (!_formKey.currentState!.validate()) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-          content: Text(_phoneError ?? 'Please check your phone number'),
+          content: Text(_phoneError ?? l10n.checkPhoneNumber),
           backgroundColor: Colors.red,
           behavior: SnackBarBehavior.floating,
           margin: const EdgeInsets.all(16),
@@ -105,8 +106,7 @@ class _PhoneLoginScreenState extends State<PhoneLoginScreen> {
         },
         onVerificationFailed: (FirebaseAuthException e) {
           setState(() => _isLoading = false);
-          _showErrorDialog(
-              e.message ?? 'Verification failed. Please try again.');
+          _showErrorDialog(e.message ?? l10n.verificationFailed);
         },
         onCodeSent: (String verificationId, int? resendToken) {
           setState(() => _isLoading = false);
@@ -114,16 +114,17 @@ class _PhoneLoginScreenState extends State<PhoneLoginScreen> {
         },
         onCodeAutoRetrievalTimeout: (String verificationId) {
           setState(() => _isLoading = false);
-          print('Code auto retrieval timeout');
+          debugPrint('Code auto retrieval timeout');
         },
       );
     } catch (e) {
       setState(() => _isLoading = false);
-      _showErrorDialog('An error occurred. Please try again.');
+      _showErrorDialog(l10n.genericError);
     }
   }
 
   Future<void> _handleAutoVerification(PhoneAuthCredential credential) async {
+    final l10n = AppLocalizations.of(context)!;
     try {
       final userCredential =
           await FirebaseAuthService().signInWithCredential(credential);
@@ -131,11 +132,12 @@ class _PhoneLoginScreenState extends State<PhoneLoginScreen> {
         widget.onPhoneSubmit(_phoneController.text, 'auto_verified');
       }
     } catch (e) {
-      _showErrorDialog('Auto verification failed. Please enter OTP manually.');
+      _showErrorDialog(l10n.autoVerificationFailed);
     }
   }
 
   void _showErrorDialog(String message) {
+    final l10n = AppLocalizations.of(context)!;
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
@@ -144,7 +146,7 @@ class _PhoneLoginScreenState extends State<PhoneLoginScreen> {
           children: [
             Icon(Icons.error_outline, color: Colors.red.shade400),
             const SizedBox(width: 8),
-            const Text('Error'),
+            Text(l10n.errorTitle),
           ],
         ),
         content: Text(message),
@@ -154,7 +156,7 @@ class _PhoneLoginScreenState extends State<PhoneLoginScreen> {
             style: TextButton.styleFrom(
               foregroundColor: AppColors.electricBlue,
             ),
-            child: const Text('OK'),
+            child: Text(l10n.okAction),
           ),
         ],
       ),
@@ -374,7 +376,7 @@ class _PhoneLoginScreenState extends State<PhoneLoginScreen> {
                                         size: 14, color: Colors.green.shade600),
                                     const SizedBox(width: 4),
                                     Text(
-                                      'Valid phone number',
+                                      l10n.validPhoneNumber,
                                       style: TextStyle(
                                         color: Colors.green.shade600,
                                         fontSize: 12,
@@ -471,6 +473,7 @@ class _PhoneLoginScreenState extends State<PhoneLoginScreen> {
   }
 
   String _getHintText() {
+    final l10n = AppLocalizations.of(context)!;
     switch (_selectedCountryCode) {
       case '+966':
         return '5xxxxxxxx';
@@ -479,11 +482,12 @@ class _PhoneLoginScreenState extends State<PhoneLoginScreen> {
       case '+92':
         return '3xxxxxxxxx';
       default:
-        return 'Phone number';
+        return l10n.phoneNumber;
     }
   }
 
   void _showCountryCodePicker() {
+    final l10n = AppLocalizations.of(context)!;
     final isDark = Theme.of(context).brightness == Brightness.dark;
 
     showModalBottomSheet(
@@ -507,7 +511,7 @@ class _PhoneLoginScreenState extends State<PhoneLoginScreen> {
             ),
             const SizedBox(height: 20),
             Text(
-              'Select Country Code',
+              l10n.selectCountryCode,
               style: TextStyle(
                 fontSize: 18,
                 fontWeight: FontWeight.bold,
@@ -515,9 +519,9 @@ class _PhoneLoginScreenState extends State<PhoneLoginScreen> {
               ),
             ),
             const SizedBox(height: 20),
-            _buildCountryTile('Saudi Arabia', '+966', '🇸🇦', isDark),
-            _buildCountryTile('United Arab Emirates', '+971', '🇦🇪', isDark),
-            _buildCountryTile('Pakistan', '+92', '🇵🇰', isDark),
+            _buildCountryTile(l10n.saudiArabia, '+966', '🇸🇦', isDark),
+            _buildCountryTile(l10n.uae, '+971', '🇦🇪', isDark),
+            _buildCountryTile(l10n.pakistan, '+92', '🇵🇰', isDark),
           ],
         ),
       ),

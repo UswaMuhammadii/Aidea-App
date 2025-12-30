@@ -90,6 +90,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
   // ✅ FIXED: Now properly handles returned user
   Future<void> _navigateToEditProfile() async {
+    final l10n = AppLocalizations.of(context)!;
     final updatedUser = await Navigator.push<User>(
       context,
       MaterialPageRoute(
@@ -113,7 +114,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
             children: [
               const Icon(Icons.check_circle, color: Colors.white),
               const SizedBox(width: 12),
-              const Text('Profile updated successfully!'),
+              Text(l10n.profileUpdatedSuccess),
             ],
           ),
           backgroundColor: Colors.green,
@@ -146,6 +147,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
   }
 
   Future<void> _makePhoneCall() async {
+    final l10n = AppLocalizations.of(context)!;
     final Uri launchUri = Uri(
       scheme: 'tel',
       path: '0590409260',
@@ -157,13 +159,14 @@ class _ProfileScreenState extends State<ProfileScreen> {
     } catch (e) {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Could not launch dialer: $e')),
+          SnackBar(content: Text(l10n.dialerLaunchError(e.toString()))),
         );
       }
     }
   }
 
   void _showSupportDialog() {
+    final l10n = AppLocalizations.of(context)!;
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
@@ -191,8 +194,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
                         color: Colors.white, size: 40),
                   ),
                   const SizedBox(height: 16),
-                  const Text(
-                    'Customer Support',
+                  Text(
+                    l10n.customerSupport,
                     style: TextStyle(
                       color: Colors.white,
                       fontSize: 20,
@@ -200,8 +203,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     ),
                   ),
                   const SizedBox(height: 8),
-                  const Text(
-                    'We are here to help you!',
+                  Text(
+                    l10n.supportSubtitle,
                     style: TextStyle(
                       color: Colors.white70,
                       fontSize: 14,
@@ -214,8 +217,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
               padding: const EdgeInsets.all(24),
               child: Column(
                 children: [
-                  const Text(
-                    'For any queries or assistance, please contact our support team.',
+                  Text(
+                    l10n.supportDescription,
                     textAlign: TextAlign.center,
                     style: TextStyle(color: Colors.grey, height: 1.5),
                   ),
@@ -248,7 +251,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   TextButton(
                     onPressed: () => Navigator.pop(context),
                     child: Text(
-                      'Cancel',
+                      l10n.cancel,
                       style: TextStyle(color: Colors.grey.shade600),
                     ),
                   ),
@@ -507,7 +510,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                         _buildSettingsTile(
                           icon: Icons.support_agent,
                           title: l10n.support,
-                          subtitle: 'Contact our support team',
+                          subtitle: l10n.contactSupportTeam,
                           iconColor: Colors.green,
                           textColor: textColor,
                           subtitleColor: subtitleColor,
@@ -539,7 +542,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                           color: Colors.white, size: 24),
                                     ),
                                     const SizedBox(width: 12),
-                                    const Text('HandyMan'),
+                                    Text(l10n.appTitle),
                                   ],
                                 ),
                                 content: Column(
@@ -548,8 +551,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                   children: [
                                     const Text('Version 1.0.0'),
                                     const SizedBox(height: 24),
-                                    const Text(
-                                      'Developed by:',
+                                    Text(
+                                      l10n.developedBy,
                                       style: TextStyle(
                                           fontWeight: FontWeight.bold),
                                     ),
@@ -751,13 +754,13 @@ class _ProfileScreenState extends State<ProfileScreen> {
       color: Colors.transparent,
       child: InkWell(
         onTap: () {
-          print('Language option tapped: ${locale.languageCode}');
+          debugPrint('Language option tapped: ${locale.languageCode}');
           Navigator.pop(context);
           if (widget.onLanguageChanged != null) {
-            print('Calling onLanguageChanged callback');
+            debugPrint('Calling onLanguageChanged callback');
             widget.onLanguageChanged!(locale);
           } else {
-            print('onLanguageChanged callback is null');
+            debugPrint('onLanguageChanged callback is null');
           }
         },
         borderRadius: BorderRadius.circular(12),

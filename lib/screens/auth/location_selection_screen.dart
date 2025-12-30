@@ -77,7 +77,7 @@ class _LocationSelectionScreenState extends State<LocationSelectionScreen> {
 
   Future<void> _saveAddress() async {
     if (!_formKey.currentState!.validate()) {
-      print('Form validation failed');
+      debugPrint('Form validation failed');
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           content: const Text('Please fix the errors before continuing'),
@@ -91,7 +91,7 @@ class _LocationSelectionScreenState extends State<LocationSelectionScreen> {
       return;
     }
 
-    print('Form validation passed - saving address');
+    debugPrint('Form validation passed - saving address');
 
     final addressData = {
       'name': _nameController.text.trim(),
@@ -105,7 +105,7 @@ class _LocationSelectionScreenState extends State<LocationSelectionScreen> {
       'longitude': _selectedLongitude?.toString() ?? '',
     };
 
-    print('Calling onLocationSelected callback with address data');
+    debugPrint('Calling onLocationSelected callback with address data');
     widget.onLocationSelected(addressData);
   }
 

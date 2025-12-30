@@ -142,8 +142,8 @@ class _CartScreenState extends State<CartScreen> {
                     ),
                     backgroundColor:
                         isDark ? const Color(0xFF1E293B) : Colors.white,
-                    title:
-                        Text('Clear Cart', style: TextStyle(color: textColor)),
+                    title: Text(l10n.clearCartTitle,
+                        style: TextStyle(color: textColor)),
                     content: Text(
                       l10n.areYouSureYouWantToRemoveAllItems,
                       style: TextStyle(color: subtitleColor),
