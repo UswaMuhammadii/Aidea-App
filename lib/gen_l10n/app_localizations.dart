@@ -440,6 +440,12 @@ abstract class AppLocalizations {
   /// **'Cancelled'**
   String get cancelled;
 
+  /// No description provided for @postponed.
+  ///
+  /// In en, this message translates to:
+  /// **'Postponed'**
+  String get postponed;
+
   /// No description provided for @trackOrder.
   ///
   /// In en, this message translates to:
@@ -3325,6 +3331,18 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Select Language'**
   String get selectLanguage;
+
+  /// No description provided for @noNotificationsYet.
+  ///
+  /// In en, this message translates to:
+  /// **'No notifications yet'**
+  String get noNotificationsYet;
+
+  /// No description provided for @support.
+  ///
+  /// In en, this message translates to:
+  /// **'Support'**
+  String get support;
 }
 
 class _AppLocalizationsDelegate

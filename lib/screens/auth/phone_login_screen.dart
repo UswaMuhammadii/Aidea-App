@@ -8,8 +8,10 @@ import '../../services/firebase_auth_service.dart';
 
 class PhoneLoginScreen extends StatefulWidget {
   final Function(String phoneNumber, String verificationId) onPhoneSubmit;
+  final VoidCallback onBack;
 
-  const PhoneLoginScreen({super.key, required this.onPhoneSubmit});
+  const PhoneLoginScreen(
+      {super.key, required this.onPhoneSubmit, required this.onBack});
 
   @override
   State<PhoneLoginScreen> createState() => _PhoneLoginScreenState();
@@ -175,7 +177,7 @@ class _PhoneLoginScreenState extends State<PhoneLoginScreen> {
             Icons.arrow_back,
             color: isDark ? Colors.white : Colors.black87,
           ),
-          onPressed: () => Navigator.pop(context),
+          onPressed: widget.onBack,
         ),
       ),
       body: SafeArea(
@@ -240,16 +242,9 @@ class _PhoneLoginScreenState extends State<PhoneLoginScreen> {
                           child: Row(
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
-                              Container(
-                                width: 24,
-                                height: 18,
-                                decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.circular(4),
-                                  image: DecorationImage(
-                                    image: NetworkImage(_getCountryFlag()),
-                                    fit: BoxFit.cover,
-                                  ),
-                                ),
+                              Text(
+                                _getCountryFlag(),
+                                style: const TextStyle(fontSize: 24),
                               ),
                               const SizedBox(width: 6),
                               Text(
@@ -453,13 +448,13 @@ class _PhoneLoginScreenState extends State<PhoneLoginScreen> {
   String _getCountryFlag() {
     switch (_selectedCountryCode) {
       case '+966':
-        return 'https://flagcdn.com/w40/sa.png';
+        return '🇸🇦';
       case '+971':
-        return 'https://flagcdn.com/w40/ae.png';
+        return '🇦🇪';
       case '+92':
-        return 'https://flagcdn.com/w40/pk.png';
+        return '🇵🇰';
       default:
-        return 'https://flagcdn.com/w40/sa.png';
+        return '🇸🇦';
     }
   }
 
@@ -520,9 +515,9 @@ class _PhoneLoginScreenState extends State<PhoneLoginScreen> {
               ),
             ),
             const SizedBox(height: 20),
-            _buildCountryTile('Saudi Arabia', '+966', 'sa', isDark),
-            _buildCountryTile('United Arab Emirates', '+971', 'ae', isDark),
-            _buildCountryTile('Pakistan', '+92', 'pk', isDark),
+            _buildCountryTile('Saudi Arabia', '+966', '🇸🇦', isDark),
+            _buildCountryTile('United Arab Emirates', '+971', '🇦🇪', isDark),
+            _buildCountryTile('Pakistan', '+92', '🇵🇰', isDark),
           ],
         ),
       ),
@@ -532,16 +527,9 @@ class _PhoneLoginScreenState extends State<PhoneLoginScreen> {
   Widget _buildCountryTile(
       String country, String code, String flagCode, bool isDark) {
     return ListTile(
-      leading: Container(
-        width: 32,
-        height: 24,
-        decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(4),
-          image: DecorationImage(
-            image: NetworkImage('https://flagcdn.com/w40/$flagCode.png'),
-            fit: BoxFit.cover,
-          ),
-        ),
+      leading: Text(
+        flagCode,
+        style: const TextStyle(fontSize: 24),
       ),
       title: Text(
         country,

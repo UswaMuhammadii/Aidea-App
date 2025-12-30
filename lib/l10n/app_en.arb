@@ -57,6 +57,7 @@
   "workStarted": "Work Started",
   "workDone": "Work Done",
   "cancelled": "Cancelled",
+  "postponed": "Postponed",
   "trackOrder": "Track Order",
   "viewTechnicianDetails": "View Technician Details",
   "invoices": "Invoices",
@@ -632,5 +633,7 @@
   "selectLocation": "Select Location",
   "locationSelected": "Location Selected",
   "language": "Language",
-  "selectLanguage": "Select Language"
+  "selectLanguage": "Select Language",
+  "noNotificationsYet": "No notifications yet",
+  "support": "Support"
 }

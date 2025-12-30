@@ -1,9 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:intl/date_symbol_data_local.dart';
+import 'package:connectivity_plus/connectivity_plus.dart';
+import 'dart:async'; // Add async for StreamSubscription
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_auth/firebase_auth.dart' as firebase_auth;
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 
 import 'firebase_options.dart';
 import 'gen_l10n/app_localizations.dart';
@@ -11,9 +14,17 @@ import 'screens/auth/language_selection_screen.dart';
 import 'screens/auth/auth_flow_coordinator.dart';
 import 'screens/dashboard/dashboard_screen.dart';
 import 'screens/splash/splash_screen.dart';
+import 'screens/misc/no_internet_screen.dart'; // Import NoInternetScreen
 import 'models/user_model.dart';
 import 'utils/app_colors.dart';
 import 'services/firestore_service.dart';
+import 'services/notification_service.dart';
+
+@pragma('vm:entry-point')
+Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
+  await Firebase.initializeApp();
+  print("Handling a background message: ${message.messageId}");
+}
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -26,6 +37,12 @@ void main() async {
   // Initialize localization for Arabic dates
   await initializeDateFormatting('ar', null);
   await initializeDateFormatting('en', null);
+
+  // Initialize Local Notifications
+  await NotificationService().init();
+
+  // Set Background Handler
+  FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
 
   runApp(const CustomerApp());
 }
@@ -42,11 +59,50 @@ class _CustomerAppState extends State<CustomerApp> {
   bool _isLanguageSelected = false;
   User? _currentUser;
   bool _isLoading = true;
+  bool _isOffline = false; // Add offline state
+  late StreamSubscription<List<ConnectivityResult>>
+      _connectivitySubscription; // Update subscription type
 
   @override
   void initState() {
     super.initState();
+    _initConnectivity(); // Initialize check
     _loadSavedLanguage();
+  }
+
+  Future<void> _initConnectivity() async {
+    // Initial check
+    final result = await Connectivity().checkConnectivity();
+    _updateConnectionStatus(result);
+
+    // Listen for changes
+    _connectivitySubscription =
+        Connectivity().onConnectivityChanged.listen(_updateConnectionStatus);
+  }
+
+  void _updateConnectionStatus(List<ConnectivityResult> result) {
+    // If ANY of the results is none, check if ALL are none or if we have at least one valid connection
+    // ConnectivityResult.none means no connection.
+    // However, the list implies multiple interfaces.
+    // If the list contains .none and ONLY .none, then offline.
+    // Or if the list is empty?
+
+    // Simpler check: if it contains mobile or wifi or ethernet, we are good.
+    bool isConnected = result.any((r) =>
+        r == ConnectivityResult.mobile ||
+        r == ConnectivityResult.wifi ||
+        r == ConnectivityResult.ethernet ||
+        r == ConnectivityResult.vpn);
+
+    setState(() {
+      _isOffline = !isConnected;
+    });
+  }
+
+  @override
+  void dispose() {
+    _connectivitySubscription.cancel();
+    super.dispose();
   }
 
   void _handleSplashComplete() async {
@@ -90,7 +146,10 @@ class _CustomerAppState extends State<CustomerApp> {
       if (mounted) {
         setState(() {
           _currentLocale = Locale(savedLanguageCode);
-          _isLanguageSelected = true;
+          // We DO NOT set _isLanguageSelected = true here.
+          // This ensures the LanguageSelectionScreen is always shown as the "Landing Page"
+          // for unauthenticated users, allowing them to confirm/change language or just proceed.
+          // _isLanguageSelected = true;
         });
       }
     }
@@ -163,6 +222,18 @@ class _CustomerAppState extends State<CustomerApp> {
           primary: AppColors.electricBlue,
         ),
       ),
+      builder: (context, child) {
+        // Global overlay for No Internet
+        if (_isOffline) {
+          return NoInternetScreen(
+            onRetry: () async {
+              final result = await Connectivity().checkConnectivity();
+              _updateConnectionStatus(result);
+            },
+          );
+        }
+        return child!;
+      },
       home: _buildHome(),
     );
   }
@@ -193,6 +264,14 @@ class _CustomerAppState extends State<CustomerApp> {
       print('   → Showing Auth Flow');
       return AuthFlowCoordinator(
         onAuthComplete: _handleAuthComplete,
+        onBack: () {
+          print('Returning to Language Selection');
+          setState(() {
+            _isLanguageSelected = false;
+            _currentLocale =
+                const Locale('en'); // Optional: Reset or keep selection
+          });
+        },
       );
     }
 

@@ -27,6 +27,41 @@ class _OrderTrackingScreenState extends State<OrderTrackingScreen> {
   final TextEditingController _cancelReasonController = TextEditingController();
   final FirestoreService _firestoreService = FirestoreService();
 
+  // Worker Data
+  User? _worker;
+  String? _lastFetchedWorkerId;
+
+  @override
+  void initState() {
+    super.initState();
+    _lastFetchedWorkerId = widget.booking.workerId;
+    _fetchWorker(widget.booking.workerId);
+  }
+
+  Future<void> _fetchWorker(String? workerId) async {
+    print("DEBUG: _fetchWorker called. WorkerID: $workerId");
+    if (workerId != null) {
+      try {
+        final worker = await _firestoreService.getWorker(workerId);
+        if (mounted) {
+          setState(() {
+            _worker = worker;
+            _lastFetchedWorkerId = workerId;
+          });
+        }
+      } catch (e) {
+        debugPrint("Error fetching worker: $e");
+      }
+    } else {
+      if (mounted) {
+        setState(() {
+          _worker = null;
+          _lastFetchedWorkerId = null;
+        });
+      }
+    }
+  }
+
   @override
   void dispose() {
     _cancelReasonController.dispose();
@@ -294,8 +329,19 @@ class _OrderTrackingScreenState extends State<OrderTrackingScreen> {
         final booking = snapshot.data!;
         final currentStatus = booking.status;
 
-        bool hasTechnician = currentStatus == BookingStatus.accepted ||
-            currentStatus == BookingStatus.inProgress;
+        // Check for worker reassignment
+        if (booking.workerId != _lastFetchedWorkerId) {
+          // Defer state update to avoid build collisions
+          WidgetsBinding.instance.addPostFrameCallback((_) {
+            _fetchWorker(booking.workerId);
+          });
+        }
+
+        bool hasTechnician = (currentStatus == BookingStatus.assigned ||
+                currentStatus == BookingStatus.accepted ||
+                currentStatus == BookingStatus.inProgress ||
+                currentStatus == BookingStatus.completed) &&
+            currentStatus != BookingStatus.postponed;
 
         // Disable cancel if technician assigned (accepted/inProgress) or completed/cancelled
         bool canCancel = currentStatus == BookingStatus.pending;
@@ -560,31 +606,17 @@ class _OrderTrackingScreenState extends State<OrderTrackingScreen> {
                                               fontWeight: FontWeight.bold,
                                             ),
                                           ),
-                                          const SizedBox(height: 4),
-                                          Row(
-                                            children: [
-                                              const Icon(Icons.star,
-                                                  color: Colors.amber,
-                                                  size: 16),
-                                              const SizedBox(width: 4),
-                                              Text(
-                                                '4.8',
-                                                style: TextStyle(
-                                                  fontSize: 13,
-                                                  color: subtitleColor,
-                                                  fontWeight: FontWeight.w600,
-                                                ),
+                                          if (_worker?.phone != null) ...[
+                                            const SizedBox(height: 2),
+                                            Text(
+                                              _worker!.phone,
+                                              style: TextStyle(
+                                                fontSize: 13,
+                                                color: subtitleColor,
+                                                fontWeight: FontWeight.w500,
                                               ),
-                                              const SizedBox(width: 8),
-                                              Text(
-                                                l10n.ordersDone,
-                                                style: TextStyle(
-                                                  fontSize: 13,
-                                                  color: subtitleColor,
-                                                ),
-                                              ),
-                                            ],
-                                          ),
+                                            ),
+                                          ],
                                         ],
                                       ),
                                     ),
@@ -673,16 +705,18 @@ class _OrderTrackingScreenState extends State<OrderTrackingScreen> {
     switch (status) {
       case BookingStatus.pending:
         return l10n.pending;
+      case BookingStatus.assigned:
+        return l10n.confirmed; // Display as Confirmed for users
       case BookingStatus.accepted:
-        return l10n.confirmed;
+        return l10n.technicianAssigned;
       case BookingStatus.inProgress:
         return l10n.inProgress;
       case BookingStatus.completed:
         return l10n.completed;
       case BookingStatus.cancelled:
         return l10n.cancelled;
-      default:
-        return 'Unknown';
+      case BookingStatus.postponed:
+        return l10n.postponed;
     }
   }
 
@@ -690,7 +724,10 @@ class _OrderTrackingScreenState extends State<OrderTrackingScreen> {
       BookingStatus currentStatus, AppLocalizations l10n, Locale locale) {
     final stages = [
       {'status': BookingStatus.pending, 'label': l10n.bookingReceived},
-      {'status': BookingStatus.accepted, 'label': l10n.technicianAssigned},
+      {
+        'status': BookingStatus.assigned,
+        'label': l10n.technicianAssigned
+      }, // Changed from accepted to assigned
       {'status': BookingStatus.inProgress, 'label': l10n.workStarted},
       {'status': BookingStatus.completed, 'label': l10n.workCompleted},
     ];
@@ -699,7 +736,16 @@ class _OrderTrackingScreenState extends State<OrderTrackingScreen> {
       children: List.generate(stages.length, (index) {
         final stage = stages[index];
         final stageStatus = stage['status'] as BookingStatus;
-        final isActive = currentStatus.index >= stageStatus.index;
+
+        // Fix: Postponed (index 5) should not trigger Completed (index 4)
+        bool isActive;
+        if (currentStatus == BookingStatus.postponed) {
+          // If postponed, show as active up to InProgress, but NOT Completed
+          isActive = stageStatus.index <= BookingStatus.inProgress.index;
+        } else {
+          isActive = currentStatus.index >= stageStatus.index;
+        }
+
         final isLast = index == stages.length - 1;
 
         return Expanded(

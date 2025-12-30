@@ -1,6 +1,9 @@
+import 'dart:io';
+import 'dart:async';
 import 'package:flutter/material.dart';
 
 import '../../models/user_model.dart';
+import '../../models/notification_model.dart';
 import '../../models/service_model.dart';
 import '../../models/booking_model.dart';
 import '../invoices/invoice_screen.dart';
@@ -9,7 +12,6 @@ import '../../models/cart_model.dart';
 import '../reviews/review_screen.dart';
 
 import '../orders/order_tracking_screen.dart';
-import '../../services/dummy_data_service.dart';
 import '../../services/firestore_service.dart';
 import '../services/service_listing_screen.dart';
 import '../profile/profile_screen.dart';
@@ -19,7 +21,8 @@ import '../../utils/icons_helper.dart';
 import '../../gen_l10n/app_localizations.dart';
 import 'package:customer_app/screens/maps/map_selection_screen.dart';
 import '../../utils/formatting_utils.dart';
-import '../../utils/app_colors.dart'; // ✅ Added AppColors import
+import '../../utils/app_colors.dart';
+import '../../services/notification_service.dart';
 
 class DashboardScreen extends StatefulWidget {
   final User user;
@@ -49,6 +52,8 @@ class _DashboardScreenState extends State<DashboardScreen> {
   static bool _hasShownNotificationPopup = false;
   late User _currentUser;
 
+  StreamSubscription<List<Booking>>? _bookingSubscription;
+
   @override
   void initState() {
     super.initState();
@@ -68,6 +73,107 @@ class _DashboardScreenState extends State<DashboardScreen> {
     }
 
     _loadData(); // Renamed and expanded
+    _initNotificationListener();
+    _saveFcmToken(); // ✅ Save FCM Token
+  }
+
+  Future<void> _saveFcmToken() async {
+    try {
+      String? token = await NotificationService().getFcmToken();
+      if (token != null) {
+        await FirestoreService().updateUserFcmToken(_currentUser.id, token);
+        print('FCM Token saved to Firestore: $token');
+      }
+    } catch (e) {
+      print('Error saving FCM token: $e');
+    }
+  }
+
+  @override
+  void dispose() {
+    _bookingSubscription?.cancel();
+    super.dispose();
+  }
+
+  void _initNotificationListener() {
+    final firestore = FirestoreService();
+    _bookingSubscription =
+        firestore.getUserBookings(_currentUser.id).listen((bookings) {
+      _checkNotifications(bookings);
+    });
+  }
+
+  Future<void> _checkNotifications(List<Booking> bookings) async {
+    final firestore = FirestoreService();
+    // Logic to generate notifications for status updates and invoices
+    for (var booking in bookings) {
+      // 1. Invoice Notification
+      if (booking.invoiceGenerated) {
+        final notificationId = '${booking.id}_invoice';
+        final exists =
+            await firestore.getNotification(_currentUser.id, notificationId);
+        if (exists == null) {
+          // Create Notification
+          await firestore.addNotification(
+              _currentUser.id,
+              NotificationModel(
+                id: notificationId,
+                title: 'Invoice Generated',
+                message: 'Invoice for ${booking.serviceName} is now available.',
+                bookingId: booking.id,
+                type: 'invoice',
+                createdAt: DateTime.now(),
+              ));
+
+          // Show Local Notification
+          NotificationService().showNotification(
+            id: DateTime.now().millisecondsSinceEpoch ~/ 1000,
+            title: 'Invoice Generated',
+            body: 'Invoice for ${booking.serviceName} is now available.',
+            payload: booking.id,
+          );
+        }
+      }
+
+      // 2. Status Update Notification (For key statuses)
+      if (booking.status == BookingStatus.accepted ||
+          booking.status == BookingStatus.inProgress ||
+          booking.status == BookingStatus.completed ||
+          booking.status == BookingStatus.cancelled) {
+        final notificationId = '${booking.id}_status_${booking.status.name}';
+        final exists =
+            await firestore.getNotification(_currentUser.id, notificationId);
+        if (exists == null) {
+          String title = 'Status Update';
+          String message =
+              'Service ${booking.serviceName} is now ${booking.statusText}.';
+
+          // Customize message based on status if needed
+          if (booking.status == BookingStatus.completed) {
+            message = 'Service completed! Please check the invoice.';
+          }
+
+          await firestore.addNotification(
+              _currentUser.id,
+              NotificationModel(
+                id: notificationId,
+                title: title,
+                message: message,
+                bookingId: booking.id,
+                type: 'status_update',
+                createdAt: DateTime.now(),
+              ));
+
+          // Show Local Notification
+          NotificationService().showNotification(
+            id: DateTime.now().millisecondsSinceEpoch ~/ 1000,
+            title: title,
+            body: message,
+            payload: booking.id,
+          );
+        }
+      }
+    }
   }
 
   Future<void> _loadData() async {
@@ -109,6 +215,52 @@ class _DashboardScreenState extends State<DashboardScreen> {
       _currentUser = updatedUser;
       _selectedAddress = _getPrimaryAddress();
     });
+  }
+
+  int get cartItemsCount =>
+      globalCart.fold(0, (sum, item) => sum + item.quantity);
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
+
+    // Categories loaded via Firestore in initState
+
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    final backgroundColor =
+        isDark ? const Color(0xFF0F172A) : const Color(0xFFF8F9FA);
+
+    return Scaffold(
+      key: _scaffoldKey,
+      backgroundColor: backgroundColor,
+      drawer: _buildDrawer(l10n),
+      body: SafeArea(
+        child: Column(
+          children: [
+            if (_selectedIndex == 0) _buildHeader(l10n),
+            Expanded(
+              child: IndexedStack(
+                index: _selectedIndex,
+                children: [
+                  _buildHomeTab(l10n),
+                  _buildBookingsTab(l10n),
+                  InvoiceScreen(user: _currentUser),
+                  ReviewScreen(user: _currentUser),
+                  ProfileScreen(
+                    user: _currentUser,
+                    onLogout: widget.onLogout,
+                    onUserUpdated:
+                        _updateUser, // Added callback for address updates
+                    onLanguageChanged: widget.onLanguageChanged,
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ),
+      ),
+      bottomNavigationBar: _buildBottomNav(isDark, l10n),
+    );
   }
 
   void _handleNotificationPermission(AppLocalizations l10n) {
@@ -252,10 +404,6 @@ class _DashboardScreenState extends State<DashboardScreen> {
         ),
       ),
     );
-  }
-
-  int _getUnreadNotificationCount() {
-    return globalNotifications.where((n) => n['read'] == false).length;
   }
 
   void _changeAddress() {
@@ -504,52 +652,6 @@ class _DashboardScreenState extends State<DashboardScreen> {
         ),
       ),
     );
-  } // ✅ Added closing brace for the method
-
-  int get cartItemsCount =>
-      globalCart.fold(0, (sum, item) => sum + item.quantity);
-
-  @override
-  Widget build(BuildContext context) {
-    final l10n = AppLocalizations.of(context)!;
-
-    // Categories loaded via Firestore in initState
-
-    final isDark = Theme.of(context).brightness == Brightness.dark;
-    final backgroundColor =
-        isDark ? const Color(0xFF0F172A) : const Color(0xFFF8F9FA);
-
-    return Scaffold(
-      key: _scaffoldKey,
-      backgroundColor: backgroundColor,
-      drawer: _buildDrawer(l10n),
-      body: SafeArea(
-        child: Column(
-          children: [
-            if (_selectedIndex == 0) _buildHeader(l10n),
-            Expanded(
-              child: IndexedStack(
-                index: _selectedIndex,
-                children: [
-                  _buildHomeTab(l10n),
-                  _buildBookingsTab(l10n),
-                  InvoiceScreen(user: _currentUser),
-                  ReviewScreen(user: _currentUser),
-                  ProfileScreen(
-                    user: _currentUser,
-                    onLogout: widget.onLogout,
-                    onUserUpdated:
-                        _updateUser, // Added callback for address updates
-                    onLanguageChanged: widget.onLanguageChanged,
-                  ),
-                ],
-              ),
-            ),
-          ],
-        ),
-      ),
-      bottomNavigationBar: _buildBottomNav(isDark, l10n),
-    );
   }
 
   Widget _buildHeader(AppLocalizations l10n) {
@@ -592,8 +694,8 @@ class _DashboardScreenState extends State<DashboardScreen> {
                           .then((_) => setState(() {}));
                     }),
                     const SizedBox(width: 12),
-                    _buildHeaderIcon(Icons.notifications_outlined,
-                        _getUnreadNotificationCount(), () {
+                    _buildHeaderIcon(Icons.notifications_outlined, null,
+                        isNotification: true, () {
                       Navigator.push(
                               context,
                               MaterialPageRoute(
@@ -713,7 +815,22 @@ class _DashboardScreenState extends State<DashboardScreen> {
     );
   }
 
-  Widget _buildHeaderIcon(IconData icon, int count, VoidCallback onTap) {
+  // Helper widget for Header Icons
+  Widget _buildHeaderIcon(IconData icon, int? count, VoidCallback onTap,
+      {bool isNotification = false}) {
+    if (isNotification) {
+      return StreamBuilder<List<NotificationModel>>(
+        stream: FirestoreService().getUserNotifications(_currentUser.id),
+        builder: (context, snapshot) {
+          final unreadCount = snapshot.data?.where((n) => !n.read).length ?? 0;
+          return _buildIconWithBadge(icon, unreadCount, onTap);
+        },
+      );
+    }
+    return _buildIconWithBadge(icon, count ?? 0, onTap);
+  }
+
+  Widget _buildIconWithBadge(IconData icon, int count, VoidCallback onTap) {
     return GestureDetector(
       onTap: onTap,
       child: Stack(
@@ -825,110 +942,137 @@ class _DashboardScreenState extends State<DashboardScreen> {
   }
 
   Widget _buildDrawer(AppLocalizations l10n) {
+    // English/Arabic mapping for section headers
+    final isAr = l10n.localeName == 'ar';
+
+    // Helper for Section Headers (English or Arabic based on current locale)
+    String getSectionHeader(String key) {
+      if (isAr) {
+        return key == 'General' ? 'عام' : 'النشاط';
+      }
+      return key;
+    }
+
     return Drawer(
-      child: SafeArea(
-        child: Column(
-          children: [
-            // Profile Section with Gradient
-            Container(
-              decoration: const BoxDecoration(
-                gradient: LinearGradient(
-                  begin: Alignment.topLeft,
-                  end: Alignment.bottomRight,
-                  colors: [
-                    Color(0xFF0EA5E9), // Electric Blue
-                    Color(0xFF14B8A6), // Teal
-                  ],
-                ),
-                borderRadius: BorderRadius.only(
-                  bottomLeft: Radius.circular(24),
-                  bottomRight: Radius.circular(24),
-                ),
-              ),
-              child: Column(
-                children: [
-                  const SizedBox(height: 16),
-                  Container(
-                    margin:
-                        const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
-                    padding: const EdgeInsets.all(16),
-                    decoration: BoxDecoration(
-                      color: Colors.white.withOpacity(0.15),
-                      borderRadius: BorderRadius.circular(16),
-                    ),
-                    child: Column(
-                      children: [
-                        Container(
-                          width: 60,
-                          height: 60,
-                          decoration: BoxDecoration(
-                            color: Colors.white,
-                            shape: BoxShape.circle,
-                            border: Border.all(color: Colors.white, width: 2),
-                          ),
-                          child: const Icon(
-                            Icons.person,
-                            size: 32,
-                            color: AppColors.electricBlue,
-                          ),
-                        ),
-                        const SizedBox(height: 8),
-                        Text(
-                          _currentUser.name,
-                          style: const TextStyle(
-                            color: Colors.white,
-                            fontSize: 16,
-                            fontWeight: FontWeight.bold,
-                          ),
-                          maxLines: 1,
-                          overflow: TextOverflow.ellipsis,
-                        ),
-                        const SizedBox(height: 2),
-                        Text(
-                          _currentUser.email,
-                          style: const TextStyle(
-                            color: Colors.white70,
-                            fontSize: 12,
-                          ),
-                          maxLines: 1,
-                          overflow: TextOverflow.ellipsis,
-                        ),
-                      ],
-                    ),
-                  ),
-                  const SizedBox(height: 16),
+      child: Column(
+        children: [
+          // 1. Header with Gradient - Full Screen Width
+          Container(
+            padding: const EdgeInsets.fromLTRB(24, 60, 24, 24),
+            width: double.infinity,
+            decoration: const BoxDecoration(
+              gradient: LinearGradient(
+                begin: Alignment.topLeft,
+                end: Alignment.bottomRight,
+                colors: [
+                  Color(0xFF3B82F6), // Electric Blue (lighter)
+                  Color(0xFF14B8A6), // Teal
                 ],
               ),
             ),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                // Profile Image with white glow/border
+                Container(
+                  padding: const EdgeInsets.all(4),
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    shape: BoxShape.circle,
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.black.withOpacity(0.1),
+                        blurRadius: 10,
+                        offset: const Offset(0, 5),
+                      ),
+                    ],
+                  ),
+                  child: CircleAvatar(
+                    radius: 36,
+                    backgroundColor: Colors.grey.shade100,
+                    backgroundImage: _currentUser.profileImage != null
+                        ? FileImage(File(_currentUser.profileImage!))
+                        : null,
+                    child: _currentUser.profileImage == null
+                        ? Text(
+                            _currentUser.name.isNotEmpty
+                                ? _currentUser.name[0].toUpperCase()
+                                : 'U',
+                            style: const TextStyle(
+                              fontSize: 32,
+                              fontWeight: FontWeight.bold,
+                              color: AppColors.electricBlue,
+                            ),
+                          )
+                        : null,
+                  ),
+                ),
+                const SizedBox(height: 16),
+                // Name
+                Text(
+                  _currentUser.name,
+                  style: const TextStyle(
+                    color: Colors.white,
+                    fontSize: 22,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                // Role or Subtitle (Single Language)
+                Text(
+                  isAr ? 'الملف الشخصي' : 'User Profile',
+                  style: TextStyle(
+                    color: Colors.white.withOpacity(0.9),
+                    fontSize: 16,
+                  ),
+                ),
+                const SizedBox(height: 8),
+                // Phone Number
+                Text(
+                  _currentUser.phone.isNotEmpty
+                      ? _currentUser.phone
+                      : _currentUser.email,
+                  style: TextStyle(
+                    color: Colors.white.withOpacity(0.8),
+                    fontSize: 14,
+                  ),
+                ),
+              ],
+            ),
+          ),
 
-            // Menu Items Section - White Background
-            Expanded(
-              child: Container(
-                color: Colors.white,
-                child: SingleChildScrollView(
-                  padding: const EdgeInsets.symmetric(vertical: 8),
-                  child: Column(
-                    children: [
-                      _buildDrawerItemWhite(Icons.home, l10n.home, () {
+          // 2. Menu Items
+          Expanded(
+            child: Container(
+              color: Colors.white,
+              child: SingleChildScrollView(
+                padding: const EdgeInsets.symmetric(vertical: 12),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    _buildSectionHeader(getSectionHeader('General')),
+                    _buildDrawerItemColored(
+                      Icons.home,
+                      l10n.home,
+                      AppColors.electricBlue,
+                      () {
                         Navigator.pop(context);
                         setState(() => _selectedIndex = 0);
-                      }, null),
-                      _buildDrawerItemWhite(
-                          Icons.shopping_bag_rounded, l10n.myOrders, () {
+                      },
+                    ),
+                    _buildDrawerItemColored(
+                      Icons.person,
+                      l10n.profile,
+                      AppColors.electricBlue,
+                      () {
                         Navigator.pop(context);
-                        setState(() => _selectedIndex = 1);
-                      }, null),
-                      _buildDrawerItemWhite(
-                          Icons.receipt_long_rounded, l10n.invoices, () {
-                        Navigator.pop(context);
-                        setState(() => _selectedIndex = 2);
-                      }, null),
-                      _buildDrawerItemWhite(Icons.star_rounded, l10n.reviews,
-                          () {
-                        Navigator.pop(context);
-                        setState(() => _selectedIndex = 3);
-                      }, null),
-                      _buildDrawerItemWhite(Icons.shopping_cart, l10n.cart, () {
+                        setState(() => _selectedIndex = 4);
+                      },
+                    ),
+                    _buildDrawerItemColored(
+                      Icons.shopping_cart,
+                      l10n.cart,
+                      AppColors.electricBlue,
+                      () {
                         Navigator.pop(context);
                         Navigator.push(
                           context,
@@ -937,75 +1081,126 @@ class _DashboardScreenState extends State<DashboardScreen> {
                                 CartScreen(user: _currentUser),
                           ),
                         ).then((_) => setState(() {}));
-                      }, cartItemsCount > 0 ? cartItemsCount.toString() : null),
-                      _buildDrawerItemWhite(Icons.person, l10n.profile, () {
+                      },
+                      badge:
+                          cartItemsCount > 0 ? cartItemsCount.toString() : null,
+                    ),
+                    const SizedBox(height: 12),
+                    _buildSectionHeader(getSectionHeader('Activity')),
+                    _buildDrawerItemColored(
+                      Icons.shopping_bag,
+                      l10n.myOrders,
+                      AppColors.electricBlue,
+                      () {
                         Navigator.pop(context);
-                        setState(() => _selectedIndex = 4);
-                      }, null),
-                    ],
-                  ),
+                        setState(() => _selectedIndex = 1);
+                      },
+                    ),
+                    _buildDrawerItemColored(
+                      Icons.receipt_long,
+                      l10n.invoices,
+                      AppColors.electricBlue,
+                      () {
+                        Navigator.pop(context);
+                        setState(() => _selectedIndex = 2);
+                      },
+                    ),
+                    _buildDrawerItemColored(
+                      Icons.star,
+                      l10n.reviews,
+                      AppColors.electricBlue,
+                      () {
+                        Navigator.pop(context);
+                        setState(() => _selectedIndex = 3);
+                      },
+                    ),
+                  ],
                 ),
               ),
             ),
+          ),
 
-            // Logout Section - White Background
-            Container(
-              color: Colors.white,
-              child: Column(
-                children: [
-                  const Divider(color: Colors.grey, height: 1),
-                  _buildDrawerItemWhite(Icons.logout, l10n.logout, () {
-                    print('🚪 Logout button tapped');
+          // 3. Logout
+          Container(
+            color: Colors.white,
+            padding: const EdgeInsets.only(bottom: 24, top: 8),
+            child: Column(
+              children: [
+                const Divider(height: 1),
+                const SizedBox(height: 8),
+                _buildDrawerItemColored(
+                  Icons.logout,
+                  l10n.logout,
+                  Colors.red.shade400,
+                  () {
                     Navigator.pop(context);
-                    print('🔄 Calling onLogout callback');
                     widget.onLogout();
-                    print('✅ Logout callback called');
-                  }, null),
-                  const SizedBox(height: 12),
-                ],
-              ),
+                  },
+                  isDestructive: true,
+                ),
+              ],
             ),
-          ],
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildSectionHeader(String title) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 8),
+      child: Text(
+        title,
+        style: TextStyle(
+          color: Colors.grey.shade500,
+          fontSize: 14,
+          fontWeight: FontWeight.bold,
         ),
       ),
     );
   }
 
-  Widget _buildDrawerItemWhite(
-      IconData icon, String title, VoidCallback onTap, String? badge) {
+  Widget _buildDrawerItemColored(
+      IconData icon, String title, Color iconColor, VoidCallback onTap,
+      {String? badge, bool isDestructive = false}) {
     return ListTile(
-      leading: Icon(icon, color: AppColors.electricBlue, size: 22),
-      title: Row(
-        children: [
-          Text(
-            title,
-            style: const TextStyle(
-              color: Colors.black87,
-              fontSize: 15,
-              fontWeight: FontWeight.w500,
-            ),
-          ),
-          if (badge != null) ...[
-            const SizedBox(width: 8),
-            Container(
-              padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+      contentPadding: const EdgeInsets.symmetric(horizontal: 24, vertical: 4),
+      leading: Container(
+        padding: const EdgeInsets.all(8),
+        decoration: BoxDecoration(
+          color: isDestructive
+              ? Colors.red.withOpacity(0.1)
+              : iconColor.withOpacity(0.1),
+          borderRadius: BorderRadius.circular(8),
+        ),
+        child: Icon(icon, color: iconColor, size: 22),
+      ),
+      title: Text(
+        title,
+        style: TextStyle(
+          color: isDestructive ? Colors.red.shade600 : Colors.black87,
+          fontSize: 16,
+          fontWeight: FontWeight.w600,
+        ),
+      ),
+      // No subtitle
+      trailing: badge != null
+          ? Container(
+              padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
               decoration: BoxDecoration(
                 color: Colors.red,
-                borderRadius: BorderRadius.circular(10),
+                borderRadius: BorderRadius.circular(12),
               ),
               child: Text(
                 badge,
                 style: const TextStyle(
                   color: Colors.white,
-                  fontSize: 11,
+                  fontSize: 12,
                   fontWeight: FontWeight.bold,
                 ),
               ),
-            ),
-          ],
-        ],
-      ),
-      contentPadding: const EdgeInsets.symmetric(horizontal: 24, vertical: 4),
+            )
+          : null,
       onTap: onTap,
     );
   }
@@ -1082,7 +1277,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                               imageUrl: (category.imageUrl != null &&
                                       category.imageUrl!.isNotEmpty)
                                   ? category.imageUrl!
-                                  : DummyDataService.getCategoryImage(
+                                  : IconHelper.getCategoryImagePath(
                                       category.name),
                               width: double.infinity,
                               fit: BoxFit.cover,

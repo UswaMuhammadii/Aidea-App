@@ -181,6 +181,9 @@ class AppLocalizationsAr extends AppLocalizations {
   String get cancelled => 'ملغى';
 
   @override
+  String get postponed => 'مؤجل';
+
+  @override
   String get trackOrder => 'تتبع الطلب';
 
   @override
@@ -1668,4 +1671,10 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get selectLanguage => 'اختر اللغة';
+
+  @override
+  String get noNotificationsYet => 'لا توجد إشعارات حتى الآن';
+
+  @override
+  String get support => 'الدعم';
 }

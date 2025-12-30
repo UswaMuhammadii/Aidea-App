@@ -82,4 +82,61 @@ class IconHelper {
         _getIconByName(categoryName, color, size, returnNullIfNotFound: true);
     return icon ?? Icon(Icons.build, color: Colors.grey, size: size);
   }
+
+  static String getCategoryImagePath(String categoryName) {
+    // Normalize category name for comparison (remove special chars, lowercase)
+    final normalized = categoryName.toLowerCase().trim();
+
+    // Category ID mapping (language-independent)
+    final categoryIdMap = {
+      // AC Services
+      'AC Services': 'ac_services',
+      'ac services': 'ac_services',
+      'AC Repair': 'ac_services',
+      'ac repair': 'ac_services',
+      'AC Service': 'ac_services',
+      'ac service': 'ac_services',
+      'خدمات مكيفات الهواء': 'ac_services',
+      'خدمات التكييف': 'ac_services',
+      'تصليح مكيفات': 'ac_services',
+
+      // Home Appliances
+      'Home Appliances': 'home_appliances',
+      'home appliances': 'home_appliances',
+      'أجهزة منزلية': 'home_appliances',
+      'الأجهزة المنزلية': 'home_appliances',
+
+      // Plumbing
+      'Plumbing': 'plumbing',
+      'plumbing': 'plumbing',
+      'سباكة': 'plumbing',
+      'السباكة': 'plumbing',
+
+      // Electric
+      'Electric': 'electric',
+      'electric': 'electric',
+      'Electrical': 'electric',
+      'electrical': 'electric',
+      'الكهرباء': 'electric',
+    };
+
+    // Image paths mapped by category ID
+    final imagePathMap = {
+      'ac_services': 'assets/images/ac_service.png',
+      'home_appliances': 'assets/images/home_appliances.png',
+      'plumbing': 'assets/images/plumbing.png',
+      'electric': 'assets/images/electric.png',
+    };
+
+    // Try exact match first
+    String? categoryId = categoryIdMap[categoryName];
+
+    // If no exact match, try normalized match
+    if (categoryId == null) {
+      categoryId = categoryIdMap[normalized];
+    }
+
+    // Return image path or default
+    return imagePathMap[categoryId] ?? 'assets/images/default.png';
+  }
 }

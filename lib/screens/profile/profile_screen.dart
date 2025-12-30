@@ -6,6 +6,7 @@ import 'addresses_screen.dart';
 import '../notifications/notification_screen.dart';
 import '../../gen_l10n/app_localizations.dart';
 import '../../utils/app_colors.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class ProfileScreen extends StatefulWidget {
   final User user;
@@ -139,6 +140,122 @@ class _ProfileScreenState extends State<ProfileScreen> {
               widget.onUserUpdated!(updatedUser);
             }
           },
+        ),
+      ),
+    );
+  }
+
+  Future<void> _makePhoneCall() async {
+    final Uri launchUri = Uri(
+      scheme: 'tel',
+      path: '0590409260',
+    );
+    try {
+      if (!await launchUrl(launchUri)) {
+        throw Exception('Could not launch $launchUri');
+      }
+    } catch (e) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Could not launch dialer: $e')),
+        );
+      }
+    }
+  }
+
+  void _showSupportDialog() {
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+        contentPadding: EdgeInsets.zero,
+        content: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Container(
+              width: double.infinity,
+              padding: const EdgeInsets.all(24),
+              decoration: const BoxDecoration(
+                gradient: AppColors.primaryGradient,
+                borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+              ),
+              child: Column(
+                children: [
+                  Container(
+                    padding: const EdgeInsets.all(16),
+                    decoration: BoxDecoration(
+                      color: Colors.white.withOpacity(0.2),
+                      shape: BoxShape.circle,
+                    ),
+                    child: const Icon(Icons.headset_mic,
+                        color: Colors.white, size: 40),
+                  ),
+                  const SizedBox(height: 16),
+                  const Text(
+                    'Customer Support',
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontSize: 20,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                  const SizedBox(height: 8),
+                  const Text(
+                    'We are here to help you!',
+                    style: TextStyle(
+                      color: Colors.white70,
+                      fontSize: 14,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.all(24),
+              child: Column(
+                children: [
+                  const Text(
+                    'For any queries or assistance, please contact our support team.',
+                    textAlign: TextAlign.center,
+                    style: TextStyle(color: Colors.grey, height: 1.5),
+                  ),
+                  const SizedBox(height: 24),
+                  SizedBox(
+                    width: double.infinity,
+                    child: ElevatedButton.icon(
+                      onPressed: () {
+                        Navigator.pop(context);
+                        _makePhoneCall();
+                      },
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: AppColors.electricBlue,
+                        foregroundColor: Colors.white,
+                        padding: const EdgeInsets.symmetric(vertical: 16),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(12),
+                        ),
+                        elevation: 0,
+                      ),
+                      icon: const Icon(Icons.phone),
+                      label: const Text(
+                        'Call Support',
+                        style: TextStyle(
+                            fontSize: 16, fontWeight: FontWeight.bold),
+                      ),
+                    ),
+                  ),
+                  const SizedBox(height: 16),
+                  TextButton(
+                    onPressed: () => Navigator.pop(context),
+                    child: Text(
+                      'Cancel',
+                      style: TextStyle(color: Colors.grey.shade600),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ],
         ),
       ),
     );
@@ -388,6 +505,16 @@ class _ProfileScreenState extends State<ProfileScreen> {
                         ),
                         const Divider(height: 1, indent: 72),
                         _buildSettingsTile(
+                          icon: Icons.support_agent,
+                          title: l10n.support,
+                          subtitle: 'Contact our support team',
+                          iconColor: Colors.green,
+                          textColor: textColor,
+                          subtitleColor: subtitleColor,
+                          onTap: _showSupportDialog,
+                        ),
+                        const Divider(height: 1, indent: 72),
+                        _buildSettingsTile(
                           icon: Icons.info_outline,
                           title: l10n.about,
                           subtitle: l10n.appVersionAndInformation,
@@ -395,21 +522,61 @@ class _ProfileScreenState extends State<ProfileScreen> {
                           textColor: textColor,
                           subtitleColor: subtitleColor,
                           onTap: () {
-                            showAboutDialog(
+                            showDialog(
                               context: context,
-                              applicationName: 'HandyMan',
-                              applicationVersion: '1.0.0',
-                              applicationIcon: Container(
-                                padding: const EdgeInsets.all(12),
-                                decoration: BoxDecoration(
-                                  gradient: AppColors.primaryGradient,
-                                  borderRadius: BorderRadius.circular(12),
+                              builder: (context) => AlertDialog(
+                                shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(20)),
+                                title: Row(
+                                  children: [
+                                    Container(
+                                      padding: const EdgeInsets.all(8),
+                                      decoration: BoxDecoration(
+                                        gradient: AppColors.primaryGradient,
+                                        borderRadius: BorderRadius.circular(8),
+                                      ),
+                                      child: const Icon(Icons.business,
+                                          color: Colors.white, size: 24),
+                                    ),
+                                    const SizedBox(width: 12),
+                                    const Text('HandyMan'),
+                                  ],
                                 ),
-                                child: const Icon(
-                                  Icons.business,
-                                  color: Colors.white,
-                                  size: 32,
+                                content: Column(
+                                  mainAxisSize: MainAxisSize.min,
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    const Text('Version 1.0.0'),
+                                    const SizedBox(height: 24),
+                                    const Text(
+                                      'Developed by:',
+                                      style: TextStyle(
+                                          fontWeight: FontWeight.bold),
+                                    ),
+                                    const SizedBox(height: 12),
+                                    const Text('Waseeq Ahmed Siddiqui'),
+                                    Text(
+                                      'waseeqahmadsiddiqui@gmail.com',
+                                      style: TextStyle(
+                                          fontSize: 12,
+                                          color: Colors.grey.shade600),
+                                    ),
+                                    const SizedBox(height: 12),
+                                    const Text('Uswa Muhammadi'),
+                                    Text(
+                                      'uswamuhammadi@gmail.com',
+                                      style: TextStyle(
+                                          fontSize: 12,
+                                          color: Colors.grey.shade600),
+                                    ),
+                                  ],
                                 ),
+                                actions: [
+                                  TextButton(
+                                    onPressed: () => Navigator.pop(context),
+                                    child: const Text('Close'),
+                                  ),
+                                ],
                               ),
                             );
                           },

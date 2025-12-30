@@ -182,6 +182,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get cancelled => 'Cancelled';
 
   @override
+  String get postponed => 'Postponed';
+
+  @override
   String get trackOrder => 'Track Order';
 
   @override
@@ -1688,4 +1691,10 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get selectLanguage => 'Select Language';
+
+  @override
+  String get noNotificationsYet => 'No notifications yet';
+
+  @override
+  String get support => 'Support';
 }

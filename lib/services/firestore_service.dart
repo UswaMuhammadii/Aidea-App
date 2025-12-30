@@ -3,6 +3,7 @@ import '../models/user_model.dart';
 import '../models/service_model.dart';
 import '../models/booking_model.dart';
 import '../models/review_model.dart';
+import '../models/notification_model.dart';
 
 class FirestoreService {
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
@@ -29,6 +30,24 @@ class FirestoreService {
       return User.fromJson(doc.data() as Map<String, dynamic>);
     }
     return null;
+  }
+
+  // Helper to find worker in likely collections
+  Future<User?> getWorker(String uid) async {
+    // 1. Try 'workers' collection
+    var doc = await _firestore.collection('workers').doc(uid).get();
+    if (doc.exists) return User.fromJson(doc.data() as Map<String, dynamic>);
+
+    // 2. Try 'providers' collection
+    doc = await _firestore.collection('providers').doc(uid).get();
+    if (doc.exists) return User.fromJson(doc.data() as Map<String, dynamic>);
+
+    // 3. Try 'users' collection (generic)
+    doc = await _firestore.collection('users').doc(uid).get();
+    if (doc.exists) return User.fromJson(doc.data() as Map<String, dynamic>);
+
+    // 4. Fallback to 'customers' using getUser
+    return getUser(uid);
   }
 
   // --- Service Operations ---
@@ -169,5 +188,69 @@ class FirestoreService {
     final snapshot =
         await _reviewsRef.where('bookingId', isEqualTo: bookingId).get();
     return snapshot.docs.isNotEmpty;
+  }
+
+  // --- Notification Operations ---
+  CollectionReference _getNotificationsRef(String userId) {
+    return _usersRef.doc(userId).collection('notifications');
+  }
+
+  Stream<List<NotificationModel>> getUserNotifications(String userId) {
+    return _getNotificationsRef(userId)
+        .orderBy('createdAt', descending: true)
+        .snapshots()
+        .map((snapshot) {
+      return snapshot.docs
+          .map((doc) =>
+              NotificationModel.fromJson(doc.data() as Map<String, dynamic>))
+          .toList();
+    });
+  }
+
+  Future<void> addNotification(
+      String userId, NotificationModel notification) async {
+    await _getNotificationsRef(userId)
+        .doc(notification.id)
+        .set(notification.toJson());
+  }
+
+  Future<NotificationModel?> getNotification(
+      String userId, String notificationId) async {
+    final doc = await _getNotificationsRef(userId).doc(notificationId).get();
+    if (doc.exists) {
+      return NotificationModel.fromJson(doc.data() as Map<String, dynamic>);
+    }
+    return null;
+  }
+
+  Future<void> markNotificationAsRead(
+      String userId, String notificationId) async {
+    await _getNotificationsRef(userId)
+        .doc(notificationId)
+        .update({'read': true});
+  }
+
+  Future<void> markAllNotificationsAsRead(String userId) async {
+    final batch = _firestore.batch();
+    final snapshot = await _getNotificationsRef(userId)
+        .where('read', isEqualTo: false)
+        .get();
+
+    for (var doc in snapshot.docs) {
+      batch.update(doc.reference, {'read': true});
+    }
+
+    await batch.commit();
+  }
+
+  Future<void> updateUserFcmToken(String userId, String token) async {
+    try {
+      await _firestore.collection('users').doc(userId).update({
+        'fcmToken': token,
+        'updatedAt': DateTime.now().toIso8601String(),
+      });
+    } catch (e) {
+      print('Error updating FCM token: $e');
+    }
   }
 }

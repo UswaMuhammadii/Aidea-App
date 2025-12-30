@@ -4,7 +4,6 @@ import '../../models/service_model.dart';
 import '../../models/cart_model.dart';
 
 import '../../services/firestore_service.dart';
-import '../../services/dummy_data_service.dart';
 import 'service_checkout_screen.dart';
 
 import '../cart/cart_screen.dart';
@@ -31,7 +30,7 @@ class _ServiceListingScreenState extends State<ServiceListingScreen>
     with TickerProviderStateMixin {
   List<String> _subcategories = [];
   String? _selectedSubcategory;
-  List<String>? _subSubcategories;
+  // List<String>? _subSubcategories; // Removed
   String? _selectedSubSubcategory;
   List<Service> _services = [];
   List<Service> _filteredServices = [];
@@ -100,6 +99,15 @@ class _ServiceListingScreenState extends State<ServiceListingScreen>
         child: Image.network(
           service.imageUrl!,
           fit: BoxFit.cover,
+          frameBuilder: (context, child, frame, wasSynchronouslyLoaded) {
+            if (wasSynchronouslyLoaded) return child;
+            return AnimatedOpacity(
+              opacity: frame == null ? 0 : 1,
+              duration: const Duration(milliseconds: 300),
+              curve: Curves.easeOut,
+              child: child,
+            );
+          },
           errorBuilder: (context, error, stackTrace) {
             // Fallback to icon on error
             return Center(
@@ -136,17 +144,9 @@ class _ServiceListingScreenState extends State<ServiceListingScreen>
 
     setState(() {
       _selectedSubcategory = subcategory;
-
-      if (subcategory == l10n.washingMachine) {
-        _subSubcategories = DummyDataService.getWashingMachineTypes(l10n);
-        // Filter locally fetched services? Or keep using Dummy for subSub for now?
-        // Assuming washing machine logic is custom for now.
-        _filteredServices = [];
-      } else {
-        _subSubcategories = null;
-        _selectedSubSubcategory = null;
-        _filterServicesBySubcategory(subcategory);
-      }
+      // _subSubcategories = null;
+      _selectedSubSubcategory = null;
+      _filterServicesBySubcategory(subcategory);
 
       _selectedServiceId = null;
       _selectedQuantity = 1;
@@ -207,18 +207,11 @@ class _ServiceListingScreenState extends State<ServiceListingScreen>
     });
   }
 
+/*
   void _selectSubSubcategory(String type) {
-    final l10n = AppLocalizations.of(context);
-    if (l10n == null) return;
-
-    setState(() {
-      _selectedSubSubcategory = type;
-      _services = DummyDataService.getWashingMachineServices(type, l10n);
-      _filteredServices = List.from(_services);
-      _selectedServiceId = null;
-      _selectedQuantity = 1;
-    });
+    // Removed
   }
+*/
 
   void _filterServices(String query) {
     setState(() {
@@ -282,7 +275,7 @@ class _ServiceListingScreenState extends State<ServiceListingScreen>
         _searchController.clear();
       } else if (_selectedSubcategory != null) {
         _selectedSubcategory = null;
-        _subSubcategories = null;
+        // _subSubcategories = null;
         // _services = []; // Fix: Don't clear master list of services
         _filteredServices = [];
         _searchController.clear();
@@ -383,9 +376,7 @@ class _ServiceListingScreenState extends State<ServiceListingScreen>
           ),
           child: _selectedSubcategory == null
               ? _buildSubcategoryView(l10n)
-              : (_subSubcategories != null && _selectedSubSubcategory == null)
-                  ? _buildSubSubcategoryView(l10n)
-                  : _buildServicesView(l10n, locale),
+              : _buildServicesView(l10n, locale),
         ),
       ),
     );
@@ -497,104 +488,12 @@ class _ServiceListingScreenState extends State<ServiceListingScreen>
     );
   }
 
+/*
   Widget _buildSubSubcategoryView(AppLocalizations l10n) {
-    return FadeTransition(
-      opacity: _fadeAnimation,
-      child: SlideTransition(
-        position: _slideAnimation,
-        child: ListView.builder(
-          padding: const EdgeInsets.all(16),
-          itemCount: _subSubcategories!.length,
-          itemBuilder: (context, index) {
-            final type = _subSubcategories![index];
-
-            return Container(
-              margin: const EdgeInsets.only(bottom: 16),
-              decoration: BoxDecoration(
-                color: Theme.of(context).colorScheme.surface,
-                borderRadius: BorderRadius.circular(20),
-                boxShadow: [
-                  BoxShadow(
-                    color: Colors.black.withOpacity(0.05),
-                    blurRadius: 15,
-                    offset: const Offset(0, 5),
-                  ),
-                ],
-              ),
-              child: Material(
-                color: Colors.transparent,
-                child: InkWell(
-                  borderRadius: BorderRadius.circular(20),
-                  onTap: () => _selectSubSubcategory(type),
-                  child: Padding(
-                    padding: const EdgeInsets.all(20),
-                    child: Row(
-                      children: [
-                        Container(
-                          width: 60,
-                          height: 60,
-                          decoration: BoxDecoration(
-                            gradient: AppColors.primaryGradient,
-                            borderRadius: BorderRadius.circular(16),
-                          ),
-                          child: const Icon(Icons.local_laundry_service,
-                              color: Colors.white, size: 32),
-                        ),
-                        const SizedBox(width: 16),
-                        Expanded(
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(
-                                '$type ${l10n.washingMachine}',
-                                style: Theme.of(context)
-                                    .textTheme
-                                    .titleMedium
-                                    ?.copyWith(
-                                      fontWeight: FontWeight.w700,
-                                      color: Theme.of(context)
-                                          .colorScheme
-                                          .onSurface,
-                                    ),
-                              ),
-                              const SizedBox(height: 4),
-                              Text(
-                                l10n.viewServicesForMachines(type),
-                                style: Theme.of(context)
-                                    .textTheme
-                                    .bodyMedium
-                                    ?.copyWith(
-                                      color: Theme.of(context)
-                                          .colorScheme
-                                          .onSurfaceVariant,
-                                    ),
-                              ),
-                            ],
-                          ),
-                        ),
-                        Container(
-                          padding: const EdgeInsets.all(8),
-                          decoration: BoxDecoration(
-                            gradient: AppColors.primaryGradient,
-                            borderRadius: BorderRadius.circular(10),
-                          ),
-                          child: const Icon(
-                            Icons.arrow_forward_ios,
-                            color: Colors.white,
-                            size: 16,
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
-              ),
-            );
-          },
-        ),
-      ),
-    );
+     // Removed dummy sub-subcategory view
+     return Container();
   }
+*/
 
   Widget _buildServicesView(AppLocalizations l10n, Locale locale) {
     return SafeArea(

@@ -10,10 +10,12 @@ import '../../gen_l10n/app_localizations.dart';
 
 class AuthFlowCoordinator extends StatefulWidget {
   final Function(User) onAuthComplete;
+  final VoidCallback onBack;
 
   const AuthFlowCoordinator({
     super.key,
     required this.onAuthComplete,
+    required this.onBack,
   });
 
   @override
@@ -131,6 +133,7 @@ class _AuthFlowCoordinatorState extends State<AuthFlowCoordinator> {
           // Step 0: Phone Login
           PhoneLoginScreen(
             onPhoneSubmit: _handlePhoneSubmit,
+            onBack: widget.onBack,
           ),
 
           // Step 1: OTP Verification

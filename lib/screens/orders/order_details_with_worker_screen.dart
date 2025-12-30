@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 import '../../models/user_model.dart';
 import '../../models/booking_model.dart';
 
 import '../../services/firestore_service.dart';
-import 'vendor_profile_screen.dart';
+
 import 'chat_screen.dart';
 import '../../utils/app_colors.dart';
 import '../../gen_l10n/app_localizations.dart';
@@ -46,7 +47,7 @@ class _OrderDetailsWithWorkerScreenState
       setState(() => _isLoadingWorker = true);
       try {
         final worker =
-            await _firestoreService.getUser(widget.booking.workerId!);
+            await _firestoreService.getWorker(widget.booking.workerId!);
         final count = await _firestoreService
             .getWorkerCompletedBookingsCount(widget.booking.workerId!);
 
@@ -172,14 +173,25 @@ class _OrderDetailsWithWorkerScreenState
                     child: Material(
                       color: Colors.transparent,
                       child: InkWell(
-                        onTap: () {
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            SnackBar(
-                              content: Text(l10n
-                                  .emergencyContactInitiated), // FIXED: use l10n
-                              backgroundColor: Colors.red,
-                            ),
+                        onTap: () async {
+                          final Uri launchUri = Uri(
+                            scheme: 'tel',
+                            path: '0590409260',
                           );
+                          try {
+                            if (!await launchUrl(launchUri)) {
+                              throw Exception('Could not launch');
+                            }
+                          } catch (e) {
+                            if (mounted) {
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                SnackBar(
+                                  content: Text(l10n.emergencyContactInitiated),
+                                  backgroundColor: Colors.red,
+                                ),
+                              );
+                            }
+                          }
                         },
                         borderRadius: BorderRadius.circular(12),
                         child: Padding(
@@ -231,11 +243,19 @@ class _OrderDetailsWithWorkerScreenState
                                 radius: 30,
                                 backgroundColor: AppColors.electricBlue
                                     .withValues(alpha: 0.1),
-                                backgroundImage:
-                                    _fetchedWorker?.profileImage != null
-                                        ? NetworkImage(
-                                            _fetchedWorker!.profileImage!)
-                                        : null,
+                                backgroundImage: _fetchedWorker?.profileImage !=
+                                        null
+                                    ? Image.network(
+                                        _fetchedWorker!.profileImage!,
+                                        fit: BoxFit.cover,
+                                        errorBuilder:
+                                            (context, error, stackTrace) {
+                                          return const Icon(Icons.person,
+                                              size: 35,
+                                              color: AppColors.electricBlue);
+                                        },
+                                      ).image
+                                    : null,
                                 child: _fetchedWorker?.profileImage == null
                                     ? const Icon(Icons.person,
                                         size: 35, color: AppColors.electricBlue)
@@ -283,30 +303,18 @@ class _OrderDetailsWithWorkerScreenState
 
                           const SizedBox(height: 16),
 
-                          // Stats Row - Only Orders and Time Period
+                          // Stats Row - Only Orders
                           if (_isLoadingWorker)
                             const Center(child: CircularProgressIndicator())
                           else if (_fetchedWorker != null)
                             Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceAround,
+                              mainAxisAlignment: MainAxisAlignment.center,
                               children: [
                                 _buildStatItem(
                                   Icons.check_circle,
                                   FormattingUtils.formatNumber(
                                       _completedOrdersCount, locale),
                                   l10n.ordersDone,
-                                  textColor,
-                                  subtitleColor,
-                                ),
-                                Container(
-                                  height: 40,
-                                  width: 1,
-                                  color: Colors.grey.shade300,
-                                ),
-                                _buildStatItem(
-                                  Icons.access_time,
-                                  "2 Years", // Hardcoded or N/A
-                                  l10n.experience,
                                   textColor,
                                   subtitleColor,
                                 ),
@@ -323,21 +331,7 @@ class _OrderDetailsWithWorkerScreenState
                               Expanded(
                                 child: OutlinedButton.icon(
                                   onPressed: () {
-                                    Navigator.push(
-                                      context,
-                                      MaterialPageRoute(
-                                        builder: (context) =>
-                                            VendorProfileScreen(
-                                          user: _fetchedWorker,
-                                          // Fallbacks if worker fetch failed but we have some info
-                                          workerName: _fetchedWorker?.name ??
-                                              widget.booking.workerName ??
-                                              "Worker",
-                                          totalOrders: _completedOrdersCount,
-                                          workingPeriod: "2 Years",
-                                        ),
-                                      ),
-                                    );
+                                    _showWorkerProfileDialog(context);
                                   },
                                   icon: const Icon(Icons.person),
                                   label: Text(l10n.viewProfile),
@@ -386,8 +380,6 @@ class _OrderDetailsWithWorkerScreenState
                   ),
 
                   const SizedBox(height: 24),
-
-                  // Services Expertise Section removed (dummy data)
 
                   const SizedBox(height: 24),
                 ],
@@ -699,6 +691,116 @@ class _OrderDetailsWithWorkerScreenState
                             fontSize: 16, fontWeight: FontWeight.w600)),
                   ),
                 ),
+              ],
+            ),
+          ),
+        );
+      },
+    );
+  }
+
+  void _showWorkerProfileDialog(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    final dialogBg = isDark ? const Color(0xFF1E293B) : Colors.white;
+    final textColor = isDark ? Colors.white : Colors.black87;
+
+    final workerName =
+        _fetchedWorker?.name ?? widget.booking.workerName ?? 'Worker';
+    final workerPhone = _fetchedWorker?.phone ?? '';
+
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return Dialog(
+          shape:
+              RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+          backgroundColor: dialogBg,
+          child: Padding(
+            padding: const EdgeInsets.all(24),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                // Avatar
+                CircleAvatar(
+                  radius: 40,
+                  backgroundColor: AppColors.electricBlue.withOpacity(0.1),
+                  backgroundImage: _fetchedWorker?.profileImage != null
+                      ? NetworkImage(_fetchedWorker!.profileImage!)
+                      : null,
+                  child: _fetchedWorker?.profileImage == null
+                      ? const Icon(Icons.person,
+                          size: 40, color: AppColors.electricBlue)
+                      : null,
+                ),
+                const SizedBox(height: 16),
+
+                // Name
+                Text(
+                  workerName,
+                  style: TextStyle(
+                      fontSize: 20,
+                      fontWeight: FontWeight.bold,
+                      color: textColor),
+                ),
+                const SizedBox(height: 8),
+
+                // Phone
+                if (workerPhone.isNotEmpty)
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Icon(Icons.phone, size: 16, color: Colors.blue),
+                      const SizedBox(width: 8),
+                      Text(
+                        workerPhone,
+                        style: TextStyle(
+                            fontSize: 16,
+                            fontWeight: FontWeight.w500,
+                            color: textColor),
+                      ),
+                    ],
+                  ),
+
+                const SizedBox(height: 20),
+                const Divider(),
+                const SizedBox(height: 16),
+
+                // Stats
+                Column(
+                  children: [
+                    Text(
+                      '${_completedOrdersCount}',
+                      style: TextStyle(
+                          fontSize: 24,
+                          fontWeight: FontWeight.bold,
+                          color: AppColors.electricBlue),
+                    ),
+                    Text(
+                      l10n.ordersDone,
+                      style: TextStyle(
+                          fontSize: 14,
+                          color: isDark
+                              ? Colors.grey.shade400
+                              : Colors.grey.shade600),
+                    ),
+                  ],
+                ),
+
+                const SizedBox(height: 24),
+
+                SizedBox(
+                  width: double.infinity,
+                  child: ElevatedButton(
+                    onPressed: () => Navigator.pop(context),
+                    style: ElevatedButton.styleFrom(
+                        backgroundColor: Colors.blue,
+                        shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(10)),
+                        padding: const EdgeInsets.symmetric(vertical: 12)),
+                    child: Text(l10n.done),
+                  ),
+                )
               ],
             ),
           ),

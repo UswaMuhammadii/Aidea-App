@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import '../../gen_l10n/app_localizations.dart';
-List<Map<String, dynamic>> globalNotifications = [];
+import '../../services/firestore_service.dart';
+import '../../models/notification_model.dart';
+
 class NotificationsScreen extends StatefulWidget {
   const NotificationsScreen({super.key});
 
@@ -9,31 +12,8 @@ class NotificationsScreen extends StatefulWidget {
 }
 
 class _NotificationsScreenState extends State<NotificationsScreen> {
-
-  int _unreadCount = 0;
-
-  @override
-  void initState() {
-    super.initState();
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      final l10n = AppLocalizations.of(context)!;
-      if (globalNotifications.isEmpty) {
-        globalNotifications.addAll(getLocalizedNotifications(l10n));
-        setState(() {});
-      }
-    });
-  }
-
-  List<Map<String, dynamic>> getLocalizedNotifications(AppLocalizations l10n) {
-    return [
-      {
-        'title': l10n.newNotification,
-        'message': l10n.youHaveUnreadNotificationsSingular,
-        'date': DateTime.now().subtract(const Duration(minutes: 3)),
-        'read': false,
-      },
-    ];
-  }
+  final FirestoreService _firestoreService = FirestoreService();
+  final String? _currentUserId = FirebaseAuth.instance.currentUser?.uid;
 
   String _getTimeAgo(DateTime dateTime, AppLocalizations l10n) {
     final difference = DateTime.now().difference(dateTime);
@@ -43,55 +23,38 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
     } else if (difference.inMinutes < 60) {
       final minutes = difference.inMinutes;
       return minutes == 1
-          ? l10n.timeAgoMinutesAgo.replaceAll('{count}', '1')
-          : l10n.timeAgoMinutesAgoPlural.replaceAll('{count}', minutes.toString());
+          ? l10n.timeAgoMinutesAgo.replaceAll('\$COUNT\$', '1')
+          : l10n.timeAgoMinutesAgoPlural
+              .replaceAll('\$COUNT\$', minutes.toString());
     } else if (difference.inHours < 24) {
       final hours = difference.inHours;
       return hours == 1
-          ? l10n.timeAgoHoursAgo.replaceAll('{count}', '1')
-          : l10n.timeAgoHoursAgoPlural.replaceAll('{count}', hours.toString());
+          ? l10n.timeAgoHoursAgo.replaceAll('\$COUNT\$', '1')
+          : l10n.timeAgoHoursAgoPlural
+              .replaceAll('\$COUNT\$', hours.toString());
     } else if (difference.inDays < 7) {
       final days = difference.inDays;
       return days == 1
-          ? l10n.timeAgoDaysAgo.replaceAll('{count}', '1')
-          : l10n.timeAgoDaysAgoPlural.replaceAll('{count}', days.toString());
+          ? l10n.timeAgoDaysAgo.replaceAll('\$COUNT\$', '1')
+          : l10n.timeAgoDaysAgoPlural.replaceAll('\$COUNT\$', days.toString());
     } else if (difference.inDays < 30) {
       final weeks = (difference.inDays / 7).floor();
       return weeks == 1
-          ? l10n.timeAgoWeeksAgo.replaceAll('{count}', '1')
-          : l10n.timeAgoWeeksAgoPlural.replaceAll('{count}', weeks.toString());
+          ? l10n.timeAgoWeeksAgo.replaceAll('\$COUNT\$', '1')
+          : l10n.timeAgoWeeksAgoPlural
+              .replaceAll('\$COUNT\$', weeks.toString());
     } else {
       final months = (difference.inDays / 30).floor();
       return months == 1
-          ? l10n.timeAgoMonthsAgo.replaceAll('{count}', '1')
-          : l10n.timeAgoMonthsAgoPlural.replaceAll('{count}', months.toString());
+          ? l10n.timeAgoMonthsAgo.replaceAll('\$COUNT\$', '1')
+          : l10n.timeAgoMonthsAgoPlural
+              .replaceAll('\$COUNT\$', months.toString());
     }
   }
 
-  void _clearNotifications() async {
-    final l10n = AppLocalizations.of(context)!;
-
-    final confirm = await showDialog<bool>(
-      context: context,
-      builder: (context) => AlertDialog(
-        title: Text(l10n.clearAll),
-        content: Text(l10n.areYouSureYouWantToClearAllNotifications),
-        actions: [
-          TextButton(
-              onPressed: () => Navigator.pop(context, false),
-              child: Text(l10n.cancel)),
-          TextButton(
-              onPressed: () => Navigator.pop(context, true),
-              child: Text(l10n.clearAll)),
-        ],
-      ),
-    );
-
-    if (confirm == true) {
-      setState(() {
-        globalNotifications.clear();
-        _unreadCount = 0;
-      });
+  void _markAllAsRead() async {
+    if (_currentUserId != null) {
+      await _firestoreService.markAllNotificationsAsRead(_currentUserId!);
     }
   }
 
@@ -99,35 +62,98 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
 
+    if (_currentUserId == null) {
+      return Scaffold(
+        appBar: AppBar(title: Text(l10n.notifications)),
+        body: Center(child: Text("Please login to view notifications")),
+      );
+    }
+
     return Scaffold(
       appBar: AppBar(
         title: Text(l10n.notifications),
         actions: [
-          if (globalNotifications.isNotEmpty)
-            IconButton(
-              icon: const Icon(Icons.delete),
-              onPressed: _clearNotifications,
-            ),
+          IconButton(
+            icon: const Icon(Icons.done_all),
+            tooltip: 'Mark all as read',
+            onPressed: _markAllAsRead,
+          ),
         ],
       ),
-      body: ListView.builder(
-        itemCount: globalNotifications.length,
-        itemBuilder: (context, index) {
-          final item = globalNotifications[index];
-          final timeAgo = _getTimeAgo(item['date'], l10n);
+      body: StreamBuilder<List<NotificationModel>>(
+        stream: _firestoreService.getUserNotifications(_currentUserId!),
+        builder: (context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return const Center(child: CircularProgressIndicator());
+          }
 
-          return ListTile(
-            title: Text(item['title']),
-            subtitle: Text("${item['message']} • $timeAgo"),
+          if (snapshot.hasError) {
+            return Center(child: Text('Error: ${snapshot.error}'));
+          }
+
+          final notifications = snapshot.data ?? [];
+
+          if (notifications.isEmpty) {
+            return Center(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  const Icon(Icons.notifications_off_outlined,
+                      size: 60, color: Colors.grey),
+                  const SizedBox(height: 16),
+                  Text(l10n.noNotificationsYet ??
+                      "No notifications yet"), // Fallback if l10n missing
+                ],
+              ),
+            );
+          }
+
+          return ListView.builder(
+            itemCount: notifications.length,
+            itemBuilder: (context, index) {
+              final item = notifications[index];
+              final timeAgo = _getTimeAgo(item.createdAt, l10n);
+
+              return Dismissible(
+                key: Key(item.id),
+                background: Container(color: Colors.red),
+                onDismissed: (direction) {
+                  // Optional: Implement delete logic
+                },
+                child: ListTile(
+                  leading: CircleAvatar(
+                    backgroundColor: item.read
+                        ? Colors.grey.shade200
+                        : Theme.of(context).primaryColor.withOpacity(0.1),
+                    child: Icon(
+                      item.type == 'invoice'
+                          ? Icons.receipt_long
+                          : Icons.notifications,
+                      color: item.read
+                          ? Colors.grey
+                          : Theme.of(context).primaryColor,
+                    ),
+                  ),
+                  title: Text(
+                    item.title,
+                    style: TextStyle(
+                      fontWeight:
+                          item.read ? FontWeight.normal : FontWeight.bold,
+                    ),
+                  ),
+                  subtitle: Text("${item.message}\n$timeAgo"),
+                  isThreeLine: true,
+                  onTap: () {
+                    // Mark as read when tapped
+                    _firestoreService.markNotificationAsRead(
+                        _currentUserId!, item.id);
+                  },
+                ),
+              );
+            },
           );
         },
       ),
-      floatingActionButton: _unreadCount > 0
-          ? FloatingActionButton(
-        child: Text('$_unreadCount ${l10n.newNotification}'),
-        onPressed: () {},
-      )
-          : null,
     );
   }
 }

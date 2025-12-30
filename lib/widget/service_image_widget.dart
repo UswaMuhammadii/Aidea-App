@@ -37,6 +37,15 @@ class ServiceImageWidget extends StatelessWidget {
         width: width,
         height: height,
         fit: fit,
+        frameBuilder: (context, child, frame, wasSynchronouslyLoaded) {
+          if (wasSynchronouslyLoaded) return child;
+          return AnimatedOpacity(
+            opacity: frame == null ? 0 : 1,
+            duration: const Duration(milliseconds: 300),
+            curve: Curves.easeOut,
+            child: child,
+          );
+        },
         errorBuilder: (context, error, stackTrace) {
           return _buildFallback(isDark);
         },

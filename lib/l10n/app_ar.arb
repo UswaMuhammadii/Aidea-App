@@ -57,6 +57,7 @@
   "workStarted": "بدأ العمل",
   "workDone": "تم العمل",
   "cancelled": "ملغى",
+  "postponed": "مؤجل",
   "trackOrder": "تتبع الطلب",
   "viewTechnicianDetails": "عرض تفاصيل الفني",
   "invoices": "الفواتير",
@@ -599,5 +600,18 @@
   "selectLocation": "اختر الموقع",
   "locationSelected": "تم اختيار الموقع",
   "language": "اللغة",
-  "selectLanguage": "اختر اللغة"
+  "selectLanguage": "اختر اللغة",
+  "noNotificationsYet": "لا توجد إشعارات حتى الآن",
+  "support": "الدعم",
+  "timeAgoJustNow": "الآن",
+  "timeAgoMinutesAgo": "منذ $COUNT$ دقيقة",
+  "timeAgoMinutesAgoPlural": "منذ $COUNT$ دقائق",
+  "timeAgoHoursAgo": "منذ $COUNT$ ساعة",
+  "timeAgoHoursAgoPlural": "منذ $COUNT$ ساعات",
+  "timeAgoDaysAgo": "منذ $COUNT$ يوم",
+  "timeAgoDaysAgoPlural": "منذ $COUNT$ أيام",
+  "timeAgoWeeksAgo": "منذ $COUNT$ أسبوع",
+  "timeAgoWeeksAgoPlural": "منذ $COUNT$ أسابيع",
+  "timeAgoMonthsAgo": "منذ $COUNT$ شهر",
+  "timeAgoMonthsAgoPlural": "منذ $COUNT$ أشهر"
 }
