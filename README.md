@@ -1,8 +1,8 @@
-# Aidea App - HandyMan Service Booking
+# HandyMan 
 
 A professional Flutter application designed for seamless on-demand service booking. Whether it's plumbing, electrical work, home appliance repair, or AC servicing, Aidea App connects customers with expert "HandyMen" quickly and efficiently.
 
-## 🚀 Features
+## Features
 
 - **Multi-Category Bookings**: Specialized services for AC, Home Appliances, Plumbing, Electrical, and more.
 - **Bi-lingual Support**: Full support for English and Arabic (RTL) locales.
@@ -13,7 +13,7 @@ A professional Flutter application designed for seamless on-demand service booki
 - **Automated Invoices**: Receive professional invoices (PDF) for your bookings.
 - **Push Notifications**: Stay updated with real-time alerts for booking status and messages.
 
-## 🛠️ Tech Stack
+## Tech Stack
 
 - **Framework**: [Flutter](https://flutter.dev/) (3.0+)
 - **Backend/Database**: [Firebase](https://firebase.google.com/) (Cloud Firestore)
@@ -22,7 +22,7 @@ A professional Flutter application designed for seamless on-demand service booki
 - **Local Storage**: SharedPreferences
 - **Formatting**: Intl (Date & Number formatting)
 
-## 📦 Project Structure
+## Project Structure
 
 ```text
 lib/
@@ -34,25 +34,3 @@ lib/
 ├── utils/          # Constants, formatting, and colors
 └── widget/         # Reusable UI components
 ```
-
-## ⚙️ Getting Started
-
-1. **Clone the repository**:
-   ```bash
-   git clone [repository-url]
-   ```
-2. **Install dependencies**:
-   ```bash
-   flutter pub get
-   ```
-3. **Setup Firebase**:
-   - Add your `google-services.json` (Android) and `GoogleService-Info.plist` (iOS).
-   - Ensure Firebase CLI is configured for your project.
-4. **Run the app**:
-   ```bash
-   flutter run
-   ```
-
-## 📄 License
-
-Created by **Uswa Muhammadii** & **Waseeq Saad**. All rights reserved.
