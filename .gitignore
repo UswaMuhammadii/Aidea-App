@@ -57,3 +57,8 @@ app.*.map.json
 *.apk
 *.aab
 /build/
+
+# Project Specific Cleanup
+*.txt
+l10n.yaml
+/functions/
