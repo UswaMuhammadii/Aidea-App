@@ -572,6 +572,14 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                           fontSize: 12,
                                           color: Colors.grey.shade600),
                                     ),
+                                    const SizedBox(height: 12),
+                                    const Text('Eiman Fatima'),
+                                    Text(
+                                      'eimanfkhan18@gmail.com',
+                                      style: TextStyle(
+                                          fontSize: 12,
+                                          color: Colors.grey.shade600),
+                                    ),
                                   ],
                                 ),
                                 actions: [

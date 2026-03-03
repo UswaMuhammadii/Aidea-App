@@ -135,6 +135,15 @@ class _InvoiceScreenState extends State<InvoiceScreen> {
                               fontWeight: pw.FontWeight.bold,
                             ),
                           ),
+                          pw.SizedBox(height: 4),
+                          pw.Text(
+                            'VAT No: 312875789500003',
+                            style: pw.TextStyle(
+                              fontSize: 12,
+                              fontWeight: pw.FontWeight.bold,
+                              color: PdfColors.blue800,
+                            ),
+                          ),
                           pw.SizedBox(height: 8),
                           pw.Text(
                             l10n.appSubtitle,
