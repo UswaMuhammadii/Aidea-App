@@ -34,3 +34,4 @@ lib/
 ├── utils/          # Constants, formatting, and colors
 └── widget/         # Reusable UI components
 ```
+Check out the app on the [Google Play Store](https://play.google.com/store/apps/details?id=com.hadyman.customer_app).
