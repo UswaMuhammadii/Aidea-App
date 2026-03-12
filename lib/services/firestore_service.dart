@@ -246,7 +246,7 @@ class FirestoreService {
 
   Future<void> updateUserFcmToken(String userId, String token) async {
     try {
-      await _firestore.collection('users').doc(userId).update({
+      await _usersRef.doc(userId).update({
         'fcmToken': token,
         'updatedAt': DateTime.now().toIso8601String(),
       });

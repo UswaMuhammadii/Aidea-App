@@ -8,6 +8,8 @@ import 'package:firebase_auth/firebase_auth.dart' as firebase_auth;
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 
+import 'package:firebase_app_check/firebase_app_check.dart';
+import 'package:flutter/foundation.dart'; // Added for kDebugMode
 import 'firebase_options.dart';
 import 'gen_l10n/app_localizations.dart';
 import 'screens/auth/language_selection_screen.dart';
@@ -32,6 +34,12 @@ void main() async {
   // Initialize Firebase
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
+  );
+
+  // Activate App Check for Play Integrity
+  await FirebaseAppCheck.instance.activate(
+    androidProvider: kDebugMode ? AndroidProvider.debug : AndroidProvider.playIntegrity,
+    appleProvider: kDebugMode ? AppleProvider.debug : AppleProvider.deviceCheck,
   );
 
   // Initialize localization for Arabic dates
@@ -142,16 +150,16 @@ class _CustomerAppState extends State<CustomerApp> {
   Future<void> _loadSavedLanguage() async {
     final prefs = await SharedPreferences.getInstance();
     final savedLanguageCode = prefs.getString('selected_language_code');
-    if (savedLanguageCode != null) {
-      if (mounted) {
-        setState(() {
+    final isSelected = prefs.getBool('is_language_selected') ?? false;
+
+    if (mounted) {
+      setState(() {
+        if (savedLanguageCode != null) {
           _currentLocale = Locale(savedLanguageCode);
-          // We DO NOT set _isLanguageSelected = true here.
-          // This ensures the LanguageSelectionScreen is always shown as the "Landing Page"
-          // for unauthenticated users, allowing them to confirm/change language or just proceed.
-          // _isLanguageSelected = true;
-        });
-      }
+        }
+        _isLanguageSelected = isSelected;
+      });
+      debugPrint('Persistence loaded: locale=$_currentLocale, isLanguageSelected=$_isLanguageSelected');
     }
   }
 
@@ -164,6 +172,7 @@ class _CustomerAppState extends State<CustomerApp> {
 
     final prefs = await SharedPreferences.getInstance();
     await prefs.setString('selected_language_code', locale.languageCode);
+    await prefs.setBool('is_language_selected', true);
   }
 
   void _handleAuthComplete(User user) {
@@ -180,18 +189,24 @@ class _CustomerAppState extends State<CustomerApp> {
   }
 
   void _handleLogout() async {
-    debugPrint('LOGOUT - Returning to auth flow');
+    debugPrint('=== LOGOUT INITIATED ===');
     try {
       await firebase_auth.FirebaseAuth.instance.signOut();
+      debugPrint('Firebase sign out successful');
     } catch (e) {
       debugPrint('Error signing out of Firebase: $e');
     }
 
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setBool('is_language_selected', false);
+    debugPrint('Persistence cleared: is_language_selected = false');
+
     setState(() {
       _currentUser = null;
-      _isLanguageSelected =
-          false; // Also reset language selection to go back to language screen
+      _isLanguageSelected = false;
     });
+    debugPrint('UI State updated: _currentUser = null, _isLanguageSelected = false');
+    debugPrint('========================');
   }
 
   @override

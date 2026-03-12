@@ -47,6 +47,16 @@ class _AuthFlowCoordinatorState extends State<AuthFlowCoordinator> {
     debugPrint('VerificationId: $verificationId');
     debugPrint('VerificationId length: ${verificationId.length}');
 
+    // Auto-verified: user is already signed in, skip OTP screen
+    if (verificationId.isEmpty) {
+      debugPrint('Auto-verified! Skipping OTP screen.');
+      final user = _authService.getCurrentUser();
+      if (user != null) {
+        _handleOTPVerification(user);
+        return;
+      }
+    }
+
     setState(() {
       _phoneNumber = phoneNumber;
       _verificationId = verificationId;
@@ -145,6 +155,11 @@ class _AuthFlowCoordinatorState extends State<AuthFlowCoordinator> {
               phoneNumber: _phoneNumber,
               verificationId: _verificationId,
               onVerificationSuccess: _handleOTPVerification,
+              onBack: () {
+                setState(() {
+                  _currentStep = 0;
+                });
+              },
             )
           else
             // Placeholder while waiting for verificationId

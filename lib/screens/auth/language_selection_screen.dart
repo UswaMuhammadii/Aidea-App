@@ -27,22 +27,15 @@ class LanguageSelectionScreen extends StatelessWidget {
               // Logo
               Center(
                 child: Container(
-                  width: 120,
-                  height: 120,
-                  decoration: BoxDecoration(
-                    color: Colors.white,
+                  width: 140,
+                  height: 140,
+                  decoration: const BoxDecoration(
+                    color: Colors.transparent,
                     shape: BoxShape.circle,
-                    boxShadow: [
-                      BoxShadow(
-                        color: AppColors.electricBlue.withOpacity(0.15),
-                        blurRadius: 30,
-                        offset: const Offset(0, 10),
-                      ),
-                    ],
                   ),
                   child: ClipOval(
                     child: Padding(
-                      padding: const EdgeInsets.all(20.0),
+                      padding: const EdgeInsets.all(8.0),
                       child: Image.asset(
                         'assets/images/logo.png',
                         fit: BoxFit.contain,

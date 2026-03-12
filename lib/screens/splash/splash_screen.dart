@@ -145,24 +145,11 @@ class _SplashScreenState extends State<SplashScreen>
                           child: Opacity(
                             opacity: _fadeAnimation.value,
                             child: Container(
-                              width: 140,
-                              height: 140,
-                              decoration: BoxDecoration(
-                                color: Colors.white,
+                              width: 180,
+                              height: 180,
+                              decoration: const BoxDecoration(
+                                color: Colors.transparent,
                                 shape: BoxShape.circle,
-                                boxShadow: [
-                                  BoxShadow(
-                                    color: Colors.white.withOpacity(0.4),
-                                    blurRadius: 40,
-                                    spreadRadius: 10,
-                                  ),
-                                  BoxShadow(
-                                    color: Colors.blueAccent.withOpacity(0.3),
-                                    blurRadius: 20,
-                                    spreadRadius: 5,
-                                    offset: const Offset(0, 10),
-                                  ),
-                                ],
                               ),
                               child: Center(
                                 child: _buildLogo(),

@@ -68,8 +68,17 @@ class IconHelper {
     // Electric
     if (nameLower == 'electric' ||
         nameLower == 'electrical' ||
+        nameLower == 'electricity' ||
         nameLower == 'الكهرباء') {
       return Colors.amber;
+    }
+    // Carpentry
+    if (nameLower == 'carpentry' || nameLower == 'نجارة') {
+      return Colors.brown;
+    }
+    // CCTV
+    if (nameLower == 'cctv' || nameLower == 'كاميرات مراقبة') {
+      return Colors.blueGrey;
     }
 
     return Colors.blueAccent; // Default color
@@ -99,6 +108,8 @@ class IconHelper {
       'خدمات مكيفات الهواء': 'ac_services',
       'خدمات التكييف': 'ac_services',
       'تصليح مكيفات': 'ac_services',
+      'Air Conditioners Services': 'ac_services',
+      'air conditioners services': 'ac_services',
 
       // Home Appliances
       'Home Appliances': 'home_appliances',
@@ -112,12 +123,23 @@ class IconHelper {
       'سباكة': 'plumbing',
       'السباكة': 'plumbing',
 
-      // Electric
       'Electric': 'electric',
       'electric': 'electric',
       'Electrical': 'electric',
       'electrical': 'electric',
       'الكهرباء': 'electric',
+      'Electricity': 'electric',
+      'electricity': 'electric',
+
+      // Carpentry
+      'Carpentry': 'carpentry',
+      'carpentry': 'carpentry',
+      'نجارة': 'carpentry',
+
+      // CCTV
+      'CCTV': 'cctv',
+      'cctv': 'cctv',
+      'كاميرات مراقبة': 'cctv',
     };
 
     // Image paths mapped by category ID
@@ -126,6 +148,8 @@ class IconHelper {
       'home_appliances': 'assets/images/home_appliances.png',
       'plumbing': 'assets/images/plumbing.png',
       'electric': 'assets/images/electric.png',
+      'carpentry': 'assets/images/carpentry.png',
+      'cctv': 'assets/images/CCTV.jpg',
     };
 
     // Try exact match first

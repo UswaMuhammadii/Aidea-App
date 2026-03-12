@@ -62,6 +62,9 @@ class _PhoneLoginScreenState extends State<PhoneLoginScreen> {
   }
 
   Future<void> _handleSubmit() async {
+    // Prevent double-tap: if already loading, ignore
+    if (_isLoading) return;
+
     final l10n = AppLocalizations.of(context)!;
     setState(() => _phoneFieldTouched = true);
 
@@ -98,40 +101,50 @@ class _PhoneLoginScreenState extends State<PhoneLoginScreen> {
 
     try {
       final authService = FirebaseAuthService();
+      debugPrint('Initiating phone verification for: $fullPhoneNumber');
 
       await authService.verifyPhoneNumber(
         phoneNumber: fullPhoneNumber,
         onVerificationCompleted: (PhoneAuthCredential credential) async {
-          await _handleAutoVerification(credential);
+          debugPrint('AUTO VERIFICATION SUCCESSFUL in PhoneLoginScreen');
+          await _handleAutoVerification(credential, fullPhoneNumber);
         },
         onVerificationFailed: (FirebaseAuthException e) {
+          debugPrint('VERIFICATION FAILED in PhoneLoginScreen: ${e.code} - ${e.message}');
           setState(() => _isLoading = false);
           _showErrorDialog(e.message ?? l10n.verificationFailed);
         },
         onCodeSent: (String verificationId, int? resendToken) {
+          debugPrint('CODE SENT in PhoneLoginScreen. ID: $verificationId');
           setState(() => _isLoading = false);
           widget.onPhoneSubmit(fullPhoneNumber, verificationId);
         },
         onCodeAutoRetrievalTimeout: (String verificationId) {
-          setState(() => _isLoading = false);
-          debugPrint('Code auto retrieval timeout');
+          debugPrint('AUTO RETRIEVAL TIMEOUT in PhoneLoginScreen. ID: $verificationId');
+          if (mounted) {
+            setState(() => _isLoading = false);
+          }
         },
       );
     } catch (e) {
+      debugPrint('Unexpected error in PhoneLoginScreen: $e');
       setState(() => _isLoading = false);
       _showErrorDialog(l10n.genericError);
     }
   }
 
-  Future<void> _handleAutoVerification(PhoneAuthCredential credential) async {
+  Future<void> _handleAutoVerification(PhoneAuthCredential credential, String fullPhoneNumber) async {
     final l10n = AppLocalizations.of(context)!;
     try {
-      final userCredential =
-          await FirebaseAuthService().signInWithCredential(credential);
+      debugPrint('Handling auto verification...');
+      final userCredential = await FirebaseAuth.instance.signInWithCredential(credential);
+      
       if (userCredential.user != null) {
-        widget.onPhoneSubmit(_phoneController.text, 'auto_verified');
+        debugPrint('Auto verification sign-in success! UID: ${userCredential.user?.uid}');
+        widget.onPhoneSubmit(fullPhoneNumber, '');
       }
     } catch (e) {
+      debugPrint('Auto verification sign-in failed: $e');
       _showErrorDialog(l10n.autoVerificationFailed);
     }
   }
