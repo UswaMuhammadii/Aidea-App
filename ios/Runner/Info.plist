@@ -7,6 +7,8 @@
 
     <key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
     <string>HandyMan needs your location to provide better service experience.</string>
+    <key>NSLocationAlwaysUsageDescription</key>
+    <string>HandyMan needs your location in the background for mapping features.</string>
 	<key>CFBundleDevelopmentRegion</key>
 	<string>$(DEVELOPMENT_LANGUAGE)</string>
 	<key>CFBundleDisplayName</key>

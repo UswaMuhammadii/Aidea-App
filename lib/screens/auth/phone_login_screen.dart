@@ -8,10 +8,11 @@ import '../../services/firebase_auth_service.dart';
 
 class PhoneLoginScreen extends StatefulWidget {
   final Function(String phoneNumber, String verificationId) onPhoneSubmit;
+  final Function(User googleUser)? onGoogleSubmit;
   final VoidCallback onBack;
 
   const PhoneLoginScreen(
-      {super.key, required this.onPhoneSubmit, required this.onBack});
+      {super.key, required this.onPhoneSubmit, this.onGoogleSubmit, required this.onBack});
 
   @override
   State<PhoneLoginScreen> createState() => _PhoneLoginScreenState();
@@ -84,24 +85,49 @@ class _PhoneLoginScreenState extends State<PhoneLoginScreen> {
 
     setState(() => _isLoading = true);
 
-    // Normalize digits (convert Arabic indic to Western Arabic)
-    String normalizedPhone = _phoneController.text
-        .replaceAll('٠', '0')
-        .replaceAll('١', '1')
-        .replaceAll('٢', '2')
-        .replaceAll('٣', '3')
-        .replaceAll('٤', '4')
-        .replaceAll('٥', '5')
-        .replaceAll('٦', '6')
-        .replaceAll('٧', '7')
-        .replaceAll('٨', '8')
-        .replaceAll('٩', '9');
+    // Normalize digits (convert Arabic/Urdu indic digits to Western Arabic digits)
+    String phone = _phoneController.text.trim()
+        .replaceAll('٠', '0').replaceAll('١', '1').replaceAll('٢', '2')
+        .replaceAll('٣', '3').replaceAll('٤', '4').replaceAll('٥', '5')
+        .replaceAll('٦', '6').replaceAll('٧', '7').replaceAll('٨', '8').replaceAll('٩', '9');
 
-    final fullPhoneNumber = _selectedCountryCode + normalizedPhone;
+    // Remove any spaces or non-digit characters except '+'
+    phone = phone.replaceAll(RegExp(r'[^\d+]'), '');
+
+    String fullPhoneNumber;
+    
+    // Logic from working project:
+    if (phone.startsWith('05')) {
+      // 0535... -> +966535...
+      fullPhoneNumber = '+966${phone.substring(1)}';
+    } else if (phone.startsWith('5') && !phone.startsWith('+')) {
+      // 535... -> +966535...
+      fullPhoneNumber = '+966$phone';
+    } else if (phone.startsWith('+966')) {
+      // Already has correct prefix
+      fullPhoneNumber = phone;
+    } else if (phone.startsWith('966')) {
+      // Missing '+' prefix
+      fullPhoneNumber = '+$phone';
+    } else {
+      // For any other input, assume it's just the local part and add selected prefix
+      if (phone.startsWith('0')) {
+        phone = phone.substring(1);
+      }
+      // If code is already in phone, don't double it
+      if (phone.startsWith(_selectedCountryCode.replaceAll('+', ''))) {
+         fullPhoneNumber = '+$phone';
+      } else {
+         fullPhoneNumber = '$_selectedCountryCode$phone';
+      }
+    }
 
     try {
       final authService = FirebaseAuthService();
-      debugPrint('Initiating phone verification for: $fullPhoneNumber');
+      debugPrint('--- PHONE VERIFICATION ATTEMPT ---');
+      debugPrint('Full Phone Number: "$fullPhoneNumber"');
+      debugPrint('Selected Country Code: $_selectedCountryCode');
+      debugPrint('----------------------------------');
 
       await authService.verifyPhoneNumber(
         phoneNumber: fullPhoneNumber,
@@ -110,9 +136,21 @@ class _PhoneLoginScreenState extends State<PhoneLoginScreen> {
           await _handleAutoVerification(credential, fullPhoneNumber);
         },
         onVerificationFailed: (FirebaseAuthException e) {
-          debugPrint('VERIFICATION FAILED in PhoneLoginScreen: ${e.code} - ${e.message}');
+          debugPrint('!!! VERIFICATION FAILED !!!');
+          debugPrint('Code: ${e.code}');
+          debugPrint('Message: ${e.message}');
+          debugPrint('Plugin: ${e.plugin}');
+          debugPrint('Stacktrace: ${StackTrace.current}');
+          debugPrint('---------------------------');
+          
           setState(() => _isLoading = false);
-          _showErrorDialog(e.message ?? l10n.verificationFailed);
+          // Error 39 / too-many-requests = carrier block or Firebase quota
+          final errorMsg = (e.code == 'too-many-requests' ||
+                  (e.message?.contains('39') ?? false) ||
+                  (e.message?.toLowerCase().contains('internal') ?? false))
+              ? l10n.tooManyRequestsError
+              : (e.message ?? l10n.verificationFailed);
+          _showErrorDialog(errorMsg);
         },
         onCodeSent: (String verificationId, int? resendToken) {
           debugPrint('CODE SENT in PhoneLoginScreen. ID: $verificationId');
@@ -130,6 +168,30 @@ class _PhoneLoginScreenState extends State<PhoneLoginScreen> {
       debugPrint('Unexpected error in PhoneLoginScreen: $e');
       setState(() => _isLoading = false);
       _showErrorDialog(l10n.genericError);
+    }
+  }
+
+  Future<void> _handleGoogleLogin() async {
+    if (_isLoading) return;
+
+    setState(() => _isLoading = true);
+    try {
+      final authService = FirebaseAuthService();
+      final userCredential = await authService.signInWithGoogle();
+      
+      if (userCredential?.user != null && widget.onGoogleSubmit != null) {
+        widget.onGoogleSubmit!(userCredential!.user!);
+      }
+    } catch (e) {
+      debugPrint('Google Login Error: $e');
+      final l10n = AppLocalizations.of(context)!;
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(l10n.genericError)),
+      );
+    } finally {
+      if (mounted) {
+        setState(() => _isLoading = false);
+      }
     }
   }
 
@@ -410,15 +472,19 @@ class _PhoneLoginScreenState extends State<PhoneLoginScreen> {
                 // Login Button
                 Container(
                   width: double.infinity,
-                  height: 56,
+                  height: 60,
                   decoration: BoxDecoration(
-                    color: AppColors.electricBlue,
-                    borderRadius: BorderRadius.circular(16),
+                    gradient: const LinearGradient(
+                      colors: [Color(0xFF4A90E2), Color(0xFF357ABD)],
+                      begin: Alignment.topLeft,
+                      end: Alignment.bottomRight,
+                    ),
+                    borderRadius: BorderRadius.circular(20),
                     boxShadow: [
                       BoxShadow(
-                        color: AppColors.electricBlue.withOpacity(0.3),
-                        blurRadius: 20,
-                        offset: const Offset(0, 10),
+                        color: const Color(0xFF4A90E2).withOpacity(0.3),
+                        blurRadius: 15,
+                        offset: const Offset(0, 8),
                       ),
                     ],
                   ),
@@ -426,7 +492,7 @@ class _PhoneLoginScreenState extends State<PhoneLoginScreen> {
                     color: Colors.transparent,
                     child: InkWell(
                       onTap: _isLoading ? null : _handleSubmit,
-                      borderRadius: BorderRadius.circular(16),
+                      borderRadius: BorderRadius.circular(20),
                       child: Center(
                         child: _isLoading
                             ? const SizedBox(
@@ -445,13 +511,117 @@ class _PhoneLoginScreenState extends State<PhoneLoginScreen> {
                                   color: Colors.white,
                                   fontSize: 18,
                                   fontWeight: FontWeight.bold,
-                                  letterSpacing: 0.5,
+                                  letterSpacing: 1.0,
                                 ),
                               ),
                       ),
                     ),
                   ),
                 ),
+
+                const SizedBox(height: 36),
+
+                // Divider
+                Row(
+                  children: [
+                    Expanded(
+                      child: Container(
+                        height: 1,
+                        decoration: BoxDecoration(
+                          gradient: LinearGradient(
+                            colors: [
+                              Colors.grey.shade300.withOpacity(0.1),
+                              Colors.grey.shade300,
+                            ],
+                          ),
+                        ),
+                      ),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 16),
+                      child: Text(
+                        l10n.orAction ?? 'OR',
+                        style: TextStyle(
+                          color: Colors.grey.shade500,
+                          fontSize: 14,
+                          fontWeight: FontWeight.w600,
+                          letterSpacing: 1.2,
+                        ),
+                      ),
+                    ),
+                    Expanded(
+                      child: Container(
+                        height: 1,
+                        decoration: BoxDecoration(
+                          gradient: LinearGradient(
+                            colors: [
+                              Colors.grey.shade300,
+                              Colors.grey.shade300.withOpacity(0.1),
+                            ],
+                          ),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+
+                const SizedBox(height: 36),
+
+                // Google Login Button
+                Container(
+                  width: double.infinity,
+                  height: 60,
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(20),
+                    border: Border.all(color: Colors.grey.shade200, width: 1.5),
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.black.withOpacity(0.04),
+                        blurRadius: 12,
+                        offset: const Offset(0, 4),
+                      ),
+                    ],
+                  ),
+                  child: Material(
+                    color: Colors.transparent,
+                    child: InkWell(
+                      onTap: _isLoading ? null : _handleGoogleLogin,
+                      borderRadius: BorderRadius.circular(20),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Container(
+                            padding: const EdgeInsets.all(8),
+                            child: Image.network(
+                              'https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg',
+                              height: 24,
+                              width: 24,
+                              errorBuilder: (context, error, stackTrace) => 
+                                Image.network(
+                                  'https://upload.wikimedia.org/wikipedia/commons/5/53/Google_%22G%22_Logo.svg',
+                                  height: 24,
+                                  errorBuilder: (context, error, stackTrace) => 
+                                    const Icon(Icons.g_mobiledata, size: 32, color: Colors.blue),
+                                ),
+                            ),
+                          ),
+                          const SizedBox(width: 8),
+                          Text(
+                            l10n.continueWithGoogle ?? 'Continue with Google',
+                            style: const TextStyle(
+                              color: Color(0xFF3C4043),
+                              fontSize: 16,
+                              fontWeight: FontWeight.w600,
+                              letterSpacing: 0.2,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                ),
+                const SizedBox(height: 20),
               ],
             ),
           ),

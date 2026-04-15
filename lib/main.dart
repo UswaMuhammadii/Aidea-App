@@ -24,7 +24,11 @@ import 'services/notification_service.dart';
 
 @pragma('vm:entry-point')
 Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
-  await Firebase.initializeApp();
+  // Ensure Firebase is initialized for the background isolate
+  await Firebase.initializeApp(
+    options: DefaultFirebaseOptions.currentPlatform,
+  );
+  
   debugPrint("Handling a background message: ${message.messageId}");
 }
 
@@ -36,11 +40,12 @@ void main() async {
     options: DefaultFirebaseOptions.currentPlatform,
   );
 
-  // Activate App Check for Play Integrity
-  await FirebaseAppCheck.instance.activate(
-    androidProvider: kDebugMode ? AndroidProvider.debug : AndroidProvider.playIntegrity,
-    appleProvider: kDebugMode ? AppleProvider.debug : AppleProvider.deviceCheck,
-  );
+  // App Check temporarily disabled for testing (Error 39 diagnosis)
+  // If Error 39 stops after this, fix = register debug token in Firebase Console
+  // await FirebaseAppCheck.instance.activate(
+  //   androidProvider: kDebugMode ? AndroidProvider.debug : AndroidProvider.playIntegrity,
+  //   appleProvider: kDebugMode ? AppleProvider.debug : AppleProvider.deviceCheck,
+  // );
 
   // Initialize localization for Arabic dates
   await initializeDateFormatting('ar', null);

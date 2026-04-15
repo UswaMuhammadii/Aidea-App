@@ -35,7 +35,23 @@ class NotificationService {
       },
     );
 
-    // 2. Initialize FCM
+    // 2. Create the notification channel for Android
+    final androidPlugin = flutterLocalNotificationsPlugin
+        .resolvePlatformSpecificImplementation<
+            AndroidFlutterLocalNotificationsPlugin>();
+    
+    if (androidPlugin != null) {
+      const AndroidNotificationChannel channel = AndroidNotificationChannel(
+        'high_importance_channel', // id
+        'High Importance Notifications', // title
+        description: 'This channel is used for important notifications.',
+        importance: Importance.max,
+      );
+      await androidPlugin.createNotificationChannel(channel);
+      debugPrint('Android Notification Channel created: ${channel.id}');
+    }
+
+    // 3. Initialize FCM
     await _initFCM();
   }
 
@@ -58,6 +74,14 @@ class NotificationService {
     // Get Token
     String? token = await messaging.getToken();
     debugPrint('FCM Token: $token');
+
+    // Subscribe to 'all' topic
+    try {
+      await messaging.subscribeToTopic('all');
+      debugPrint('Subscribed to topic: all');
+    } catch (e) {
+      debugPrint('Error subscribing to topic: $e');
+    }
 
     // Handle Foreground Messages
     FirebaseMessaging.onMessage.listen((RemoteMessage message) {

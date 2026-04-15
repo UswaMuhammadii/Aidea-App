@@ -4,6 +4,8 @@ import '../../models/user_model.dart';
 import '../../services/firestore_service.dart';
 import '../../utils/app_colors.dart';
 import '../../gen_l10n/app_localizations.dart';
+import 'package:geolocator/geolocator.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class ChatScreen extends StatefulWidget {
   final String workerName;
@@ -45,6 +47,60 @@ class _ChatScreenState extends State<ChatScreen> {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text('Error sending message: $e')),
       );
+    });
+
+    _scrollToBottom();
+  }
+
+  Future<void> _sendLocation() async {
+    bool serviceEnabled;
+    LocationPermission permission;
+
+    serviceEnabled = await Geolocator.isLocationServiceEnabled();
+    if (!serviceEnabled) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Location services are disabled.')),
+        );
+      }
+      return;
+    }
+
+    permission = await Geolocator.checkPermission();
+    if (permission == LocationPermission.denied) {
+      permission = await Geolocator.requestPermission();
+      if (permission == LocationPermission.denied) {
+        if (mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(content: Text('Location permissions are denied')),
+          );
+        }
+        return;
+      }
+    }
+
+    if (permission == LocationPermission.deniedForever) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+              content: Text('Location permissions are permanently denied.')),
+        );
+      }
+      return;
+    }
+
+    final Position position = await Geolocator.getCurrentPosition();
+    final locationUrl =
+        'https://www.google.com/maps/search/?api=1&query=${position.latitude},${position.longitude}';
+
+    _firestoreService
+        .sendMessage(widget.bookingId, locationUrl, widget.user.id, type: 'location')
+        .catchError((e) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Error sending location: $e')),
+        );
+      }
     });
 
     _scrollToBottom();
@@ -189,8 +245,10 @@ class _ChatScreenState extends State<ChatScreen> {
                       time = (data['timestamp'] as Timestamp).toDate();
                     }
 
+                    final type = data['type'] ?? 'text';
+
                     return _buildMessageBubble(
-                        data['text'] ?? '', isMe, time, isDark, l10n);
+                        data['text'] ?? '', type, isMe, time, isDark, l10n);
                   },
                 );
               },
@@ -213,6 +271,10 @@ class _ChatScreenState extends State<ChatScreen> {
             child: SafeArea(
               child: Row(
                 children: [
+                  IconButton(
+                    icon: const Icon(Icons.location_on, color: AppColors.electricBlue),
+                    onPressed: _sendLocation,
+                  ),
                   Expanded(
                     child: Container(
                       decoration: BoxDecoration(
@@ -271,7 +333,7 @@ class _ChatScreenState extends State<ChatScreen> {
     );
   }
 
-  Widget _buildMessageBubble(String text, bool isMe, DateTime time, bool isDark,
+  Widget _buildMessageBubble(String text, String type, bool isMe, DateTime time, bool isDark,
       AppLocalizations l10n) {
     return Align(
       alignment: isMe ? Alignment.centerRight : Alignment.centerLeft,
@@ -314,18 +376,49 @@ class _ChatScreenState extends State<ChatScreen> {
                   ),
                 ],
               ),
-              child: Text(
-                text,
-                style: TextStyle(
-                  color: isMe
-                      ? Colors.white
-                      : isDark
-                          ? Colors.white
-                          : Colors.black87,
-                  fontSize: 14,
-                  height: 1.4,
-                ),
-              ),
+              child: type == 'location' || text.startsWith('https://www.google.com/maps/')
+                  ? InkWell(
+                      onTap: () async {
+                        final url = Uri.parse(text);
+                        if (await canLaunchUrl(url)) {
+                          await launchUrl(url);
+                        } else {
+                          if (mounted) {
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              const SnackBar(content: Text('Could not launch maps')),
+                            );
+                          }
+                        }
+                      },
+                      child: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Icon(Icons.location_on, color: isMe ? Colors.white : (isDark ? Colors.white : Colors.black87)),
+                          const SizedBox(width: 8),
+                          Text(
+                            'View Location',
+                            style: TextStyle(
+                              color: isMe ? Colors.white : (isDark ? Colors.white : Colors.black87),
+                              fontSize: 14,
+                              fontWeight: FontWeight.bold,
+                              decoration: TextDecoration.underline,
+                            ),
+                          ),
+                        ],
+                      ),
+                    )
+                  : Text(
+                      text,
+                      style: TextStyle(
+                        color: isMe
+                            ? Colors.white
+                            : isDark
+                                ? Colors.white
+                                : Colors.black87,
+                        fontSize: 14,
+                        height: 1.4,
+                      ),
+                    ),
             ),
             const SizedBox(height: 4),
             Padding(

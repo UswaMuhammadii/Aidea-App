@@ -633,6 +633,7 @@
   "verificationFailed": "Verification failed. Please try again.",
   "genericError": "An error occurred. Please try again.",
   "autoVerificationFailed": "Auto verification failed. Please enter OTP manually.",
+  "tooManyRequestsError": "SMS could not be sent to this number right now. This may be due to carrier restrictions or too many attempts. Please wait a few minutes and try again.",
   "validPhoneNumber": "Valid phone number",
   "selectCountryCode": "Select Country Code",
   "saudiArabia": "Saudi Arabia",
@@ -779,5 +780,7 @@
         "type": "Object"
       }
     }
-  }
+  },
+  "orAction": "OR",
+  "continueWithGoogle": "Continue with Google"
 }

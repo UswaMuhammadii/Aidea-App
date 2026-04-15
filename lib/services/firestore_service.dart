@@ -171,7 +171,7 @@ class FirestoreService {
   }
 
   Future<void> sendMessage(
-      String bookingId, String text, String senderId) async {
+      String bookingId, String text, String senderId, {String type = 'text'}) async {
     await _firestore
         .collection('chats')
         .doc(bookingId)
@@ -180,7 +180,7 @@ class FirestoreService {
       'text': text,
       'senderId': senderId,
       'timestamp': FieldValue.serverTimestamp(),
-      'type': 'text',
+      'type': type,
     });
   }
 

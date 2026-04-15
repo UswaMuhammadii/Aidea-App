@@ -551,29 +551,38 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                   children: [
                                     const Text('Version 1.0.0'),
                                     const SizedBox(height: 24),
+                                    const Text(
+                                      'Irfan Ahmed',
+                                      style: TextStyle(
+                                          fontWeight: FontWeight.bold,
+                                          fontSize: 16),
+                                    ),
+                                    const SizedBox(height: 4),
+                                    const Text(
+                                      'Contact: +923025181092\nEmail: smartsolutions.pk@gmail.com',
+                                      style: TextStyle(fontSize: 14),
+                                    ),
+                                    const SizedBox(height: 24),
                                     Text(
                                       l10n.developedBy,
-                                      style: TextStyle(
+                                      style: const TextStyle(
                                           fontWeight: FontWeight.bold),
                                     ),
                                     const SizedBox(height: 12),
-                                    const Text('Waseeq Ahmed Siddiqui'),
                                     Text(
                                       'waseeqahmadsiddiqui@gmail.com',
                                       style: TextStyle(
                                           fontSize: 12,
                                           color: Colors.grey.shade600),
                                     ),
-                                    const SizedBox(height: 12),
-                                    const Text('Uswa Muhammadi'),
+                                    const SizedBox(height: 8),
                                     Text(
                                       'uswamuhammadi@gmail.com',
                                       style: TextStyle(
                                           fontSize: 12,
                                           color: Colors.grey.shade600),
                                     ),
-                                    const SizedBox(height: 12),
-                                    const Text('Eiman Fatima'),
+                                    const SizedBox(height: 8),
                                     Text(
                                       'eimanfkhan18@gmail.com',
                                       style: TextStyle(

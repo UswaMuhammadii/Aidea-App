@@ -12,6 +12,9 @@ import 'dart:async'; // Added
 import '../../services/firestore_service.dart'; // Added
 import '../../utils/app_colors.dart';
 import '../../gen_l10n/app_localizations.dart';
+import '../../gen_l10n/app_localizations_en.dart';
+import '../../utils/zatca_utils.dart'; // Added
+import '../../services/notification_service.dart'; // Added
 
 class InvoiceScreen extends StatefulWidget {
   final User user;
@@ -61,8 +64,8 @@ class _InvoiceScreenState extends State<InvoiceScreen> {
     });
   }
 
-  Future<void> _generateAndSharePdf(
-      Booking booking, AppLocalizations l10n) async {
+  Future<void> _generateAndSharePdf(Booking booking) async {
+    final l10n = AppLocalizationsEn();
     try {
       final fontData = await rootBundle.load("assets/fonts/Cairo-Regular.ttf");
       final ttf = pw.Font.ttf(fontData);
@@ -435,23 +438,43 @@ class _InvoiceScreenState extends State<InvoiceScreen> {
                 pw.Spacer(),
                 pw.Divider(color: PdfColors.grey300),
                 pw.SizedBox(height: 10),
-                pw.Center(
-                  child: pw.Text(
-                    l10n.thankYouBusiness,
-                    style: pw.TextStyle(
-                      fontSize: 12,
-                      color: PdfColors.grey700,
-                      fontStyle: pw.FontStyle.italic,
+                pw.Row(
+                  mainAxisAlignment: pw.MainAxisAlignment.spaceBetween,
+                  children: [
+                    pw.Expanded(
+                      child: pw.Column(
+                        crossAxisAlignment: pw.CrossAxisAlignment.start,
+                        children: [
+                          pw.Text(
+                            l10n.thankYouBusiness,
+                            style: pw.TextStyle(
+                              fontSize: 12,
+                              color: PdfColors.grey700,
+                              fontStyle: pw.FontStyle.italic,
+                            ),
+                          ),
+                          pw.SizedBox(height: 5),
+                          pw.Text(
+                            l10n.contactSupportEmail,
+                            style: const pw.TextStyle(
+                                fontSize: 10, color: PdfColors.grey600),
+                          ),
+                        ],
+                      ),
                     ),
-                  ),
-                ),
-                pw.SizedBox(height: 5),
-                pw.Center(
-                  child: pw.Text(
-                    l10n.contactSupportEmail,
-                    style: const pw.TextStyle(
-                        fontSize: 10, color: PdfColors.grey600),
-                  ),
+                    pw.BarcodeWidget(
+                      barcode: pw.Barcode.qrCode(),
+                      data: ZatcaUtils.generateZatcaTlvBase64(
+                        sellerName: l10n.appTitle,
+                        vatNumber: '312875789500003',
+                        timestamp: booking.createdAt.toIso8601String(),
+                        totalAmount: booking.totalPrice.toStringAsFixed(2),
+                        vatAmount: booking.vat.toStringAsFixed(2),
+                      ),
+                      width: 80,
+                      height: 80,
+                    ),
+                  ],
                 ),
               ],
             );
@@ -565,7 +588,7 @@ class _InvoiceScreenState extends State<InvoiceScreen> {
                         color: Colors.transparent,
                         child: InkWell(
                           borderRadius: BorderRadius.circular(16),
-                          onTap: () => _generateAndSharePdf(booking, l10n),
+                          onTap: () => _generateAndSharePdf(booking),
                           child: Padding(
                             padding: const EdgeInsets.all(20),
                             child: Column(

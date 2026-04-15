@@ -573,6 +573,7 @@
   "verificationFailed": "فشل التحقق. يرجى المحاولة مرة أخرى.",
   "genericError": "حدث خطأ. يرجى المحاولة مرة أخرى.",
   "autoVerificationFailed": "فشل التحقق التلقائي. الرجاء إدخال الرمز يدوياً.",
+  "tooManyRequestsError": "تعذر إرسال الرسالة النصية إلى هذا الرقم الآن. قد يكون ذلك بسبب قيود شبكة المشغل أو كثرة المحاولات. يرجى الانتظار بضع دقائق والمحاولة مجدداً.",
   "validPhoneNumber": "رقم هاتف صالح",
   "selectCountryCode": "اختر رمز الدولة",
   "saudiArabia": "المملكة العربية السعودية",
@@ -660,5 +661,7 @@
   "locationPermissionPermanentlyDenied": "تم رفض إذن الوصول للموقع بشكل دائم",
   "unknownLocation": "موقع غير معروف",
   "loadingMap": "جارٍ تحميل الخريطة...",
-  "searchFailed": "فشل البحث: {error}"
+  "searchFailed": "فشل البحث: {error}",
+  "orAction": "أو",
+  "continueWithGoogle": "المتابعة باستخدام جوجل"
 }

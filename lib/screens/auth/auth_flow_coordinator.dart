@@ -68,6 +68,14 @@ class _AuthFlowCoordinatorState extends State<AuthFlowCoordinator> {
     debugPrint('============================');
   }
 
+  Future<void> _handleGoogleSubmit(firebase_auth.User googleUser) async {
+    debugPrint('=== Google Submit Handler ===');
+    debugPrint('User: ${googleUser.uid}');
+    debugPrint('Email: ${googleUser.email}');
+    
+    await _handleOTPVerification(googleUser);
+  }
+
   Future<void> _handleOTPVerification(firebase_auth.User firebaseUser) async {
     debugPrint('=== OTP Verification Handler ===');
     debugPrint('Firebase User: ${firebaseUser.uid}');
@@ -143,6 +151,7 @@ class _AuthFlowCoordinatorState extends State<AuthFlowCoordinator> {
           // Step 0: Phone Login
           PhoneLoginScreen(
             onPhoneSubmit: _handlePhoneSubmit,
+            onGoogleSubmit: _handleGoogleSubmit,
             onBack: widget.onBack,
           ),
 

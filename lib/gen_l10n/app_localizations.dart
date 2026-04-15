@@ -3386,6 +3386,12 @@ abstract class AppLocalizations {
   /// **'Auto verification failed. Please enter OTP manually.'**
   String get autoVerificationFailed;
 
+  /// No description provided for @tooManyRequestsError.
+  ///
+  /// In en, this message translates to:
+  /// **'SMS could not be sent to this number right now. This may be due to carrier restrictions or too many attempts. Please wait a few minutes and try again.'**
+  String get tooManyRequestsError;
+
   /// No description provided for @validPhoneNumber.
   ///
   /// In en, this message translates to:
@@ -3841,6 +3847,18 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Search failed: {error}'**
   String searchFailed(Object error);
+
+  /// No description provided for @orAction.
+  ///
+  /// In en, this message translates to:
+  /// **'OR'**
+  String get orAction;
+
+  /// No description provided for @continueWithGoogle.
+  ///
+  /// In en, this message translates to:
+  /// **'Continue with Google'**
+  String get continueWithGoogle;
 }
 
 class _AppLocalizationsDelegate

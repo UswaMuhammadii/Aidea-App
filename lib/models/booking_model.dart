@@ -25,6 +25,7 @@ class Booking {
   final String id;
   final String userId; // Maps to customerId
   final String customerName; // Added
+  final String customerPhone; // Added
   final String serviceId;
   final String serviceName; // Added
   final String? serviceNameArabic; // Added
@@ -58,6 +59,7 @@ class Booking {
     required this.id,
     required this.userId,
     required this.customerName,
+    required this.customerPhone,
     required this.serviceId,
     required this.serviceName,
     this.serviceNameArabic,
@@ -136,6 +138,7 @@ class Booking {
       'id': id,
       'customerId': userId,
       'customerName': customerName,
+      'customerPhone': customerPhone,
       'serviceId': serviceId,
       'serviceName': serviceName,
       'serviceNameArabic': serviceNameArabic,
@@ -167,6 +170,7 @@ class Booking {
       id: json['id'] ?? '',
       userId: json['customerId'] ?? '',
       customerName: json['customerName'] ?? '',
+      customerPhone: json['customerPhone'] ?? '',
       serviceId: json['serviceId'] ?? '',
       serviceName: json['serviceName'] ?? '',
       serviceNameArabic: json['serviceNameArabic'],

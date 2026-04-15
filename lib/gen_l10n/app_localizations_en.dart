@@ -1724,6 +1724,10 @@ class AppLocalizationsEn extends AppLocalizations {
       'Auto verification failed. Please enter OTP manually.';
 
   @override
+  String get tooManyRequestsError =>
+      'SMS could not be sent to this number right now. This may be due to carrier restrictions or too many attempts. Please wait a few minutes and try again.';
+
+  @override
   String get validPhoneNumber => 'Valid phone number';
 
   @override
@@ -1971,4 +1975,10 @@ class AppLocalizationsEn extends AppLocalizations {
   String searchFailed(Object error) {
     return 'Search failed: $error';
   }
+
+  @override
+  String get orAction => 'OR';
+
+  @override
+  String get continueWithGoogle => 'Continue with Google';
 }

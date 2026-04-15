@@ -1704,6 +1704,10 @@ class AppLocalizationsAr extends AppLocalizations {
       'فشل التحقق التلقائي. الرجاء إدخال الرمز يدوياً.';
 
   @override
+  String get tooManyRequestsError =>
+      'تعذر إرسال الرسالة النصية إلى هذا الرقم الآن. قد يكون ذلك بسبب قيود شبكة المشغل أو كثرة المحاولات. يرجى الانتظار بضع دقائق والمحاولة مجدداً.';
+
+  @override
   String get validPhoneNumber => 'رقم هاتف صالح';
 
   @override
@@ -1952,4 +1956,10 @@ class AppLocalizationsAr extends AppLocalizations {
   String searchFailed(Object error) {
     return 'فشل البحث: $error';
   }
+
+  @override
+  String get orAction => 'أو';
+
+  @override
+  String get continueWithGoogle => 'المتابعة باستخدام جوجل';
 }

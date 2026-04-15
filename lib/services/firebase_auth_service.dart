@@ -1,4 +1,5 @@
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:google_sign_in/google_sign_in.dart';
 import 'package:flutter/foundation.dart';
 
 class FirebaseAuthService {
@@ -106,4 +107,36 @@ class FirebaseAuthService {
     debugPrint('Verification ID manually set to: $verificationId');
     _verificationId = verificationId;
   }
-}
+
+  // Google Sign-In logic
+  Future<UserCredential?> signInWithGoogle() async {
+    try {
+      debugPrint('=== GOOGLE SIGN IN STARTED ===');
+      
+      // Trigger the authentication flow
+      final GoogleSignInAccount? googleUser = await GoogleSignIn().signIn();
+      
+      if (googleUser == null) {
+        debugPrint('Google Sign-In cancelled by user');
+        return null;
+      }
+
+      // Obtain the auth details from the request
+      final GoogleSignInAuthentication googleAuth = await googleUser.authentication;
+
+      // Create a new credential
+      final credential = GoogleAuthProvider.credential(
+        accessToken: googleAuth.accessToken,
+        idToken: googleAuth.idToken,
+      );
+
+      // Once signed in, return the UserCredential
+      final userCredential = await _auth.signInWithCredential(credential);
+      debugPrint('GOOGLE SIGN IN SUCCESSFUL! UID: ${userCredential.user?.uid}');
+      return userCredential;
+    } catch (e) {
+      debugPrint('GOOGLE SIGN IN FAILED: $e');
+      rethrow;
+    }
+  }
+}
