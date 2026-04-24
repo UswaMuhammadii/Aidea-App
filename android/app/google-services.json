@@ -1,0 +1,154 @@
+{
+  "project_info": {
+    "project_number": "1077866533312",
+    "project_id": "handyman-3308d",
+    "storage_bucket": "handyman-3308d.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1077866533312:android:48fbc457d298706cb77825",
+        "android_client_info": {
+          "package_name": "com.hadyman.customer_app"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1077866533312-24gi9ru3h3198tpe4kld48dte3gn0n54.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.hadyman.customer_app",
+            "certificate_hash": "c7f28e38d9caf565549d73c04351d6c8491af296"
+          }
+        },
+        {
+          "client_id": "1077866533312-dh1hgl6647ur6ood0t08ejbda0862d8d.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.hadyman.customer_app",
+            "certificate_hash": "86ad8a7c5c65e3e5dd90eebda717e15ce0726659"
+          }
+        },
+        {
+          "client_id": "1077866533312-f2btmlhnmtm1p6ujmrg8gntb5isdtdmk.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.hadyman.customer_app",
+            "certificate_hash": "e10866db1dd18faa1a2b8c319cca8e44d280fca1"
+          }
+        },
+        {
+          "client_id": "1077866533312-vdkf8rciald7b8jb9r3s8mqcilcon1nt.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.hadyman.customer_app",
+            "certificate_hash": "24eb4f9377182e944a6fb5a8c6262e29e7c11fee"
+          }
+        },
+        {
+          "client_id": "1077866533312-v84g5hqod9btgh82u1rrphdqgcacn83v.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyC1mwhsBRlQZkZ7m7MZGl3FLgeaX8KX1Ig"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1077866533312-v84g5hqod9btgh82u1rrphdqgcacn83v.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "1077866533312-05vor32efim6ehg6kvvb8bidcn42fq2a.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.waseeq.customerApp"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1077866533312:android:b280b6e277458bd1b77825",
+        "android_client_info": {
+          "package_name": "com.handyman.admin_worker"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1077866533312-543uqjte71vefnt2voiqcv2j0dh6g5se.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.handyman.admin_worker",
+            "certificate_hash": "826215da8d0096e9d1a6c3d342d856b27d9680c6"
+          }
+        },
+        {
+          "client_id": "1077866533312-5te9egb12vll0khrcsl2u6lf2338a0jl.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.handyman.admin_worker",
+            "certificate_hash": "0c581efdc64e4da849209f7085dedd6ea9ecd01a"
+          }
+        },
+        {
+          "client_id": "1077866533312-dc544sfdg30mm3vbk77793hdhnmb5eqs.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.handyman.admin_worker",
+            "certificate_hash": "e10866db1dd18faa1a2b8c319cca8e44d280fca1"
+          }
+        },
+        {
+          "client_id": "1077866533312-m0tsalctk9j26jd4vj1phe6ff5dmgb66.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.handyman.admin_worker",
+            "certificate_hash": "570f4cda139dcc621eaa60c3ea51cf594ad18d29"
+          }
+        },
+        {
+          "client_id": "1077866533312-qrhqvmdvdttvi2chbgr0vv3fcgqhdm0p.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.handyman.admin_worker",
+            "certificate_hash": "24eb4f9377182e944a6fb5a8c6262e29e7c11fee"
+          }
+        },
+        {
+          "client_id": "1077866533312-v84g5hqod9btgh82u1rrphdqgcacn83v.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyC1mwhsBRlQZkZ7m7MZGl3FLgeaX8KX1Ig"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1077866533312-v84g5hqod9btgh82u1rrphdqgcacn83v.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "1077866533312-05vor32efim6ehg6kvvb8bidcn42fq2a.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.waseeq.customerApp"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
